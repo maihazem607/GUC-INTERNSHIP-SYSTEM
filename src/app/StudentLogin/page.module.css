@@ -1,0 +1,290 @@
+.page {
+    min-height: 100vh;
+    background: linear-gradient(135deg,  #ad9dc6 100%, #f2e6b5 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2%;
+    /* Animated background gradient */
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+  }
+  
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  .formContainer {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 1%;
+    box-shadow: 0 0.6% 2% rgba(0, 0, 0, 0.2), 0 0.3% 0.7% rgba(128, 0, 255, 0.2);
+    padding: 5%;
+    width: 100%;
+    max-width: 40%;
+    backdrop-filter: blur(8px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeIn 0.8s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(2%); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .title {
+    font-size: 220%;
+    font-weight: bold;
+    color: #554964;
+    margin-bottom: 1%;
+    position: relative;
+    text-shadow: 0 0.05% 0.1% rgba(0, 0, 0, 0.1);
+  }
+  
+  .titleUnderline {
+    height: 0.3%;
+    background: linear-gradient(90deg, #8000FF 0%, #FFCC33 100%);
+    margin-bottom: 3%;
+    animation: expandWidth 1s ease-out;
+    border-radius: 1%;
+  }
+  
+  @keyframes expandWidth {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5%;
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2%;
+    transition: transform 0.2s ease;
+  }
+  
+  .formGroup:focus-within {
+    transform: translateY(-1%);
+  }
+  
+  .label {
+    font-size: 110%;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.8%;
+    transition: color 0.2s ease;
+  }
+  
+  .formGroup:focus-within .label {
+    color: #8000FF;
+  }
+  
+  .input {
+    width: 100%;
+    background-color: #ffffff;
+    border: 0.1% solid #d1d5db;
+    border-radius: 0.5%;
+    padding: 1.5%;
+    box-shadow: 0 0.1% 0.2% rgba(0, 0, 0, 0.05);
+    outline: none;
+    transition: all 0.3s ease;
+    font-size: 100%;
+  }
+  
+  .input:hover {
+    border-color: #BBAADD;
+  }
+  
+  .input:focus {
+    border-color: #8000FF;
+    box-shadow: 0 0 0 0.3% rgba(128, 0, 255, 0.2);
+    transform: scale(1.01);
+  }
+  
+  /* Enhanced select dropdown */
+  .select {
+    width: 100%;
+    background-color: #ffffff;
+    border: 0.1% solid #d1d5db;
+    border-radius: 0.5%;
+    padding: 1.5%;
+    box-shadow: 0 0.1% 0.2% rgba(0, 0, 0, 0.05);
+    outline: none;
+    transition: all 0.3s ease;
+    font-size: 100%;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23374151%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 2% center;
+    background-size: 3%;
+    color: #374151;
+  }
+  
+  .select:hover {
+    border-color: #BBAADD;
+  }
+  
+  .select:focus {
+    border-color: #8000FF;
+    box-shadow: 0 0 0 0.3% rgba(128, 0, 255, 0.2);
+    transform: scale(1.01);
+  }
+  
+  /* Enhanced file input */
+  .inputFile {
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+  
+  /* Custom file input styling */
+  .inputFile input[type="file"] {
+    color: #666;
+    background-color: #ffffff;
+    border: 0.1% solid #d1d5db;
+    border-radius: 0.5%;
+    padding: 1.2%;
+    width: 100%;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  
+  /* Make sure the file name is visible */
+  .inputFile input[type="file"]::file-selector-button {
+    background: linear-gradient(to right, #574f5e, #51485e);
+    color: white;
+    padding: 0.8% 1.5%;
+    border: none;
+    border-radius: 0.5%;
+    margin-right: 2%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .inputFile input[type="file"]::file-selector-button:hover {
+    background: linear-gradient(to right, #9955FF, #AA77FF);
+    transform: translateY(-5%);
+  }
+  
+  .inputFile input[type="file"]:hover {
+    border-color: #BBAADD;
+  }
+  
+  .inputFile input[type="file"]:focus {
+    border-color: #8000FF;
+    box-shadow: 0 0 0 0.3% rgba(128, 0, 255, 0.2);
+  }
+  
+  .submitButton {
+    width: 100%;
+    background: linear-gradient(to right, #706f6b, #2d2d2d);
+    color: white;
+    padding: 1.7% 2%;
+    border-radius: 0.5%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    font-size: 110%;
+    margin-top: 5%;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0.2% 0.5% rgba(0, 0, 0, 0.1);
+  }
+  
+  .submitButton:hover {
+    background: linear-gradient(to right, #7a55a4, #742fc3);
+    box-shadow: 0 0.3% 1% rgba(128, 0, 255, 0.3);
+    transform: translateY(-2%);
+  }
+  
+  .submitButton:active {
+    transform: translateY(1%);
+  }
+  
+  .submitButton::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 20%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(30deg);
+    transition: all 0.5s ease;
+  }
+  
+  .submitButton:hover::after {
+    left: 120%;
+    transition: all 0.7s ease;
+  }
+  
+  .arrow {
+    margin-left: 2%;
+    transition: transform 0.3s ease;
+  }
+  
+  .submitButton:hover .arrow {
+    transform: translateX(50%);
+  }
+  
+  .signInLink {
+    margin-top: 4%;
+    font-size: 90%;
+    color: #8000FF;
+    text-align: center;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+  }
+  
+  .signInLink:hover {
+    opacity: 1;
+  }
+  
+  .link {
+    text-decoration: none;
+    color: #8000FF;
+    font-weight: 600;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  .link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0.1em;
+    bottom: -0.1em;
+    left: 0;
+    background: linear-gradient(to right, #8000FF, #FFCC33);
+    transition: width 0.3s ease;
+  }
+  
+  .link:hover {
+    color: #6c6774;
+  }
+  
+  .link:hover::after {
+    width: 100%;
+  }
+  
+  /* Add focused state indicators */
+  *:focus-visible {
+    outline: 0.2% solid #645f69;
+    outline-offset: 0.2%;
+  }
