@@ -1,0 +1,41 @@
+.searchBarContainer {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.searchInputWrapper {
+  display: flex;
+  align-items: center;
+  background-color: #f5f7f9;
+  border-radius: 10px;
+  padding: 10px 20px;
+  width: 100%;
+}
+
+.searchIcon {
+  margin-right: 15px;
+  font-size: 18px;
+  color: #666;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  outline: none;
+  color: #333;
+}
+
+.clearSearchButton {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.clearSearchButton:hover {
+  color: #333;
+}

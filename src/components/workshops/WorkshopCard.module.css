@@ -1,0 +1,170 @@
+.card {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  background-color: white;
+  transition: transform 0.2s, box-shadow 0.2s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.cardInner {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardDate {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
+.bookmark, .bookmarkActive {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0;
+  margin: 0;
+}
+
+.bookmarkActive {
+  color: #f1c40f;
+}
+
+.hostInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.hostName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+}
+
+.liveIndicator {
+  background-color: #e74c3c;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.workshopTitleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.workshopTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+  margin-right: 15px;
+  margin: 0;
+}
+
+.hostLogo {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.workshopTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.workshopTag {
+  background-color: rgba(0, 0, 0, 0.06);
+  color: #666;
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.cardFooter {
+  padding: 15px 20px;
+  background-color: #fafafa;
+  border-top: 1px solid #eee;
+}
+
+.workshopMeta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 13px;
+  color: #777;
+}
+
+.duration, .time {
+  display: flex;
+  align-items: center;
+}
+
+.cardActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.registerButton, .joinButton, .detailsButton {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border: none;
+}
+
+.registerButton {
+  background-color: #3498db;
+  color: white;
+  flex: 1;
+}
+
+.registerButton:hover {
+  background-color: #2980b9;
+}
+
+.joinButton {
+  background-color: #2ecc71;
+  color: white;
+  flex: 1;
+}
+
+.joinButton:hover {
+  background-color: #27ae60;
+}
+
+.detailsButton {
+  background-color: transparent;
+  color: #555;
+  border: 1px solid #ddd;
+}
+
+.detailsButton:hover {
+  background-color: #f5f5f5;
+}
