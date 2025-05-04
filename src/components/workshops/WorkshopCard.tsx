@@ -5,43 +5,36 @@ import { Workshop } from './types';
 
 interface WorkshopCardProps {
   workshop: Workshop;
-  isStarred: boolean;
-  toggleStar: (id: number) => void;
-  showDetails: (workshop: Workshop) => void;
-  onRegister: (workshop: Workshop) => void;
-  onJoinLive: (workshop: Workshop) => void;
-  onWatch: (workshop: Workshop) => void;
-  cardBackground: string;
+  onViewDetails: (workshop: Workshop) => void;
 }
+
+const getCardBackground = (id: number): string => {
+  const colors = [
+    '#ffe8f0', '#e8f3ff', '#e8ffe8', '#fff0e8', '#f0e8ff',
+    '#e8fff0', '#fff8e8', '#e8f0ff', '#ffe8e8', '#e8ffea',
+    '#f0ffe8', '#fff0f0'
+  ];
+  return colors[id % colors.length];
+};
 
 const WorkshopCard: React.FC<WorkshopCardProps> = ({
   workshop,
-  isStarred,
-  toggleStar,
-  showDetails,
-  onRegister,
-  onJoinLive,
-  onWatch,
-  cardBackground
+  onViewDetails
 }) => {
+  const cardBackground = getCardBackground(workshop.id);
+
   return (
     <div className={styles.card}>
       <div className={styles.cardInner} style={{ backgroundColor: cardBackground }}>
         <div className={styles.cardDate}>
           <span>{workshop.date}</span>
-          <button 
-            className={isStarred ? styles.bookmarkActive : styles.bookmark}
-            onClick={() => toggleStar(workshop.id)}
-          >
-            {isStarred ? '⭐' : '☆'}
-          </button>
+          {workshop.type === 'live' && workshop.status === 'ongoing' && (
+            <div className={styles.liveIndicator}>LIVE</div>
+          )}
         </div>
         
         <div className={styles.hostInfo}>
           <span className={styles.hostName}>{workshop.host}</span>
-          {workshop.type === 'live' && workshop.status === 'ongoing' && (
-            <div className={styles.liveIndicator}>LIVE</div>
-          )}
         </div>
         
         <div className={styles.workshopTitleContainer}>
@@ -55,7 +48,6 @@ const WorkshopCard: React.FC<WorkshopCardProps> = ({
         
         <div className={styles.workshopTags}>
           <span className={styles.workshopTag}>{workshop.type}</span>
-          <span className={styles.workshopTag}>{workshop.category}</span>
           <span className={styles.workshopTag}>{workshop.status}</span>
         </div>
       </div>
@@ -65,41 +57,12 @@ const WorkshopCard: React.FC<WorkshopCardProps> = ({
           <div className={styles.duration}>{workshop.duration}</div>
           <div className={styles.time}>{workshop.time}</div>
         </div>
-        <div className={styles.cardActions}>
-          {!workshop.isRegistered && workshop.status === 'upcoming' && (
-            <button 
-              className={styles.registerButton}
-              onClick={() => onRegister(workshop)}
-            >
-              Register
-            </button>
-          )}
-          
-          {workshop.isRegistered && workshop.type === 'live' && workshop.status === 'ongoing' && (
-            <button 
-              className={styles.joinButton}
-              onClick={() => onJoinLive(workshop)}
-            >
-              Join
-            </button>
-          )}
-          
-          {workshop.isRegistered && workshop.type === 'recorded' && (
-            <button 
-              className={styles.joinButton}
-              onClick={() => onWatch(workshop)}
-            >
-              Watch
-            </button>
-          )}
-          
-          <button 
-            className={styles.detailsButton}
-            onClick={() => showDetails(workshop)}
-          >
-            Details
-          </button>
-        </div>
+        <button 
+          className={styles.detailsButton}
+          onClick={() => onViewDetails(workshop)}
+        >
+          Details
+        </button>
       </div>
     </div>
   );

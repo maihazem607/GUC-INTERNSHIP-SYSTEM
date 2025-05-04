@@ -24,46 +24,36 @@
   margin-bottom: 15px;
 }
 
-.liveIndicator {
-  background-color: #f44336;
-  color: white;
-  padding: 3px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: bold;
-  animation: pulse 1.5s infinite;
+.bookmark, .bookmarkActive {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px;
 }
 
-@keyframes pulse {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
-  100% {
-    opacity: 1;
-  }
+.bookmarkActive {
+  color: #f5b400;
 }
 
-.hostInfo {
+.companyInfo {
   margin-bottom: 15px;
 }
 
-.hostName {
+.companyName {
   font-size: 14px;
   color: #666;
   font-weight: 500;
 }
 
-.workshopTitleContainer {
+.jobTitleContainer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
 }
 
-.workshopTitle {
+.jobTitle {
   font-size: 20px;
   font-weight: 700;
   color: #333;
@@ -71,7 +61,7 @@
   flex: 1;
 }
 
-.hostLogo {
+.companyLogo {
   width: 30px;
   height: 30px;
   overflow: hidden;
@@ -79,19 +69,18 @@
   flex-shrink: 0;
 }
 
-.workshopTags {
+.jobTags {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-.workshopTag {
+.jobTag {
   background-color: rgba(0, 0, 0, 0.05);
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 500;
-  text-transform: capitalize;
 }
 
 .cardFooter {
@@ -103,19 +92,19 @@
   border-top: 1px solid #f0f0f0;
 }
 
-.workshopMeta {
+.jobMeta {
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
 
-.duration {
+.salary {
   font-weight: 700;
   font-size: 16px;
   color: #333;
 }
 
-.time {
+.location {
   font-size: 14px;
   color: #666;
 }

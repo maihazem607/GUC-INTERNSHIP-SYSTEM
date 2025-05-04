@@ -1,20 +1,15 @@
-import Image from "next/image";
 import styles from "./page.module.css";
 import React, { useState, useEffect } from 'react';
 
-interface Internship {
-  id: number;
-  company: string;
-  title: string;
-  duration: string;
-  date: string;
-  location: string;
-  industry: string;
-  isPaid: boolean;
-  salary: string;
-  logo?: string;
-}
+// Import modular components
+import Navigation from "../../src/components/global/Navigation";
+import FilterSidebar from "../../src/components/global/FilterSidebar";
+import SearchBar from "../../src/components/global/SearchBar";
+import InternshipCard from "../../src/components/internships/InternshipCard";
+import InternshipDetailsModal from "../../src/components/internships/InternshipDetailsModal";
+import { Internship, FilterOptions } from "../../src/components/internships/types";
 
+// Internship data (would typically come from an API)
 const internships: Internship[] = [
   {
     id: 1,
@@ -26,7 +21,8 @@ const internships: Internship[] = [
     industry: 'Technology',
     isPaid: true,
     salary: '$250/hr',
-    logo: '/logos/amazon.png'
+    logo: '/logos/amazon.png',
+    description: `Join Amazon's design team to create world-class user experiences. You'll work on high-impact projects and collaborate with product managers and engineers to deliver intuitive interfaces for millions of customers.`
   },
   {
     id: 2,
@@ -38,7 +34,8 @@ const internships: Internship[] = [
     industry: 'Technology',
     isPaid: true,
     salary: '$150/hr',
-    logo: '/logos/google.png'
+    logo: '/logos/google.png',
+    description: `Google is looking for a Junior UI/UX Designer to join their team. You will work on exciting projects that impact millions of users worldwide.`
   },
   {
     id: 3,
@@ -50,7 +47,8 @@ const internships: Internship[] = [
     industry: 'Design',
     isPaid: true,
     salary: '$260/hr',
-    logo: '/logos/dribbble.png'
+    logo: '/logos/dribbble.png',
+    description: `Dribbble is seeking a Senior Motion Designer to create stunning animations and motion graphics for their platform.`
   },
   {
     id: 4,
@@ -62,7 +60,8 @@ const internships: Internship[] = [
     industry: 'Social Media',
     isPaid: true,
     salary: '$120/hr',
-    logo: '/logos/twitter.png'
+    logo: '/logos/twitter.png',
+    description: `Twitter is hiring a UX Designer to improve user experience across their platform. Collaborate with cross-functional teams to deliver impactful designs.`
   },
   {
     id: 5,
@@ -74,7 +73,8 @@ const internships: Internship[] = [
     industry: 'Travel',
     isPaid: true,
     salary: '$300/hr',
-    logo: '/logos/airbnb.png'
+    logo: '/logos/airbnb.png',
+    description: `Airbnb is looking for a Graphic Designer to create visually appealing designs for their marketing campaigns.`
   },
   {
     id: 6,
@@ -86,7 +86,8 @@ const internships: Internship[] = [
     industry: 'Technology',
     isPaid: true,
     salary: '$140/hr',
-    logo: '/logos/apple.png'
+    logo: '/logos/apple.png',
+    description: `Apple is seeking a Graphic Designer to join their creative team. Work on innovative projects that define the future of technology.`
   },
   {
     id: 7,
@@ -98,7 +99,8 @@ const internships: Internship[] = [
     industry: 'Technology',
     isPaid: true,
     salary: '$290/hr',
-    logo: '/logos/google.png'
+    logo: '/logos/google.png',
+    description: `Google is hiring a Senior Data Scientist to analyze complex datasets and provide actionable insights for their products.`
   },
   {
     id: 8,
@@ -110,7 +112,8 @@ const internships: Internship[] = [
     industry: 'Technology',
     isPaid: true,
     salary: '$176/hr',
-    logo: '/logos/microsoft.png'
+    logo: '/logos/microsoft.png',
+    description: `Microsoft is looking for a Software Engineer to develop cutting-edge software solutions for their clients.`
   },
   {
     id: 9,
@@ -122,7 +125,8 @@ const internships: Internship[] = [
     industry: 'Cloud Computing',
     isPaid: true,
     salary: '$190/hr',
-    logo: '/logos/amazon.png'
+    logo: '/logos/amazon.png',
+    description: `AWS is seeking a Middle DevOps Engineer to optimize their cloud infrastructure and improve system reliability.`
   },
   {
     id: 10,
@@ -134,7 +138,8 @@ const internships: Internship[] = [
     industry: 'Technology',
     isPaid: true,
     salary: '$140/hr',
-    logo: '/logos/ibm.png'
+    logo: '/logos/ibm.png',
+    description: `IBM is hiring a Cybersecurity Analyst to protect their systems and data from cyber threats.`
   },
   {
     id: 11,
@@ -146,7 +151,8 @@ const internships: Internship[] = [
     industry: 'Cloud Computing',
     isPaid: true,
     salary: '$220/hr',
-    logo: '/logos/salesforce.png'
+    logo: '/logos/salesforce.png',
+    description: `Salesforce is looking for a Cloud Solutions Architect to design and implement cloud-based solutions for their clients.`
   },
   {
     id: 12,
@@ -158,7 +164,8 @@ const internships: Internship[] = [
     industry: 'Social Media',
     isPaid: true,
     salary: '$110/hr',
-    logo: '/logos/facebook.png'
+    logo: '/logos/facebook.png',
+    description: `Facebook is hiring a Senior Full Stack Developer to build scalable web applications for their platform.`
   },
   {
     id: 13,
@@ -170,7 +177,8 @@ const internships: Internship[] = [
     industry: 'Design',
     isPaid: false,
     salary: 'Unpaid',
-    logo: '/logos/adobe.png'
+    logo: '/logos/adobe.png',
+    description: `Adobe is offering a UI/UX Design Internship for students to gain hands-on experience in designing user interfaces.`
   },
   {
     id: 14,
@@ -182,7 +190,8 @@ const internships: Internship[] = [
     industry: 'Entertainment',
     isPaid: true,
     salary: '$160/hr',
-    logo: '/logos/spotify.png'
+    logo: '/logos/spotify.png',
+    description: `Spotify is hiring a Music Data Analyst to analyze music trends and provide insights for their platform.`
   },
   {
     id: 15,
@@ -194,7 +203,8 @@ const internships: Internship[] = [
     industry: 'Entertainment',
     isPaid: false,
     salary: 'Unpaid',
-    logo: '/logos/netflix.png'
+    logo: '/logos/netflix.png',
+    description: `Netflix is offering a Content Marketing Internship for students to learn about marketing strategies in the entertainment industry.`
   },
   {
     id: 16,
@@ -206,36 +216,60 @@ const internships: Internship[] = [
     industry: 'Automotive',
     isPaid: true,
     salary: '$180/hr',
-    logo: '/logos/tesla.png'
+    logo: '/logos/tesla.png',
+    description: `Tesla is seeking an engineering intern to join our innovative team. You'll work on cutting-edge electric vehicle technology and sustainable energy solutions alongside world-class engineers.`
   }
 ];
 
 export default function InternshipListPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeFilters, setActiveFilters] = useState({
-    industry: 'All Industries',
-    duration: 'All Durations',
+  const [activeFilters, setActiveFilters] = useState<FilterOptions>({
+    industry: 'All',
+    duration: 'All',
     isPaid: 'All'
   });
   const [filteredInternships, setFilteredInternships] = useState<Internship[]>(internships);
   const [starredInternships, setStarredInternships] = useState<number[]>([]);
+  const [selectedInternship, setSelectedInternship] = useState<Internship | null>(null);
 
-  // Available filter options
-  const industries = ['All Industries', 'Technology', 'Design', 'Social Media', 'Travel', 'Cloud Computing', 'Entertainment', 'Automotive'];
-  const durations = ['All Durations', '3 months', '4 months', '6 months'];
+  // Filter options
+  const industries = ['All', 'Technology', 'Finance', 'Marketing', 'Design', 'Healthcare'];
+  const durations = ['All', '2-3 months', '3-6 months', '6+ months'];
   const paidOptions = ['All', 'Paid', 'Unpaid'];
+
+  // Format filters for the global FilterSidebar component
+  const formattedFilters = [
+    {
+      title: "Industry",
+      options: industries,
+      type: "industry",
+      value: activeFilters.industry
+    },
+    {
+      title: "Duration",
+      options: durations,
+      type: "duration",
+      value: activeFilters.duration
+    },
+    {
+      title: "Compensation",
+      options: paidOptions,
+      type: "isPaid",
+      value: activeFilters.isPaid
+    }
+  ];
 
   // Apply filters and search
   useEffect(() => {
     let results = [...internships];
     
     // Apply industry filter
-    if (activeFilters.industry !== 'All Industries') {
+    if (activeFilters.industry !== 'All') {
       results = results.filter(internship => internship.industry === activeFilters.industry);
     }
     
     // Apply duration filter
-    if (activeFilters.duration !== 'All Durations') {
+    if (activeFilters.duration !== 'All') {
       results = results.filter(internship => internship.duration === activeFilters.duration);
     }
     
@@ -275,167 +309,61 @@ export default function InternshipListPage() {
     );
   };
 
+  // Handle opening the details modal
+  const handleViewDetails = (internship: Internship) => {
+    setSelectedInternship(internship);
+  };
+
+  // Handle closing the details modal
+  const handleCloseModal = () => {
+    setSelectedInternship(null);
+  };
+
+  // Handle applying for an internship
+  const handleApply = async (internship: Internship) => {
+    // This would typically be an API call
+    console.log(`Applied for internship: ${internship.title} at ${internship.company}`);
+    return new Promise<void>(resolve => setTimeout(resolve, 1000));
+  };
+
   return (
     <div className={styles.pageContainer}>
       {/* Header/Navigation */}
-      <header className={styles.navBar}>
-        <div className={styles.navLeft}>
-          <div className={styles.logoContainer}>
-            <Image src='/logos/GUCInternshipSystemLogo.png' alt="" width={100} height={100} style={{ margin: -13 }} />
-          </div>
-          <nav className={styles.mainNav}>
-            <a href="#" className={styles.navLink}>Find job</a>
-            <a href="#" className={styles.navLink}>Messages</a>
-            <a href="#" className={styles.navLink}>Hiring</a>
-            <a href="#" className={styles.navLink}>Community</a>
-            <a href="#" className={styles.navLink}>FAQ</a>
-          </nav>
-        </div>
-        <div className={styles.navRight}>
-          <div className={styles.locationDisplay}>
-            <span className={styles.locationIcon}>📍</span>
-            <span>New York, NY</span>
-          </div>
-          <div className={styles.userControls}>
-            <div className={styles.userAvatar}></div>
-            <button className={styles.settingsButton}>⚙️</button>
-            <button className={styles.notificationsButton}>🔔</button>
-          </div>
-        </div>
-      </header>
+      <Navigation title="GUC Internship Portal" />
 
       <div className={styles.contentWrapper}>
-        {/* Left Sidebar */}
-        <aside className={styles.sidebar}>
-          <div className={styles.sidebarContent}>
-            <div className={styles.filterSection}>
-              <h3 className={styles.filterHeading}>Filters</h3>
-              
-              {/* Industry Filter */}
-              <div className={styles.filterGroup}>
-                <h4 className={styles.filterGroupTitle}>Industry</h4>
-                {industries.map((industry, index) => (
-                  <label key={index} className={styles.filterCheckbox}>
-                    <input 
-                      type="radio" 
-                      name="industry" 
-                      checked={activeFilters.industry === industry} 
-                      onChange={() => handleFilterChange('industry', industry)}
-                    /> 
-                    {industry}
-                  </label>
-                ))}
-              </div>
-
-              {/* Duration Filter */}
-              <div className={styles.filterGroup}>
-                <h4 className={styles.filterGroupTitle}>Duration</h4>
-                {durations.map((duration, index) => (
-                  <label key={index} className={styles.filterCheckbox}>
-                    <input 
-                      type="radio" 
-                      name="duration" 
-                      checked={activeFilters.duration === duration} 
-                      onChange={() => handleFilterChange('duration', duration)}
-                    /> 
-                    {duration}
-                  </label>
-                ))}
-              </div>
-
-              {/* Paid/Unpaid Filter */}
-              <div className={styles.filterGroup}>
-                <h4 className={styles.filterGroupTitle}>Compensation</h4>
-                {paidOptions.map((option, index) => (
-                  <label key={index} className={styles.filterCheckbox}>
-                    <input 
-                      type="radio" 
-                      name="isPaid" 
-                      checked={activeFilters.isPaid === option} 
-                      onChange={() => handleFilterChange('isPaid', option)}
-                    /> 
-                    {option}
-                  </label>
-                ))}
-              </div>
-            </div>
-          </div>
-        </aside>
+        {/* Left Sidebar with Filters */}
+        <FilterSidebar 
+          filters={formattedFilters}
+          onFilterChange={handleFilterChange}
+        />
 
         {/* Main Content */}
         <main className={styles.mainContent}>
           {/* Search Bar */}
-          <div className={styles.searchBarContainer}>
-            <div className={styles.searchInputWrapper}>
-              <span className={styles.searchIcon}>🔍</span>
-              <input 
-                type="text" 
-                className={styles.searchInput} 
-                placeholder="Search by job title or company..." 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              {searchTerm && (
-                <button 
-                  className={styles.clearSearchButton}
-                  onClick={() => setSearchTerm('')}
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-          </div>
+          <SearchBar 
+            searchTerm={searchTerm} 
+            setSearchTerm={setSearchTerm} 
+            placeholder="Search by job title or company..."
+          />
 
-          {/* Job Listings */}
-          <div className={styles.jobListings}>
+          {/* Internship Listings */}
+          <div className={styles.internshipListings}>
             <div className={styles.listingHeader}>
               <h2 className={styles.listingTitle}>Recommended jobs</h2>
-              <span className={styles.jobCount}>{filteredInternships.length}</span>
+              <span className={styles.internshipCount}>{filteredInternships.length}</span>
             </div>
 
             <div className={styles.cards}>
               {filteredInternships.length > 0 ? (
                 filteredInternships.map((internship) => (
-                  <div key={internship.id} className={styles.card}>
-                    <div className={styles.cardInner} style={{ backgroundColor: getCardBackground(internship.id) }}>
-                      <div className={styles.cardDate}>
-                        <span>{internship.date}</span>
-                        <button 
-                          className={starredInternships.includes(internship.id) ? styles.bookmarkActive : styles.bookmark}
-                          onClick={() => toggleStar(internship.id)}
-                        >
-                          {starredInternships.includes(internship.id) ? '⭐' : '☆'}
-                        </button>
-                      </div>
-                      
-                      <div className={styles.companyInfo}>
-                        <span className={styles.companyName}>{internship.company}</span>
-                      </div>
-                      
-                      <div className={styles.jobTitleContainer}>
-                        <h3 className={styles.jobTitle}>{internship.title}</h3>
-                        {internship.logo && (
-                          <div className={styles.companyLogo}>
-                            <Image src={internship.logo} alt={`${internship.company} logo`} width={30} height={30} />
-                          </div>
-                        )}
-                      </div>
-                      
-                      <div className={styles.jobTags}>
-                        <span className={styles.jobTag}>{internship.duration}</span>
-                        <span className={styles.jobTag}>{internship.industry}</span>
-                        <span className={styles.jobTag}>{internship.isPaid ? 'Paid' : 'Unpaid'}</span>
-                      </div>
-                    </div>
-                    
-                    <div className={styles.cardFooter}>
-                      <div className={styles.jobMeta}>
-                        <div className={styles.salary}>{internship.salary}</div>
-                        <div className={styles.location}>{internship.location}</div>
-                      </div>
-                      <button className={styles.detailsButton}>Details</button>
-                    </div>
-                  </div>
+                  <InternshipCard
+                    key={internship.id}
+                    internship={internship}
+                    isStarred={starredInternships.includes(internship.id)}
+                    onToggleStar={toggleStar}
+                    onViewDetails={handleViewDetails}
+                  />
                 ))
               ) : (
                 <div className={styles.noResults}>
@@ -448,15 +376,15 @@ export default function InternshipListPage() {
           </div>
         </main>
       </div>
+
+      {/* Details Modal */}
+      {selectedInternship && (
+        <InternshipDetailsModal
+          internship={selectedInternship}
+          onClose={handleCloseModal}
+          onApply={handleApply}
+        />
+      )}
     </div>
   );
-}
-
-function getCardBackground(id: number): string {
-  const colors = [
-    '#ffe8f0', '#e8f3ff', '#e8ffe8', '#fff0e8', '#f0e8ff',
-    '#e8fff0', '#fff8e8', '#e8f0ff', '#ffe8e8', '#e8ffea',
-    '#f0ffe8', '#fff0f0'
-  ];
-  return colors[id % colors.length];
 }

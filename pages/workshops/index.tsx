@@ -1,256 +1,174 @@
-import React, { useState, useEffect, useRef } from 'react';
 import styles from "./page.module.css";
-import { Workshop, Message } from '../../src/components/workshops/types';
-import Navigation from '../../src/components/workshops/Navigation';
-import SearchBar from '../../src/components/workshops/SearchBar';
-import FilterSidebar from '../../src/components/workshops/FilterSidebar';
-import WorkshopCard from '../../src/components/workshops/WorkshopCard';
-import WorkshopDetailsModal from '../../src/components/workshops/WorkshopDetailsModal';
-import LiveSessionModal from '../../src/components/workshops/LiveSessionModal';
-import RecordedSessionModal from '../../src/components/workshops/RecordedSessionModal';
-import NotificationSystem from '../../src/components/workshops/NotificationSystem';
+import React, { useState, useEffect } from 'react';
 
-// Sample data for workshops
+// Import modular components
+import Navigation from "../../src/components/global/Navigation";
+import FilterSidebar from "../../src/components/global/FilterSidebar";
+import SearchBar from "../../src/components/global/SearchBar";
+import WorkshopCard from "../../src/components/workshops/WorkshopCard";
+import WorkshopDetailsModal from "../../src/components/workshops/WorkshopDetailsModal";
+import LiveSessionModal from "../../src/components/workshops/LiveSessionModal";
+import RecordedSessionModal from "../../src/components/workshops/RecordedSessionModal";
+import NotificationSystem from "../../src/components/workshops/NotificationSystem";
+import { Workshop } from "../../src/components/workshops/types";
+
+// Workshop data (would typically come from an API)
 const workshops: Workshop[] = [
   {
     id: 1,
-    host: 'Microsoft',
-    title: 'Introduction to Azure Cloud Services',
-    description: 'Learn the basics of cloud computing with Microsoft Azure. This workshop will cover fundamental concepts and provide hands-on experience with key Azure services.',
-    date: '15 May 2025',
-    time: '2:00 PM - 4:00 PM',
-    duration: '2 hours',
-    type: 'live',
-    category: 'Cloud Computing',
-    status: 'upcoming',
-    attendees: 245,
+    title: "Introduction to UX Design Principles",
+    date: "June 15, 2023",
+    time: "2:00 PM - 4:00 PM EST",
+    duration: "2 hours",
+    host: "Adobe Creative Team",
+    description: "Learn the fundamental principles of UX design in this introductory workshop. We'll cover user research, wireframing, prototyping, and usability testing fundamentals.",
+    status: "upcoming",
+    type: "live",
     isRegistered: false,
-    logo: '/logos/microsoft.png'
+    logo: "/logos/adobe.png"
   },
   {
     id: 2,
-    host: 'Google',
-    title: 'Advanced Machine Learning Techniques',
-    description: 'Dive deep into advanced machine learning algorithms and techniques. This workshop is designed for those with existing ML knowledge who want to expand their skills.',
-    date: '18 May 2025',
-    time: '10:00 AM - 1:00 PM',
-    duration: '3 hours',
-    type: 'live',
-    category: 'Machine Learning',
-    status: 'upcoming',
-    attendees: 178,
+    title: "Advanced React Patterns",
+    date: "June 18, 2023",
+    time: "1:00 PM - 3:30 PM EST",
+    duration: "2.5 hours",
+    host: "Facebook Engineers",
+    description: "Dive deep into advanced React patterns including custom hooks, context optimization, and performance tuning for complex applications.",
+    status: "upcoming",
+    type: "live",
     isRegistered: true,
-    logo: '/logos/google.png'
+    logo: "/logos/facebook.png"
   },
   {
     id: 3,
-    host: 'Amazon',
-    title: 'AWS for Beginners',
-    description: 'Start your cloud journey with Amazon Web Services. In this workshop, we will cover the core AWS services and help you build your first cloud application.',
-    date: 'Available anytime',
-    time: 'Self-paced',
-    duration: '2 hours',
-    type: 'recorded',
-    category: 'Cloud Computing',
-    status: 'available',
-    attendees: 342,
+    title: "Cloud Architecture Fundamentals",
+    date: "June 10, 2023",
+    time: "11:00 AM - 1:00 PM EST",
+    duration: "2 hours",
+    host: "Amazon AWS Team",
+    description: "Get started with cloud architecture principles. We'll explore AWS services, deployment strategies, and best practices for scalable applications.",
+    status: "ongoing",
+    type: "live",
     isRegistered: true,
-    videoUrl: 'https://example.com/workshop-videos/aws-beginners',
-    logo: '/logos/amazon.png'
+    logo: "/logos/amazon.png"
   },
   {
     id: 4,
-    host: 'Facebook',
-    title: 'React Framework Deep Dive',
-    description: 'Explore advanced concepts in React development including hooks, context API, and performance optimization techniques.',
-    date: 'Today',
-    time: '1:00 PM - 4:00 PM',
-    duration: '3 hours',
-    type: 'live',
-    category: 'Web Development',
-    status: 'ongoing',
-    attendees: 198,
-    isRegistered: false,
-    logo: '/logos/facebook.png'
+    title: "Machine Learning for Beginners",
+    date: "June 5, 2023",
+    time: "10:00 AM - 12:00 PM EST",
+    duration: "2 hours",
+    host: "Google AI Team",
+    description: "An introduction to machine learning concepts for beginners. Learn about supervised learning, neural networks, and implementing ML models.",
+    status: "completed",
+    type: "recorded",
+    isRegistered: true,
+    logo: "/logos/google.png"
   },
   {
     id: 5,
-    host: 'Apple',
-    title: 'iOS App Development Fundamentals',
-    description: 'Start your journey into iOS app development with Swift. Learn the core concepts needed to build your first iOS application.',
-    date: '20 May 2025',
-    time: '9:00 AM - 12:00 PM',
-    duration: '3 hours',
-    type: 'live',
-    category: 'Mobile Development',
-    status: 'upcoming',
-    attendees: 156,
-    isRegistered: false,
-    logo: '/logos/apple.png'
+    title: "Design Systems at Scale",
+    date: "June 3, 2023",
+    time: "3:00 PM - 5:00 PM EST",
+    duration: "2 hours",
+    host: "Airbnb Design Team",
+    description: "Discover how to create and maintain design systems at scale. Topics include component libraries, documentation, and cross-team collaboration.",
+    status: "completed",
+    type: "recorded",
+    isRegistered: true,
+    logo: "/logos/airbnb.png"
   },
   {
     id: 6,
-    host: 'IBM',
-    title: 'Blockchain Technology and Applications',
-    description: 'Understand the fundamentals of blockchain technology and explore its applications across various industries.',
-    date: 'Available anytime',
-    time: 'Self-paced',
-    duration: '2 hours',
-    type: 'recorded',
-    category: 'Blockchain',
-    status: 'available',
-    attendees: 213,
-    isRegistered: true,
-    videoUrl: 'https://example.com/workshop-videos/blockchain-tech',
-    logo: '/logos/ibm.png',
-    progress: 65
+    title: "iOS App Development Masterclass",
+    date: "June 20, 2023",
+    time: "1:00 PM - 4:00 PM EST",
+    duration: "3 hours",
+    host: "Apple Developer Team",
+    description: "Master iOS development with Swift and SwiftUI. This workshop covers app architecture, UI design, and submitting to the App Store.",
+    status: "upcoming",
+    type: "live",
+    isRegistered: false,
+    logo: "/logos/apple.png"
   },
   {
     id: 7,
-    host: 'Adobe',
-    title: 'UX/UI Design Principles',
-    description: 'Learn essential UX/UI design principles and best practices for creating intuitive and engaging user interfaces.',
-    date: '25 May 2025',
-    time: '2:00 PM - 5:00 PM',
-    duration: '3 hours',
-    type: 'live',
-    category: 'Design',
-    status: 'upcoming',
-    attendees: 187,
+    title: "Data Science with Python",
+    date: "June 25, 2023",
+    time: "11:00 AM - 1:00 PM EST",
+    duration: "2 hours",
+    host: "IBM Data Scientists",
+    description: "Learn how to analyze and visualize data using Python libraries like Pandas, NumPy, and Matplotlib in this hands-on workshop.",
+    status: "upcoming",
+    type: "live",
     isRegistered: false,
-    logo: '/logos/adobe.png'
+    logo: "/logos/ibm.png"
   },
   {
     id: 8,
-    host: 'Salesforce',
-    title: 'CRM Strategy and Implementation',
-    description: 'Discover effective CRM strategies and implementation techniques using Salesforce platform.',
-    date: 'Available anytime',
-    time: 'Self-paced',
-    duration: '2 hours',
-    type: 'recorded',
-    category: 'Business',
-    status: 'available',
-    attendees: 124,
+    title: "Cybersecurity Essentials",
+    date: "June 30, 2023",
+    time: "2:00 PM - 4:00 PM EST",
+    duration: "2 hours",
+    host: "Microsoft Security Team",
+    description: "Understand the fundamentals of cybersecurity including threat detection, encryption, and implementing security best practices.",
+    status: "upcoming",
+    type: "live",
     isRegistered: false,
-    videoUrl: 'https://example.com/workshop-videos/salesforce-crm',
-    logo: '/logos/salesforce.png'
-  },
-  {
-    id: 9,
-    host: 'Tesla',
-    title: 'Sustainable Energy Solutions',
-    description: 'Explore the future of sustainable energy and learn about the latest innovations in renewable energy technologies.',
-    date: 'Today',
-    time: '3:00 PM - 5:00 PM',
-    duration: '2 hours',
-    type: 'live',
-    category: 'Technology',
-    status: 'ongoing',
-    attendees: 215,
-    isRegistered: true,
-    logo: '/logos/tesla.png'
-  },
-  {
-    id: 10,
-    host: 'Netflix',
-    title: 'Digital Content Production',
-    description: 'Learn about modern digital content production techniques and workflows used in today\'s streaming industry.',
-    date: 'Available anytime',
-    time: 'Self-paced',
-    duration: '3 hours',
-    type: 'recorded',
-    category: 'Media',
-    status: 'available',
-    attendees: 276,
-    isRegistered: true,
-    videoUrl: 'https://example.com/workshop-videos/digital-content',
-    logo: '/logos/netflix.png',
-    progress: 85
-  }
-];
-
-// Sample chat messages
-const sampleMessages: Message[] = [
-  {
-    id: 1,
-    sender: 'John Doe',
-    text: 'Hello everyone! Excited for this workshop.',
-    time: '2:03 PM'
-  },
-  {
-    id: 2,
-    sender: 'Sarah Miller',
-    text: 'Does anyone know if there will be hands-on exercises?',
-    time: '2:05 PM'
-  },
-  {
-    id: 3,
-    sender: 'Workshop Host',
-    text: 'Yes, we\'ll have practical exercises in the second half. Make sure you have your environment set up as mentioned in the pre-workshop email.',
-    time: '2:06 PM'
-  },
-  {
-    id: 4,
-    sender: 'Alex Johnson',
-    text: 'Is there a GitHub repo with the materials?',
-    time: '2:08 PM'
+    logo: "/logos/microsoft.png"
   }
 ];
 
 export default function WorkshopListPage() {
-  // State variables
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState({
-    category: 'All Categories',
-    type: 'All Types',
-    status: 'All Statuses'
+    status: 'All',
+    type: 'All'
   });
   const [filteredWorkshops, setFilteredWorkshops] = useState<Workshop[]>(workshops);
-  const [starredWorkshops, setStarredWorkshops] = useState<number[]>([]);
   const [selectedWorkshop, setSelectedWorkshop] = useState<Workshop | null>(null);
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [isLiveModalOpen, setIsLiveModalOpen] = useState(false);
-  const [isRecordedModalOpen, setIsRecordedModalOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>(sampleMessages);
-  const [newMessage, setNewMessage] = useState('');
-  const [videoProgress, setVideoProgress] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [notes, setNotes] = useState('');
-  const [rating, setRating] = useState(0);
-  const [feedback, setFeedback] = useState('');
-  const [notifications, setNotifications] = useState<string[]>([]);
-  
-  // References
-  const videoIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  
-  // Available filter options
-  const categories = ['All Categories', 'Cloud Computing', 'Machine Learning', 'Web Development', 'Mobile Development', 'Blockchain', 'Design', 'Business', 'Technology', 'Media'];
-  const types = ['All Types', 'Live', 'Recorded'];
-  const statuses = ['All Statuses', 'Upcoming', 'Ongoing', 'Past', 'Available'];
+  const [liveSession, setLiveSession] = useState<Workshop | null>(null);
+  const [recordedSession, setRecordedSession] = useState<Workshop | null>(null);
+  const [notification, setNotification] = useState<{message: string, type: string} | null>(null);
+
+  // Filter options
+  const statusOptions = ['All', 'Upcoming', 'Ongoing', 'Completed'];
+  const typeOptions = ['All', 'Live', 'Recorded'];
+
+  // Format filters for the global FilterSidebar component
+  const formattedFilters = [
+    {
+      title: "Status",
+      options: statusOptions,
+      type: "status",
+      value: activeFilters.status
+    },
+    {
+      title: "Type",
+      options: typeOptions,
+      type: "type",
+      value: activeFilters.type
+    }
+  ];
 
   // Apply filters and search
   useEffect(() => {
     let results = [...workshops];
     
-    // Apply category filter
-    if (activeFilters.category !== 'All Categories') {
-      results = results.filter(workshop => workshop.category === activeFilters.category);
-    }
-    
-    // Apply type filter
-    if (activeFilters.type !== 'All Types') {
-      const type = activeFilters.type.toLowerCase() as 'live' | 'recorded';
-      results = results.filter(workshop => workshop.type === type);
-    }
-    
     // Apply status filter
-    if (activeFilters.status !== 'All Statuses') {
-      const status = activeFilters.status.toLowerCase() as 'upcoming' | 'ongoing' | 'past' | 'available';
+    if (activeFilters.status !== 'All') {
+      const status = activeFilters.status.toLowerCase();
       results = results.filter(workshop => workshop.status === status);
     }
     
-    // Apply search term (title or host)
+    // Apply type filter
+    if (activeFilters.type !== 'All') {
+      const type = activeFilters.type.toLowerCase();
+      results = results.filter(workshop => workshop.type === type);
+    }
+    
+    // Apply search
     if (searchTerm.trim() !== '') {
       const term = searchTerm.toLowerCase();
       results = results.filter(
@@ -262,7 +180,7 @@ export default function WorkshopListPage() {
     
     setFilteredWorkshops(results);
   }, [searchTerm, activeFilters]);
-
+  
   // Handle filter changes
   const handleFilterChange = (filterType: string, value: string) => {
     setActiveFilters(prev => ({
@@ -271,289 +189,74 @@ export default function WorkshopListPage() {
     }));
   };
 
-  // Handle starring/unstarring workshops
-  const toggleStar = (id: number) => {
-    setStarredWorkshops(prev =>
-      prev.includes(id)
-        ? prev.filter(starredId => starredId !== id)
-        : [...prev, id]
-    );
-  };
-
-  // Show workshop details
-  const showWorkshopDetails = (workshop: Workshop) => {
+  // Workshop action handlers
+  const handleViewDetails = (workshop: Workshop) => {
     setSelectedWorkshop(workshop);
-    setIsDetailsModalOpen(true);
   };
-
-  // Handle registration for a workshop
-  const registerForWorkshop = (workshop: Workshop) => {
-    // In a real application, this would make an API call
-    const updatedWorkshops = workshops.map(w => {
-      if (w.id === workshop.id) {
-        return { ...w, isRegistered: true };
-      }
-      return w;
+  
+  const handleCloseModal = () => {
+    setSelectedWorkshop(null);
+  };
+  
+  const handleRegister = async (workshop: Workshop) => {
+    // This would typically be an API call
+    console.log(`Registered for workshop: ${workshop.title}`);
+    setNotification({
+      message: `Successfully registered for "${workshop.title}"`,
+      type: 'success'
     });
-    
-    // Update filtered workshops with the registration changes
-    setFilteredWorkshops(
-      filteredWorkshops.map(w => {
-        if (w.id === workshop.id) {
-          return { ...w, isRegistered: true };
-        }
-        return w;
-      })
-    );
-    
-    // Show notification
-    addNotification(`Successfully registered for "${workshop.title}"`);
+    return new Promise<void>(resolve => setTimeout(resolve, 1000));
   };
-
-  // Join a live workshop
-  const joinLiveWorkshop = (workshop: Workshop) => {
-    setSelectedWorkshop(workshop);
-    setIsLiveModalOpen(true);
-    addNotification(`You've joined the live workshop: ${workshop.title}`);
+  
+  const handleJoinLive = async (workshop: Workshop) => {
+    // This would typically connect to a live session
+    setLiveSession(workshop);
+    return new Promise<void>(resolve => setTimeout(resolve, 1000));
   };
-
-  // Watch a recorded workshop
-  const watchRecordedWorkshop = (workshop: Workshop) => {
-    setSelectedWorkshop(workshop);
-    setIsRecordedModalOpen(true);
-    
-    // Initialize with existing progress if available
-    if (workshop.progress) {
-      setVideoProgress(workshop.progress);
-    } else {
-      setVideoProgress(0);
-    }
-    
-    setIsPlaying(true);
-    
-    // Simulate video progress
-    if (videoIntervalRef.current) {
-      clearInterval(videoIntervalRef.current);
-    }
-    
-    videoIntervalRef.current = setInterval(() => {
-      setVideoProgress(prev => {
-        const newProgress = prev + 0.5; // Slower progression for more realistic video playback
-        
-        if (newProgress >= 100) {
-          if (videoIntervalRef.current) {
-            clearInterval(videoIntervalRef.current);
-            setIsPlaying(false);
-            // Add notification that workshop is complete and certificate is available
-            addNotification(`You've completed the "${workshop.title}" workshop! Your certificate is ready.`);
-            return 100;
-          }
-        }
-        return newProgress;
-      });
-    }, 1000);
-  };
-
-  // Toggle play/pause for recorded workshop
-  const togglePlayPause = () => {
-    if (isPlaying) {
-      // Pause the video
-      if (videoIntervalRef.current) {
-        clearInterval(videoIntervalRef.current);
-        addNotification('Workshop video paused');
-      }
-    } else {
-      // Resume or start the video
-      videoIntervalRef.current = setInterval(() => {
-        setVideoProgress(prev => {
-          const newProgress = prev + 0.5;
-          if (newProgress >= 100) {
-            if (videoIntervalRef.current) {
-              clearInterval(videoIntervalRef.current);
-              setIsPlaying(false);
-              addNotification('Workshop completed! Your certificate is now available.');
-              return 100;
-            }
-          }
-          return newProgress;
-        });
-      }, 1000);
-      
-      addNotification('Workshop video playing');
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  // Handle sending a chat message
-  const sendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newMessage.trim() === '') return;
-    
-    const message: Message = {
-      id: messages.length + 1,
-      sender: 'You',
-      text: newMessage.trim(),
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-    
-    setMessages([...messages, message]);
-    setNewMessage('');
-    
-    // Simulate a response after a delay
-    setTimeout(() => {
-      const responseMessage: Message = {
-        id: messages.length + 2,
-        sender: 'Workshop Host',
-        text: `Thanks for your question! We'll address it shortly.`,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      setMessages(prev => [...prev, responseMessage]);
-      
-      // Show notification
-      addNotification('New message from Workshop Host');
-    }, 2000);
-    
-    // Simulate random participant messages in live chat
-    if (Math.random() > 0.5) {
-      const participants = ['Alex Smith', 'Maria Garcia', 'James Wilson', 'Workshop Assistant'];
-      const randomMessages = [
-        'Great point!',
-        'Could you elaborate on that topic further?',
-        'Thanks for sharing that perspective!',
-        'Does anyone have examples from their experience?',
-        'I found this article related to the topic: https://example.com/resource'
-      ];
-      
-      // Random delay between 5-15 seconds
-      const randomDelay = 5000 + Math.floor(Math.random() * 10000);
-      
-      setTimeout(() => {
-        const randomParticipant = participants[Math.floor(Math.random() * participants.length)];
-        const randomText = randomMessages[Math.floor(Math.random() * randomMessages.length)];
-        
-        const participantMessage: Message = {
-          id: Date.now(),
-          sender: randomParticipant,
-          text: randomText,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
-        
-        setMessages(prev => [...prev, participantMessage]);
-        
-        // Show notification for new message
-        addNotification(`New message from ${randomParticipant}`);
-      }, randomDelay);
-    }
-  };
-
-  // Clean up interval on unmount or when modal closes
-  useEffect(() => {
-    return () => {
-      if (videoIntervalRef.current) {
-        clearInterval(videoIntervalRef.current);
-      }
-    };
-  }, []);
-
-  // Handle submitting feedback for a workshop
-  const submitFeedback = () => {
-    if (rating === 0) {
-      alert('Please select a rating');
-      return;
-    }
-    
-    // In a real application, this would make an API call
-    addNotification('Thank you for your feedback!');
-    
-    // Reset feedback form
-    setRating(0);
-    setFeedback('');
-    setIsLiveModalOpen(false);
-    setIsRecordedModalOpen(false);
-  };
-
-  // Generate a certificate
-  const generateCertificate = () => {
-    if (selectedWorkshop) {
-      const workshopTitle = selectedWorkshop.title;
-      const host = selectedWorkshop.host;
-      
-      // In a real application, this would generate a real certificate with user details
-      addNotification(`Your certificate for "${workshopTitle}" has been generated`);
-      
-      // Simulate certificate download by showing a confirmation dialog
-      setTimeout(() => {
-        if (confirm(`Download your certificate for "${workshopTitle}" by ${host}?`)) {
-          // This would be a real download in a production app
-          addNotification('Certificate downloaded successfully');
-        }
-      }, 1000);
-    }
-  };
-
-  // Add a notification
-  const addNotification = (message: string) => {
-    setNotifications(prev => [...prev, message]);
-    
-    // Remove notification after 5 seconds
-    setTimeout(() => {
-      setNotifications(prev => prev.filter(n => n !== message));
-    }, 5000);
-  };
-
-  // Get background color for cards
-  const getCardBackground = (id: number): string => {
-    const colors = [
-      '#ffe8f0', '#e8f3ff', '#e8ffe8', '#fff0e8', '#f0e8ff',
-      '#e8fff0', '#fff8e8', '#e8f0ff', '#ffe8e8', '#e8ffea',
-      '#f0ffe8', '#fff0f0'
-    ];
-    return colors[id % colors.length];
+  
+  const handleWatchRecording = async (workshop: Workshop) => {
+    // This would typically fetch a recording
+    setRecordedSession(workshop);
+    return new Promise<void>(resolve => setTimeout(resolve, 1000));
   };
 
   return (
     <div className={styles.pageContainer}>
-      {/* Navigation Component */}
-      <Navigation />
+      {/* Header/Navigation */}
+      <Navigation title="GUC Workshop Hub" />
 
       <div className={styles.contentWrapper}>
-        {/* Filter Sidebar Component */}
+        {/* Left Sidebar with Filters */}
         <FilterSidebar 
-          activeFilters={activeFilters}
-          handleFilterChange={handleFilterChange}
-          categories={categories}
-          types={types}
-          statuses={statuses}
+          filters={formattedFilters}
+          onFilterChange={handleFilterChange}
         />
 
         {/* Main Content */}
         <main className={styles.mainContent}>
-          {/* Search Bar Component */}
+          {/* Search Bar */}
           <SearchBar 
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
+            searchTerm={searchTerm} 
+            setSearchTerm={setSearchTerm} 
+            placeholder="Search workshops by title or host..."
           />
 
           {/* Workshop Listings */}
           <div className={styles.workshopListings}>
             <div className={styles.listingHeader}>
               <h2 className={styles.listingTitle}>Available Workshops</h2>
-              <span className={styles.workshopCount}>{filteredWorkshops.length}</span>
+              <span className={styles.workshopCount}>
+                {filteredWorkshops.length} workshop{filteredWorkshops.length !== 1 ? 's' : ''}
+              </span>
             </div>
 
             <div className={styles.cards}>
               {filteredWorkshops.length > 0 ? (
-                filteredWorkshops.map((workshop) => (
-                  <WorkshopCard 
+                filteredWorkshops.map(workshop => (
+                  <WorkshopCard
                     key={workshop.id}
                     workshop={workshop}
-                    isStarred={starredWorkshops.includes(workshop.id)}
-                    toggleStar={toggleStar}
-                    showDetails={showWorkshopDetails}
-                    onRegister={registerForWorkshop}
-                    onJoinLive={joinLiveWorkshop}
-                    onWatch={watchRecordedWorkshop}
-                    cardBackground={getCardBackground(workshop.id)}
+                    onViewDetails={handleViewDetails}
                   />
                 ))
               ) : (
@@ -568,75 +271,41 @@ export default function WorkshopListPage() {
         </main>
       </div>
 
-      {/* Workshop Details Modal */}
-      {isDetailsModalOpen && selectedWorkshop && (
+      {/* Notification Component */}
+      {notification && (
+        <NotificationSystem
+          message={notification.message}
+          type={notification.type}
+          onClose={() => setNotification(null)}
+        />
+      )}
+
+      {/* Details Modal */}
+      {selectedWorkshop && (
         <WorkshopDetailsModal
           workshop={selectedWorkshop}
-          onClose={() => setIsDetailsModalOpen(false)}
-          onRegister={(workshop) => {
-            registerForWorkshop(workshop);
-            setIsDetailsModalOpen(false);
-          }}
-          onJoinLive={(workshop) => {
-            joinLiveWorkshop(workshop);
-            setIsDetailsModalOpen(false);
-          }}
-          onWatch={(workshop) => {
-            watchRecordedWorkshop(workshop);
-            setIsDetailsModalOpen(false);
-          }}
+          onClose={handleCloseModal}
+          onRegister={handleRegister}
+          onJoinLive={handleJoinLive}
+          onWatch={handleWatchRecording}
         />
       )}
 
-      {/* Live Workshop Modal */}
-      {isLiveModalOpen && selectedWorkshop && (
+      {/* Live Session Modal */}
+      {liveSession && (
         <LiveSessionModal
-          workshop={selectedWorkshop}
-          onClose={() => setIsLiveModalOpen(false)}
-          messages={messages}
-          setMessages={setMessages}
-          newMessage={newMessage}
-          setNewMessage={setNewMessage}
-          notes={notes}
-          setNotes={setNotes}
-          rating={rating}
-          setRating={setRating}
-          feedback={feedback}
-          setFeedback={setFeedback}
-          addNotification={addNotification}
-          submitFeedback={submitFeedback}
-          generateCertificate={generateCertificate}
-          sendMessage={sendMessage}
+          workshop={liveSession}
+          onClose={() => setLiveSession(null)}
         />
       )}
 
-      {/* Recorded Workshop Modal */}
-      {isRecordedModalOpen && selectedWorkshop && (
+      {/* Recorded Session Modal */}
+      {recordedSession && (
         <RecordedSessionModal
-          workshop={selectedWorkshop}
-          onClose={() => {
-            setIsRecordedModalOpen(false);
-            if (videoIntervalRef.current) {
-              clearInterval(videoIntervalRef.current);
-            }
-          }}
-          videoProgress={videoProgress}
-          isPlaying={isPlaying}
-          notes={notes}
-          setNotes={setNotes}
-          rating={rating}
-          setRating={setRating}
-          feedback={feedback}
-          setFeedback={setFeedback}
-          togglePlayPause={togglePlayPause}
-          addNotification={addNotification}
-          submitFeedback={submitFeedback}
-          generateCertificate={generateCertificate}
+          workshop={recordedSession}
+          onClose={() => setRecordedSession(null)}
         />
       )}
-
-      {/* Notifications System */}
-      <NotificationSystem notifications={notifications} />
     </div>
   );
 }

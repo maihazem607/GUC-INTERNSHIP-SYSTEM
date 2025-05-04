@@ -1,19 +1,36 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './NotificationSystem.module.css';
 
-interface NotificationSystemProps {
-  notifications: string[];
+interface NotificationProps {
+  message: string;
+  type: string;
+  onClose: () => void;
+  duration?: number;
 }
 
-const NotificationSystem: React.FC<NotificationSystemProps> = ({ notifications }) => {
+const NotificationSystem: React.FC<NotificationProps> = ({ 
+  message, 
+  type, 
+  onClose,
+  duration = 3000
+}) => {
+  const [isVisible, setIsVisible] = useState(true);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+      setTimeout(onClose, 300); // Allow time for fade-out animation
+    }, duration);
+    
+    return () => clearTimeout(timer);
+  }, [duration, onClose]);
+  
   return (
-    <div className={styles.notificationContainer}>
-      {notifications.map((message, index) => (
-        <div key={index} className={styles.notification}>
-          <div className={styles.notificationTitle}>Workshop Notification</div>
-          <div className={styles.notificationMessage}>{message}</div>
-        </div>
-      ))}
+    <div 
+      className={`${styles.notification} ${styles[type]} ${isVisible ? styles.show : styles.hide}`}
+    >
+      <div className={styles.message}>{message}</div>
+      <button className={styles.closeButton} onClick={onClose}>×</button>
     </div>
   );
 };

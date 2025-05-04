@@ -7,13 +7,13 @@ export interface Workshop {
   time: string;
   duration: string;
   type: 'live' | 'recorded';
-  category: string;
-  status: 'upcoming' | 'ongoing' | 'past' | 'available';
-  attendees: number;
+  status: 'upcoming' | 'ongoing' | 'completed';
   isRegistered: boolean;
-  videoUrl?: string;
   logo?: string;
-  progress?: number;
+  videoUrl?: string;
+  avgRating?: number;
+  attendeesCount?: number;
+  hasAttendanceCertificate?: boolean;
 }
 
 export interface Message {
@@ -21,4 +21,17 @@ export interface Message {
   sender: string;
   text: string;
   time: string;
+  isNew?: boolean;
+}
+
+export interface Note {
+  id: number;
+  workshopId: number;
+  content: string;
+  timestamp: string;
+}
+
+export interface Rating {
+  rating: number;
+  feedback: string;
 }
