@@ -11,7 +11,7 @@ export default function Navigation({ title = "GUC Internship System", logoSrc = 
     <header className={styles.navBar}>
       <div className={styles.navLeft}>
         <div className={styles.logoContainer}>
-          <Image src={logoSrc} alt={title} width={100} height={100} style={{ margin: -13 }} />
+          <Image src={logoSrc} alt={title} width={150} height={150} style={{ margin: -13 }} />
         </div>
         <nav className={styles.mainNav}>
           <a href="#" className={styles.navLink}>Find job</a>
