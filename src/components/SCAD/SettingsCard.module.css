@@ -1,0 +1,55 @@
+/* Modal-like Card Styles for Settings */
+.settingsCard {
+  background-color: white;
+  border-radius: 16px;
+  padding: 30px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10);
+}
+
+.settingsTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.settingsForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formInput {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  background: #fafbfc;
+  color: #333;
+}
+
+.saveButton {
+  padding: 12px 24px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  align-self: flex-end;
+}
+
+.saveButton:hover {
+  background-color: #2980b9;
+}

@@ -1,0 +1,367 @@
+.container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Arial', sans-serif;
+}
+
+.title {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: #7f8c8d;
+  margin-bottom: 2rem;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.searchBox {
+  flex: 2;
+  min-width: 200px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.filterBox {
+  flex: 1;
+  min-width: 150px;
+}
+
+.filterSelect {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: white;
+}
+
+.companiesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.companyCard {
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+  background-color: white;
+  position: relative;
+}
+
+.companyCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.companyName {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+.companyIndustry {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.applicationDate {
+  color: #95a5a6;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.status {
+  display: inline-block;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.status[data-status="pending"] {
+  background-color: #f39c12;
+  color: white;
+}
+
+.status[data-status="accepted"] {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.status[data-status="rejected"] {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.viewButton {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.viewButton:hover {
+  background-color: #2980b9;
+}
+
+.noResults {
+  text-align: center;
+  color: #888;
+  padding: 40px 0 10px 0;
+}
+
+.noResultsIcon {
+  font-size: 38px;
+  margin-bottom: 10px;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: white;
+  width: 90%;
+  max-width: 900px;
+  border-radius: 8px;
+  padding: 2rem;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.closeButton {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #7f8c8d;
+  transition: color 0.3s ease;
+}
+
+.closeButton:hover {
+  color: #2c3e50;
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.detailItem {
+  padding: 0.8rem;
+  border-bottom: 1px solid #eee;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  grid-column: 1 / -1;
+}
+
+.acceptButton, .rejectButton {
+  flex: 1;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.acceptButton {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.acceptButton:hover {
+  background-color: #27ae60;
+}
+
+.rejectButton {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.rejectButton:hover {
+  background-color: #c0392b;
+}
+
+.flagButton {
+  background-color: #e67e22;
+  color: white;
+}
+
+.flagButton:hover {
+  background-color: #d35400;
+}
+
+/* General page container styling */
+.pageContainer {
+  min-height: 100vh;
+  background: #f7fafd;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Content Layout */
+.contentWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0;
+  width: 100%;
+  min-height: 80vh;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 32px 40px 32px 0;
+  min-width: 0;
+}
+
+/* Tab Navigation */
+.tabNavigation {
+  display: flex;
+  gap: 10px;
+  background: #fff;
+  padding: 18px 32px 0 32px;
+  border-bottom: 1px solid #eaeaea;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tabButton {
+  background: none;
+  border: none;
+  font-size: 17px;
+  font-weight: 600;
+  color: #888;
+  padding: 10px 22px 12px 22px;
+  border-radius: 10px 10px 0 0;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+  position: relative;
+}
+
+.tabButton:hover,
+.activeTab {
+  color: #217dbb;
+  background: #f7fafd;
+}
+
+.tabCount {
+  background: #e8f3ff;
+  color: #217dbb;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 2px 10px;
+  margin-left: 7px;
+}
+
+/* Company, Student, Report Listing Common Styles */
+.companyListings,
+.studentListings,
+.reportListings {
+  width: 100%;
+}
+
+.listingHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.listingTitle {
+  font-size: 26px;
+  font-weight: 700;
+  color: #222;
+}
+
+.companyCount,
+.studentCount,
+.reportCount {
+  font-size: 15px;
+  color: #217dbb;
+  font-weight: 600;
+  background: #e8f3ff;
+  border-radius: 8px;
+  padding: 4px 14px;
+}
+
+.filterControls {
+  margin-bottom: 18px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .mainContent {
+    padding: 24px 10px 24px 0;
+  }
+  .listingHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .contentWrapper {
+    flex-direction: column;
+    padding: 0;
+  }
+  .mainContent {
+    padding: 18px 0 18px 0;
+  }
+  .listingTitle {
+    font-size: 20px;
+  }
+}
