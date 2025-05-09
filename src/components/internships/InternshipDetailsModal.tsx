@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Image from "next/image";
 import styles from './InternshipDetailsModal.module.css';
 import { Internship } from './types';
@@ -6,7 +6,7 @@ import { Internship } from './types';
 interface DetailsModalProps {
   internship: Internship;
   onClose: () => void;
-  onApply: (internship: Internship) => void;
+  onApply?: (internship: Internship) => Promise<void>; // Make onApply optional
 }
 
 const InternshipDetailsModal: React.FC<DetailsModalProps> = ({
@@ -14,24 +14,6 @@ const InternshipDetailsModal: React.FC<DetailsModalProps> = ({
   onClose,
   onApply
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleApply = async () => {
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      await onApply(internship);
-      onClose();
-    } catch (err) {
-      console.error('Network error:', err);
-      setError('Network connection error. Please check your internet connection and try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className={styles.modalBackdrop} onClick={onClose}>
       <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
@@ -89,21 +71,24 @@ const InternshipDetailsModal: React.FC<DetailsModalProps> = ({
           </div>
         </div>
         
-        {error && (
-          <div className={styles.errorMessage}>
-            {error}
+        {/* Apply button is removed from SCAD view but kept for student view */}
+        {onApply && (
+          <div className={styles.modalActions}>
+            <button 
+              className={styles.applyButton}
+              onClick={async () => {
+                try {
+                  await onApply(internship);
+                  onClose();
+                } catch (err) {
+                  console.error('Network error:', err);
+                }
+              }}
+            >
+              Apply Now
+            </button>
           </div>
         )}
-        
-        <div className={styles.modalActions}>
-          <button 
-            className={styles.applyButton}
-            onClick={handleApply}
-            disabled={isLoading}
-          >
-            {isLoading ? 'Processing...' : 'Apply Now'}
-          </button>
-        </div>
       </div>
     </div>
   );

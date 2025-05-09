@@ -1,0 +1,128 @@
+.container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.sectionHeader h2 {
+  margin: 0;
+  color: #333;
+}
+
+.editButton {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.editButton:hover {
+  background-color: #2980b9;
+}
+
+.editSection {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.inputGroup {
+  display: flex;
+  gap: 10px;
+}
+
+.interestInput {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.addButton {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0 15px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.addButton:hover:not(:disabled) {
+  background-color: #219653;
+}
+
+.addButton:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+.interestsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.interestTag {
+  display: flex;
+  align-items: center;
+  background-color: #f0f0f0;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.removeButton {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 5px;
+  padding: 0 5px;
+}
+
+.removeButton:hover {
+  color: #c0392b;
+}
+
+.displaySection {
+  padding: 10px 0;
+}
+
+.interestsDisplay {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.interestBadge {
+  background-color: #3498db;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.noInterests {
+  color: #95a5a6;
+  font-style: italic;
+}

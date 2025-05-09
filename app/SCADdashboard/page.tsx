@@ -6,13 +6,16 @@ import FilterSidebar from "../../src/components/global/FilterSidebar";
 import SearchBar from "../../src/components/global/SearchBar";
 import CompanyCard from "../../src/components/SCAD/CompanyCard";
 import StudentCard from "../../src/components/SCAD/StudentCard";
-import ReportTable from "../../src/components/SCAD/ReportTable";
+import ReportTable from "../../src/components/SCAD/ReportCard";
 import SettingsCard from "../../src/components/SCAD/SettingsCard";
 import CompanyDetailsModal from "../../src/components/SCAD/CompanyDetailsModal";
 import StudentDetailsModal from "../../src/components/SCAD/StudentDetailsModal";
 import ReportDetailsModal from "../../src/components/SCAD/ReportDetailsModal";
 import EvaluationCard, { Evaluation } from "../../src/components/SCAD/EvaluationCard";
 import EvaluationDetails from "../../src/components/SCAD/EvaluationDetails";
+import InternshipCard from "../../src/components/internships/InternshipCard";
+import InternshipDetailsModal from "../../src/components/internships/InternshipDetailsModal";
+import { Internship } from "../../src/components/internships/types";
 
 // Mock data for companies
 const industryOptions = ['Technology', 'Finance', 'Healthcare', 'Education', 'Manufacturing', 'Other'];
@@ -242,8 +245,76 @@ const mockEvaluations: Evaluation[] = [
   }
 ];
 
+// Mock internships data
+const mockInternships: Internship[] = [
+  {
+    id: 1,
+    company: 'Tech Solutions Inc.',
+    title: 'Frontend Developer',
+    duration: '3 months',
+    date: '2023-05-01',
+    location: 'Cairo, Egypt',
+    industry: 'Technology',
+    isPaid: true,
+    salary: 'EGP 5000/month',
+    logo: '/logos/google.png',
+    description: 'We are looking for a frontend developer to join our team for a summer internship. You will work on developing user interfaces for our web applications using React and Next.js. This is a great opportunity to gain hands-on experience in a fast-paced tech company.',
+  },
+  {
+    id: 2,
+    company: 'Global Finance',
+    title: 'Financial Analyst',
+    duration: '6 months',
+    date: '2023-04-15',
+    location: 'Alexandria, Egypt',
+    industry: 'Finance',
+    isPaid: true,
+    salary: 'EGP 6500/month',
+    logo: '/logos/ibm.png',
+    description: 'As a Financial Analyst intern, you will assist in financial forecasting, budgeting, and reporting. You will work with our finance team to analyze financial data and provide insights to improve business performance.',
+  },
+  {
+    id: 3,
+    company: 'Health Partners',
+    title: 'Data Scientist',
+    duration: '4 months',
+    date: '2023-06-01',
+    location: 'Cairo, Egypt',
+    industry: 'Healthcare',
+    isPaid: true,
+    salary: 'EGP 7000/month',
+    logo: '/logos/microsoft.png',
+    description: 'Join our data science team to analyze healthcare data and develop predictive models. You will work with large datasets and apply machine learning techniques to extract insights that can improve patient care.',
+  },
+  {
+    id: 4,
+    company: 'EduTech Academy',
+    title: 'Content Developer',
+    duration: '2 months',
+    date: '2023-05-20',
+    location: 'Remote',
+    industry: 'Education',
+    isPaid: false,
+    salary: 'Unpaid',
+    description: 'Create engaging educational content for our online learning platform. You will work with our curriculum team to develop course materials, quizzes, and interactive exercises for students.',
+  },
+  {
+    id: 5,
+    company: 'AutoMech Industries',
+    title: 'Mechanical Engineering Intern',
+    duration: '3 months',
+    date: '2023-06-15',
+    location: 'Giza, Egypt',
+    industry: 'Manufacturing',
+    isPaid: true,
+    salary: 'EGP 4500/month',
+    logo: '/logos/tesla.png',
+    description: 'Work with our engineering team on product design and development. You will participate in the entire product lifecycle from concept to manufacturing.',
+  }
+];
+
 // Dashboard tabs type
-type DashboardTab = 'companies' | 'students' | 'reports' | 'settings' | 'evaluations';
+type DashboardTab = 'companies' | 'students' | 'reports' | 'settings' | 'evaluations' | 'internships';
 
 export default function SCADDashboardPage() {
   // State for tab navigation
@@ -279,6 +350,16 @@ export default function SCADDashboardPage() {
   const [selectedEvaluation, setSelectedEvaluation] = useState<Evaluation | null>(null);
   const [showEvaluationDetails, setShowEvaluationDetails] = useState(false);
   
+  // Internships states
+  const [internships, setInternships] = useState<Internship[]>([]);
+  const [internshipSearchTerm, setInternshipSearchTerm] = useState('');
+  const [selectedInternshipIndustry, setSelectedInternshipIndustry] = useState('');
+  const [selectedInternshipDuration, setSelectedInternshipDuration] = useState('');
+  const [selectedInternshipPaid, setSelectedInternshipPaid] = useState('');
+  const [selectedInternship, setSelectedInternship] = useState<Internship | null>(null);
+  const [showInternshipDetails, setShowInternshipDetails] = useState(false);
+  const [starredInternships, setStarredInternships] = useState<number[]>([]);
+  
   // Settings states
   const [internshipCycleStart, setInternshipCycleStart] = useState('2023-09-01');
   const [internshipCycleEnd, setInternshipCycleEnd] = useState('2024-06-30');
@@ -289,6 +370,7 @@ export default function SCADDashboardPage() {
     setStudents(mockStudents);
     setReports(mockReports);
     setEvaluations(mockEvaluations);
+    setInternships(mockInternships);
   }, []);
   
   // COMPANIES SECTION HANDLERS
@@ -445,6 +527,49 @@ export default function SCADDashboardPage() {
     return matchesSearch && matchesStatus && matchesMajor;
   });
 
+  // INTERNSHIPS SECTION HANDLERS
+  const handleInternshipSearch = (term: string) => {
+    setInternshipSearchTerm(term);
+  };
+
+  const handleInternshipIndustryChange = (filterType: string, value: string) => {
+    setSelectedInternshipIndustry(value);
+  };
+
+  const handleInternshipDurationChange = (filterType: string, value: string) => {
+    setSelectedInternshipDuration(value);
+  };
+
+  const handleInternshipPaidChange = (filterType: string, value: string) => {
+    setSelectedInternshipPaid(value);
+  };
+
+  const handleViewInternshipDetails = (internship: Internship) => {
+    setSelectedInternship(internship);
+    setShowInternshipDetails(true);
+  };
+
+  const handleCloseInternshipDetails = () => {
+    setShowInternshipDetails(false);
+    setSelectedInternship(null);
+  };
+
+  const handleStarInternship = (id: number) => {
+    setStarredInternships(prev => 
+      prev.includes(id) ? prev.filter(starId => starId !== id) : [...prev, id]
+    );
+  };
+
+  // Filter internships
+  const filteredInternships = internships.filter((internship: Internship) => {
+    const matchesSearch = internship.title.toLowerCase().includes(internshipSearchTerm.toLowerCase()) ||
+                          internship.company.toLowerCase().includes(internshipSearchTerm.toLowerCase());
+    const matchesIndustry = selectedInternshipIndustry === '' || internship.industry === selectedInternshipIndustry;
+    const matchesDuration = selectedInternshipDuration === '' || internship.duration === selectedInternshipDuration;
+    const matchesPaid = selectedInternshipPaid === '' || (selectedInternshipPaid === 'true' ? internship.isPaid : !internship.isPaid);
+    return matchesSearch && matchesIndustry && matchesDuration && matchesPaid;
+  });
+
   // Get unique majors for filter
   const majors = Array.from(new Set(evaluations.map((evaluation: Evaluation) => evaluation.major)));
 
@@ -453,6 +578,7 @@ export default function SCADDashboardPage() {
   const activeInternshipCount = students.filter((student: Student) => student.internshipStatus === 'in progress').length;
   const pendingReportsCount = reports.filter((report: any) => report.status === 'pending').length;
   const completedEvaluationsCount = evaluations.filter((evaluation: Evaluation) => evaluation.status === 'completed').length;
+  const activeInternshipsCount = internships.filter((internship: Internship) => internship.isPaid).length;
 
   // Prepare filters for sidebars
   const companyFilters = [
@@ -503,6 +629,27 @@ export default function SCADDashboardPage() {
     }
   ];
 
+  const internshipFilters = [
+    {
+      title: "Industry",
+      options: ['', ...industryOptions],
+      type: "industry",
+      value: selectedInternshipIndustry
+    },
+    {
+      title: "Duration",
+      options: ['', '1 month', '2 months', '3 months', '4 months', '6 months'],
+      type: "duration",
+      value: selectedInternshipDuration
+    },
+    {
+      title: "Paid",
+      options: ['', 'Yes', 'No'],
+      type: "paid",
+      value: selectedInternshipPaid
+    }
+  ];
+
   function handleSaveInternshipCycle(): void {
     // In a real application, this would involve an API call to save the internship cycle dates
     console.log('Internship cycle saved:', {
@@ -541,6 +688,12 @@ export default function SCADDashboardPage() {
           onClick={() => setActiveTab('evaluations')}
         >
           Evaluations <span className={styles.tabCount}>{completedEvaluationsCount}</span>
+        </button>
+        <button 
+          className={`${styles.tabButton} ${activeTab === 'internships' ? styles.activeTab : ''}`}
+          onClick={() => setActiveTab('internships')}
+        >
+          Internships <span className={styles.tabCount}>{activeInternshipsCount}</span>
         </button>
         <button 
           className={`${styles.tabButton} ${activeTab === 'settings' ? styles.activeTab : ''}`}
@@ -720,6 +873,59 @@ export default function SCADDashboardPage() {
           </>
         )}
 
+        {/* INTERNSHIPS TAB */}
+        {activeTab === 'internships' && (
+          <>
+            <FilterSidebar 
+              filters={internshipFilters}
+              onFilterChange={(filterType, value) => {
+                if (filterType === 'industry') {
+                  handleInternshipIndustryChange(filterType, value);
+                } else if (filterType === 'duration') {
+                  handleInternshipDurationChange(filterType, value);
+                } else if (filterType === 'paid') {
+                  handleInternshipPaidChange(filterType, value);
+                }
+              }}
+            />
+            <div className={styles.mainContent}>
+              <div className={styles.internshipListings}>
+                <div className={styles.listingHeader}>
+                  <h1 className={styles.listingTitle}>Internships</h1>
+                  <span className={styles.internshipCount}>
+                    {activeInternshipsCount} active internships
+                  </span>
+                </div>
+                <div className={styles.filterControls}>
+                  <SearchBar
+                    searchTerm={internshipSearchTerm}
+                    setSearchTerm={handleInternshipSearch}
+                    placeholder="Search internships by title or company..."
+                  />
+                </div>
+                {filteredInternships.length > 0 ? (
+                  <div className={styles.cards}>
+                    {filteredInternships.map(internship => (
+                      <InternshipCard
+                        key={internship.id}
+                        internship={internship}
+                        isStarred={starredInternships.includes(internship.id)}
+                        onToggleStar={() => handleStarInternship(internship.id)}
+                        onViewDetails={() => handleViewInternshipDetails(internship)}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className={styles.noResults}>
+                    <div className={styles.noResultsIcon}>🔍</div>
+                    <p>No internships found matching your criteria.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        )}
+
         {/* SETTINGS TAB */}
         {activeTab === 'settings' && (
           <SettingsCard
@@ -799,6 +1005,12 @@ export default function SCADDashboardPage() {
           onClose={handleCloseEvaluationDetails}
           onUpdate={handleUpdateEvaluation}
           onDelete={handleDeleteEvaluation}
+        />
+      )}
+      {showInternshipDetails && selectedInternship && (
+        <InternshipDetailsModal
+          internship={selectedInternship}
+          onClose={handleCloseInternshipDetails}
         />
       )}
     </div>
