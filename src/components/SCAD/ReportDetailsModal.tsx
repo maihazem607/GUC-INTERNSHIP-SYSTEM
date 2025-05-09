@@ -10,7 +10,7 @@ export interface ReportDetailsModalProps {
   internshipStartDate: string;
   internshipEndDate: string;
   submissionDate: string;
-  status: "pending" | "flagged" | "rejected" | "accepted";
+  status: string;
   content: string;
   evaluationScore?: number;
   evaluationComments?: string;
@@ -19,6 +19,19 @@ export interface ReportDetailsModalProps {
   onFlag?: () => void;
   onReject?: () => void;
 }
+
+const getStatusColor = (status: string) => {
+  switch(status) {
+    case 'accepted':
+      return '#1aaf5d';
+    case 'rejected':
+      return '#e74c3c';
+    case 'flagged':
+      return '#f5b400';
+    default:
+      return '#217dbb';
+  }
+};
 
 const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
   title,
@@ -41,43 +54,100 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
   <div className={styles.modalBackdrop}>
     <div className={styles.modalContent}>
       <button className={styles.closeButton} onClick={onClose}>&times;</button>
-      <h2 className={styles.modalTitle}>{title}</h2>
-      <div className={styles.reportHeader}>
-        <div className={styles.reportMetadata}>
-          <div className={styles.metadataGroup}>
-            <div className={styles.metadataItem}><strong>Student:</strong> {studentName}</div>
-            <div className={styles.metadataItem}><strong>Major:</strong> {major}</div>
-          </div>
-          <div className={styles.metadataGroup}>
-            <div className={styles.metadataItem}><strong>Company:</strong> {companyName}</div>
-            <div className={styles.metadataItem}><strong>Supervisor:</strong> {supervisorName}</div>
-          </div>
-          <div className={styles.metadataGroup}>
-            <div className={styles.metadataItem}><strong>Start Date:</strong> {internshipStartDate}</div>
-            <div className={styles.metadataItem}><strong>End Date:</strong> {internshipEndDate}</div>
-          </div>
-          <div className={styles.metadataGroup}>
-            <div className={styles.metadataItem}><strong>Submitted:</strong> {submissionDate}</div>
-            <div className={styles.metadataItem}><strong>Status:</strong> <span className={`${styles.statusBadge} ${styles[status]}`}>{status.toUpperCase()}</span></div>
-          </div>
+      
+      <div className={styles.modalHeader}>
+        <h2 className={styles.modalTitle}>{title}</h2>
+        <div className={styles.modalCompany}>
+          <span className={styles.modalCompanyName}>{companyName}</span>
+          <span 
+            className={styles.statusChip} 
+            style={{
+              backgroundColor: `${getStatusColor(status)}20`,
+              color: getStatusColor(status),
+              marginLeft: '10px',
+              padding: '4px 10px',
+              borderRadius: '12px',
+              fontSize: '12px',
+              fontWeight: 700
+            }}
+          >
+            {status.charAt(0).toUpperCase() + status.slice(1)}
+          </span>
         </div>
       </div>
-      <div className={styles.reportContent}>
-        <h3>Report Content</h3>
-        <div className={styles.contentBox}>{content}</div>
+      
+      <div className={styles.modalInfo}>
+        <div className={styles.modalInfoItem}>
+          <div className={styles.modalInfoLabel}>Student</div>
+          <div className={styles.modalInfoValue}>{studentName}</div>
+        </div>
+        <div className={styles.modalInfoItem}>
+          <div className={styles.modalInfoLabel}>Major</div>
+          <div className={styles.modalInfoValue}>{major}</div>
+        </div>
+        <div className={styles.modalInfoItem}>
+          <div className={styles.modalInfoLabel}>Supervisor</div>
+          <div className={styles.modalInfoValue}>{supervisorName}</div>
+        </div>
+        <div className={styles.modalInfoItem}>
+          <div className={styles.modalInfoLabel}>Start Date</div>
+          <div className={styles.modalInfoValue}>{internshipStartDate}</div>
+        </div>
+        <div className={styles.modalInfoItem}>
+          <div className={styles.modalInfoLabel}>End Date</div>
+          <div className={styles.modalInfoValue}>{internshipEndDate}</div>
+        </div>
+        <div className={styles.modalInfoItem}>
+          <div className={styles.modalInfoLabel}>Submission Date</div>
+          <div className={styles.modalInfoValue}>{submissionDate}</div>
+        </div>
       </div>
-      {evaluationScore !== undefined && (
-        <div className={styles.evaluationSection}>
+      
+      <div className={styles.modalDescription}>
+        <h3>Report Content</h3>
+        <p>{content}</p>
+      </div>
+      
+      {(evaluationScore !== undefined || evaluationComments) && (
+        <div className={styles.modalDescription}>
           <h3>Evaluation</h3>
-          <div className={styles.evaluationDetail}><strong>Score:</strong> {evaluationScore}/10</div>
-          <div className={styles.evaluationDetail}><strong>Comments:</strong> {evaluationComments || "No comments provided"}</div>
+          {evaluationScore !== undefined && (
+            <p><strong>Score:</strong> {evaluationScore}/10</p>
+          )}
+          {evaluationComments && (
+            <p><strong>Comments:</strong> {evaluationComments}</p>
+          )}
         </div>
       )}
-      {status === "pending" && (
-        <div className={styles.reportActions}>
-          {onAccept && <button className={`${styles.statusButton} ${styles.acceptButton}`} onClick={onAccept}>Accept Report</button>}
-          {onFlag && <button className={`${styles.statusButton} ${styles.flagButton}`} onClick={onFlag}>Flag for Review</button>}
-          {onReject && <button className={`${styles.statusButton} ${styles.rejectButton}`} onClick={onReject}>Reject Report</button>}
+      
+      {status === 'pending' && (
+        <div className={styles.modalActions}>
+          {onAccept && (
+            <button 
+              className={styles.applyButton}
+              onClick={onAccept}
+            >
+              Accept
+            </button>
+          )}
+          {onFlag && (
+            <button 
+              className={`${styles.applyButton} ${styles.flagButton}`}
+              onClick={onFlag}
+              style={{backgroundColor: '#f5b400', marginLeft: '10px'}}
+            >
+              Flag
+            </button>
+          )}
+          {onReject && (
+            <button 
+              className={`${styles.applyButton} ${styles.rejectButton}`}
+              onClick={onReject}
+              style={{backgroundColor: '#e74c3c', marginLeft: '10px'}}
+            >
+              Reject
+            </button>
+          )}
         </div>
       )}
     </div>

@@ -11,6 +11,8 @@ import SettingsCard from "../../src/components/SCAD/SettingsCard";
 import CompanyDetailsModal from "../../src/components/SCAD/CompanyDetailsModal";
 import StudentDetailsModal from "../../src/components/SCAD/StudentDetailsModal";
 import ReportDetailsModal from "../../src/components/SCAD/ReportDetailsModal";
+import EvaluationCard, { Evaluation } from "../../src/components/SCAD/EvaluationCard";
+import EvaluationDetails from "../../src/components/SCAD/EvaluationDetails";
 
 // Mock data for companies
 const industryOptions = ['Technology', 'Finance', 'Healthcare', 'Education', 'Manufacturing', 'Other'];
@@ -197,8 +199,51 @@ const mockReports = [
   }
 ];
 
+// Mock evaluations data
+const mockEvaluations: Evaluation[] = [
+  {
+    id: 1,
+    studentName: 'Sarah Johnson',
+    studentId: 1,
+    companyName: 'Tech Solutions Inc.',
+    major: 'Computer Science',
+    supervisorName: 'John Doe',
+    internshipStartDate: '2023-06-01',
+    internshipEndDate: '2023-08-31',
+    evaluationDate: '2023-09-05',
+    evaluationScore: 9.2,
+    status: 'completed'
+  },
+  {
+    id: 2,
+    studentName: 'Emily Rodriguez',
+    studentId: 3,
+    companyName: 'Global Finance',
+    major: 'Business Administration',
+    supervisorName: 'Jane Smith',
+    internshipStartDate: '2023-01-15',
+    internshipEndDate: '2023-04-15',
+    evaluationDate: '2023-04-20',
+    evaluationScore: 8.7,
+    status: 'completed'
+  },
+  {
+    id: 3,
+    studentName: 'Ahmed Hassan',
+    studentId: 4,
+    companyName: 'Health Partners',
+    major: 'Computer Science',
+    supervisorName: 'Robert Johnson',
+    internshipStartDate: '2023-05-15',
+    internshipEndDate: '2023-08-15',
+    evaluationDate: '2023-08-20',
+    evaluationScore: 7.8,
+    status: 'completed'
+  }
+];
+
 // Dashboard tabs type
-type DashboardTab = 'companies' | 'students' | 'reports' | 'settings';
+type DashboardTab = 'companies' | 'students' | 'reports' | 'settings' | 'evaluations';
 
 export default function SCADDashboardPage() {
   // State for tab navigation
@@ -226,6 +271,14 @@ export default function SCADDashboardPage() {
   const [selectedReport, setSelectedReport] = useState<any | null>(null);
   const [showReportDetails, setShowReportDetails] = useState(false);
 
+  // Evaluations states
+  const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
+  const [evaluationSearchTerm, setEvaluationSearchTerm] = useState('');
+  const [selectedEvaluationStatus, setSelectedEvaluationStatus] = useState('');
+  const [selectedEvaluationMajor, setSelectedEvaluationMajor] = useState('');
+  const [selectedEvaluation, setSelectedEvaluation] = useState<Evaluation | null>(null);
+  const [showEvaluationDetails, setShowEvaluationDetails] = useState(false);
+  
   // Settings states
   const [internshipCycleStart, setInternshipCycleStart] = useState('2023-09-01');
   const [internshipCycleEnd, setInternshipCycleEnd] = useState('2024-06-30');
@@ -235,8 +288,9 @@ export default function SCADDashboardPage() {
     setCompanies(mockCompanies);
     setStudents(mockStudents);
     setReports(mockReports);
+    setEvaluations(mockEvaluations);
   }, []);
-
+  
   // COMPANIES SECTION HANDLERS
   const handleCompanySearch = (term: string) => {
     setCompanySearchTerm(term);
@@ -342,18 +396,63 @@ export default function SCADDashboardPage() {
     return matchesSearch && matchesStatus && matchesMajor;
   });
 
-  // SETTINGS SECTION HANDLERS
-  const handleSaveInternshipCycle = () => {
-    alert(`Internship cycle updated: ${internshipCycleStart} to ${internshipCycleEnd}`);
+  // EVALUATIONS SECTION HANDLERS
+  const handleEvaluationSearch = (term: string) => {
+    setEvaluationSearchTerm(term);
   };
+  
+  const handleEvaluationFilterChange = (filterType: string, value: string) => {
+    if (filterType === 'status') {
+      setSelectedEvaluationStatus(value.toLowerCase());
+    } else if (filterType === 'major') {
+      setSelectedEvaluationMajor(value);
+    }
+  };
+  
+  const handleViewEvaluationDetails = (evaluation: Evaluation) => {
+    setSelectedEvaluation(evaluation);
+    setShowEvaluationDetails(true);
+  };
+  
+  const handleCloseEvaluationDetails = () => {
+    setShowEvaluationDetails(false);
+    setSelectedEvaluation(null);
+  };
+  
+  const handleUpdateEvaluation = (id: number, score: number, comments: string) => {
+    // In a real app, you would call an API here
+    setEvaluations(evaluations.map(evaluation => 
+      evaluation.id === id ? { ...evaluation, evaluationScore: score } : evaluation
+    ));
+    
+    // Close the modal or keep it open with updated data
+    setSelectedEvaluation(prev => prev ? { ...prev, evaluationScore: score } : null);
+  };
+  
+  const handleDeleteEvaluation = (id: number) => {
+    // In a real app, you would call an API here
+    setEvaluations(evaluations.filter(evaluation => evaluation.id !== id));
+    setShowEvaluationDetails(false);
+  };
+  
+  // Filter evaluations
+  const filteredEvaluations = evaluations.filter((evaluation: Evaluation) => {
+    const matchesSearch = 
+      evaluation.studentName.toLowerCase().includes(evaluationSearchTerm.toLowerCase()) || 
+      evaluation.companyName.toLowerCase().includes(evaluationSearchTerm.toLowerCase());
+    const matchesStatus = selectedEvaluationStatus === '' || evaluation.status === selectedEvaluationStatus;
+    const matchesMajor = selectedEvaluationMajor === '' || evaluation.major === selectedEvaluationMajor;
+    return matchesSearch && matchesStatus && matchesMajor;
+  });
 
   // Get unique majors for filter
-  const majors = Array.from(new Set(reports.map((report: any) => report.major)));
+  const majors = Array.from(new Set(evaluations.map((evaluation: Evaluation) => evaluation.major)));
 
   // Calculate counters
   const pendingCompanyCount = companies.filter((company: Company) => company.status === 'pending').length;
   const activeInternshipCount = students.filter((student: Student) => student.internshipStatus === 'in progress').length;
   const pendingReportsCount = reports.filter((report: any) => report.status === 'pending').length;
+  const completedEvaluationsCount = evaluations.filter((evaluation: Evaluation) => evaluation.status === 'completed').length;
 
   // Prepare filters for sidebars
   const companyFilters = [
@@ -389,6 +488,30 @@ export default function SCADDashboardPage() {
     }
   ];
 
+  const evaluationFilters = [
+    {
+      title: "Status",
+      options: ['', 'Completed', 'Pending'],
+      type: "status",
+      value: selectedEvaluationStatus ? selectedEvaluationStatus.charAt(0).toUpperCase() + selectedEvaluationStatus.slice(1) : ''
+    },
+    {
+      title: "Major",
+      options: ['', ...majors],
+      type: "major",
+      value: selectedEvaluationMajor
+    }
+  ];
+
+  function handleSaveInternshipCycle(): void {
+    // In a real application, this would involve an API call to save the internship cycle dates
+    console.log('Internship cycle saved:', {
+      startDate: internshipCycleStart,
+      endDate: internshipCycleEnd,
+    });
+    alert('Internship cycle dates have been saved successfully!');
+  }
+
   return (
     <div className={styles.pageContainer}>
       <Navigation title="SCAD Dashboard" />
@@ -412,6 +535,12 @@ export default function SCADDashboardPage() {
           onClick={() => setActiveTab('reports')}
         >
           Reports <span className={styles.tabCount}>{pendingReportsCount}</span>
+        </button>
+        <button 
+          className={`${styles.tabButton} ${activeTab === 'evaluations' ? styles.activeTab : ''}`}
+          onClick={() => setActiveTab('evaluations')}
+        >
+          Evaluations <span className={styles.tabCount}>{completedEvaluationsCount}</span>
         </button>
         <button 
           className={`${styles.tabButton} ${activeTab === 'settings' ? styles.activeTab : ''}`}
@@ -548,6 +677,49 @@ export default function SCADDashboardPage() {
           </>
         )}
 
+        {/* EVALUATIONS TAB */}
+        {activeTab === 'evaluations' && (
+          <>
+            <FilterSidebar 
+              filters={evaluationFilters}
+              onFilterChange={handleEvaluationFilterChange}
+            />
+            <div className={styles.mainContent}>
+              <div className={styles.evaluationListings}>
+                <div className={styles.listingHeader}>
+                  <h1 className={styles.listingTitle}>Internship Evaluations</h1>
+                  <span className={styles.evaluationCount}>
+                    {completedEvaluationsCount} completed evaluations
+                  </span>
+                </div>
+                <div className={styles.filterControls}>
+                  <SearchBar
+                    searchTerm={evaluationSearchTerm}
+                    setSearchTerm={handleEvaluationSearch}
+                    placeholder="Search evaluations by student or company..."
+                  />
+                </div>
+                {filteredEvaluations.length > 0 ? (
+                  <div className={styles.cards}>
+                    {filteredEvaluations.map((evaluation: Evaluation) => (
+                      <EvaluationCard
+                        key={evaluation.id}
+                        evaluation={evaluation}
+                        onViewDetails={() => handleViewEvaluationDetails(evaluation)}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className={styles.noResults}>
+                    <div className={styles.noResultsIcon}>🔍</div>
+                    <p>No evaluations found matching your criteria.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        )}
+
         {/* SETTINGS TAB */}
         {activeTab === 'settings' && (
           <SettingsCard
@@ -619,6 +791,14 @@ export default function SCADDashboardPage() {
           onAccept={() => handleUpdateReportStatus(selectedReport.id, 'accepted')}
           onFlag={() => handleUpdateReportStatus(selectedReport.id, 'flagged')}
           onReject={() => handleUpdateReportStatus(selectedReport.id, 'rejected')}
+        />
+      )}
+      {showEvaluationDetails && selectedEvaluation && (
+        <EvaluationDetails
+          evaluation={selectedEvaluation}
+          onClose={handleCloseEvaluationDetails}
+          onUpdate={handleUpdateEvaluation}
+          onDelete={handleDeleteEvaluation}
         />
       )}
     </div>

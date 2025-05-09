@@ -68,13 +68,6 @@
   font-weight: 500;
 }
 
-.statusChip {
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-}
-
 .modalInfo {
   display: flex;
   flex-wrap: wrap;
@@ -114,6 +107,35 @@
   color: #444;
 }
 
+.inputGroup {
+  margin-bottom: 15px;
+}
+
+.inputLabel {
+  display: block;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.input {
+  width: 100%;
+  max-width: 120px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  resize: vertical;
+}
+
 .modalActions {
   display: flex;
   justify-content: flex-end;
@@ -136,18 +158,26 @@
   background-color: #2980b9;
 }
 
-.flagButton {
+.editButton {
   background-color: #f39c12;
 }
 
-.flagButton:hover {
+.editButton:hover {
   background-color: #e67e22;
 }
 
-.rejectButton {
+.deleteButton {
   background-color: #e74c3c;
 }
 
-.rejectButton:hover {
+.deleteButton:hover {
   background-color: #c0392b;
+}
+
+.cancelButton {
+  background-color: #95a5a6;
+}
+
+.cancelButton:hover {
+  background-color: #7f8c8d;
 }
