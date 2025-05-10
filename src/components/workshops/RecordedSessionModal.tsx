@@ -11,8 +11,7 @@ interface RecordedSessionModalProps {
 const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
   workshop,
   onClose
-}) => {
-  const [progress, setProgress] = useState(0);
+}) => {  const [progress, setProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [notes, setNotes] = useState<Note[]>([]);
   const [currentNote, setCurrentNote] = useState('');
@@ -21,6 +20,9 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
   const [rating, setRating] = useState(0);
   const [feedback, setFeedback] = useState('');
   const [showCertificate, setShowCertificate] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   
   const calculateCurrentTime = (progressPercent: number, duration: string) => {
     // Extract the numeric value from duration
@@ -30,17 +32,23 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
     const durationValue = parseInt(durationMatch[0], 10);
     return Math.floor((progressPercent / 100) * durationValue);
   };
-
   // Simulate playback progress
   const handlePlayPause = () => {
     if (isPlaying) {
+      // Pause the video by clearing the interval
+      if (intervalId) {
+        clearInterval(intervalId);
+        setIntervalId(null);
+      }
       setIsPlaying(false);
     } else {
       setIsPlaying(true);
+      // Start or resume playback
       const interval = setInterval(() => {
         setProgress(prev => {
           if (prev >= 100) {
             clearInterval(interval);
+            setIntervalId(null);
             setIsPlaying(false);
             if (!showRating) {
               setShowRating(true);
@@ -50,8 +58,20 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
           return prev + 1;
         });
       }, 300); // Update every 300ms for demo purposes
+      
+      // Save the interval ID so we can clear it later when pausing
+      setIntervalId(interval);
     }
   };
+  
+  // Clean up interval on component unmount
+  useEffect(() => {
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [intervalId]);
 
   const handleSaveNote = () => {
     if (currentNote.trim() === '') return;
@@ -107,11 +127,64 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
     // Show certificate prompt
     setShowCertificate(true);
   };
-
   const handleDownloadCertificate = () => {
-    // In a real app, this would generate or retrieve a certificate
-    alert('Certificate downloaded successfully!');
-    setShowCertificate(false);
+    // Simulate certificate generation and download with progress
+    setIsDownloading(true);
+    setDownloadProgress(0);
+    
+    // Create a simulated download that takes a few seconds with progress updates
+    const totalSteps = 10;
+    let currentStep = 0;
+    
+    const downloadInterval = setInterval(() => {
+      currentStep++;
+      const newProgress = Math.floor((currentStep / totalSteps) * 100);
+      setDownloadProgress(newProgress);
+      
+      if (currentStep >= totalSteps) {
+        clearInterval(downloadInterval);
+        generateAndDownloadCertificate();
+        setIsDownloading(false);
+        // Keep the modal open for a moment so user can see 100% progress
+        setTimeout(() => {
+          setShowCertificate(false);
+        }, 1000);
+      }
+    }, 400);
+  };
+  
+  // Function to actually generate and trigger the certificate download
+  const generateAndDownloadCertificate = () => {
+    // In a real app, this would generate an actual PDF certificate
+    // For this example, we'll create a simple text file as a placeholder
+    const certificateContent = `
+    ====================================
+    CERTIFICATE OF COMPLETION
+    ====================================
+    
+    This certifies that
+    
+    Ahmad Mohammed
+    
+    has successfully completed
+    
+    ${workshop.title}
+    
+    presented by ${workshop.host}
+    on ${workshop.date}
+    
+    Duration: ${workshop.duration}
+    ====================================
+    `;
+    
+    const blob = new Blob([certificateContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${workshop.title.replace(/\s+/g, '_')}_Certificate.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   return (
@@ -123,8 +196,7 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
           <div className={styles.videoSection}>
             <div className={styles.videoContainer}>
               <div className={styles.recordedVideo}>
-                {/* Placeholder for video player */}
-                <div className={styles.videoPlaceholder}>
+                {/* Placeholder for video player */}                <div className={styles.videoPlaceholder}>
                   <Image 
                     src={workshop.logo || '/logos/GUCInternshipSystemLogo.png'} 
                     alt={workshop.title} 
@@ -157,7 +229,50 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
                 <span>{calculateCurrentTime(progress, workshop.duration)} min</span>
                 <span>{workshop.duration}</span>
               </div>
+            </div>          </div>
+          
+          {/* Content below video - only visible when scrolling */}
+          <div className={styles.belowVideoContent}>
+            {/* Certificate Progress Section */}
+            <div className={styles.certificateSection}>
+              <div className={styles.certificateSectionInner}>
+                <h4 className={styles.certificateHeading}>Certificate Progress</h4>
+                <div className={styles.certificateProgressIndicator}>
+                  <div className={styles.progressCircle}>
+                    <svg viewBox="0 0 36 36" className={styles.circularChart}>
+                      <path
+                        className={styles.circleBg}
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      />
+                      <path
+                        className={styles.circle}
+                        strokeDasharray={`${progress}, 100`}
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      />
+                      <text x="18" y="20.5" className={styles.percentageText}>{progress}%</text>
+                    </svg>
+                  </div>
+                  <div className={styles.certificateMessage}>
+                    {progress < 100 ? (
+                      <>
+                        <p className={styles.certificateStatus}>
+                          <span className={styles.remainingPercentage}>{100 - progress}%</span> remaining to earn your certificate
+                        </p>
+                        <p className={styles.certificateInstruction}>
+                          Complete the full workshop to get your certificate of completion
+                        </p>
+                      </>
+                    ) : (
+                      <p className={styles.certificateComplete}>
+                        Congratulations! You've completed this workshop and earned your certificate.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
+            
+            <div className={styles.workshopInfoDivider}></div>
           </div>
           
           <div className={styles.sidePanel}>
@@ -339,21 +454,37 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
                   <p>presented by {workshop.host}</p>
                   <p>on {workshop.date}</p>
                 </div>
-              </div>
-              <div className={styles.certificateButtons}>
-                <button
-                  className={styles.downloadCertButton}
-                  onClick={handleDownloadCertificate}
-                >
-                  Download Certificate
-                </button>
-                <button
-                  className={styles.closeButton}
-                  onClick={() => setShowCertificate(false)}
-                >
-                  Close
-                </button>
-              </div>
+              </div>              {isDownloading ? (
+                <div className={styles.downloadProgress}>
+                  <div className={styles.progressText}>
+                    {downloadProgress}% downloaded
+                    {downloadProgress < 100 && downloadProgress >= 70 && (
+                      <span className={styles.downloadRemainingText}> - {100 - downloadProgress}% remaining</span>
+                    )}
+                  </div>
+                  <div className={styles.progressBarContainer}>
+                    <div 
+                      className={styles.progressBar}
+                      style={{ width: `${downloadProgress}%` }}
+                    ></div>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.certificateButtons}>
+                  <button
+                    className={styles.downloadCertButton}
+                    onClick={handleDownloadCertificate}
+                  >
+                    Download Certificate
+                  </button>
+                  <button
+                    className={styles.closeButton}
+                    onClick={() => setShowCertificate(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}

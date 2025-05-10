@@ -1,6 +1,6 @@
 "use client";
 import styles from "./page.module.css";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 // Import modular components
 import Navigation from "../../src/components/global/Navigation";
@@ -80,6 +80,35 @@ const mockAppointments: Appointment[] = [
 export default function AppointmentsPage() {
   // Current user type - in a real app, this would be from authentication
   const currentUserType = 'pro-student'; // or 'scad', depending on who is logged in
+    // State for notifications
+  const [notification, setNotification] = useState<{message: string, type: 'success' | 'error' | 'info' | 'warning'} | null>(null);
+  
+  // Audio references for notification sounds
+  const notificationSoundRef = useRef<HTMLAudioElement | null>(null);
+  const callNotificationSoundRef = useRef<HTMLAudioElement | null>(null);
+  
+  // Track user interaction to enable sound playback
+  useEffect(() => {
+    const markUserInteraction = () => {
+      document.documentElement.dataset.hasUserInteracted = 'true';
+      // Remove event listeners once interaction is detected
+      document.removeEventListener('click', markUserInteraction);
+      document.removeEventListener('keydown', markUserInteraction);
+      document.removeEventListener('touchstart', markUserInteraction);
+    };
+    
+    // Add event listeners to detect user interaction
+    document.addEventListener('click', markUserInteraction);
+    document.addEventListener('keydown', markUserInteraction);
+    document.addEventListener('touchstart', markUserInteraction);
+    
+    return () => {
+      // Clean up event listeners
+      document.removeEventListener('click', markUserInteraction);
+      document.removeEventListener('keydown', markUserInteraction);
+      document.removeEventListener('touchstart', markUserInteraction);
+    };
+  }, []);
   
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState({
@@ -88,12 +117,24 @@ export default function AppointmentsPage() {
   });
   
   const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments);
-  const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>(appointments);
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>(appointments);  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [showAppointmentDetails, setShowAppointmentDetails] = useState(false);
   const [showVideoCall, setShowVideoCall] = useState(false);
-  const [notification, setNotification] = useState<{message: string, type: 'success' | 'error' | 'info' | 'warning'} | null>(null);
   const [incomingCall, setIncomingCall] = useState<Appointment | null>(null);
+  const [activeCall, setActiveCall] = useState<Appointment | null>(null);
+  // Show notification on initial load that someone accepted your appointment
+  useEffect(() => {
+    // Display an initial notification that someone accepted your appointment
+    setTimeout(() => {
+      setNotification({
+        message: "Dr. Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
+        type: 'success'
+      });
+      
+      // Try to play notification sound
+      playNotificationSound('notification');
+    }, 2000); // Show 2 seconds after page load
+  }, []);
   
   // Auto-dismiss notifications after the specified time
   useEffect(() => {
@@ -105,7 +146,7 @@ export default function AppointmentsPage() {
       return () => clearTimeout(timer);
     }
   }, [notification]);
-  
+
   // Filter options
   const statusOptions = ['All', 'Pending', 'Accepted', 'Rejected', 'Completed'];
   const dateOptions = ['All', 'Today', 'This Week', 'This Month', 'Future'];
@@ -179,6 +220,65 @@ export default function AppointmentsPage() {
       ...prev,
       [filterType.toLowerCase()]: value
     }));
+  };    // Function to play notification sounds with autoplay fallback
+  const playNotificationSound = (type: 'notification' | 'call') => {
+    const hasUserInteracted = document.documentElement.dataset.hasUserInteracted === 'true';
+    
+    const attemptPlaySound = () => {
+      try {
+        if (type === 'call' && callNotificationSoundRef.current) {
+          const playPromise = callNotificationSoundRef.current.play();
+          
+          if (playPromise !== undefined) {
+            playPromise.catch(error => {
+              console.log("Notification sound error:", error);
+              setupPlayOnFirstInteraction();
+            });
+          }
+        } else if (type === 'notification' && notificationSoundRef.current) {
+          const playPromise = notificationSoundRef.current.play();
+          
+          if (playPromise !== undefined) {
+            playPromise.catch(error => {
+              console.log("Notification sound error:", error);
+              setupPlayOnFirstInteraction();
+            });
+          }
+        }
+      } catch (error) {
+        console.log("Error playing notification sound:", error);
+        setupPlayOnFirstInteraction();
+      }
+    };
+    
+    // Setup event listeners to play sound on first interaction if autoplay fails
+    const setupPlayOnFirstInteraction = () => {
+      if (!document.documentElement.dataset.soundPendingPlay) {
+        document.documentElement.dataset.soundPendingPlay = type;
+        
+        const playOnFirstInteraction = () => {
+          const pendingSound = document.documentElement.dataset.soundPendingPlay;
+          if (pendingSound) {
+            document.documentElement.dataset.hasUserInteracted = 'true';
+            document.documentElement.dataset.soundPendingPlay = '';
+            playNotificationSound(pendingSound as 'notification' | 'call');
+            
+            // Remove event listeners
+            document.removeEventListener('click', playOnFirstInteraction);
+            document.removeEventListener('keydown', playOnFirstInteraction);
+            document.removeEventListener('touchstart', playOnFirstInteraction);
+          }
+        };
+        
+        // Add event listeners for first interaction
+        document.addEventListener('click', playOnFirstInteraction, { once: true });
+        document.addEventListener('keydown', playOnFirstInteraction, { once: true });
+        document.addEventListener('touchstart', playOnFirstInteraction, { once: true });
+      }
+    };
+    
+    // Try to play immediately, with fallback to play on first interaction
+    attemptPlaySound();
   };
   
   // Appointment action handlers
@@ -199,9 +299,9 @@ export default function AppointmentsPage() {
         app.id === appointmentId ? {...app, status: 'accepted'} : app
       )
     );
-    
+      const app = appointments.find(a => a.id === appointmentId);
     setNotification({
-      message: `Appointment accepted successfully`,
+      message: app ? `You have accepted the appointment request from ${app.participantName}` : `Appointment accepted successfully`,
       type: 'success'
     });
     
@@ -223,10 +323,10 @@ export default function AppointmentsPage() {
         app.id === appointmentId ? {...app, status: 'rejected'} : app
       )
     );
-    
+      const app = appointments.find(a => a.id === appointmentId);
     setNotification({
-      message: `Appointment rejected`,
-      type: 'info'
+      message: app ? `You have declined the appointment request from ${app.participantName}` : `Appointment rejected`,
+      type: 'warning'
     });
     
     // If rejecting from modal, close it
@@ -244,34 +344,57 @@ export default function AppointmentsPage() {
     setSelectedAppointment(appointment);
     setShowVideoCall(true);
     setShowAppointmentDetails(false);
-  };
-  
-  const handleEndCall = () => {
+  };  const handleEndCall = () => {
     setShowVideoCall(false);
     
     // Notify that call has ended
-    setNotification({
-      message: `Call ended`,
-      type: 'info'
-    });
-  };
-  
-  // Simulate an incoming call (for demonstration purposes)
-  useEffect(() => {
-    const simulateIncomingCall = setTimeout(() => {
-      // Find an online and accepted appointment to simulate an incoming call
-      const acceptedAppointments = appointments.filter(
-        app => app.status === 'accepted' && app.isOnline
-      );
+    if (selectedAppointment) {
+      setNotification({
+        message: `Call with ${selectedAppointment.participantName} has ended`,
+        type: 'info'
+      });
       
-      if (acceptedAppointments.length > 0) {
-        const randomAppointment = acceptedAppointments[Math.floor(Math.random() * acceptedAppointments.length)];
-        setIncomingCall(randomAppointment);
-      }
-    }, 15000); // Simulate after 15 seconds
+      // Play sound with fallback handling
+      playNotificationSound('notification');
+    }
     
-    return () => clearTimeout(simulateIncomingCall);
-  }, [appointments]);
+    // No demo notification needed since we'll simulate Dr. Hassan ending the call
+  };// Simulate an incoming call from Dr. Ahmed Hassan specifically (for demonstration purposes)
+  useEffect(() => {
+    // Only run once, find Dr. Hassan's appointment
+    const drHassanAppointment = appointments.find(
+      app => app.participantName === "Dr. Ahmed Hassan" && app.isOnline
+    );
+      if (drHassanAppointment) {
+      const simulateIncomingCall = setTimeout(() => {
+        setIncomingCall(drHassanAppointment);
+        setActiveCall(drHassanAppointment);
+        playNotificationSound('call');
+      }, 10000); // Simulate after 10 seconds
+      
+      return () => clearTimeout(simulateIncomingCall);
+    }
+  }, []); // Empty dependency array ensures it only runs once
+  // Simulate Dr. Hassan ending the call after 1 minute of being in the call
+  useEffect(() => {
+    if (showVideoCall && selectedAppointment?.participantName === "Dr. Ahmed Hassan") {
+      const simulateCallEnding = setTimeout(() => {
+        // End the call automatically
+        setShowVideoCall(false);
+        
+        // Show notification that Dr. Hassan left the call
+        setNotification({
+          message: `Dr. Ahmed Hassan has left the call`,
+          type: 'info'
+        });
+        
+        // Play notification sound with fallback handling
+        playNotificationSound('notification');
+      }, 60000); // 1 minute (60 seconds)
+      
+      return () => clearTimeout(simulateCallEnding);
+    }
+  }, [showVideoCall, selectedAppointment]);
   
   // Handle incoming call actions
   const handleAcceptIncomingCall = () => {
@@ -279,6 +402,12 @@ export default function AppointmentsPage() {
       setSelectedAppointment(incomingCall);
       setIncomingCall(null);
       setShowVideoCall(true);
+      
+      // Show notification that we joined the call
+      setNotification({
+        message: `You joined a call with ${incomingCall.participantName}`,
+        type: 'info'
+      });
     }
   };
   
@@ -289,11 +418,32 @@ export default function AppointmentsPage() {
       type: 'info'
     });
   };
-  
   // Simulate notification to the other user (in a real app, this would use websockets or other real-time tech)
   const simulateNotificationToOtherUser = (appointmentId: string, status: string) => {
     console.log(`Notification sent to other user about appointment ${appointmentId} being ${status}`);
     // In a real app, this would send a notification through your backend
+    
+    // For demonstration purposes, show a mockup of the notification the other party would receive
+    setTimeout(() => {
+      const app = appointments.find(a => a.id === appointmentId);
+      if (app) {
+        let notificationMessage = '';
+        let notificationType: 'success' | 'info' | 'warning' = 'info';
+          if (status === 'accepted') {
+          notificationMessage = `${app.participantName} has accepted your appointment request for "${app.title}"`;
+          notificationType = 'success';
+        } else if (status === 'rejected') {
+          notificationMessage = `${app.participantName} has declined your appointment request for "${app.title}"`;
+          notificationType = 'warning';
+        }        setNotification({
+          message: notificationMessage,
+          type: notificationType
+        });
+        
+        // Play notification sound with fallback handling
+        playNotificationSound('notification');
+      }
+    }, 2000); // Delayed to simulate network latency
   };
 
   return (
@@ -318,11 +468,8 @@ export default function AppointmentsPage() {
             searchTerm={searchTerm} 
             setSearchTerm={setSearchTerm} 
             placeholder="Search appointments by title or participant name..."
-          />
-
-          {/* Appointment Listings */}
-          <div className={styles.appointmentListings}>
-            <div className={styles.listingHeader}>
+          />          {/* Appointment Listings */}
+          <div className={styles.appointmentListings}>            <div className={styles.listingHeader}>
               <h2 className={styles.listingTitle}>Your Appointments</h2>
               <span className={styles.appointmentCount}>
                 {filteredAppointments.length} appointment{filteredAppointments.length !== 1 ? 's' : ''}
@@ -404,6 +551,19 @@ export default function AppointmentsPage() {
           onReject={handleRejectIncomingCall}
         />
       )}
+        {/* Audio elements for sounds (hidden) */}
+      <audio 
+        ref={notificationSoundRef} 
+        src="/sounds/notification.mp3" 
+        preload="auto"
+        style={{ display: 'none' }}
+      />
+      <audio 
+        ref={callNotificationSoundRef} 
+        src="/sounds/notification.mp3" 
+        preload="auto"
+        style={{ display: 'none' }}
+      />
     </div>
   );
 }

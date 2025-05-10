@@ -15,18 +15,18 @@ const SearchBar: React.FC<SearchBarProps> = ({
   return (
     <div className={styles.searchBarContainer}>
       <div className={styles.searchInputWrapper}>
-        <span className={styles.searchIcon}>🔍</span>
-        <input 
+        <span className={styles.searchIcon}>🔍</span>        <input 
           type="text" 
           className={styles.searchInput} 
           placeholder={placeholder} 
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          suppressHydrationWarning
         />
-        {searchTerm && (
-          <button 
+        {searchTerm && (          <button 
             className={styles.clearSearchButton}
             onClick={() => setSearchTerm('')}
+            suppressHydrationWarning
           >
             ✕
           </button>

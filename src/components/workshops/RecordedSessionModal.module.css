@@ -45,24 +45,82 @@
 
 .recordedSessionContainer {
   display: flex;
+  flex-direction: column;
   height: 100%;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .videoSection {
-  flex: 3;
+  flex: none;
   display: flex;
   flex-direction: column;
+  height: 85vh; /* Increased height so content below is not visible initially */
+  min-height: 500px;
+}
+
+.belowVideoContent {
+  flex: none;
+  padding-top: 50px; /* Extra padding to push it further down */
+  margin-top: 100px; /* Additional margin to ensure it's below the fold */
+}
+
+.workshopInfoDivider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 20px 0;
 }
 
 .sidePanel {
   flex: 1;
-  min-width: 300px;
-  max-width: 380px;
-  background-color: #f8f8f8;
-  border-left: 1px solid #e0e0e0;
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
+}
+
+@media (min-width: 1200px) {
+  .recordedSessionContainer {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .videoSection {
+    flex: none;
+    height: 70vh;
+    min-height: 500px;
+  }
+
+  .belowVideoContent {
+    flex: none;
+  }
+
+  .sidePanel {
+    flex: 1;
+    padding: 0 20px 20px;
+  }
+
+  /* Optional layout for very wide screens */
+  @media (min-width: 1600px) {
+    .recordedSessionContainer {
+      flex-direction: row;
+    }
+
+    .videoSection {
+      flex: 3;
+      height: 100%;
+    }
+
+    .belowVideoContent {
+      display: none; /* Hide in ultra wide layout where we use side-by-side */
+    }
+
+    .sidePanel {
+      flex: 1;
+      min-width: 300px;
+      max-width: 380px;
+      border-left: 1px solid #e0e0e0;
+    }
+  }
 }
 
 .tabButtons {
@@ -117,12 +175,112 @@
   margin-bottom: 15px;
 }
 
+/* Certificate Section Styles - Below video player */
+.certificateSection {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  margin: 0 20px;
+  transform: translateY(-15px);
+  opacity: 1;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.certificateSectionInner {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.certificateHeading {
+  font-size: 18px;
+  color: #2c3e50;
+  margin: 0 0 15px 0;
+  font-weight: 600;
+  text-align: center;
+}
+
+.certificateProgressIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.progressCircle {
+  flex: 0 0 100px;
+}
+
+.certificateMessage {
+  flex: 1;
+}
+
+.certificateStatus {
+  font-size: 16px;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.remainingPercentage {
+  color: #e74c3c;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.certificateInstruction {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin: 0;
+}
+
+.certificateComplete {
+  color: #27ae60;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+/* SVG Circle Progress */
+.circularChart {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.circleBg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 3.8;
+}
+
+.circle {
+  fill: none;
+  stroke-width: 3.8;
+  stroke: #3498db;
+  stroke-linecap: round;
+  animation: progress 1s ease-out forwards;
+}
+
+.percentageText {
+  fill: #2c3e50;
+  font-family: sans-serif;
+  font-size: 0.5em;
+  font-weight: bold;
+  text-anchor: middle;
+}
+
+@keyframes progress {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+}
+
 .videoControls {
   background-color: #f1f1f1;
   padding: 15px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  border-bottom: 1px solid #ddd;
 }
 
 .playPauseButton {
@@ -573,4 +731,38 @@
     flex: 2;
     padding-top: 0;
   }
+}
+
+/* Download Progress Styles */
+.downloadProgress {
+  padding: 20px;
+  text-align: center;
+}
+
+.progressText {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #333;
+  font-weight: 500;
+}
+
+.downloadRemainingText {
+  color: #777;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.downloadProgress .progressBarContainer {
+  height: 12px;
+  background-color: #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.downloadProgress .progressBar {
+  height: 100%;
+  background-color: #2ecc71;
+  border-radius: 6px;
+  transition: width 0.3s ease-in-out;
 }

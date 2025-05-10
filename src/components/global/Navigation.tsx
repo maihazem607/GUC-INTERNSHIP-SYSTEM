@@ -28,8 +28,8 @@ export default function Navigation({ title = "GUC Internship System", logoSrc = 
           <span>New York, NY</span>
         </div>
         <div className={styles.userControls}>          <div className={styles.userAvatar}></div>
-          <button className={styles.settingsButton}>⚙️</button>
-          <button className={styles.notificationsButton}>
+          <button className={styles.settingsButton} suppressHydrationWarning>⚙️</button>
+          <button className={styles.notificationsButton} suppressHydrationWarning>
             🔔
             {notificationCount > 0 && (
               <span className={styles.notificationBadge}>{notificationCount}</span>

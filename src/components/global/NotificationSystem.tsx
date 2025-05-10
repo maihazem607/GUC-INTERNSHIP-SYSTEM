@@ -10,7 +10,8 @@ export const NOTIFICATION_CONSTANTS = {
     error: '❌',
     warning: '⚠️',
     info: 'ℹ️'
-  }
+  },
+  SOUND_PATH: '/sounds/notification.mp3'
 };
 
 export interface NotificationProps {
@@ -32,7 +33,6 @@ export const useNotification = () => {
       }
     };
   }, []);
-
   const showNotification = (notificationProps: NotificationProps) => {
     // Clear any existing timers
     if (timerRef.current) {
@@ -76,18 +76,31 @@ const NotificationSystem: React.FC<NotificationProps & { visible: boolean, onClo
   visible,
   onClose
 }) => {
+  // Reference to the audio element
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  
   // Add effect to ensure notification is rendered in the DOM properly
   useEffect(() => {
     // Force repaint to ensure transitions work properly
     const reflow = document.body.offsetHeight;
+    
+    // Note: We're not automatically playing sound here anymore
+    // Sound playback is now handled by the parent component
   }, [visible]);
-  
-  return (
-    <div className={`${styles.notification} ${styles[type]} ${visible ? styles.show : styles.hide}`}>
-      <span className={styles.icon}>{NOTIFICATION_CONSTANTS.ICONS[type]}</span>
-      <div className={styles.message}>{message}</div>
-      <button className={styles.closeButton} onClick={onClose}>×</button>
-    </div>
+    return (
+    <>
+      <div className={`${styles.notification} ${styles[type]} ${visible ? styles.show : styles.hide}`}>
+        <span className={styles.icon}>{NOTIFICATION_CONSTANTS.ICONS[type]}</span>
+        <div className={styles.message}>{message}</div>
+        <button className={styles.closeButton} onClick={onClose}>×</button>
+      </div>
+      <audio 
+        ref={audioRef} 
+        src={NOTIFICATION_CONSTANTS.SOUND_PATH} 
+        preload="auto" 
+        style={{ display: 'none' }} 
+      />
+    </>
   );
 };
 

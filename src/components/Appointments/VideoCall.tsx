@@ -17,11 +17,10 @@ const VideoCall: React.FC<VideoCallProps> = ({
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
   const [isScreenSharing, setIsScreenSharing] = useState(false);
-  const [callDuration, setCallDuration] = useState(0);
-  const [otherUserLeft, setOtherUserLeft] = useState(false);
-  const [showControls, setShowControls] = useState(true);  const [notifications, setNotifications] = useState<string[]>([]);
+  const [callDuration, setCallDuration] = useState(0);  const [otherUserLeft, setOtherUserLeft] = useState(false);
+  const [showControls, setShowControls] = useState(true);  
+  const [notifications, setNotifications] = useState<string[]>([]);
   const [showEndCallConfirmation, setShowEndCallConfirmation] = useState(false);
-
   useEffect(() => {
     if (!isOpen) return;
     
@@ -30,14 +29,19 @@ const VideoCall: React.FC<VideoCallProps> = ({
       setCallDuration(prev => prev + 1);
     }, 1000);
     
-    // Simulate other caller leaving after some time (for demo purposes)
-    const simulateOtherUserLeaving = setTimeout(() => {
-      // This is just for demonstration - in a real app, this would be handled by signaling
-      if (Math.random() > 0.7) {
-        setOtherUserLeft(true);
-        addNotification(`${participantName} has left the call`);
+    // Show notification that the participant joined
+    setTimeout(() => {
+      addNotification(`${participantName} joined the call`);
+    }, 2000);
+    
+    // Simulate participant status changes (for demo purposes)
+    const simulateParticipantEvents = setTimeout(() => {
+      // Notify when participant enables/disables video or audio
+      if (participantName === "Dr. Ahmed Hassan") {
+        setTimeout(() => addNotification(`${participantName} turned off video`), 20000);
+        setTimeout(() => addNotification(`${participantName} muted audio`), 35000);
       }
-    }, 30000); // Simulate after 30 seconds
+    }, 5000);
     
     // Auto-hide controls after inactivity
     let controlsTimeout: NodeJS.Timeout;
@@ -56,10 +60,9 @@ const VideoCall: React.FC<VideoCallProps> = ({
     };
     
     window.addEventListener('mousemove', handleMouseMove);
-    
-    return () => {
+      return () => {
       clearInterval(timerInterval);
-      clearTimeout(simulateOtherUserLeaving);
+      clearTimeout(simulateParticipantEvents);
       clearTimeout(controlsTimeout);
       window.removeEventListener('mousemove', handleMouseMove);
     };
