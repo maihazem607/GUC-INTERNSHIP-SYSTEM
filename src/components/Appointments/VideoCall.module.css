@@ -1,0 +1,468 @@
+.videoCallModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.videoCallModal {
+  width: 90%;
+  max-width: 1200px;
+  height: 90vh;
+  background-color: #1a1a1a;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
+}
+
+.videoCallContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: white;
+}
+
+.callHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.callInfo {
+  display: flex;
+  align-items: center;
+}
+
+.callInfo h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  margin-right: 16px;
+}
+
+.duration {
+  font-size: 0.9rem;
+  color: #b0b0b0;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 4px 8px;
+  border-radius: 50px;
+}
+
+.notificationsArea {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-width: 50%;
+}
+
+.notification {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px 16px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-left: 3px solid #4f46e5;
+  animation: fadeIn 0.3s ease-out forwards, fadeOut 0.3s ease-in forwards 4.5s;
+}
+
+.videoStreams {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 180px;
+  gap: 8px;
+  padding: 8px;
+  position: relative;
+}
+
+.remoteVideo {
+  width: 100%;
+  height: 100%;
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.localVideo {
+  position: absolute;
+  width: 240px;
+  height: 180px;
+  bottom: 24px;
+  right: 24px;
+  background-color: #3a3a3a;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid #1a1a1a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.videoPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.userInitials {
+  width: 80px;
+  height: 80px;
+  background-color: #4f46e5;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.localVideo .userInitials {
+  width: 48px;
+  height: 48px;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+
+.userName {
+  font-size: 1rem;
+}
+
+.leftCallMessage {
+  color: #f1f1f1;
+  text-align: center;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.leftCallMessage h3 {
+  margin: 16px 0 8px;
+  font-size: 1.5rem;
+}
+
+.leftCallMessage p {
+  color: #b0b0b0;
+  margin: 0;
+}
+
+.leftCallIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  animation: waveAnimation 1.5s infinite;
+}
+
+@keyframes waveAnimation {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-20deg); }
+  50% { transform: rotate(0deg); }
+  75% { transform: rotate(20deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.videoDisabled {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #2a2a2a;
+  color: #b0b0b0;
+}
+
+.micStatus {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background-color: rgba(0, 0, 0, 0.7);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.screenShareIndicator {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  animation: pulseIndicator 2s infinite;
+}
+
+.shareIcon {
+  margin-right: 6px;
+}
+
+@keyframes pulseIndicator {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
+}
+
+.callControls {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px;
+  background-color: rgba(0, 0, 0, 0.3);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.callControls.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.callControls.hidden {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.controlButton {
+  min-width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  border: none;
+  background-color: #3a3a3a;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.controlIcon {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+
+.controlLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.controlButton:hover {
+  background-color: #505050;
+  transform: scale(1.05);
+}
+
+.controlButton.active {
+  background-color: #dc2626;
+}
+
+.endCallButton {
+  background-color: #dc2626;
+}
+
+.endCallButton:hover {
+  background-color: #b91c1c;
+}
+
+/* Confirmation Dialog */
+.confirmationOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.confirmationDialog {
+  background-color: #2a2a2a;
+  border-radius: 16px;
+  padding: 24px;
+  width: 320px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  animation: scaleIn 0.2s ease-out forwards;
+}
+
+.confirmationDialog h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 1.3rem;
+  color: white;
+}
+
+.confirmationDialog p {
+  margin-bottom: 24px;
+  color: #b0b0b0;
+}
+
+.confirmationButtons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.cancelButton, .confirmButton {
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border: none;
+}
+
+.cancelButton {
+  background-color: #3a3a3a;
+  color: white;
+}
+
+.cancelButton:hover {
+  background-color: #505050;
+}
+
+.confirmButton {
+  background-color: #dc2626;
+  color: white;
+}
+
+.confirmButton:hover {
+  background-color: #b91c1c;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .videoCallModal {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
+  
+  .videoStreams {
+    gap: 4px;
+    padding: 4px;
+  }
+  
+  .localVideo {
+    width: 120px;
+    height: 90px;
+    bottom: 16px;
+    right: 16px;
+  }
+  
+  .callControls {
+    gap: 8px;
+    padding: 12px 8px;
+  }
+  
+  .controlButton {
+    min-width: 56px;
+    height: 56px;
+    padding: 4px 8px;
+  }
+  
+  .controlIcon {
+    font-size: 1.25rem;
+    margin-bottom: 2px;
+  }
+  
+  .controlLabel {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .callHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .notificationsArea {
+    max-width: 100%;
+    width: 100%;
+    margin-top: 8px;
+  }
+  
+  .callControls {
+    padding: 12px 4px;
+  }
+  
+  .controlButton {
+    min-width: 48px;
+    height: 48px;
+    padding: 4px;
+  }
+  
+  .controlLabel {
+    font-size: 0.65rem;
+  }
+  
+  .localVideo {
+    width: 100px;
+    height: 75px;
+  }
+}

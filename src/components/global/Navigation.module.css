@@ -92,3 +92,23 @@
 .notificationsButton:hover {
   background-color: #f5f5f5;
 }
+
+.notificationsButton {
+  position: relative;
+}
+
+.notificationBadge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #ef4444;
+  color: white;
+  font-size: 0.75rem;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
