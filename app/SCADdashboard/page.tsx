@@ -16,6 +16,7 @@ import EvaluationDetails from "../../src/components/SCAD/EvaluationDetails";
 import InternshipCard from "../../src/components/internships/InternshipCard";
 import InternshipDetailsModal from "../../src/components/internships/InternshipDetailsModal";
 import { Internship } from "../../src/components/internships/types";
+import NotificationSystem, { useNotification } from "../../src/components/global/NotificationSystem";
 
 // Mock data for companies
 const industryOptions = ['Technology', 'Finance', 'Healthcare', 'Education', 'Manufacturing', 'Other'];
@@ -296,6 +297,7 @@ const mockInternships: Internship[] = [
     industry: 'Education',
     isPaid: false,
     salary: 'Unpaid',
+    logo: '/logos/amazon.png',
     description: 'Create engaging educational content for our online learning platform. You will work with our curriculum team to develop course materials, quizzes, and interactive exercises for students.',
   },
   {
@@ -359,10 +361,12 @@ export default function SCADDashboardPage() {
   const [selectedInternship, setSelectedInternship] = useState<Internship | null>(null);
   const [showInternshipDetails, setShowInternshipDetails] = useState(false);
   const [starredInternships, setStarredInternships] = useState<number[]>([]);
-  
-  // Settings states
+    // Settings states
   const [internshipCycleStart, setInternshipCycleStart] = useState('2023-09-01');
   const [internshipCycleEnd, setInternshipCycleEnd] = useState('2024-06-30');
+  
+  // Global notification state
+  const { notification, visible, showNotification, hideNotification } = useNotification();
 
   // Load mock data
   useEffect(() => {
@@ -391,19 +395,34 @@ export default function SCADDashboardPage() {
     setShowCompanyDetails(false);
     setSelectedCompany(null);
   };
-
   const handleAccept = (id: number) => {
+    const company = companies.find(company => company.id === id);
     setCompanies(companies.map((company: Company) => 
       company.id === id ? { ...company, status: 'accepted' } : company
     ));
     setShowCompanyDetails(false);
+      // Show success notification
+    if (company) {
+      showNotification({
+        message: `${company.name} has been accepted successfully.`,
+        type: 'success'
+      });
+    }
   };
 
   const handleReject = (id: number) => {
+    const company = companies.find(company => company.id === id);
     setCompanies(companies.map((company: Company) => 
       company.id === id ? { ...company, status: 'rejected' } : company
     ));
     setShowCompanyDetails(false);
+      // Show info notification
+    if (company) {
+      showNotification({
+        message: `${company.name} has been rejected.`,
+        type: 'info'
+      });
+    }
   };
 
   // Filter companies
@@ -462,11 +481,38 @@ export default function SCADDashboardPage() {
     setShowReportDetails(false);
     setSelectedReport(null);
   };
-
   const handleUpdateReportStatus = (id: number, newStatus: 'pending' | 'flagged' | 'rejected' | 'accepted') => {
+    const report = reports.find(report => report.id === id);
     setReports(reports.map((report: any) => 
       report.id === id ? { ...report, status: newStatus } : report
     ));
+    
+    // Show notification based on action
+    if (report) {
+      const statusMessages = {
+        'accepted': {
+          message: `Report "${report.title}" has been accepted.`,
+          type: 'success'
+        },
+        'rejected': {
+          message: `Report "${report.title}" has been rejected.`,
+          type: 'info'
+        },
+        'flagged': {
+          message: `Report "${report.title}" has been flagged for review.`,
+          type: 'warning'
+        },
+        'pending': {
+          message: `Report "${report.title}" has been marked as pending.`,
+          type: 'info'
+        }
+      };
+      
+      showNotification({
+        message: statusMessages[newStatus].message,
+        type: statusMessages[newStatus].type as 'success' | 'error' | 'warning' | 'info'
+      });
+    }
   };
 
   // Filter reports
@@ -500,21 +546,36 @@ export default function SCADDashboardPage() {
     setShowEvaluationDetails(false);
     setSelectedEvaluation(null);
   };
-  
-  const handleUpdateEvaluation = (id: number, score: number, comments: string) => {
+    const handleUpdateEvaluation = (id: number, score: number, comments: string) => {
     // In a real app, you would call an API here
+    const evaluation = evaluations.find(evaluation => evaluation.id === id);
     setEvaluations(evaluations.map(evaluation => 
       evaluation.id === id ? { ...evaluation, evaluationScore: score } : evaluation
     ));
     
     // Close the modal or keep it open with updated data
     setSelectedEvaluation(prev => prev ? { ...prev, evaluationScore: score } : null);
+    
+    // Show success notification
+    if (evaluation) {      showNotification({
+        message: `Evaluation for ${evaluation.studentName} has been updated successfully.`,
+        type: 'success'
+      });
+    }
   };
   
   const handleDeleteEvaluation = (id: number) => {
     // In a real app, you would call an API here
+    const evaluation = evaluations.find(evaluation => evaluation.id === id);
     setEvaluations(evaluations.filter(evaluation => evaluation.id !== id));
     setShowEvaluationDetails(false);
+    
+    // Show info notification
+    if (evaluation) {      showNotification({
+        message: `Evaluation for ${evaluation.studentName} has been deleted.`,
+        type: 'info'
+      });
+    }
   };
   
   // Filter evaluations
@@ -649,14 +710,17 @@ export default function SCADDashboardPage() {
       value: selectedInternshipPaid
     }
   ];
-
   function handleSaveInternshipCycle(): void {
     // In a real application, this would involve an API call to save the internship cycle dates
     console.log('Internship cycle saved:', {
       startDate: internshipCycleStart,
       endDate: internshipCycleEnd,
     });
-    alert('Internship cycle dates have been saved successfully!');
+    
+    // Show success notification instead of alert    showNotification({
+      message: 'Internship cycle dates have been saved successfully!',
+      type: 'success'
+    });
   }
 
   return (
@@ -1007,10 +1071,19 @@ export default function SCADDashboardPage() {
           onDelete={handleDeleteEvaluation}
         />
       )}
-      {showInternshipDetails && selectedInternship && (
-        <InternshipDetailsModal
+      {showInternshipDetails && selectedInternship && (        <InternshipDetailsModal
           internship={selectedInternship}
           onClose={handleCloseInternshipDetails}
+        />
+      )}
+      
+      {/* Global notification system */}
+      {notification && (
+        <NotificationSystem
+          message={notification.message}
+          type={notification.type}
+          visible={visible}
+          onClose={hideNotification}
         />
       )}
     </div>

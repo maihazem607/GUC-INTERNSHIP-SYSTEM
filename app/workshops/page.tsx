@@ -10,7 +10,7 @@ import WorkshopCard from "../../src/components/workshops/WorkshopCard";
 import WorkshopDetailsModal from "../../src/components/workshops/WorkshopDetailsModal";
 import LiveSessionModal from "../../src/components/workshops/LiveSessionModal";
 import RecordedSessionModal from "../../src/components/workshops/RecordedSessionModal";
-import NotificationSystem from "../../src/components/workshops/NotificationSystem";
+import NotificationSystem, { NOTIFICATION_CONSTANTS } from "../../src/components/global/NotificationSystem";
 import { Workshop } from "../../src/components/workshops/types";
 
 // Workshop data (would typically come from an API)
@@ -131,7 +131,18 @@ export default function WorkshopListPage() {
   const [selectedWorkshop, setSelectedWorkshop] = useState<Workshop | null>(null);
   const [liveSession, setLiveSession] = useState<Workshop | null>(null);
   const [recordedSession, setRecordedSession] = useState<Workshop | null>(null);
-  const [notification, setNotification] = useState<{message: string, type: string} | null>(null);
+  const [notification, setNotification] = useState<{message: string, type: 'success' | 'error' | 'warning' | 'info'} | null>(null);
+
+  // Auto-dismiss notifications after the specified time
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        setNotification(null);
+      }, NOTIFICATION_CONSTANTS.AUTO_DISMISS_TIME);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
 
   // Filter options
   const statusOptions = ['All', 'Upcoming', 'Ongoing', 'Completed'];
@@ -270,14 +281,18 @@ export default function WorkshopListPage() {
             </div>
           </div>
         </main>
-      </div>
-
-      {/* Notification Component */}
+      </div>      {/* Notification Component - With auto-dismiss */}
       {notification && (
         <NotificationSystem
           message={notification.message}
           type={notification.type}
-          onClose={() => setNotification(null)}
+          visible={true}
+          onClose={() => {
+            // This creates a smooth fade-out animation before removing notification
+            setTimeout(() => {
+              setNotification(null);
+            }, NOTIFICATION_CONSTANTS.HIDE_ANIMATION_TIME);
+          }}
         />
       )}
 

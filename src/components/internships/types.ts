@@ -5,6 +5,7 @@ export interface FilterOptions {
   isPaid?: string;
   status?: string;
   type?: string;
+  date?: string;
 }
 
 // Internship types
@@ -20,9 +21,10 @@ export interface Internship {
   salary: string;
   logo: string;
   description: string;
-  skills?: string[]; // New property for skills required
-  applicationStatus?: 'none' | 'applied' | 'reviewing' | 'accepted' | 'rejected'; // New property
+  skills?: string[]; // skills required
+  applicationStatus?: 'none' | 'applied' | 'reviewing' | 'accepted' | 'rejected'; 
   applicationType?: 'standard' | 'pro'; // Distinguish between regular and PRO applications
+  requiredDocuments?: DocumentInfo[]; 
 }
 
 // Workshop types

@@ -2,14 +2,16 @@
 import React, { useState, useEffect } from 'react';
 import Navigation from "../../src/components/global/Navigation";
 import SearchBar from "../../src/components/global/SearchBar";
+import FilterSidebar from "../../src/components/global/FilterSidebar";
 import InternshipCard from "../../src/components/internships/InternshipCard";
 import InternshipDetailsModal from "../../src/components/internships/InternshipDetailsModal";
-import { Internship } from "../../src/components/internships/types";
+import { Internship, FilterOptions } from "../../src/components/internships/types";
+import NotificationSystem, { useNotification } from "../../src/components/global/NotificationSystem";
 import styles from "./page.module.css";
 
 // Extended Internship type to include application status and evaluation
 interface MyInternship extends Internship {
-  applicationStatus: 'pending' | 'finalized' | 'accepted' | 'rejected';
+  applicationStatus: 'none' | 'applied' | 'reviewing' | 'accepted' | 'rejected';
   applicationDate: string;
   startDate?: string;
   endDate?: string;
@@ -24,8 +26,10 @@ interface MyInternship extends Internship {
 const MyInternshipsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'applications' | 'current' | 'past'>('applications');
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('All');
-  const [dateFilter, setDateFilter] = useState<string>('All');
+  const [activeFilters, setActiveFilters] = useState<FilterOptions>({
+    status: 'All',
+    date: 'All',
+  });
   const [myInternships, setMyInternships] = useState<MyInternship[]>([]);
   const [filteredInternships, setFilteredInternships] = useState<MyInternship[]>([]);
   const [selectedInternship, setSelectedInternship] = useState<MyInternship | null>(null);
@@ -35,6 +39,35 @@ const MyInternshipsPage: React.FC = () => {
     comment: '',
     recommended: false
   });
+  const { notification, visible, showNotification, hideNotification } = useNotification();
+  
+  // Filter options
+  const statusOptions = ['All', 'Pending', 'Finalized', 'Accepted', 'Rejected'];
+  const dateOptions = ['All', 'Recent', '2023', '2022'];
+  
+  // Format filters for the global FilterSidebar component based on active tab
+  const getFormattedFilters = () => {
+    if (activeTab === 'applications') {
+      return [
+        {
+          title: "Status",
+          options: statusOptions,
+          type: "status",
+          value: activeFilters.status || 'All'
+        }
+      ];
+    } else if (activeTab === 'past') {
+      return [
+        {
+          title: "Date",
+          options: dateOptions,
+          type: "date",
+          value: activeFilters.date || 'All'
+        }
+      ];
+    }
+    return [];
+  };
 
   // Mock data for internships
   useEffect(() => {
@@ -71,8 +104,7 @@ const MyInternshipsPage: React.FC = () => {
         isPaid: true,
         salary: '$30/hr',
         logo: '/logos/google.png',
-        description: 'Develop frontend components for Google Cloud Platform.',
-        applicationStatus: 'pending',
+        description: 'Develop frontend components for Google Cloud Platform.',        applicationStatus: 'applied',
         applicationDate: '1 May 2023',
         skills: ['React', 'TypeScript', 'CSS']
       },
@@ -87,8 +119,8 @@ const MyInternshipsPage: React.FC = () => {
         isPaid: true,
         salary: '$28/hr',
         logo: '/logos/microsoft.png',
-        description: 'Work on backend systems for Microsoft Azure.',
-        applicationStatus: 'finalized',
+        description: 'Work on backend systems for Microsoft Azure.',        
+        applicationStatus: 'reviewing',
         applicationDate: '10 May 2023',
         skills: ['Java', 'Spring Boot', 'Azure']
       },
@@ -186,11 +218,10 @@ const MyInternshipsPage: React.FC = () => {
       results = myInternships.filter(internship => 
         ['pending', 'finalized', 'accepted', 'rejected'].includes(internship.applicationStatus)
       );
-      
-      // Apply status filter if not "All"
-      if (statusFilter !== 'All') {
+        // Apply status filter if not "All"
+      if (activeFilters.status && activeFilters.status !== 'All') {
         results = results.filter(internship => 
-          internship.applicationStatus === statusFilter.toLowerCase()
+          internship.applicationStatus === activeFilters.status?.toLowerCase()
         );
       }
     } else if (activeTab === 'current') {
@@ -203,12 +234,11 @@ const MyInternshipsPage: React.FC = () => {
       results = myInternships.filter(internship => 
         internship.applicationStatus === 'accepted' && internship.isActive === false
       );
-      
-      // Apply date filter if not "All"
-      if (dateFilter !== 'All') {
+        // Apply date filter if not "All"
+      if (activeFilters.date && activeFilters.date !== 'All') {
         // Implementation would depend on how dates are stored
         // For this example, we're just checking if there's a filter applied
-        if (dateFilter === 'Recent') {
+        if (activeFilters.date === 'Recent') {
           // Example: filter for internships completed in the last 3 months
           // This would need actual date logic in a real implementation
           results = results.slice(0, 2); // Just for demonstration
@@ -227,7 +257,7 @@ const MyInternshipsPage: React.FC = () => {
     }
     
     setFilteredInternships(results);
-  }, [myInternships, activeTab, searchTerm, statusFilter, dateFilter]);
+  }, [myInternships, activeTab, searchTerm, activeFilters]);
 
   // Handle viewing details of an internship
   const handleViewDetails = (internship: Internship) => {
@@ -256,9 +286,7 @@ const MyInternshipsPage: React.FC = () => {
     }
     
     setShowEvaluationModal(true);
-  };
-
-  // Handle submitting an evaluation
+  };  // Handle submitting an evaluation
   const handleSubmitEvaluation = () => {
     if (selectedInternship) {
       // Update the internship with the new evaluation
@@ -275,9 +303,14 @@ const MyInternshipsPage: React.FC = () => {
       setMyInternships(updatedInternships);
       setShowEvaluationModal(false);
       setSelectedInternship(null);
+      
+      // Show success notification
+      showNotification({
+        message: `Evaluation for ${selectedInternship.title} at ${selectedInternship.company} submitted successfully!`,
+        type: 'success'
+      });
     }
   };
-
   // Handle deleting an evaluation
   const handleDeleteEvaluation = () => {
     if (selectedInternship) {
@@ -295,7 +328,21 @@ const MyInternshipsPage: React.FC = () => {
       setMyInternships(updatedInternships);
       setShowEvaluationModal(false);
       setSelectedInternship(null);
+      
+            // Show notification
+      showNotification({
+        message: `Evaluation for ${selectedInternship.title} at ${selectedInternship.company} has been deleted.`,
+        type: 'info'
+      });
     }
+  };
+
+  // Handle filter changes
+  const handleFilterChange = (filterType: string, value: string) => {
+    setActiveFilters(prev => ({
+      ...prev,
+      [filterType]: value
+    }));
   };
 
   // Get the appropriate status badge class
@@ -316,9 +363,7 @@ const MyInternshipsPage: React.FC = () => {
   return (
     <div className={styles.pageContainer}>
       {/* Header/Navigation */}
-      <Navigation title="My Internships" />
-
-      <div className={styles.contentWrapper}>
+      <Navigation title="My Internships" />      <div className={styles.contentWrapper}>
         {/* Tabs Navigation */}
         <div className={styles.tabsContainer}>
           <button 
@@ -341,51 +386,23 @@ const MyInternshipsPage: React.FC = () => {
           </button>
         </div>
 
+        {/* Filter Sidebar - Only show for tabs that need filtering */}
+        {(activeTab === 'applications' || activeTab === 'past') && (
+          <FilterSidebar
+            filters={getFormattedFilters()}
+            onFilterChange={handleFilterChange}
+          />
+        )}
+
         {/* Main Content */}
         <main className={styles.mainContent}>
-          {/* Search and Filter Bar */}
+          {/* Search Bar */}
           <div className={styles.toolbarContainer}>
             <SearchBar 
               searchTerm={searchTerm} 
               setSearchTerm={setSearchTerm} 
               placeholder="Search by job title or company..."
             />
-            
-            {/* Conditional filters based on active tab */}
-            {activeTab === 'applications' && (
-              <div className={styles.filterContainer}>
-                <label htmlFor="status-filter" className={styles.filterLabel}>Status:</label>
-                <select 
-                  id="status-filter"
-                  className={styles.filterSelect}
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                >
-                  <option value="All">All</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Finalized">Finalized</option>
-                  <option value="Accepted">Accepted</option>
-                  <option value="Rejected">Rejected</option>
-                </select>
-              </div>
-            )}
-            
-            {activeTab === 'past' && (
-              <div className={styles.filterContainer}>
-                <label htmlFor="date-filter" className={styles.filterLabel}>Date:</label>
-                <select 
-                  id="date-filter"
-                  className={styles.filterSelect}
-                  value={dateFilter}
-                  onChange={(e) => setDateFilter(e.target.value)}
-                >
-                  <option value="All">All Time</option>
-                  <option value="Recent">Recent</option>
-                  <option value="2023">2023</option>
-                  <option value="2022">2022</option>
-                </select>
-              </div>
-            )}
           </div>
 
           {/* Internship Listings */}
@@ -462,14 +479,15 @@ const MyInternshipsPage: React.FC = () => {
             )}
           </div>
         </main>
-      </div>
-
-      {/* Details Modal */}
+      </div>      {/* Details Modal */}
       {selectedInternship && !showEvaluationModal && (
         <InternshipDetailsModal
           internship={selectedInternship}
           onClose={handleCloseModal}
-          onApply={async () => {}}
+          onApply={async (application) => {
+            console.log(`Viewing details for ${selectedInternship.title} at ${selectedInternship.company}`);
+            return Promise.resolve();
+          }}
         />
       )}
 
@@ -552,9 +570,18 @@ const MyInternshipsPage: React.FC = () => {
               >
                 Submit Evaluation
               </button>
-            </div>
-          </div>
+            </div>          </div>
         </div>
+      )}
+      
+      {/* Global notification system */}
+      {notification && (
+        <NotificationSystem
+          message={notification.message}
+          type={notification.type}
+          visible={visible}
+          onClose={hideNotification}
+        />
       )}
     </div>
   );

@@ -1,3 +1,4 @@
+// page.tsx - Modified to handle notifications at the page level
 "use client";
 import styles from "./page.module.css";
 import React, { useState, useEffect } from 'react';
@@ -8,6 +9,7 @@ import FilterSidebar from "../../src/components/global/FilterSidebar";
 import SearchBar from "../../src/components/global/SearchBar";
 import InternshipCard from "../../src/components/internships/InternshipCard";
 import InternshipDetailsModal from "../../src/components/internships/InternshipDetailsModal";
+import NotificationSystem, { useNotification } from "../../src/components/global/NotificationSystem";
 import { Internship, FilterOptions } from "../../src/components/internships/types";
 
 // Internship data (would typically come from an API)
@@ -232,31 +234,34 @@ export default function InternshipListPage() {
   const [filteredInternships, setFilteredInternships] = useState<Internship[]>(internships);
   const [starredInternships, setStarredInternships] = useState<number[]>([]);
   const [selectedInternship, setSelectedInternship] = useState<Internship | null>(null);
+  
+  // Add notification system at page level
+  const { notification, visible, showNotification, hideNotification } = useNotification();
 
   // Filter options
   const industries = ['All', 'Technology', 'Finance', 'Marketing', 'Design', 'Healthcare'];
   const durations = ['All', '2-3 months', '3-6 months', '6+ months'];
   const paidOptions = ['All', 'Paid', 'Unpaid'];
-
+  
   // Format filters for the global FilterSidebar component
   const formattedFilters = [
     {
       title: "Industry",
       options: industries,
       type: "industry",
-      value: activeFilters.industry
+      value: activeFilters.industry || 'All'
     },
     {
       title: "Duration",
       options: durations,
       type: "duration",
-      value: activeFilters.duration
+      value: activeFilters.duration || 'All'
     },
     {
       title: "Compensation",
       options: paidOptions,
       type: "isPaid",
-      value: activeFilters.isPaid
+      value: activeFilters.isPaid || 'All'
     }
   ];
 
@@ -271,7 +276,22 @@ export default function InternshipListPage() {
     
     // Apply duration filter
     if (activeFilters.duration !== 'All') {
-      results = results.filter(internship => internship.duration === activeFilters.duration);
+      results = results.filter(internship => {
+        // Extract the duration value (number) from the string
+        const durationValue = parseInt(internship.duration.split(' ')[0]);
+        
+        // Match based on the selected duration range
+        switch(activeFilters.duration) {
+          case '2-3 months':
+            return durationValue >= 2 && durationValue <= 3;
+          case '3-6 months':
+            return durationValue >= 3 && durationValue <= 6;
+          case '6+ months':
+            return durationValue >= 6;
+          default:
+            return true;
+        }
+      });
     }
     
     // Apply paid/unpaid filter
@@ -319,11 +339,32 @@ export default function InternshipListPage() {
   const handleCloseModal = () => {
     setSelectedInternship(null);
   };
-
+  
   // Handle applying for an internship
-  const handleApply = async (internship: Internship) => {
+  const handleApply = async (application: {
+    internshipId: number;
+    documents: File[];
+    additionalNotes?: string;
+  }) => {
     // This would typically be an API call
-    console.log(`Applied for internship: ${internship.title} at ${internship.company}`);
+    const appliedInternship = internships.find(intern => intern.id === application.internshipId);
+    if (appliedInternship) {
+      console.log(`Applied for internship: ${appliedInternship.title} at ${appliedInternship.company}`);
+      console.log(`Submitted ${application.documents.length} documents`);
+      if (application.additionalNotes) {
+        console.log(`Additional notes: ${application.additionalNotes}`);
+      }
+      
+      // Show success notification at the page level
+      showNotification({
+        message: 'Application submitted successfully!',
+        type: 'success'
+      });
+    }
+    
+    // Close the modal after successful submission
+    setSelectedInternship(null);
+    
     return new Promise<void>(resolve => setTimeout(resolve, 1000));
   };
 
@@ -384,6 +425,16 @@ export default function InternshipListPage() {
           internship={selectedInternship}
           onClose={handleCloseModal}
           onApply={handleApply}
+        />
+      )}
+      
+      {/* Global notification system - Moved to page level */}
+      {notification && (
+        <NotificationSystem
+          message={notification.message}
+          type={notification.type}
+          visible={visible}
+          onClose={hideNotification}
         />
       )}
     </div>

@@ -13,6 +13,8 @@ export interface Appointment {
   location?: string;
 }
 
+// This should match the interface in global/NotificationSystem.tsx
+// For consistency across the application
 export interface NotificationProps {
   message: string;
   type: 'success' | 'error' | 'info' | 'warning';

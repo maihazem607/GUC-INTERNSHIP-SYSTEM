@@ -9,7 +9,7 @@ import SearchBar from "../../src/components/global/SearchBar";
 import AppointmentCard from "../../src/components/Appointments/AppointmentCard";
 import AppointmentDetailsModal from "@/components/Appointments/AppointmentDetailsModal";
 import VideoCall from "@/components/Appointments/VideoCall";
-import NotificationSystem from "@/components/Appointments/NotificationSystem";
+import NotificationSystem, { NOTIFICATION_CONSTANTS } from "@/components/global/NotificationSystem";
 import IncomingCallNotification from "@/components/Appointments/IncomingCallNotification";
 import { Appointment } from "@/components/Appointments/types";
 
@@ -94,6 +94,17 @@ export default function AppointmentsPage() {
   const [showVideoCall, setShowVideoCall] = useState(false);
   const [notification, setNotification] = useState<{message: string, type: 'success' | 'error' | 'info' | 'warning'} | null>(null);
   const [incomingCall, setIncomingCall] = useState<Appointment | null>(null);
+  
+  // Auto-dismiss notifications after the specified time
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        setNotification(null);
+      }, NOTIFICATION_CONSTANTS.AUTO_DISMISS_TIME);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
   
   // Filter options
   const statusOptions = ['All', 'Pending', 'Accepted', 'Rejected', 'Completed'];
@@ -370,14 +381,18 @@ export default function AppointmentsPage() {
           participantName={selectedAppointment.participantName}
           participantType={selectedAppointment.participantType}
         />
-      )}
-
-      {/* Notification Component */}
+      )}      {/* Notification Component - Using useEffect for auto-dismiss */}
       {notification && (
         <NotificationSystem
           message={notification.message}
           type={notification.type}
-          onClose={() => setNotification(null)}
+          visible={true}
+          onClose={() => {
+            // This creates a smooth fade-out animation before removing notification
+            setTimeout(() => {
+              setNotification(null);
+            }, NOTIFICATION_CONSTANTS.HIDE_ANIMATION_TIME);
+          }}
         />
       )}
 

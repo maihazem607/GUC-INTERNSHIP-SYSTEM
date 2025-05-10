@@ -1,12 +1,17 @@
+import { useState, useEffect } from 'react';
 import React from 'react';
 import Image from "next/image";
 import styles from "./InternshipDetailsModal.module.css";
-import { Internship } from './types';
+import { Internship, DocumentInfo } from './types';
 
 interface DetailsModalProps {
   internship: Internship;
   onClose: () => void;
-  onApply?: (internship: Internship) => Promise<void>; // Make onApply optional
+  onApply?: (application: {
+    internshipId: number;
+    documents: File[];
+    additionalNotes?: string;
+  }) => Promise<void>;
 }
 
 const InternshipDetailsModal: React.FC<DetailsModalProps> = ({
@@ -14,49 +19,62 @@ const InternshipDetailsModal: React.FC<DetailsModalProps> = ({
   onClose,
   onApply
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [uploadedDocuments, setUploadedDocuments] = useState<File[]>([]);
-  const [showUploadSection, setShowUploadSection] = useState(false);
-  const [additionalNotes, setAdditionalNotes] = useState('');
+  const [documents, setDocuments] = useState<File[]>([]);
+  const [showApplicationSection, setShowApplicationSection] = useState(false);
+  const [additionalNotes, setAdditionalNotes] = useState<string>('');
   
-  // Skills display (assuming skills are added to Internship type)
+  // Skills display
   const skills = internship.skills || ['UI/UX Design', 'Figma', 'Adobe XD', 'Prototyping'];
 
-  // Handler with network error handling
-  const handleApply = async () => {
-    setIsLoading(true);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const fileList = Array.from(event.target.files);
+      setDocuments(prev => [...prev, ...fileList]);
+      setError(null);
+    }
+  };
+
+  const removeDocument = (indexToRemove: number) => {
+    setDocuments(documents.filter((_, index) => index !== indexToRemove));
+  };  
+  
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
+    
+    if (documents.length === 0) {
+      setError('Please upload at least one document');
+      return;
+    }
+
+    setIsSubmitting(true);
     setError(null);
     
     try {
-      await onApply(internship);
-      // You could potentially send the documents to your backend here
-      // For example: await uploadDocuments(internship.id, uploadedDocuments);
-      onClose();
-    } catch (err) {
-      console.error('Network error:', err);
-      setError('Network connection error. Please check your internet connection and try again.');
+      if (onApply) {
+        // Just call the onApply function - notifications are now handled at the page level
+        await onApply({
+          internshipId: internship.id,
+          documents,
+          additionalNotes: additionalNotes.trim() || undefined,
+        });
+      }
+      
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      setError('Failed to submit application. Please check your internet connection and try again.');
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const newFiles = Array.from(e.target.files);
-      setUploadedDocuments(prev => [...prev, ...newFiles]);
-    }
-  };
-
-  const removeDocument = (index: number) => {
-    setUploadedDocuments(prev => prev.filter((_, i) => i !== index));
   };
 
   return (
     <div className={styles.modalBackdrop} onClick={onClose}>
       <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
         <button className={styles.closeButton} onClick={onClose}>×</button>
-        
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>{internship.title}</h2>
           <div className={styles.modalHost}>
@@ -73,30 +91,31 @@ const InternshipDetailsModal: React.FC<DetailsModalProps> = ({
           </div>
         </div>
         
-        <div className={styles.modalInfo}>
-          <div className={styles.modalInfoItem}>
-            <div className={styles.modalInfoLabel}>Duration</div>
-            <div className={styles.modalInfoValue}>{internship.duration}</div>
-          </div>
-          <div className={styles.modalInfoItem}>
-            <div className={styles.modalInfoLabel}>Location</div>
-            <div className={styles.modalInfoValue}>{internship.location}</div>
-          </div>
-          <div className={styles.modalInfoItem}>
-            <div className={styles.modalInfoLabel}>Compensation</div>
-            <div className={styles.modalInfoValue}>
-              {internship.isPaid ? 
-                <span className={styles.paidBadge}>Paid: {internship.salary}</span> : 
-                <span className={styles.unpaidBadge}>Unpaid</span>
-              }
+        <div className={styles.modalSection}>
+          <div className={styles.modalInfo}>
+            <div className={styles.modalInfoItem}>
+              <div className={styles.modalInfoLabel}>Duration</div>
+              <div className={styles.modalInfoValue}>{internship.duration}</div>
+            </div>
+            <div className={styles.modalInfoItem}>
+              <div className={styles.modalInfoLabel}>Location</div>
+              <div className={styles.modalInfoValue}>{internship.location}</div>
+            </div>
+            <div className={styles.modalInfoItem}>
+              <div className={styles.modalInfoLabel}>Compensation</div>
+              <div className={styles.modalInfoValue}>
+                {internship.isPaid ? 
+                  <span className={styles.paidBadge}>Paid: {internship.salary}</span> : 
+                  <span className={styles.unpaidBadge}>Unpaid</span>
+                }
+              </div>
+            </div>
+            <div className={styles.modalInfoItem}>
+              <div className={styles.modalInfoLabel}>Start Date</div>
+              <div className={styles.modalInfoValue}>{internship.date}</div>
             </div>
           </div>
-          <div className={styles.modalInfoItem}>
-            <div className={styles.modalInfoLabel}>Start Date</div>
-            <div className={styles.modalInfoValue}>{internship.date}</div>
-          </div>
         </div>
-        
         <div className={styles.modalSection}>
           <h3 className={styles.sectionTitle}>Job Description</h3>
           <p className={styles.modalDescription}>{internship.description}</p>
@@ -109,148 +128,122 @@ const InternshipDetailsModal: React.FC<DetailsModalProps> = ({
               <span key={index} className={styles.skillBadge}>{skill}</span>
             ))}
           </div>
-        </div>
-        
-        {showUploadSection ? (
-          <div className={styles.modalSection}>
-            <h3 className={styles.sectionTitle}>Upload Documents</h3>
-            <p className={styles.uploadDescription}>
-              Enhance your application by uploading additional documents (CV, cover letter, certificates)
-            </p>
-            
-            <div className={styles.uploadArea}>
-              <input 
-                type="file" 
-                id="document-upload" 
-                multiple 
-                onChange={handleFileChange}
-                className={styles.fileInput}
-              />
-              <label htmlFor="document-upload" className={styles.uploadButton}>
-                Select Files
-              </label>
-            </div>
-            
-            {uploadedDocuments.length > 0 && (
-              <div className={styles.documentList}>
-                <h4>Selected Documents:</h4>
-                <ul>
-                  {uploadedDocuments.map((doc, index) => (
+        </div>        
+          {onApply && showApplicationSection && (
+          <>
+            <div className={styles.modalSection}>
+              <h3 className={styles.sectionTitle}>Application Documents</h3>
+              
+              {internship.requiredDocuments && internship.requiredDocuments.length > 0 && (
+                <div className={styles.requiredDocumentsSection}>
+                  <h4>Required Documents</h4>
+                  <ul className={styles.requiredDocsList}>
+                    {internship.requiredDocuments.map((doc: DocumentInfo, idx: number) => (
+                      <li key={idx}>{doc.name}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
+              <p className={styles.uploadDescription}>
+                Upload documents to support your application (CV, cover letter, certificates)
+              </p>
+              
+              <div className={styles.uploadArea}>
+                <label htmlFor="document-upload" className={styles.uploadButton}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                  Upload Documents
+                  <input 
+                    type="file" 
+                    id="document-upload" 
+                    multiple 
+                    onChange={handleFileChange}
+                    className={styles.fileInput}
+                    disabled={isSubmitting}
+                  />
+                </label>
+                {error && (
+                  <div className={styles.error}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px'}}>
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="8" x2="12" y2="12"></line>
+                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    {error}
+                  </div>
+                )}
+              </div>
+                {documents.length > 0 && (
+                <ul className={styles.documentList}>
+                  {documents.map((doc, index) => (
                     <li key={index} className={styles.documentItem}>
-                      <span>{doc.name}</span>
+                      <div className={styles.documentInfo}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '8px', color: '#1976d2'}}>
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                          <polyline points="14 2 14 8 20 8"></polyline>
+                          <line x1="16" y1="13" x2="8" y2="13"></line>
+                          <line x1="16" y1="17" x2="8" y2="17"></line>
+                          <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <span>{doc.name}</span>
+                      </div>
                       <button 
+                        type="button"
                         onClick={() => removeDocument(index)}
                         className={styles.removeButton}
+                        disabled={isSubmitting}
                       >
                         Remove
                       </button>
                     </li>
                   ))}
                 </ul>
-              </div>
-            )}
-            
-            <div className={styles.notesSection}>
-              <h4>Additional Notes</h4>
+              )}
+            </div>
+
+            <div className={styles.modalSection}>
+              <h3 className={styles.sectionTitle}>Additional Notes</h3>
               <textarea
                 className={styles.notesTextarea}
                 placeholder="Add any additional information that might support your application..."
                 value={additionalNotes}
                 onChange={(e) => setAdditionalNotes(e.target.value)}
+                disabled={isSubmitting}
                 rows={4}
               />
             </div>
-          </div>
-        ) : (
-          <div className={styles.uploadPrompt}>
-            Want to include additional documents with your application?
-            <button 
-              className={styles.secondaryButton}
-              onClick={() => setShowUploadSection(true)}
-            >
-              Add Documents
-            </button>
-          </div>
+            
+            <div className={styles.modalActions}>
+              <button
+                type="button"
+                onClick={() => setShowApplicationSection(false)}
+                disabled={isSubmitting}
+                className={styles.cancelBtn}
+              >
+                Cancel
+              </button>
+              <button 
+                className={styles.applyButton}
+                disabled={isSubmitting}
+                onClick={handleSubmit}
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit Application'}
+              </button>
+            </div>
+          </>
         )}
         
-        {showUploadSection ? (
-          <div className={styles.modalSection}>
-            <h3 className={styles.sectionTitle}>Upload Documents</h3>
-            <p className={styles.uploadDescription}>
-              Enhance your application by uploading additional documents (CV, cover letter, certificates)
-            </p>
-            
-            <div className={styles.uploadArea}>
-              <input 
-                type="file" 
-                id="document-upload" 
-                multiple 
-                onChange={handleFileChange}
-                className={styles.fileInput}
-              />
-              <label htmlFor="document-upload" className={styles.uploadButton}>
-                Select Files
-              </label>
-            </div>
-            
-            {uploadedDocuments.length > 0 && (
-              <div className={styles.documentList}>
-                <h4>Selected Documents:</h4>
-                <ul>
-                  {uploadedDocuments.map((doc, index) => (
-                    <li key={index} className={styles.documentItem}>
-                      <span>{doc.name}</span>
-                      <button 
-                        onClick={() => removeDocument(index)}
-                        className={styles.removeButton}
-                      >
-                        Remove
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            
-            <div className={styles.notesSection}>
-              <h4>Additional Notes</h4>
-              <textarea
-                className={styles.notesTextarea}
-                placeholder="Add any additional information that might support your application..."
-                value={additionalNotes}
-                onChange={(e) => setAdditionalNotes(e.target.value)}
-                rows={4}
-              />
-            </div>
-          </div>
-        ) : (
-          <div className={styles.uploadPrompt}>
-            Want to include additional documents with your application?
-            <button 
-              className={styles.secondaryButton}
-              onClick={() => setShowUploadSection(true)}
-            >
-              Add Documents
-            </button>
-          </div>
-        )}
-        
-        {/* Apply button is removed from SCAD view but kept for student view */}
-        {onApply && (
+        {onApply && !showApplicationSection && (
           <div className={styles.modalActions}>
             <button 
               className={styles.applyButton}
-              disabled={isLoading}
-              onClick={async () => {
-                try {
-                  await onApply(internship);
-                  onClose();
-                } catch (err) {
-                  console.error('Network error:', err);
-                }
-              }}
+              onClick={() => setShowApplicationSection(true)}
             >
-              {isLoading ? 'Processing...' : 'Apply Now'}
+              Apply Now
             </button>
           </div>
         )}
