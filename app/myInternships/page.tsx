@@ -44,7 +44,8 @@ const MyInternshipsPage: React.FC = () => {
     rating: 0,
     comment: '',
     recommended: false
-  });
+  });  const [isSubmittingEval, setIsSubmittingEval] = useState(false);
+  const [isSubmittingReport, setIsSubmittingReport] = useState(false);
   const [report, setReport] = useState({
     title: '',
     introduction: '',
@@ -348,133 +349,155 @@ const MyInternshipsPage: React.FC = () => {
     
     setShowReportModal(true);
     setSelectedInternship(internship);
-  };
-  // Handle submitting an evaluation
+  };  // Handle submitting an evaluation
   const handleSubmitEvaluation = () => {
     if (selectedInternship) {
-      // Update the internship with the new evaluation
-      const updatedInternships = myInternships.map(internship => {
-        if (internship.id === selectedInternship.id) {
-          return {
-            ...internship,
-            evaluation: evaluation
-          };
-        }
-        return internship;
-      });
+      setIsSubmittingEval(true);
       
-      setMyInternships(updatedInternships);
-      setFilteredInternships(prev => 
-        prev.map(item => 
-          item.id === selectedInternship.id 
-            ? { ...item, evaluation: evaluation }
-            : item
-        )
-      );
-      
-      setShowEvaluationModal(false);
-      
-      // Show success notification
-      showNotification({
-        message: `Evaluation for ${selectedInternship.title} at ${selectedInternship.company} submitted successfully!`,
-        type: 'success'
-      });
+      // Simulate API call with a slight delay
+      setTimeout(() => {
+        // Update the internship with the new evaluation
+        const updatedInternships = myInternships.map(internship => {
+          if (internship.id === selectedInternship.id) {
+            return {
+              ...internship,
+              evaluation: evaluation
+            };
+          }
+          return internship;
+        });
+        
+        setMyInternships(updatedInternships);
+        setFilteredInternships(prev => 
+          prev.map(item => 
+            item.id === selectedInternship.id 
+              ? { ...item, evaluation: evaluation }
+              : item
+          )
+        );
+        
+        setIsSubmittingEval(false);
+        setShowEvaluationModal(false);
+        
+        // Show success notification
+        showNotification({
+          message: `Evaluation for ${selectedInternship.title} at ${selectedInternship.company} submitted successfully!`,
+          type: 'success'
+        });
+      }, 800); // Simulate network delay
     }
-  };
-  // Handle submitting a report
+  };  // Handle submitting a report
   const handleSubmitReport = () => {
     if (selectedInternship) {
-      // Update the internship with the new report
-      const updatedInternships = myInternships.map(internship => {
-        if (internship.id === selectedInternship.id) {
-          return {
-            ...internship,
-            report: report
-          };
-        }
-        return internship;
-      });
+      setIsSubmittingReport(true);
       
-      setMyInternships(updatedInternships);
-      setFilteredInternships(prev => 
-        prev.map(item => 
-          item.id === selectedInternship.id 
-            ? { ...item, report: report }
-            : item
-        )
-      );
-      
-      setShowReportModal(false);
-      
-      // Show success notification
-      showNotification({
-        message: `Report for ${selectedInternship.title} at ${selectedInternship.company} submitted successfully!`,
-        type: 'success'
-      });
+      // Simulate API call with a slight delay
+      setTimeout(() => {
+        // Update the internship with the new report
+        const updatedInternships = myInternships.map(internship => {
+          if (internship.id === selectedInternship.id) {
+            return {
+              ...internship,
+              report: report
+            };
+          }
+          return internship;
+        });
+        
+        setMyInternships(updatedInternships);
+        setFilteredInternships(prev => 
+          prev.map(item => 
+            item.id === selectedInternship.id 
+              ? { ...item, report: report }
+              : item
+          )
+        );
+        
+        setIsSubmittingReport(false);
+        setShowReportModal(false);
+        
+        // Show success notification
+        showNotification({
+          message: `Report for ${selectedInternship.title} at ${selectedInternship.company} submitted successfully!`,
+          type: 'success'
+        });
+      }, 800); // Simulate network delay
     }
-  };
-  // Handle deleting an evaluation
+  };// Handle deleting an evaluation
   const handleDeleteEvaluation = () => {
     if (selectedInternship) {
-      // Remove the evaluation
-      const updatedInternships = myInternships.map(internship => {
-        if (internship.id === selectedInternship.id) {
-          return {
-            ...internship,
-            evaluation: null
-          };
-        }
-        return internship;
-      });
-      
-      setMyInternships(updatedInternships);
-      setFilteredInternships(prev => 
-        prev.map(item => 
-          item.id === selectedInternship.id 
-            ? { ...item, evaluation: null }
-            : item
-        )
+      // Show confirmation dialog
+      const isConfirmed = window.confirm(
+        `Are you sure you want to delete your evaluation for "${selectedInternship.title}" at ${selectedInternship.company}? This action cannot be undone.`
       );
       
-      setShowEvaluationModal(false);
-      
-      // Show notification
-      showNotification({
-        message: `Evaluation for ${selectedInternship.title} at ${selectedInternship.company} has been deleted.`,
-        type: 'info'
-      });
+      if (isConfirmed) {
+        // Remove the evaluation
+        const updatedInternships = myInternships.map(internship => {
+          if (internship.id === selectedInternship.id) {
+            return {
+              ...internship,
+              evaluation: null
+            };
+          }
+          return internship;
+        });
+        
+        setMyInternships(updatedInternships);
+        setFilteredInternships(prev => 
+          prev.map(item => 
+            item.id === selectedInternship.id 
+              ? { ...item, evaluation: null }
+              : item
+          )
+        );
+        
+        setShowEvaluationModal(false);
+        
+        // Show notification
+        showNotification({
+          message: `Evaluation for ${selectedInternship.title} at ${selectedInternship.company} has been deleted.`,
+          type: 'info'
+        });
+      }
     }
-  };
-  // Handle deleting a report
+  };  // Handle deleting a report
   const handleDeleteReport = () => {
     if (selectedInternship) {
-      // Remove the report
-      const updatedInternships = myInternships.map(internship => {
-        if (internship.id === selectedInternship.id) {
-          return {
-            ...internship,
-            report: null
-          };
-        }
-        return internship;
-      });
-      
-      setMyInternships(updatedInternships);
-      setFilteredInternships(prev => 
-        prev.map(item => 
-          item.id === selectedInternship.id 
-            ? { ...item, report: null }
-            : item
-        )
+      // Show confirmation dialog
+      const isConfirmed = window.confirm(
+        `Are you sure you want to delete your report for "${selectedInternship.title}" at ${selectedInternship.company}? This action cannot be undone.`
       );
       
-      setShowReportModal(false);
-      
-      // Show notification
-      showNotification({
-        message: `Report for ${selectedInternship.title} at ${selectedInternship.company} has been deleted.`,
-        type: 'info'
-      });
+      if (isConfirmed) {
+        // Remove the report
+        const updatedInternships = myInternships.map(internship => {
+          if (internship.id === selectedInternship.id) {
+            return {
+              ...internship,
+              report: null
+            };
+          }
+          return internship;
+        });
+        
+        setMyInternships(updatedInternships);
+        setFilteredInternships(prev => 
+          prev.map(item => 
+            item.id === selectedInternship.id 
+              ? { ...item, report: null }
+              : item
+          )
+        );
+        
+        setShowReportModal(false);
+        
+        // Show notification
+        showNotification({
+          message: `Report for ${selectedInternship.title} at ${selectedInternship.company} has been deleted.`,
+          type: 'info'
+        });
+      }
     }
   };
 
@@ -564,7 +587,7 @@ const MyInternshipsPage: React.FC = () => {
             <button className={styles.closeButton} onClick={() => setShowEvaluationModal(false)}>×</button>
             
             <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>Evaluate Your Internship Experience</h2>
+              <h2 className={styles.modalTitle}>Evaluate Your Internship</h2>
               <div className={styles.modalHost}>
                 {selectedInternship.logo && (
                   <img 
@@ -578,10 +601,9 @@ const MyInternshipsPage: React.FC = () => {
                 <span className={styles.modalHostName}>{selectedInternship.company} - {selectedInternship.title}</span>
               </div>
             </div>
-            
-            <div className={styles.evaluationForm}>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Rating</label>
+              <div className={styles.evaluationForm}>
+              <div className={`${styles.formGroup} ${styles.ratingGroup}`}>
+                <label className={styles.formLabel}>How would you rate this internship?</label>
                 <div className={styles.starRating}>
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -594,47 +616,59 @@ const MyInternshipsPage: React.FC = () => {
                     </button>
                   ))}
                 </div>
+                {evaluation.rating > 0 && (
+                  <div className={styles.ratingText}>
+                    {evaluation.rating === 1 && 'Poor'}
+                    {evaluation.rating === 2 && 'Fair'}
+                    {evaluation.rating === 3 && 'Good'}
+                    {evaluation.rating === 4 && 'Very Good'}
+                    {evaluation.rating === 5 && 'Excellent'}
+                  </div>
+                )}
               </div>
               
               <div className={styles.formGroup}>
-                <label className={styles.formLabel} htmlFor="evaluation-comment">Comments</label>
+                <label className={styles.formLabel} htmlFor="evaluation-comment">Share your experience</label>
                 <textarea
                   id="evaluation-comment"
                   className={styles.commentTextarea}
-                  placeholder="Share your experience with this internship..."
+                  placeholder="Share your experience with this internship... What did you learn? What skills did you develop? What was the work environment like?"
                   value={evaluation.comment}
                   onChange={(e) => setEvaluation({...evaluation, comment: e.target.value})}
                   rows={5}
                 />
               </div>
               
-              <div className={styles.formGroup}>
-                <label className={styles.recommendationLabel}>
-                  <input
-                    type="checkbox"
-                    checked={evaluation.recommended}
-                    onChange={(e) => setEvaluation({...evaluation, recommended: e.target.checked})}
-                  />
-                  I recommend this internship to other students
-                </label>
-              </div>
+              <label className={styles.recommendationLabel}>
+                <input
+                  type="checkbox"
+                  checked={evaluation.recommended}
+                  onChange={(e) => setEvaluation({...evaluation, recommended: e.target.checked})}
+                />
+                I would recommend this internship to other students
+              </label>
             </div>
-            
-            <div className={styles.modalActions}>
+              <div className={styles.modalActions}>
               {selectedInternship.evaluation && (
                 <button 
                   className={styles.deleteButton}
                   onClick={handleDeleteEvaluation}
                 >
-                  Delete Evaluation
+                  Reset
                 </button>
               )}
               <button 
                 className={styles.submitButton}
                 onClick={handleSubmitEvaluation}
-                disabled={evaluation.rating === 0 || evaluation.comment.trim() === ''}
+                disabled={isSubmittingEval || evaluation.rating === 0 || evaluation.comment.trim() === ''}
               >
-                Submit Evaluation
+                {isSubmittingEval ? (
+                  <span>Processing...</span>
+                ) : (
+                  <>
+                    {selectedInternship.evaluation ? 'Update' : 'Submit'}
+                  </>
+                )}
               </button>
             </div>
           </div>
@@ -686,8 +720,7 @@ const MyInternshipsPage: React.FC = () => {
                   rows={3}
                 />
               </div>
-              
-              <div className={styles.formGroup}>
+                <div className={styles.formGroup}>
                 <label className={styles.formLabel} htmlFor="report-body">Report Body</label>
                 <textarea
                   id="report-body"
@@ -695,7 +728,7 @@ const MyInternshipsPage: React.FC = () => {
                   placeholder="Describe your experience, tasks performed, skills learned..."
                   value={report.body}
                   onChange={(e) => setReport({...report, body: e.target.value})}
-                  rows={7}
+                  rows={5}
                 />
               </div>
             </div>
@@ -706,15 +739,23 @@ const MyInternshipsPage: React.FC = () => {
                   className={styles.deleteButton}
                   onClick={handleDeleteReport}
                 >
-                  Delete Report
+                  <span style={{marginRight: '8px'}}>🗑️</span>
+                  Remove Report
                 </button>
               )}
               <button 
                 className={styles.submitButton}
                 onClick={handleSubmitReport}
-                disabled={report.title.trim() === '' || report.body.trim() === ''}
+                disabled={isSubmittingReport || report.title.trim() === '' || report.body.trim() === ''}
               >
-                Submit Report
+                {isSubmittingReport ? (
+                  <span>Processing...</span>
+                ) : (
+                  <>
+                    <span style={{marginRight: '8px'}}>📝</span>
+                    {selectedInternship.report ? 'Update Report' : 'Submit Report'}
+                  </>
+                )}
               </button>
             </div>
           </div>
