@@ -393,7 +393,9 @@ export default function InternshipListPage() {
           <div className={styles.internshipListings}>
             <div className={styles.listingHeader}>
               <h2 className={styles.listingTitle}>Recommended jobs</h2>
-              <span className={styles.internshipCount}>{filteredInternships.length}</span>
+              <span className={styles.internshipCount}>
+                {filteredInternships.length} Internship{filteredInternships.length !== 1 ? 's' : ''}
+              </span>
             </div>
 
             <div className={styles.cards}>

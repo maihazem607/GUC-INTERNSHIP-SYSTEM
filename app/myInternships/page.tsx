@@ -3,15 +3,14 @@ import React, { useState, useEffect } from 'react';
 import Navigation from "../../src/components/global/Navigation";
 import SearchBar from "../../src/components/global/SearchBar";
 import FilterSidebar from "../../src/components/global/FilterSidebar";
-import InternshipCard from "../../src/components/internships/InternshipCard";
-import InternshipDetailsModal from "../../src/components/internships/InternshipDetailsModal";
+import MyInternshipCard from "../../src/components/MyInternships/MyInternshipCard";
 import { Internship, FilterOptions } from "../../src/components/internships/types";
 import NotificationSystem, { useNotification } from "../../src/components/global/NotificationSystem";
 import styles from "./page.module.css";
 
 // Extended Internship type to include application status and evaluation
 interface MyInternship extends Internship {
-  applicationStatus: 'none' | 'applied' | 'reviewing' | 'accepted' | 'rejected';
+  applicationStatus: 'none' | 'pending' | 'finalized' | 'accepted' | 'rejected';
   applicationDate: string;
   startDate?: string;
   endDate?: string;
@@ -21,28 +20,41 @@ interface MyInternship extends Internship {
     comment: string;
     recommended: boolean;
   } | null;
+  report?: {
+    title: string;
+    introduction: string;
+    body: string;
+  } | null;
 }
 
 const MyInternshipsPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'applications' | 'current' | 'past'>('applications');
+  const [activeTab, setActiveTab] = useState<'applications' | 'internships'>('applications');
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState<FilterOptions>({
     status: 'All',
+    internStatus: 'All',
     date: 'All',
   });
   const [myInternships, setMyInternships] = useState<MyInternship[]>([]);
   const [filteredInternships, setFilteredInternships] = useState<MyInternship[]>([]);
   const [selectedInternship, setSelectedInternship] = useState<MyInternship | null>(null);
   const [showEvaluationModal, setShowEvaluationModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
   const [evaluation, setEvaluation] = useState({
     rating: 0,
     comment: '',
     recommended: false
   });
+  const [report, setReport] = useState({
+    title: '',
+    introduction: '',
+    body: '',
+  });
   const { notification, visible, showNotification, hideNotification } = useNotification();
   
   // Filter options
   const statusOptions = ['All', 'Pending', 'Finalized', 'Accepted', 'Rejected'];
+  const internStatusOptions = ['All', 'Current Intern', 'Internship Complete'];
   const dateOptions = ['All', 'Recent', '2023', '2022'];
   
   // Format filters for the global FilterSidebar component based on active tab
@@ -56,8 +68,14 @@ const MyInternshipsPage: React.FC = () => {
           value: activeFilters.status || 'All'
         }
       ];
-    } else if (activeTab === 'past') {
+    } else if (activeTab === 'internships') {
       return [
+        {
+          title: "Internship Status",
+          options: internStatusOptions,
+          type: "internStatus",
+          value: activeFilters.internStatus || 'All'
+        },
         {
           title: "Date",
           options: dateOptions,
@@ -85,7 +103,7 @@ const MyInternshipsPage: React.FC = () => {
         salary: '$25/hr',
         logo: '/logos/amazon.png',
         description: 'Design user interfaces for Amazon web services products.',
-        applicationStatus: 'accepted',
+        applicationStatus: 'rejected',
         applicationDate: '15 April 2023',
         startDate: '20 May 2023',
         endDate: '20 August 2023',
@@ -104,7 +122,8 @@ const MyInternshipsPage: React.FC = () => {
         isPaid: true,
         salary: '$30/hr',
         logo: '/logos/google.png',
-        description: 'Develop frontend components for Google Cloud Platform.',        applicationStatus: 'applied',
+        description: 'Develop frontend components for Google Cloud Platform.',        
+        applicationStatus: 'finalized',
         applicationDate: '1 May 2023',
         skills: ['React', 'TypeScript', 'CSS']
       },
@@ -120,7 +139,7 @@ const MyInternshipsPage: React.FC = () => {
         salary: '$28/hr',
         logo: '/logos/microsoft.png',
         description: 'Work on backend systems for Microsoft Azure.',        
-        applicationStatus: 'reviewing',
+        applicationStatus: 'pending',
         applicationDate: '10 May 2023',
         skills: ['Java', 'Spring Boot', 'Azure']
       },
@@ -136,9 +155,17 @@ const MyInternshipsPage: React.FC = () => {
         salary: '$26/hr',
         logo: '/logos/spotify.png',
         description: 'Analyze user data to improve music recommendations.',
-        applicationStatus: 'rejected',
+        applicationStatus: 'finalized',
         applicationDate: '15 May 2023',
-        skills: ['Python', 'SQL', 'Data Visualization']
+        startDate: '1 August 2023',
+        endDate: '1 December 2023',
+        isActive: false,
+        skills: ['Python', 'SQL', 'Data Visualization'],
+        report: {
+          title: 'Data Analysis Internship Final Report',
+          introduction: 'During my internship at Spotify, I worked on user data analysis.',
+          body: 'The internship provided valuable experience in data visualization and analysis. I worked with large datasets and created insightful dashboards.'
+        }
       },
       {
         id: 5,
@@ -158,12 +185,11 @@ const MyInternshipsPage: React.FC = () => {
         isActive: true,
         skills: ['UI Design', 'UX Research', 'Adobe CC']
       },
-      {
-        id: 6,
+      {        id: 6,
         company: 'Tesla',
         title: 'Engineering Intern',
         duration: '3 months',
-        date: '1 January 2023',
+        date: '15 December 2022',
         location: 'Austin, TX',
         industry: 'Automotive',
         isPaid: true,
@@ -172,8 +198,8 @@ const MyInternshipsPage: React.FC = () => {
         description: 'Work on electric vehicle battery technology.',
         applicationStatus: 'accepted',
         applicationDate: '15 November 2022',
-        startDate: '1 January 2023',
-        endDate: '1 April 2023',
+        startDate: '15 December 2022',
+        endDate: '15 March 2023',
         isActive: false,
         skills: ['Mechanical Engineering', 'CAD', 'Battery Tech'],
         evaluation: {
@@ -198,50 +224,67 @@ const MyInternshipsPage: React.FC = () => {
         applicationDate: '1 December 2022',
         startDate: '15 February 2023',
         endDate: '15 June 2023',
-        isActive: false,
+        isActive: true,
         skills: ['Java', 'Spring', 'Docker'],
-        evaluation: null
+        report: null
       }
     ];
     
     setMyInternships(mockInternships);
     setFilteredInternships(mockInternships);
   }, []);
-
   // Filter internships based on active tab, search term, and filters
   useEffect(() => {
     let results = [...myInternships];
     
     // Filter by tab
     if (activeTab === 'applications') {
-      // Show all applications
-      results = myInternships.filter(internship => 
-        ['pending', 'finalized', 'accepted', 'rejected'].includes(internship.applicationStatus)
-      );
-        // Apply status filter if not "All"
+      // Show ALL applications including accepted ones
+      results = myInternships;
+      
+      // Apply status filter if not "All"
       if (activeFilters.status && activeFilters.status !== 'All') {
         results = results.filter(internship => 
           internship.applicationStatus === activeFilters.status?.toLowerCase()
         );
       }
-    } else if (activeTab === 'current') {
-      // Show only active internships
+    } else if (activeTab === 'internships') {
+      // Show only accepted internships (both current and past)
       results = myInternships.filter(internship => 
-        internship.isActive === true
+        internship.applicationStatus === 'accepted'
       );
-    } else if (activeTab === 'past') {
-      // Show completed internships
-      results = myInternships.filter(internship => 
-        internship.applicationStatus === 'accepted' && internship.isActive === false
-      );
-        // Apply date filter if not "All"
+      
+      // Apply internship status filter
+      if (activeFilters.internStatus && activeFilters.internStatus !== 'All') {
+        if (activeFilters.internStatus === 'Current Intern') {
+          results = results.filter(internship => internship.isActive === true);
+        } else if (activeFilters.internStatus === 'Internship Complete') {
+          results = results.filter(internship => internship.isActive === false);
+        }
+      }
+      
+      // Apply date filter if not "All"
       if (activeFilters.date && activeFilters.date !== 'All') {
-        // Implementation would depend on how dates are stored
-        // For this example, we're just checking if there's a filter applied
+        const currentYear = new Date().getFullYear();
+        
         if (activeFilters.date === 'Recent') {
-          // Example: filter for internships completed in the last 3 months
-          // This would need actual date logic in a real implementation
-          results = results.slice(0, 2); // Just for demonstration
+          // Filter for internships in the last 3 months
+          const threeMonthsAgo = new Date();
+          threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+          
+          results = results.filter(internship => {
+            if (!internship.startDate) return false;
+            const internshipDate = new Date(internship.startDate);
+            return internshipDate >= threeMonthsAgo;
+          });        } else {
+          // Filter by specific year
+          const year = activeFilters.date;
+          results = results.filter(internship => {
+            // Check if year is in startDate, endDate, or applicationDate
+            return (internship.startDate && internship.startDate.includes(year)) || 
+                   (internship.endDate && internship.endDate.includes(year)) || 
+                   (internship.applicationDate && internship.applicationDate.includes(year));
+          });
         }
       }
     }
@@ -258,22 +301,23 @@ const MyInternshipsPage: React.FC = () => {
     
     setFilteredInternships(results);
   }, [myInternships, activeTab, searchTerm, activeFilters]);
-
   // Handle viewing details of an internship
   const handleViewDetails = (internship: Internship) => {
-    const myInternship = myInternships.find(item => item.id === internship.id) as MyInternship;
-    setSelectedInternship(myInternship);
+    // Only show details modal when not showing other modals
+    if (!showEvaluationModal && !showReportModal) {
+      const myInternship = myInternships.find(item => item.id === internship.id) as MyInternship;
+      setSelectedInternship(myInternship);
+    }
   };
-
   // Handle closing the details modal
   const handleCloseModal = () => {
     setSelectedInternship(null);
+    setShowEvaluationModal(false);
+    setShowReportModal(false);
   };
 
   // Handle opening evaluation modal
   const handleEvaluate = (internship: MyInternship) => {
-    setSelectedInternship(internship);
-    
     // Pre-fill existing evaluation if any
     if (internship.evaluation) {
       setEvaluation(internship.evaluation);
@@ -286,7 +330,26 @@ const MyInternshipsPage: React.FC = () => {
     }
     
     setShowEvaluationModal(true);
-  };  // Handle submitting an evaluation
+    setSelectedInternship(internship);
+  };
+
+  // Handle opening report modal
+  const handleReport = (internship: MyInternship) => {
+    // Pre-fill existing report if any
+    if (internship.report) {
+      setReport(internship.report);
+    } else {
+      setReport({
+        title: '',
+        introduction: '',
+        body: ''
+      });
+    }
+    
+    setShowReportModal(true);
+    setSelectedInternship(internship);
+  };
+  // Handle submitting an evaluation
   const handleSubmitEvaluation = () => {
     if (selectedInternship) {
       // Update the internship with the new evaluation
@@ -301,12 +364,51 @@ const MyInternshipsPage: React.FC = () => {
       });
       
       setMyInternships(updatedInternships);
+      setFilteredInternships(prev => 
+        prev.map(item => 
+          item.id === selectedInternship.id 
+            ? { ...item, evaluation: evaluation }
+            : item
+        )
+      );
+      
       setShowEvaluationModal(false);
-      setSelectedInternship(null);
       
       // Show success notification
       showNotification({
         message: `Evaluation for ${selectedInternship.title} at ${selectedInternship.company} submitted successfully!`,
+        type: 'success'
+      });
+    }
+  };
+  // Handle submitting a report
+  const handleSubmitReport = () => {
+    if (selectedInternship) {
+      // Update the internship with the new report
+      const updatedInternships = myInternships.map(internship => {
+        if (internship.id === selectedInternship.id) {
+          return {
+            ...internship,
+            report: report
+          };
+        }
+        return internship;
+      });
+      
+      setMyInternships(updatedInternships);
+      setFilteredInternships(prev => 
+        prev.map(item => 
+          item.id === selectedInternship.id 
+            ? { ...item, report: report }
+            : item
+        )
+      );
+      
+      setShowReportModal(false);
+      
+      // Show success notification
+      showNotification({
+        message: `Report for ${selectedInternship.title} at ${selectedInternship.company} submitted successfully!`,
         type: 'success'
       });
     }
@@ -326,12 +428,51 @@ const MyInternshipsPage: React.FC = () => {
       });
       
       setMyInternships(updatedInternships);
-      setShowEvaluationModal(false);
-      setSelectedInternship(null);
+      setFilteredInternships(prev => 
+        prev.map(item => 
+          item.id === selectedInternship.id 
+            ? { ...item, evaluation: null }
+            : item
+        )
+      );
       
-            // Show notification
+      setShowEvaluationModal(false);
+      
+      // Show notification
       showNotification({
         message: `Evaluation for ${selectedInternship.title} at ${selectedInternship.company} has been deleted.`,
+        type: 'info'
+      });
+    }
+  };
+  // Handle deleting a report
+  const handleDeleteReport = () => {
+    if (selectedInternship) {
+      // Remove the report
+      const updatedInternships = myInternships.map(internship => {
+        if (internship.id === selectedInternship.id) {
+          return {
+            ...internship,
+            report: null
+          };
+        }
+        return internship;
+      });
+      
+      setMyInternships(updatedInternships);
+      setFilteredInternships(prev => 
+        prev.map(item => 
+          item.id === selectedInternship.id 
+            ? { ...item, report: null }
+            : item
+        )
+      );
+      
+      setShowReportModal(false);
+      
+      // Show notification
+      showNotification({
+        message: `Report for ${selectedInternship.title} at ${selectedInternship.company} has been deleted.`,
         type: 'info'
       });
     }
@@ -345,25 +486,12 @@ const MyInternshipsPage: React.FC = () => {
     }));
   };
 
-  // Get the appropriate status badge class
-  const getStatusBadgeClass = (status: string) => {
-    switch (status) {
-      case 'accepted':
-        return styles.acceptedBadge;
-      case 'rejected':
-        return styles.rejectedBadge;
-      case 'finalized':
-        return styles.finalizedBadge;
-      case 'pending':
-      default:
-        return styles.pendingBadge;
-    }
-  };
-
   return (
     <div className={styles.pageContainer}>
       {/* Header/Navigation */}
-      <Navigation title="My Internships" />      <div className={styles.contentWrapper}>
+      <Navigation title="My Internships" />
+      
+      <div className={styles.contentWrapper}>
         {/* Tabs Navigation */}
         <div className={styles.tabsContainer}>
           <button 
@@ -373,96 +501,46 @@ const MyInternshipsPage: React.FC = () => {
             My Applications
           </button>
           <button 
-            className={`${styles.tabButton} ${activeTab === 'current' ? styles.activeTab : ''}`}
-            onClick={() => setActiveTab('current')}
+            className={`${styles.tabButton} ${activeTab === 'internships' ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab('internships')}
           >
-            Current Internships
-          </button>
-          <button 
-            className={`${styles.tabButton} ${activeTab === 'past' ? styles.activeTab : ''}`}
-            onClick={() => setActiveTab('past')}
-          >
-            Past Internships
+            My Internships
           </button>
         </div>
 
-        {/* Filter Sidebar - Only show for tabs that need filtering */}
-        {(activeTab === 'applications' || activeTab === 'past') && (
-          <FilterSidebar
-            filters={getFormattedFilters()}
-            onFilterChange={handleFilterChange}
-          />
-        )}
+        {/* Filter Sidebar - Show for both tabs */}
+        <FilterSidebar
+          filters={getFormattedFilters()}
+          onFilterChange={handleFilterChange}
+        />
 
         {/* Main Content */}
         <main className={styles.mainContent}>
           {/* Search Bar */}
-          <div className={styles.toolbarContainer}>
-            <SearchBar 
-              searchTerm={searchTerm} 
-              setSearchTerm={setSearchTerm} 
-              placeholder="Search by job title or company..."
-            />
-          </div>
+          <SearchBar 
+            searchTerm={searchTerm} 
+            setSearchTerm={setSearchTerm} 
+            placeholder="Search by job title or company..."
+          />
 
-          {/* Internship Listings */}
           <div className={styles.internshipListings}>
             <div className={styles.listingHeader}>
               <h2 className={styles.listingTitle}>
-                {activeTab === 'applications' && 'My Applications'}
-                {activeTab === 'current' && 'Current Internships'}
-                {activeTab === 'past' && 'Past Internships'}
+                {activeTab === 'applications' ? 'My Applications' : 'My Internships'}
               </h2>
               <span className={styles.internshipCount}>{filteredInternships.length}</span>
-            </div>
-
+            </div>            
             {filteredInternships.length > 0 ? (
               <div className={styles.cardsList}>
                 {filteredInternships.map((internship) => (
                   <div key={internship.id} className={styles.cardWrapper}>
-                    <InternshipCard
+                    <MyInternshipCard
                       internship={internship}
-                      isStarred={false} // We don't use starring in this view
-                      onToggleStar={() => {}} // Empty function as we don't need starring
                       onViewDetails={handleViewDetails}
+                      onEvaluate={handleEvaluate}
+                      onReport={handleReport}
+                      activeTab={activeTab}
                     />
-                    
-                    {/* Status badge for applications */}
-                    {activeTab === 'applications' && (
-                      <div className={`${styles.statusBadge} ${getStatusBadgeClass(internship.applicationStatus)}`}>
-                        {internship.applicationStatus.charAt(0).toUpperCase() + internship.applicationStatus.slice(1)}
-                      </div>
-                    )}
-                    
-                    {/* Evaluation button for past internships */}
-                    {activeTab === 'past' && (
-                      <div className={styles.evaluationContainer}>
-                        {internship.evaluation ? (
-                          <div className={styles.evaluationSummary}>
-                            <div className={styles.ratingStars}>
-                              {[1, 2, 3, 4, 5].map((star) => (
-                                <span key={star} className={star <= internship.evaluation!.rating ? styles.filledStar : styles.emptyStar}>
-                                  ★
-                                </span>
-                              ))}
-                            </div>
-                            <button 
-                              className={styles.editEvaluationButton}
-                              onClick={() => handleEvaluate(internship)}
-                            >
-                              Edit Evaluation
-                            </button>
-                          </div>
-                        ) : (
-                          <button 
-                            className={styles.evaluateButton}
-                            onClick={() => handleEvaluate(internship)}
-                          >
-                            Add Evaluation
-                          </button>
-                        )}
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
@@ -471,25 +549,13 @@ const MyInternshipsPage: React.FC = () => {
                 <div className={styles.noResultsIcon}>🔍</div>
                 <h3>No internships found</h3>
                 <p>
-                  {activeTab === 'applications' && 'You haven\'t applied to any internships yet.'}
-                  {activeTab === 'current' && 'You don\'t have any active internships.'}
-                  {activeTab === 'past' && 'You don\'t have any past internships.'}
+                  {activeTab === 'applications' ? 'You haven\'t applied to any internships yet.' : 'You don\'t have any internships yet.'}
                 </p>
               </div>
             )}
           </div>
         </main>
-      </div>      {/* Details Modal */}
-      {selectedInternship && !showEvaluationModal && (
-        <InternshipDetailsModal
-          internship={selectedInternship}
-          onClose={handleCloseModal}
-          onApply={async (application) => {
-            console.log(`Viewing details for ${selectedInternship.title} at ${selectedInternship.company}`);
-            return Promise.resolve();
-          }}
-        />
-      )}
+      </div>
 
       {/* Evaluation Modal */}
       {showEvaluationModal && selectedInternship && (
@@ -570,7 +636,88 @@ const MyInternshipsPage: React.FC = () => {
               >
                 Submit Evaluation
               </button>
-            </div>          </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Report Modal */}
+      {showReportModal && selectedInternship && (
+        <div className={styles.modalBackdrop} onClick={() => setShowReportModal(false)}>
+          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <button className={styles.closeButton} onClick={() => setShowReportModal(false)}>×</button>
+            
+            <div className={styles.modalHeader}>
+              <h2 className={styles.modalTitle}>Submit Internship Report</h2>
+              <div className={styles.modalHost}>
+                {selectedInternship.logo && (
+                  <img 
+                    src={selectedInternship.logo} 
+                    alt={`${selectedInternship.company} logo`} 
+                    width={40} 
+                    height={40} 
+                    className={styles.modalHostLogo}
+                  />
+                )}
+                <span className={styles.modalHostName}>{selectedInternship.company} - {selectedInternship.title}</span>
+              </div>
+            </div>
+            
+            <div className={styles.reportForm}>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel} htmlFor="report-title">Report Title</label>
+                <input
+                  id="report-title"
+                  className={styles.textInput}
+                  placeholder="Enter a title for your report..."
+                  value={report.title}
+                  onChange={(e) => setReport({...report, title: e.target.value})}
+                />
+              </div>
+              
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel} htmlFor="report-introduction">Introduction</label>
+                <textarea
+                  id="report-introduction"
+                  className={styles.commentTextarea}
+                  placeholder="Provide a brief introduction about your internship..."
+                  value={report.introduction}
+                  onChange={(e) => setReport({...report, introduction: e.target.value})}
+                  rows={3}
+                />
+              </div>
+              
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel} htmlFor="report-body">Report Body</label>
+                <textarea
+                  id="report-body"
+                  className={styles.commentTextarea}
+                  placeholder="Describe your experience, tasks performed, skills learned..."
+                  value={report.body}
+                  onChange={(e) => setReport({...report, body: e.target.value})}
+                  rows={7}
+                />
+              </div>
+            </div>
+            
+            <div className={styles.modalActions}>
+              {selectedInternship.report && (
+                <button 
+                  className={styles.deleteButton}
+                  onClick={handleDeleteReport}
+                >
+                  Delete Report
+                </button>
+              )}
+              <button 
+                className={styles.submitButton}
+                onClick={handleSubmitReport}
+                disabled={report.title.trim() === '' || report.body.trim() === ''}
+              >
+                Submit Report
+              </button>
+            </div>
+          </div>
         </div>
       )}
       

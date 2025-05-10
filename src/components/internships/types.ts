@@ -6,6 +6,7 @@ export interface FilterOptions {
   status?: string;
   type?: string;
   date?: string;
+  internStatus?: string;
 }
 
 // Internship types
@@ -21,25 +22,10 @@ export interface Internship {
   salary: string;
   logo: string;
   description: string;
-  skills?: string[]; // skills required
-  applicationStatus?: 'none' | 'applied' | 'reviewing' | 'accepted' | 'rejected'; 
-  applicationType?: 'standard' | 'pro'; // Distinguish between regular and PRO applications
+  skills?: string[]; 
+  applicationStatus?: 'none' | 'pending' | 'accepted' | 'rejected' | 'finalized'; 
+  applicationType?: 'standard' | 'pro';
   requiredDocuments?: DocumentInfo[]; 
-}
-
-// Workshop types
-export interface Workshop {
-  id: number;
-  title: string;
-  date: string;
-  time: string;
-  duration: string;
-  host: string;
-  description: string;
-  status: 'upcoming' | 'ongoing' | 'completed';
-  type: 'live' | 'recorded';
-  isRegistered: boolean;
-  logo: string;
 }
 
 // Application types
@@ -58,17 +44,4 @@ export interface DocumentInfo {
   size: number;
   uploadDate: string;
   documentType: 'cv' | 'coverLetter' | 'certificate' | 'other';
-}
-
-// User types
-export type UserType = 'Student' | 'PRO Student' | 'Company' | 'SCAD Office';
-
-export interface UserProfile {
-  id: string;
-  name: string;
-  email: string;
-  type: UserType;
-  department?: string;
-  year?: number;
-  gpa?: number;
 }

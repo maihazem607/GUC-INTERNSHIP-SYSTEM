@@ -5,520 +5,448 @@
 
 /* Base Styles */
 .pageContainer {
-    display: flex;
-    flex-direction: column;
-    font-family: 'Arial', sans-serif;
-    background-color: #f9fafb;
-    color: #333;
-    min-height: 100vh;
-  }
-  
-  /* Content Layout */
+  display: flex;
+  flex-direction: column;
+  font-family: 'Arial', sans-serif;
+  background-color: #f9fafb;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* Content Layout */
+.contentWrapper {
+  display: flex;
+  flex: 1;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* Main Content */
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* Toolbar Container */
+.toolbarContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Tabs Navigation */
+.tabsContainer {
+  display: flex;
+  gap: 5px;
+  padding: 0 10px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: white;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: -1px; /* to connect with the container below */
+}
+
+.tabButton {
+  padding: 15px 20px;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.tabButton:hover {
+  color: #333;
+}
+
+.activeTab {
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #1976d2;
+  border-radius: 3px 3px 0 0;
+}
+
+/* Internship Listings Section */
+.internshipListings {
+  background-color: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.listingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.listingTitle {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.internshipCount {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Card List */
+.cardsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.cardWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+/* No Results */
+.noResults {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.noResultsIcon {
+  font-size: 48px;
+  margin-bottom: 15px;
+  color: #bdbdbd;
+}
+
+/* Modal Styles */
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: white;
+  border-radius: 16px;
+  padding: 30px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.closeButton {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.closeButton:hover {
+  color: #333;
+}
+
+.modalHeader {
+  margin-bottom: 20px;
+}
+
+.modalTitle {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.modalHost {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modalHostLogo {
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.modalHostName {
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+}
+
+/* Evaluation Form */
+.evaluationForm {
+  padding: 20px 0;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formLabel {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.starRating {
+  display: flex;
+  gap: 5px;
+}
+
+.star, .starActive {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.star {
+  color: #d0d0d0;
+}
+
+.starActive {
+  color: #f5b400;
+}
+
+.commentTextarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  resize: vertical;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.recommendationLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+/* Modal Actions */
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.deleteButton {
+  background-color: #f44336;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  background-color: #e53935;
+}
+
+.submitButton {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.submitButton:disabled {
+  background-color: #9e9e9e;
+  cursor: not-allowed;
+}
+
+.submitButton:not(:disabled):hover {
+  background-color: #388e3c;
+}
+
+/* Evaluation Summary */
+.evaluationSummary {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.ratingStars {
+  display: flex;
+}
+
+.filledStar, .emptyStar {
+  font-size: 18px;
+}
+
+.filledStar {
+  color: #f5b400;
+}
+
+.emptyStar {
+  color: #d0d0d0;
+}
+
+.editEvaluationButton {
+  background-color: #2196f3;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  width: 100%;
+  transition: background-color 0.2s;
+}
+
+.editEvaluationButton:hover {
+  background-color: #1976d2;
+}
+
+/* Action Buttons */
+.actionContainer {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.evaluationContainer {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.detailsButton {
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.detailsButton:hover {
+  background-color: #2980b9;
+}
+
+.evaluateButton {
+  background-color: #4caf50;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  flex: 1;
+  transition: background-color 0.2s;
+}
+
+.evaluateButton:hover {
+  background-color: #388e3c;
+}
+
+.reportButton {
+  background-color: #2196f3;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  flex: 1;
+  transition: background-color 0.2s;
+}
+
+.reportButton:hover {
+  background-color: #1976d2;
+}
+
+.inProgressButton {
+  background-color: #9e9e9e;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  width: 100%;
+  text-align: center;
+  cursor: not-allowed;
+}
+
+/* Report Form */
+.reportForm {
+  padding: 20px 0;
+}
+
+.textInput {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
   .contentWrapper {
-    display: flex;
-    flex: 1;
-    padding: 20px;
-    gap: 20px;
-  }
-  
-  /* Main Content */
-  .mainContent {
-    flex: 1;
-    display: flex;
     flex-direction: column;
-    gap: 20px;
   }
   
-  /* Search and Filter Row */
-  .controlsRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-  }
-  
-  .searchContainer {
-    flex: 1;
-    min-width: 250px;
-    max-width: 500px;
-  }
-  
-  .filterControls {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-  
-  .filterSelect {
-    padding: 10px 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 14px;
-    color: #333;
-    background-color: white;
-  }
-  
-  /* Internship Applications Section */
-  .applicationsContainer {
-    background-color: white;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  }
-  
-  .sectionHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .sectionTitle {
-    font-size: 24px;
-    font-weight: 600;
-    margin: 0;
-  }
-  
-  .applicationCount {
-    background-color: #e3f2fd;
-    color: #1976d2;
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
-  }
-  
-  /* Application Cards Container */
   .cardsList {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 20px;
-  }
-  
-  /* Application Card Styles */
-  .applicationCard {
-    background-color: white;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s, box-shadow 0.2s;
-    position: relative;
-    border: 1px solid #eee;
-  }
-  
-  .applicationCard:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Status Badges */
-  .statusBadge {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    padding: 5px 12px;
-    border-radius: 15px;
-    font-size: 12px;
-    font-weight: 600;
-    z-index: 10;
-  }
-  
-  .pendingBadge {
-    background-color: #fff9c4;
-    color: #ffa000;
-  }
-  
-  .acceptedBadge {
-    background-color: #e8f5e9;
-    color: #388e3c;
-  }
-  
-  .rejectedBadge {
-    background-color: #ffebee;
-    color: #d32f2f;
-  }
-  
-  .interviewBadge {
-    background-color: #e3f2fd;
-    color: #1976d2;
-  }
-  
-  /* Card Content */
-  .cardContent {
-    padding: 20px;
-  }
-  
-  .applicationDate {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 15px;
-  }
-  
-  .companyInfo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  
-  .companyLogo {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    object-fit: contain;
-  }
-  
-  .companyName {
-    font-size: 16px;
-    color: #666;
-    font-weight: 500;
-  }
-  
-  .positionTitle {
-    font-size: 20px;
-    font-weight: 700;
-    color: #333;
-    margin: 0 0 15px 0;
-  }
-  
-  .detailsRow {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-  }
-  
-  .detailItem {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  
-  .detailLabel {
-    font-size: 12px;
-    color: #666;
-  }
-  
-  .detailValue {
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-  }
-  
-  /* Card Footer */
-  .cardFooter {
-    background-color: #f9fafb;
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid #f0f0f0;
-  }
-  
-  .submissionInfo {
-    font-size: 14px;
-    color: #666;
-  }
-  
-  .actionsContainer {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .actionButton {
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    border: none;
-    font-size: 14px;
-  }
-  
-  .viewButton {
-    background-color: #e3f2fd;
-    color: #1976d2;
-  }
-  
-  .viewButton:hover {
-    background-color: #bbdefb;
-  }
-  
-  .withdrawButton {
-    background-color: #ffebee;
-    color: #d32f2f;
-  }
-  
-  .withdrawButton:hover {
-    background-color: #ffcdd2;
-  }
-  
-  /* Feedback and Evaluation Section */
-  .feedbackSection {
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
-  }
-  
-  .feedbackHeader {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 10px;
-  }
-  
-  .ratingContainer {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  
-  .starRating {
-    display: flex;
-  }
-  
-  .star {
-    color: #d0d0d0;
-    font-size: 18px;
-  }
-  
-  .starFilled {
-    color: #f5b400;
-    font-size: 18px;
-  }
-  
-  .ratingValue {
-    font-weight: 600;
-    color: #333;
-  }
-  
-  .feedbackText {
-    font-size: 14px;
-    line-height: 1.6;
-    color: #555;
-    margin-bottom: 15px;
-    padding: 10px;
-    background-color: #f5f5f5;
-    border-radius: 8px;
-  }
-  
-  /* Interview Schedule Section */
-  .interviewInfo {
-    margin-top: 15px;
-    padding: 12px;
-    background-color: #e3f2fd;
-    border-radius: 8px;
-    border-left: 4px solid #1976d2;
-  }
-  
-  .interviewDate {
-    font-weight: 600;
-    color: #1976d2;
-    margin-bottom: 5px;
-  }
-  
-  .interviewDetails {
-    font-size: 14px;
-    color: #333;
-  }
-  
-  /* Empty State */
-  .noApplications {
-    text-align: center;
-    padding: 40px 0;
-    color: #666;
-  }
-  
-  .noApplicationsIcon {
-    font-size: 48px;
-    margin-bottom: 15px;
-  }
-  
-  .noApplicationsText {
-    font-size: 18px;
-    font-weight: 500;
-    margin-bottom: 10px;
-  }
-  
-  .noApplicationsSubtext {
-    font-size: 14px;
-    color: #777;
-    margin-bottom: 20px;
-  }
-  
-  .browseButton {
-    background-color: #1976d2;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    font-size: 16px;
-  }
-  
-  .browseButton:hover {
-    background-color: #1565c0;
-  }
-  
-  /* Tabs Navigation */
-  .tabsContainer {
-    display: flex;
-    gap: 5px;
-    padding: 0 10px;
-    border-bottom: 1px solid #e0e0e0;
-    background-color: white;
-    border-radius: 16px 16px 0 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    margin-bottom: -1px; /* to connect with the container below */
-  }
-  
-  .tabButton {
-    padding: 15px 20px;
-    background: none;
-    border: none;
-    color: #666;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    position: relative;
-    transition: color 0.2s;
-  }
-  
-  .tabButton:hover {
-    color: #333;
-  }
-  
-  .activeTab {
-    color: #1976d2;
-    font-weight: 600;
-  }
-  
-  .activeTab::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background-color: #1976d2;
-    border-radius: 3px 3px 0 0;
-  }
-  
-  /* Modal Styles */
-  .modalBackdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+    grid-template-columns: 1fr;
   }
   
   .modalContent {
-    background-color: white;
-    border-radius: 16px;
-    padding: 30px;
-    width: 90%;
-    max-width: 700px;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  }
-  
-  .closeButton {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    background: none;
-    border: none;
-    font-size: 28px;
-    cursor: pointer;
-    color: #666;
-    transition: color 0.2s;
-  }
-  
-  .closeButton:hover {
-    color: #333;
-  }
-  
-  .confirmationModal {
-    text-align: center;
+    width: 95%;
     padding: 20px;
   }
-  
-  .confirmationTitle {
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 15px;
-  }
-  
-  .confirmationMessage {
-    margin-bottom: 30px;
-    font-size: 16px;
-    line-height: 1.6;
-    color: #555;
-  }
-  
-  .confirmationActions {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-  }
-  
-  .cancelButton {
-    padding: 12px 24px;
-    background-color: #f5f5f5;
-    color: #333;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .cancelButton:hover {
-    background-color: #e0e0e0;
-  }
-  
-  .confirmButton {
-    padding: 12px 24px;
-    background-color: #d32f2f;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .confirmButton:hover {
-    background-color: #c62828;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .contentWrapper {
-      flex-direction: column;
-    }
-    
-    .controlsRow {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    
-    .searchContainer {
-      width: 100%;
-      max-width: none;
-    }
-    
-    .cardsList {
-      grid-template-columns: 1fr;
-    }
-  }
+}

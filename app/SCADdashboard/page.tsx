@@ -717,7 +717,8 @@ export default function SCADDashboardPage() {
       endDate: internshipCycleEnd,
     });
     
-    // Show success notification instead of alert    showNotification({
+    // Show success notification instead of alert    
+    showNotification({
       message: 'Internship cycle dates have been saved successfully!',
       type: 'success'
     });
