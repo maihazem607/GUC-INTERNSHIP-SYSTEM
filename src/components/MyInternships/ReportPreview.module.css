@@ -1,0 +1,85 @@
+/* 
+ * ReportPreview.module.css
+ * Styling for the report preview component
+ */
+
+.reportForm {
+  padding: 20px 0;
+}
+
+.reportPreviewContainer {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 30px;
+  margin-top: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.reportPreviewTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.reportPreviewSection {
+  margin-bottom: 25px;
+}
+
+.reportPreviewSection h3 {
+  font-size: 18px;
+  color: #1976d2;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px dashed #e0e0e0;
+}
+
+.reportPreviewSection p {
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.reportPreviewCourses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.reportPreviewCourse {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.downloadButton {
+  background-color: #ff9800;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.downloadButton:hover {
+  background-color: #f57c00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
