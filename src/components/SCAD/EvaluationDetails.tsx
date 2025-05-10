@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styles from "./EvaluationDetails.module.css";
-import { Evaluation } from "./EvaluationCard";
+import { Evaluation } from "./EvaluationList";
 
 interface EvaluationDetailsProps {
   evaluation: Evaluation;

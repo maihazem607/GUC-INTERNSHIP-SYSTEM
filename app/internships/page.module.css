@@ -45,8 +45,8 @@
 }
 
 .internshipCount {
-  background-color: #e3f2fd;
-  color: #1976d2;
+  background-color: #f3e5f9; /* Changed from #e3f2fd (light blue) to light violet */
+  color: #7b2cbf; /* Changed from #1976d2 (blue) to violet */
   padding: 5px 15px;
   border-radius: 20px;
   font-size: 14px;

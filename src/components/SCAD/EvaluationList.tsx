@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from "next/image";
-import styles from './EvaluationCard.module.css';
+import styles from './EvaluationList.module.css';
 
 export interface Evaluation {
   id: number;
