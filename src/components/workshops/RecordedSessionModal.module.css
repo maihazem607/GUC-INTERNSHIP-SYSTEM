@@ -1,0 +1,576 @@
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  position: relative;
+  width: 85%;
+  max-width: 1200px;
+  height: 85vh;
+  background-color: white;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.closeButton {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
+  z-index: 10;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+}
+
+.recordedSessionContainer {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
+
+.videoSection {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidePanel {
+  flex: 1;
+  min-width: 300px;
+  max-width: 380px;
+  background-color: #f8f8f8;
+  border-left: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tabButtons {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tabButton {
+  flex: 1;
+  padding: 15px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  color: #666;
+}
+
+.activeTab {
+  color: #3498db;
+  border-bottom: 2px solid #3498db;
+}
+
+.videoContainer {
+  flex: 1;
+  background-color: #000;
+  position: relative;
+  overflow: hidden;
+}
+
+.recordedVideo {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.videoPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.placeholderLogo {
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+  margin-bottom: 15px;
+}
+
+.videoControls {
+  background-color: #f1f1f1;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.playPauseButton {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 15px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+}
+
+.progressBarContainer {
+  width: 100%;
+  height: 8px;
+  background-color: #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background-color: #e74c3c;
+  transition: width 0.2s;
+}
+
+.timeDisplay {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #666;
+}
+
+/* Workshop Details Styles */
+.workshopDetails {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.detailsHeader {
+  margin-bottom: 15px;
+}
+
+.detailsHeader h2 {
+  font-size: 20px;
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.hostInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.hostLogo {
+  border-radius: 50%;
+}
+
+.hostName {
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+}
+
+.ratingInfo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ratingStars {
+  color: #f39c12;
+  letter-spacing: 2px;
+}
+
+.ratingValue {
+  font-size: 14px;
+  color: #666;
+}
+
+.detailsBody {
+  margin-bottom: 20px;
+}
+
+.description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #555;
+  margin: 0;
+}
+
+.resources {
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+}
+
+.resources h3 {
+  font-size: 16px;
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.resourcesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.resourcesList li {
+  margin-bottom: 10px;
+}
+
+.resourcesList a {
+  color: #3498db;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.resourcesList a:hover {
+  text-decoration: underline;
+}
+
+/* Notes Section Styles */
+.notesSection {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.notesHeader {
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notesHeader h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.downloadButton {
+  background-color: transparent;
+  color: #3498db;
+  border: 1px solid #3498db;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.notesContent {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.emptyNotes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #999;
+  text-align: center;
+  padding: 20px;
+}
+
+.noteItem {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.noteTimestamp {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 5px;
+}
+
+.noteText {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+  white-space: pre-wrap;
+}
+
+.noteInput {
+  padding: 15px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.noteInput textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  resize: none;
+  font-size: 14px;
+  margin-bottom: 10px;
+  font-family: inherit;
+}
+
+.saveNoteButton {
+  width: 100%;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.saveNoteButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Rating Modal Styles */
+.ratingModal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.ratingContent {
+  background-color: white;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.ratingContent h3 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.ratingContent p {
+  margin-bottom: 20px;
+  color: #666;
+}
+
+.starsContainer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.starButton {
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.starButton.active {
+  color: #f39c12;
+}
+
+.feedbackInput {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  resize: none;
+  font-size: 14px;
+  margin-bottom: 20px;
+  font-family: inherit;
+}
+
+.ratingButtons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.submitRatingButton {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 20px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.submitRatingButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.skipButton {
+  background-color: #f1f1f1;
+  color: #666;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 20px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Certificate Modal Styles */
+.certificateModal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.certificateContent {
+  background-color: white;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.certificateContent h3 {
+  font-size: 24px;
+  color: #2ecc71;
+  margin-bottom: 15px;
+}
+
+.certificateContent > p {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.certificatePreview {
+  margin: 25px 0;
+  border: 1px solid #e0e0e0;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.certificateInner {
+  border: 5px solid #f39c12;
+  padding: 25px;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23f39c12' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+.certificateInner h2 {
+  font-size: 28px;
+  color: #2c3e50;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-family: 'Times New Roman', serif;
+}
+
+.certificateInner p {
+  margin: 5px 0;
+  color: #333;
+}
+
+.userName {
+  font-size: 22px;
+  font-weight: bold;
+  color: #3498db;
+  margin: 15px 0;
+}
+
+.workshopTitle {
+  font-weight: bold;
+  font-size: 18px;
+  margin: 10px 0;
+  color: #e74c3c;
+}
+
+.certificateButtons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.downloadCertButton {
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 20px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.closeButton {
+  background-color: #f1f1f1;
+  color: #666;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 20px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .recordedSessionContainer {
+    flex-direction: row;
+    gap: 20px;
+  }
+  
+  .videoSection {
+    flex: 3;
+  }
+  
+  .workshopDetails {
+    flex: 2;
+    padding-top: 0;
+  }
+}
