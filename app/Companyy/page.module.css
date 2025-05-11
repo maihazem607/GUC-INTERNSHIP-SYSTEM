@@ -1,0 +1,381 @@
+/* Base Styles */
+.pageContainer {
+  min-height: 100vh;
+  background: #f7fafd;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Content Layout */
+.contentWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0;
+  width: 100%;
+  min-height: 80vh;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 32px 40px 32px 0;
+  min-width: 0;
+}
+
+/* Tab Navigation */
+.tabNavigation {
+  display: flex;
+  gap: 10px;
+  background: #fff;
+  padding: 18px 32px 0 32px;
+  border-bottom: 1px solid #eaeaea;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tabButton {
+  background: none;
+  border: none;
+  font-size: 17px;
+  font-weight: 600;
+  color: #888;
+  padding: 10px 22px 12px 22px;
+  border-radius: 10px 10px 0 0;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+  position: relative;
+}
+
+.tabButton:hover,
+.activeTab {
+  color: #217dbb;
+  background: #f7fafd;
+}
+
+.tabCount {
+  background: #e8f3ff;
+  color: #217dbb;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 2px 10px;
+  margin-left: 7px;
+}
+
+/* Listings Common Styles */
+.internshipListings,
+.applicationListings,
+.internListings {
+  width: 100%;
+}
+
+.listingHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.listingTitle {
+  font-size: 26px;
+  font-weight: 700;
+  color: #222;
+}
+
+.itemCount,
+.applicationCount,
+.internCount {
+  font-size: 15px;
+  color: #217dbb;
+  font-weight: 600;
+  background: #e8f3ff;
+  border-radius: 8px;
+  padding: 4px 14px;
+}
+
+.filterControls {
+  margin-bottom: 18px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+/* Header actions */
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Action buttons */
+.actionButton {
+  background-color: #217dbb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.actionButton:hover {
+  background-color: #1a6298;
+}
+
+.actionButtonOutline {
+  background-color: transparent;
+  color: #217dbb;
+  border: 1px solid #217dbb;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.actionButtonOutline:hover {
+  background-color: #e8f3ff;
+}
+
+.deleteButton {
+  color: #f44336;
+  border: 1px solid #f44336;
+}
+
+.deleteButton:hover {
+  background-color: #ffebee;
+}
+
+/* No results */
+.noResults {
+  text-align: center;
+  padding: 40px 0 10px 0;
+  color: #888;
+}
+
+.noResultsIcon {
+  font-size: 38px;
+  margin-bottom: 10px;
+}
+
+/* Status badges */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.pending {
+  background-color: #fff8e1;
+  color: #ff9800;
+}
+
+.accepted {
+  background-color: #e8f5e9;
+  color: #4caf50;
+}
+
+.rejected {
+  background-color: #ffebee;
+  color: #f44336;
+}
+
+.current {
+  background-color: #e1f5fe;
+  color: #03a9f4;
+}
+
+.completed {
+  background-color: #e8eaf6;
+  color: #3f51b5;
+}
+
+/* Form styling */
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.formGroup input, 
+.formGroup textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 15px;
+}
+
+.formGroup textarea {
+  min-height: 120px;
+}
+
+/* Modal actions */
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Custom modal styles for InternshipDetailsModal */
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: white;
+  width: 90%;
+  max-width: 900px;
+  border-radius: 8px;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalCustomActions {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: #f9f9f9;
+  border-top: 1px solid #eaeaea;
+  border-radius: 0 0 8px 8px;
+}
+
+.modalCustomActions button {
+  padding: 10px 20px;
+  font-weight: 500;
+}
+
+.modalWrapper {
+  position: relative;
+  z-index: 1000;
+}
+
+/* Evaluation form */
+.evaluationForm {
+  padding: 10px 0;
+}
+
+.evaluationForm .formGroup {
+  margin-bottom: 20px;
+}
+
+.evaluationForm input[type="range"] {
+  width: calc(100% - 40px);
+  margin-right: 10px;
+}
+
+.evaluationForm span {
+  font-weight: bold;
+}
+
+/* Styles for InternshipCard wrapper and actions */
+.cardWrapper {
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.cardWrapper:hover {
+  transform: translateY(-5px);
+}
+
+.cardActions {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-top: -8px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+.cardWrapper:hover .cardActions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cardEditButton,
+.cardDeleteButton {
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cardEditButton {
+  background: #e8f3ff;
+  color: #217dbb;
+}
+
+.cardEditButton:hover {
+  background: #c9e3ff;
+}
+
+.cardDeleteButton {
+  background: #ffebee;
+  color: #e53935;
+}
+
+.cardDeleteButton:hover {
+  background: #ffcdd2;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .mainContent {
+    padding: 24px 10px 24px 0;
+  }
+  .listingHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .contentWrapper {
+    flex-direction: column;
+    padding: 0;
+  }
+  .mainContent {
+    padding: 18px 0 18px 0;
+  }
+  .listingTitle {
+    font-size: 20px;
+  }
+}
