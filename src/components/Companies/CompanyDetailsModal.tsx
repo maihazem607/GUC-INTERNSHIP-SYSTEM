@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Company } from './types';
 import styles from './CompanyDetailsModal.module.css';
+import { ThumbsUp, MapPin, Clock, CheckCircle, Star } from 'lucide-react';
 
 interface Props {
   company: Company;
@@ -10,22 +11,23 @@ interface Props {
 
 const CompanyDetailsModal: React.FC<Props> = ({ company, onClose, onSave }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'reviews' | 'positions'>('overview');
-  
+
   const renderStarRating = (rating: number) => {
     return (
       <div className={styles.starRating}>
         {Array.from({ length: 5 }, (_, i) => (
-          <span 
-            key={i} 
+          <Star
+            key={i}
+            size={16}
+            fill={i < Math.floor(rating) ? "#FFD700" : i < rating ? "#FFD700" : "none"}
+            color={i < Math.floor(rating) ? "#FFD700" : "#D1D5DB"}
             className={`${styles.star} ${i < Math.floor(rating) ? styles.filled : i < rating ? styles.halfFilled : ''}`}
-          >
-            ★
-          </span>
+          />
         ))}
       </div>
     );
   };
-  
+
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -48,17 +50,17 @@ const CompanyDetailsModal: React.FC<Props> = ({ company, onClose, onSave }) => {
               </div>
             </div>
           </div>
-          
+
           <div className={styles.matchScore}>
             <div className={styles.matchPercentCircle}>
               <svg viewBox="0 0 36 36" className={styles.circularChart}>
-                <path 
+                <path
                   className={styles.circleBg}
                   d="M18 2.0845
                     a 15.9155 15.9155 0 0 1 0 31.831
                     a 15.9155 15.9155 0 0 1 0 -31.831"
                 />
-                <path 
+                <path
                   className={styles.circle}
                   strokeDasharray={`${company.matchScore}, 100`}
                   d="M18 2.0845
@@ -70,44 +72,46 @@ const CompanyDetailsModal: React.FC<Props> = ({ company, onClose, onSave }) => {
             </div>
             <span className={styles.matchLabel}>Match Score</span>
           </div>
-        
+
           <button className={styles.closeButton} onClick={onClose}>×</button>
         </div>
-        
+
         <div className={styles.tabs}>
-          <button 
+          <button
             className={`${styles.tabButton} ${activeTab === 'overview' ? styles.activeTab : ''}`}
             onClick={() => setActiveTab('overview')}
           >
             Company Overview
           </button>
-          <button 
+          <button
             className={`${styles.tabButton} ${activeTab === 'reviews' ? styles.activeTab : ''}`}
             onClick={() => setActiveTab('reviews')}
           >
             Intern Reviews ({company.pastInternReviews.length})
           </button>
-          <button 
+          <button
             className={`${styles.tabButton} ${activeTab === 'positions' ? styles.activeTab : ''}`}
             onClick={() => setActiveTab('positions')}
           >
             Open Positions ({company.openPositions})
           </button>
         </div>
-        
+
         <div className={styles.tabContent}>
           {activeTab === 'overview' && (
             <div className={styles.overviewTab}>
               <div className={styles.recommendationTag} data-level={company.recommendationLevel.toLowerCase()}>
-                <span className={styles.recommendIcon}>👍</span>
+                <span className={styles.recommendIcon}>
+                  <ThumbsUp size={18} color="#4c51bf" />
+                </span>
                 <span className={styles.recommendText}>
                   <strong>{company.recommendationLevel} Recommendation</strong> based on past intern feedback
                 </span>
               </div>
-              
+
               <h3 className={styles.sectionTitle}>About {company.name}</h3>
               <p className={styles.description}>{company.description}</p>
-              
+
               <div className={styles.twoColumnSection}>
                 <div className={styles.column}>
                   <h3 className={styles.sectionTitle}>Technologies Used</h3>
@@ -117,20 +121,22 @@ const CompanyDetailsModal: React.FC<Props> = ({ company, onClose, onSave }) => {
                     ))}
                   </div>
                 </div>
-                
+
                 <div className={styles.column}>
                   <h3 className={styles.sectionTitle}>Benefits</h3>
                   <ul className={styles.benefitsList}>
                     {company.benefits.map((benefit, index) => (
                       <li key={index} className={styles.benefitItem}>
-                        <span className={styles.benefitIcon}>✓</span>
+                        <span className={styles.benefitIcon}>
+                          <CheckCircle size={16} color="#4c51bf" />
+                        </span>
                         <span>{benefit}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
               </div>
-              
+
               <div className={styles.statsSection}>
                 <div className={styles.statItem}>
                   <span className={styles.statNumber}>{company.internshipCount}</span>
@@ -147,7 +153,7 @@ const CompanyDetailsModal: React.FC<Props> = ({ company, onClose, onSave }) => {
               </div>
             </div>
           )}
-          
+
           {activeTab === 'reviews' && (
             <div className={styles.reviewsTab}>
               {company.pastInternReviews.length > 0 ? (
@@ -174,32 +180,36 @@ const CompanyDetailsModal: React.FC<Props> = ({ company, onClose, onSave }) => {
                   <p>No reviews available yet for this company.</p>
                 </div>
               )}
-              
+
               <div className={styles.reviewsDisclaimer}>
                 <p>Reviews are from past GUC interns who completed internships at this company.</p>
               </div>
             </div>
           )}
-          
+
           {activeTab === 'positions' && (
             <div className={styles.positionsTab}>
               <div className={styles.positionsDisclaimer}>
                 <p>
-                  <strong>Note:</strong> This is a sample of positions that may be available. 
+                  <strong>Note:</strong> This is a sample of positions that may be available.
                   Check the company's careers page or internship applications for the most current openings.
                 </p>
               </div>
-              
+
               {/* Mock positions - in a real app, these would come from an API */}
               <div className={styles.positionsList}>
                 <div className={styles.positionCard}>
                   <h4 className={styles.positionTitle}>Software Engineering Intern</h4>
                   <div className={styles.positionMeta}>
                     <span className={styles.positionLocation}>
-                      <span className={styles.iconLocation}>📍</span> {company.location}
+                      <span className={styles.iconLocation}>
+                        <MapPin size={16} color="#666" />
+                      </span> {company.location}
                     </span>
                     <span className={styles.positionDuration}>
-                      <span className={styles.iconDuration}>⏱️</span> 3-6 months
+                      <span className={styles.iconDuration}>
+                        <Clock size={16} color="#666" />
+                      </span> 3-6 months
                     </span>
                   </div>
                   <div className={styles.positionSkills}>
@@ -209,15 +219,19 @@ const CompanyDetailsModal: React.FC<Props> = ({ company, onClose, onSave }) => {
                   </div>
                   <a href="#" className={styles.positionLink}>View Details</a>
                 </div>
-                
+
                 <div className={styles.positionCard}>
                   <h4 className={styles.positionTitle}>Data Science Intern</h4>
                   <div className={styles.positionMeta}>
                     <span className={styles.positionLocation}>
-                      <span className={styles.iconLocation}>📍</span> {company.location}
+                      <span className={styles.iconLocation}>
+                        <MapPin size={16} color="#666" />
+                      </span> {company.location}
                     </span>
                     <span className={styles.positionDuration}>
-                      <span className={styles.iconDuration}>⏱️</span> 4 months
+                      <span className={styles.iconDuration}>
+                        <Clock size={16} color="#666" />
+                      </span> 4 months
                     </span>
                   </div>
                   <div className={styles.positionSkills}>
@@ -227,15 +241,19 @@ const CompanyDetailsModal: React.FC<Props> = ({ company, onClose, onSave }) => {
                   </div>
                   <a href="#" className={styles.positionLink}>View Details</a>
                 </div>
-                
+
                 <div className={styles.positionCard}>
                   <h4 className={styles.positionTitle}>UX/UI Design Intern</h4>
                   <div className={styles.positionMeta}>
                     <span className={styles.positionLocation}>
-                      <span className={styles.iconLocation}>📍</span> {company.location}
+                      <span className={styles.iconLocation}>
+                        <MapPin size={16} color="#666" />
+                      </span> {company.location}
                     </span>
                     <span className={styles.positionDuration}>
-                      <span className={styles.iconDuration}>⏱️</span> 3 months
+                      <span className={styles.iconDuration}>
+                        <Clock size={16} color="#666" />
+                      </span> 3 months
                     </span>
                   </div>
                   <div className={styles.positionSkills}>
@@ -246,7 +264,7 @@ const CompanyDetailsModal: React.FC<Props> = ({ company, onClose, onSave }) => {
                   <a href="#" className={styles.positionLink}>View Details</a>
                 </div>
               </div>
-              
+
               <div className={styles.viewAllPositions}>
                 <button className={styles.viewAllButton}>
                   View All {company.openPositions} Open Positions
@@ -255,7 +273,7 @@ const CompanyDetailsModal: React.FC<Props> = ({ company, onClose, onSave }) => {
             </div>
           )}
         </div>
-        
+
         <div className={styles.modalFooter}>
           <button className={styles.saveButton} onClick={onSave}>
             Save to Favorites

@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './LoginForm.module.css';
+import { AlertTriangle, Mail, Lock, ArrowRight } from 'lucide-react';
 
 export interface LoginFormProps {
   userType: 'company' | 'student' | 'pro-student' | 'scad' | 'faculty';
@@ -47,7 +48,7 @@ export default function LoginForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -110,7 +111,7 @@ export default function LoginForm({
       { type: 'scad', label: 'SCAD Office', path: '/SCADLogin' },
       { type: 'faculty', label: 'Faculty', path: '/FacultyLogin' }
     ];
-    
+
     return allTypes.filter(t => t.type !== userType);
   };
 
@@ -122,7 +123,7 @@ export default function LoginForm({
       'scad': '/assets/images/scad-login.svg',
       'faculty': '/assets/images/faculty-login.svg'
     };
-    
+
     return illustrations[userType] || '/assets/images/login-default.svg';
   };
 
@@ -136,7 +137,7 @@ export default function LoginForm({
             <h1>{title}</h1>
             <p>Your gateway to exciting career opportunities</p>
           </div>
-          
+
           <div className={styles.illustrationWrapper}>
             <div className={styles.illustrationPlaceholder}>
               <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -144,14 +145,14 @@ export default function LoginForm({
               </svg>
             </div>
           </div>
-          
+
           <div className={styles.decorationDots}>
             <span></span>
             <span></span>
             <span></span>
           </div>
         </div>
-        
+
         {/* Right side - Form */}
         <div className={styles.formSide}>
           <div className={styles.logoSection}>
@@ -168,7 +169,9 @@ export default function LoginForm({
 
           {error && (
             <div className={styles.errorAlert}>
-              <span className={styles.errorIcon}>⚠️</span>
+              <span className={styles.errorIcon}>
+                <AlertTriangle size={18} color="#ef4444" />
+              </span>
               {error}
             </div>
           )}
@@ -177,7 +180,9 @@ export default function LoginForm({
             <div className={styles.inputGroup}>
               <label htmlFor="email" className={styles.label}>Email Address</label>
               <div className={styles.inputWrapper}>
-                <span className={styles.inputIcon}>✉️</span>
+                <span className={styles.inputIcon}>
+                  <Mail size={16} color="#4c51bf" />
+                </span>
                 <input
                   id="email"
                   type="email"
@@ -193,7 +198,9 @@ export default function LoginForm({
             <div className={styles.inputGroup}>
               <label htmlFor="password" className={styles.label}>Password</label>
               <div className={styles.inputWrapper}>
-                <span className={styles.inputIcon}>🔒</span>
+                <span className={styles.inputIcon}>
+                  <Lock size={16} color="#4c51bf" />
+                </span>
                 <input
                   id="password"
                   type="password"
@@ -233,11 +240,11 @@ export default function LoginForm({
                 <span className={styles.spinner}></span>
               ) : (
                 <>
-                  Login <span className={styles.buttonArrow}>→</span>
+                  Login <span className={styles.buttonArrow}><ArrowRight size={16} /></span>
                 </>
               )}
             </button>
-            
+
             {userType === 'company' && (
               <p className={styles.registerLink}>
                 Don't have an account?{' '}
@@ -251,9 +258,9 @@ export default function LoginForm({
               <p className={styles.otherLoginTitle}>Other login options:</p>
               <div className={styles.loginTypeLinks}>
                 {getOtherLoginTypes().map((loginType) => (
-                  <Link 
-                    key={loginType.type} 
-                    href={loginType.path} 
+                  <Link
+                    key={loginType.type}
+                    href={loginType.path}
                     className={styles.loginTypeLink}
                   >
                     {loginType.label}

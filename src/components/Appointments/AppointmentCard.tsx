@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./AppointmentCard.module.css";
+import { Clock, CheckCircle, X, CheckCheck } from "lucide-react";
 
 export interface AppointmentCardProps {
   id: string;
@@ -28,7 +29,7 @@ const getCardBackground = (id: string): string => {
 };
 
 const getStatusColor = (status: string): string => {
-  switch(status) {
+  switch (status) {
     case 'pending': return '#FF9800';
     case 'waiting-approval': return '#4c51bf'; // Blue color for waiting approval
     case 'accepted': return '#4CAF50';
@@ -39,7 +40,7 @@ const getStatusColor = (status: string): string => {
 };
 
 const getStatusLabel = (status: string): string => {
-  switch(status) {
+  switch (status) {
     case 'pending': return 'Pending';
     case 'waiting-approval': return 'Waiting for Approval';
     case 'accepted': return 'Accepted';
@@ -71,7 +72,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   const statusLabel = getStatusLabel(status);
   const formattedTime = formatTime(time);
   const cardBackground = getCardBackground(id);
-  
+
   return (
     <div className={styles.card} onClick={onViewDetails}>
       <div className={styles.cardInner} style={{ backgroundColor: cardBackground }}>
@@ -79,11 +80,11 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           <span>{date}</span>
           <span className={styles.time}>{formattedTime}</span>
         </div>
-        
+
         <div className={styles.titleContainer}>
           <h3 className={styles.title}>{title}</h3>
         </div>
-        
+
         <div className={styles.participantInfo}>
           <div className={styles.participantDetails}>
             <span className={styles.participantName}>{participantName}</span>
@@ -94,29 +95,29 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             <span>{isOnline ? 'Online' : 'Offline'}</span>
           </div>
         </div>
-          <div className={styles.statusContainer}>          <span className={styles.statusBadge} style={{ backgroundColor: statusColor }}>
-            <span className={styles.statusIcon}>
-              {status === 'pending' && '⏳'}
-              {status === 'waiting-approval' && '⌛'}
-              {status === 'accepted' && '✓'}
-              {status === 'rejected' && '✕'}
-              {status === 'completed' && '✓✓'}
-            </span>
-            {statusLabel}
+        <div className={styles.statusContainer}>          <span className={styles.statusBadge} style={{ backgroundColor: statusColor }}>
+          <span className={styles.statusIcon}>
+            {status === 'pending' && <Clock size={16} />}
+            {status === 'waiting-approval' && <Clock size={16} />}
+            {status === 'accepted' && <CheckCircle size={16} />}
+            {status === 'rejected' && <X size={16} />}
+            {status === 'completed' && <CheckCheck size={16} />}
           </span>
+          {statusLabel}
+        </span>
         </div>
-          {(status === 'pending') && (
-          <div className={styles.actionButtons} onClick={(e) => e.stopPropagation()}>            <button 
-              className={`${styles.actionButton} ${styles.acceptButton}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                onAccept && onAccept();
-              }}
-              suppressHydrationWarning
-            >
-              Accept
-            </button>
-            <button 
+        {(status === 'pending') && (
+          <div className={styles.actionButtons} onClick={(e) => e.stopPropagation()}>            <button
+            className={`${styles.actionButton} ${styles.acceptButton}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onAccept && onAccept();
+            }}
+            suppressHydrationWarning
+          >
+            Accept
+          </button>
+            <button
               className={`${styles.actionButton} ${styles.rejectButton}`}
               onClick={(e) => {
                 e.stopPropagation();

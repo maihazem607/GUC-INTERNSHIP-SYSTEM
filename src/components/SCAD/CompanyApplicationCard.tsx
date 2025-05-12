@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './CompanyApplicationCard.module.css';
+import { Building, BarChart, Mail, Calendar, FileText, CheckCircle, Clock, X } from 'lucide-react';
 
 interface CompanyApplicationCardProps {
   company: {
@@ -74,10 +75,10 @@ const CompanyApplicationCard: React.FC<CompanyApplicationCardProps> = ({ company
   // Get status icon
   const getStatusIcon = () => {
     switch(company.status) {
-      case 'pending': return '⏳';
-      case 'accepted': return '✅';
-      case 'rejected': return '❌';
-      default: return '';
+      case 'pending': return <Clock size={16} />;
+      case 'accepted': return <CheckCircle size={16} />;
+      case 'rejected': return <X size={16} />;
+      default: return null;
     }
   };
   
@@ -108,23 +109,23 @@ const CompanyApplicationCard: React.FC<CompanyApplicationCardProps> = ({ company
       
       <div className={styles.details}>
         <div className={styles.detailItem}>
-          <span className={styles.icon}>🏢</span>
+          <span className={styles.icon}><Building size={16} /></span>
           <span className={styles.detailText} title={company.industry}>
             {company.industry.length > 15 ? `${company.industry.substring(0, 15)}...` : company.industry}
           </span>
         </div>
         <div className={styles.detailItem}>
-          <span className={styles.icon}>📊</span>
+          <span className={styles.icon}><BarChart size={16} /></span>
           <span className={styles.detailText}>{formatCompanySize(company.size)}</span>
         </div>
         <div className={styles.detailItem}>
-          <span className={styles.icon}>📧</span>
+          <span className={styles.icon}><Mail size={16} /></span>
           <span className={styles.detailText} title={company.email}>
             {company.email.length > 15 ? `${company.email.substring(0, 15)}...` : company.email}
           </span>
         </div>
         <div className={styles.detailItem}>
-          <span className={styles.icon}>📅</span>
+          <span className={styles.icon}><Calendar size={16} /></span>
           <span className={styles.detailText}>Applied: {formattedDate}</span>
         </div>
       </div>
@@ -141,7 +142,7 @@ const CompanyApplicationCard: React.FC<CompanyApplicationCardProps> = ({ company
       
       {documentCount > 0 && (
         <div className={styles.documentsIndicator}>
-          <span className={styles.documentIcon}>📄</span>
+          <span className={styles.documentIcon}><FileText size={16} /></span>
           <span className={styles.documentCount}>{documentCount} document{documentCount !== 1 ? 's' : ''} attached</span>
         </div>
       )}

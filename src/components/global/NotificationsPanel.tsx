@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './NotificationsPanel.module.css';
 import { Notification } from '../../components/Companyy/types';
+import { X, FileText, RefreshCw, Info, Mail } from 'lucide-react';
 
 interface NotificationsPanelProps {
     notifications: Notification[];
@@ -9,11 +10,11 @@ interface NotificationsPanelProps {
     onMarkAllAsRead: () => void;
 }
 
-const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ 
-    notifications, 
-    onClose, 
-    onMarkAsRead, 
-    onMarkAllAsRead 
+const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
+    notifications,
+    onClose,
+    onMarkAsRead,
+    onMarkAllAsRead
 }) => {
     return (
         <div className={styles.notificationsPanelOverlay}>
@@ -21,31 +22,32 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
                 <div className={styles.notificationsPanelHeader}>
                     <h3>Notifications</h3>
                     <div className={styles.notificationActions}>
-                        <button 
+                        <button
                             className={styles.markAllReadButton}
                             onClick={onMarkAllAsRead}
                         >
                             Mark all as read
                         </button>
-                        <button 
+                        <button
                             className={styles.closeButton}
                             onClick={onClose}
                         >
-                            ×
+                            <X size={16} />
                         </button>
                     </div>
                 </div>
                 <div className={styles.notificationsList}>
                     {notifications.length > 0 ? (
                         notifications.map(notification => (
-                            <div 
-                                key={notification.id} 
+                            <div
+                                key={notification.id}
                                 className={`${styles.notificationItem} ${notification.read ? styles.read : styles.unread}`}
                                 onClick={() => onMarkAsRead(notification.id)}
                             >
                                 <div className={styles.notificationIcon}>
-                                    {notification.type === 'application' ? '📝' : 
-                                     notification.type === 'status-change' ? '🔄' : 'ℹ️'}
+                                    {notification.type === 'application' ? <FileText size={16} color="#4c51bf" /> :
+                                        notification.type === 'status-change' ? <RefreshCw size={16} color="#4c51bf" /> :
+                                            <Info size={16} color="#4c51bf" />}
                                 </div>
                                 <div className={styles.notificationContent}>
                                     <p className={styles.notificationMessage}>{notification.message}</p>
@@ -54,7 +56,9 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
                                     </p>
                                     <div className={styles.notificationMeta}>
                                         {notification.emailSent && (
-                                            <span className={styles.emailSentBadge}>📧 Email sent</span>
+                                            <span className={styles.emailSentBadge}>
+                                                <Mail size={14} color="#4c51bf" style={{ marginRight: '4px' }} /> Email sent
+                                            </span>
                                         )}
                                     </div>
                                 </div>

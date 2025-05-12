@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import styles from "./Navigation.module.css";
+import { MapPin, Settings, Bell } from "lucide-react";
 
 interface NavigationProps {
   title?: string;
@@ -9,9 +10,9 @@ interface NavigationProps {
   onNotificationClick?: () => void;
 }
 
-export default function Navigation({ 
-  title = "GUC Internship System", 
-  logoSrc = '/logos/GUCInternshipSystemLogo.png', 
+export default function Navigation({
+  title = "GUC Internship System",
+  logoSrc = '/logos/GUCInternshipSystemLogo.png',
   notificationCount = 0,
   onNotificationClick
 }: NavigationProps) {
@@ -32,19 +33,21 @@ export default function Navigation({
       </div>
       <div className={styles.navRight}>
         <div className={styles.locationDisplay}>
-          <span className={styles.locationIcon}>📍</span>
+          <MapPin size={16} className={styles.locationIcon} color="#4c51bf" />
           <span>New York, NY</span>
         </div>
         <div className={styles.userControls}>
           <div className={styles.userAvatar}></div>
-          <button className={styles.settingsButton} suppressHydrationWarning>⚙️</button>
-          <button 
-            className={styles.notificationsButton} 
+          <button className={styles.settingsButton} suppressHydrationWarning>
+            <Settings size={18} color="#4c51bf" />
+          </button>
+          <button
+            className={styles.notificationsButton}
             suppressHydrationWarning
             onClick={onNotificationClick}
             aria-label={notificationCount > 0 ? `${notificationCount} notifications` : "No notifications"}
           >
-            🔔
+            <Bell size={18} color="#4c51bf" />
             {notificationCount > 0 && (
               <span className={styles.notificationBadge}>{notificationCount}</span>
             )}

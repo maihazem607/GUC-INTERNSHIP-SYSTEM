@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './NewAppointmentForm.module.css';
+import { Star, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface NewAppointmentFormProps {
   onSubmit: (appointmentData: any) => Promise<void>;
@@ -108,20 +109,20 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
     time: '',
     description: ''
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formErrors, setFormErrors] = useState<{[key: string]: string}>({});  // Derived state for calendar
+  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});  // Derived state for calendar
   const [selectedParticipant, setSelectedParticipant] = useState<Participant>(
-    advisorsByCatgory.scad && advisorsByCatgory.scad.length > 0 
+    advisorsByCatgory.scad && advisorsByCatgory.scad.length > 0
       ? advisorsByCatgory.scad[0]
       : {
-          id: '',
-          name: '',
-          type: 'scad',
-          title: '',
-          rating: 0,
-          reviews: 0
-        }
+        id: '',
+        name: '',
+        type: 'scad',
+        title: '',
+        rating: 0,
+        reviews: 0
+      }
   );
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -130,7 +131,7 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    
+
     // Handle checkbox special case
     if (type === 'checkbox') {
       const checkbox = e.target as HTMLInputElement;
@@ -144,7 +145,7 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
         [name]: value
       }));
     }
-    
+
     // Clear error on change
     if (formErrors[name]) {
       setFormErrors(prev => ({
@@ -152,18 +153,18 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
         [name]: ''
       }));
     }
-  };  const validateForm = () => {
-    const errors: {[key: string]: string} = {};
-    
+  }; const validateForm = () => {
+    const errors: { [key: string]: string } = {};
+
     // Check if advisors are available in the selected category
     const hasAdvisors = availableAdvisors.length > 0;
-    
+
     if (!hasAdvisors) {
       errors.participantType = 'No advisors available in this category';
       setCurrentStep(1);
       return errors;
     }
-    
+
     // Validate that an advisor is selected
     if (!formData.participantId) {
       errors.participantId = 'Please select an advisor';
@@ -171,54 +172,54 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
       setCurrentStep(1);
       return errors;
     }
-    
+
     if (!formData.title.trim()) {
       errors.title = 'Title is required';
     }
-    
+
     if (!formData.date) {
       errors.date = 'Date is required';
     } else {
       const selectedDate = new Date(formData.date);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      
+
       if (selectedDate < today) {
         errors.date = 'Date cannot be in the past';
       }
     }
-    
+
     if (!formData.time) {
       errors.time = 'Time is required';
     }
-    
+
     if (!formData.description.trim()) {
       errors.description = 'Description is required';
     }
-    
+
     return errors;
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate form
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       // Format time for display and add status
       const formattedData = {
         ...formData,
         time: `${formData.time} - ${incrementTimeByOneHour(formData.time)}`,
-        status: 'waiting-approval' 
+        status: 'waiting-approval'
       };
-        await onSubmit(formattedData);
-        // Reset form after successful submission
+      await onSubmit(formattedData);
+      // Reset form after successful submission
       setFormData({
         title: visitPurposes[0],
         participantType: 'scad',
@@ -234,12 +235,12 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
       setIsSubmitting(false);
     }
   };
-  
+
   // Helper function to increment time by one hour for end time
   const incrementTimeByOneHour = (timeString: string): string => {
     const [hours, minutes] = timeString.split(':').map(Number);
     const newHours = (hours + 1) % 24;
-    
+
     return `${newHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
   };
 
@@ -247,17 +248,17 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
   const generateCalendarDays = () => {
     const year = currentMonth.getFullYear();
     const month = currentMonth.getMonth();
-    
+
     // Get first day of month and last day
     const firstDayOfMonth = new Date(year, month, 1);
     const lastDayOfMonth = new Date(year, month + 1, 0);
-    
+
     // Get day of week for first day (0 = Sunday, 6 = Saturday)
     const firstDayOfWeek = firstDayOfMonth.getDay();
-    
+
     // Array to store all days to display
     const days = [];
-    
+
     // Add days from previous month to fill in first week
     const daysFromPrevMonth = firstDayOfWeek;
     const prevMonth = new Date(year, month, 0); // Last day of previous month
@@ -268,20 +269,20 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
         disabled: true
       });
     }
-    
+
     // Add all days from current month
     for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
       const date = new Date(year, month, day);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      
+
       days.push({
         date,
         currentMonth: true,
         disabled: date < today
       });
     }
-    
+
     // Add days from next month to complete the calendar grid (6 rows x 7 days)
     const daysToAdd = 42 - days.length;
     for (let day = 1; day <= daysToAdd; day++) {
@@ -291,42 +292,42 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
         disabled: true
       });
     }
-    
+
     return days;
   };
-  
+
   // Generate mock time slots for a given date
   const generateTimeSlots = (date: Date) => {
     if (!date) return [];
-    
+
     // Start with all possible time slots from 9 AM to 5 PM
     const slots: TimeSlot[] = [];
     for (let hour = 9; hour <= 16; hour++) {
       // Skip 12-1 PM for lunch
       if (hour === 12) continue;
-      
+
       const timeStr = `${hour.toString().padStart(2, '0')}:00`;
       const halfTimeStr = `${hour.toString().padStart(2, '0')}:30`;
-      
+
       // Randomly determine if slot is available (for demo)
       const isRandomlyAvailable = () => Math.random() > 0.3;
-      
+
       slots.push({
         id: `slot-${hour}-00`,
         time: timeStr,
         isAvailable: isRandomlyAvailable()
       });
-      
+
       slots.push({
         id: `slot-${hour}-30`,
         time: halfTimeStr,
         isAvailable: isRandomlyAvailable()
       });
     }
-    
+
     return slots;
   };
-  
+
   // Handle month navigation
   const navigateMonth = (direction: 'prev' | 'next') => {
     setCurrentMonth(prevMonth => {
@@ -341,7 +342,7 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
     if (selectedDate) {
       const slots = generateTimeSlots(selectedDate);
       setAvailableTimeSlots(slots);
-      
+
       // Format date for form field
       const formattedDate = selectedDate.toISOString().split('T')[0];
       setFormData(prev => ({
@@ -350,13 +351,13 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
       }));
     }
   }, [selectedDate]);
-    // Available advisors based on selected type
+  // Available advisors based on selected type
   const [availableAdvisors, setAvailableAdvisors] = useState(advisorsByCatgory.scad);
-    // Update available advisors when type changes
+  // Update available advisors when type changes
   useEffect(() => {
     const advisors = advisorsByCatgory[formData.participantType as keyof typeof advisorsByCatgory] || [];
     setAvailableAdvisors(advisors);
-    
+
     // Reset participant selection when type changes
     setFormData(prev => ({
       ...prev,
@@ -379,11 +380,11 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
       });
     }
   }, [formData.participantType]);
-    // Update participant info when ID is selected
+  // Update participant info when ID is selected
   useEffect(() => {
     if (formData.participantId) {
       const selectedAdvisor = availableAdvisors.find(advisor => advisor.id === formData.participantId);
-      
+
       if (selectedAdvisor) {
         setSelectedParticipant(selectedAdvisor);
         setFormData(prev => ({
@@ -401,44 +402,44 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
       }
     }
   }, [formData.participantId, availableAdvisors]);
-  
+
   // Handle time slot selection
   const handleTimeSlotSelect = (slot: TimeSlot) => {
     if (!slot.isAvailable) return;
-    
+
     setSelectedTimeSlot(slot.id);
     setFormData(prev => ({
       ...prev,
       time: slot.time
     }));
   };
-  
+
   // Handle date selection
   const handleDateSelect = (day: any) => {
     if (day.disabled) return;
-    
+
     setSelectedDate(day.date);
     setSelectedTimeSlot(''); // Reset time selection
-  };  return (
+  }; return (
     <form className={styles.appointmentForm} onSubmit={handleSubmit}>      {/* Left panel - Form content */}
       <div className={styles.formContent}>        {/* Back link - only shown in step 2 */}
         {currentStep === 2 && (
-          <a href="#" className={styles.backLink} onClick={(e) => { 
-            e.preventDefault(); 
+          <a href="#" className={styles.backLink} onClick={(e) => {
+            e.preventDefault();
             // Go back to step 1 instead of navigating away
             setCurrentStep(1);
           }}>
             <span className={styles.backIcon}>←</span> Back to list
           </a>
         )}
-      
+
         <h2>Schedule New Appointment</h2>
-        
+
         {currentStep === 1 ? (
           /* Step 1: Select an advisor */
           <>
             <div className={styles.sectionTitle}>Select an Advisor</div>
-            
+
             <div className={styles.formGroup}>
               <label htmlFor="participantType">Advisor type</label>              <select
                 id="participantType"
@@ -450,27 +451,27 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
                 <option value="faculty">Faculty Member</option>
               </select>
             </div>
-            
+
             <div className={styles.sectionTitle}>Available Advisors</div>
-            
+
             {formErrors.participantType && (
-              <div className={styles.errorMessage} style={{marginBottom: '10px'}}>
+              <div className={styles.errorMessage} style={{ marginBottom: '10px' }}>
                 {formErrors.participantType}
               </div>
             )}
-            
+
             <div className={styles.advisorCards}>
               {availableAdvisors.length > 0 ? (
                 availableAdvisors.map(advisor => (
-                  <div 
-                    key={advisor.id} 
-                    className={`${styles.advisorCard} ${formData.participantId === advisor.id ? styles.selectedAdvisor : ''}`}                    onClick={() => {
+                  <div
+                    key={advisor.id}
+                    className={`${styles.advisorCard} ${formData.participantId === advisor.id ? styles.selectedAdvisor : ''}`} onClick={() => {
                       setFormData(prev => ({
                         ...prev,
                         participantId: advisor.id,
                         participantName: advisor.name
                       }));
-                      
+
                       // Clear any participant selection errors when an advisor is clicked
                       if (formErrors.participantId) {
                         setFormErrors(prev => ({
@@ -485,9 +486,14 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
                       <span className={styles.advisorTitle}>{advisor.title}</span>                      <div className={styles.ratingContainer}>
                         {advisor.rating ? (
                           <>
-                            {'★'.repeat(Math.floor(advisor.rating))}
-                            {advisor.rating % 1 >= 0.5 ? '½' : ''}
-                            {'☆'.repeat(5 - Math.ceil(advisor.rating))}
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                size={16}
+                                fill={i < Math.floor(advisor.rating) ? "#FFD700" : (i < Math.ceil(advisor.rating) && advisor.rating % 1 >= 0.5 ? "#FFD700" : "none")}
+                                color={i < Math.ceil(advisor.rating) ? "#FFD700" : "#D1D5DB"}
+                              />
+                            ))}
                             <span className={styles.reviewCount}>{advisor.rating.toFixed(1)} ({advisor.reviews} reviews)</span>
                           </>
                         ) : (
@@ -497,7 +503,7 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
                     </div>
                     {formData.participantId === advisor.id && (
                       <div className={styles.selectedIndicator}>
-                        ✓
+                        <CheckCircle size={16} color="#10b981" />
                       </div>
                     )}
                   </div>
@@ -508,13 +514,13 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
                 </div>
               )}
             </div>
-            
+
             {formErrors.participantId && (
-              <div className={styles.errorMessage} style={{marginTop: '10px'}}>
+              <div className={styles.errorMessage} style={{ marginTop: '10px' }}>
                 {formErrors.participantId}
               </div>
             )}
-              <div className={styles.formActions}>
+            <div className={styles.formActions}>
               <button
                 type="button"
                 className={styles.submitButton}
@@ -528,7 +534,7 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
                     }));
                     return;
                   }
-                  
+
                   // Clear any existing errors and proceed to next step
                   setFormErrors({});
                   setCurrentStep(2);
@@ -550,9 +556,14 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
                     <span className={styles.profileType}>{selectedParticipant.title}</span>                    <div className={styles.ratingContainer}>
                       {selectedParticipant.rating ? (
                         <>
-                          {'★'.repeat(Math.floor(selectedParticipant.rating))}
-                          {selectedParticipant.rating % 1 >= 0.5 ? '½' : ''}
-                          {'☆'.repeat(5 - Math.ceil(selectedParticipant.rating))}
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              size={16}
+                              fill={i < Math.floor(selectedParticipant.rating) ? "#FFD700" : (i < Math.ceil(selectedParticipant.rating) && selectedParticipant.rating % 1 >= 0.5 ? "#FFD700" : "none")}
+                              color={i < Math.ceil(selectedParticipant.rating) ? "#FFD700" : "#D1D5DB"}
+                            />
+                          ))}
                           <span className={styles.reviewCount}>{selectedParticipant.rating.toFixed(1)} ({selectedParticipant.reviews} reviews)</span>
                         </>
                       ) : (
@@ -573,10 +584,10 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
             )}
 
             <div className={styles.sectionDivider}></div>
-            
+
             {/* Appointment Details Section */}
             <div className={styles.sectionTitle}>Appointment Details</div>
-              <div className={styles.formGroup}>
+            <div className={styles.formGroup}>
               <label htmlFor="title">Purpose of your visit</label>
               <select
                 id="title"
@@ -593,7 +604,7 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
               </select>
               {formErrors.title && <span className={styles.errorMessage}>{formErrors.title}</span>}
             </div>
-            
+
             <div className={styles.formGroup}>
               <label htmlFor="description">Additional details</label>
               <textarea
@@ -607,11 +618,11 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
               />
               {formErrors.description && <span className={styles.errorMessage}>{formErrors.description}</span>}
             </div>
-    
+
             <div className={styles.formActions}>
-              <button 
-                type="submit" 
-                className={styles.submitButton} 
+              <button
+                type="submit"
+                className={styles.submitButton}
                 disabled={isSubmitting || !formData.date || !formData.time}
               >
                 {isSubmitting ? 'Submitting...' : 'Book an appointment'}
@@ -619,7 +630,7 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
             </div>
           </>
         )}      </div>
-      
+
       {/* Right panel - Time slot selection (only shown in step 2) */}
       {currentStep === 2 && (
         <div className={styles.timeSlotContainer}>
@@ -629,45 +640,45 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
               {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
             </div>
             <div className={styles.calendarNavigation}>
-              <button 
+              <button
                 className={styles.navButton}
                 onClick={() => navigateMonth('prev')}
                 type="button"
               >
-                ←
+                <ChevronLeft size={16} />
               </button>
-              <button 
+              <button
                 className={styles.navButton}
                 onClick={() => navigateMonth('next')}
                 type="button"
               >
-                →
+                <ChevronRight size={16} />
               </button>
             </div>
           </div>
-          
+
           {/* Weekday headers */}
           <div className={styles.weekdayHeader}>
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
               <div key={day} className={styles.weekday}>{day}</div>
             ))}
           </div>
-          
+
           {/* Calendar days */}
           <div className={styles.datePicker}>
             {generateCalendarDays().map((day, index) => {
               const isToday = day.date.toDateString() === new Date().toDateString();
               const isSelected = selectedDate && day.date.toDateString() === selectedDate.toDateString();
-              
+
               const dateClasses = `${styles.dateCell} 
                 ${day.disabled ? styles.disabledDate : ''} 
                 ${!day.currentMonth ? styles.otherMonth : ''}
                 ${isToday ? styles.currentDate : ''}
                 ${isSelected ? styles.selectedDate : ''}
               `;
-              
+
               return (
-                <div 
+                <div
                   key={`day-${index}`}
                   className={dateClasses}
                   onClick={() => !day.disabled && handleDateSelect(day)}
@@ -677,15 +688,15 @@ const NewAppointmentForm: React.FC<NewAppointmentFormProps> = ({ onSubmit }) => 
               );
             })}
           </div>
-          
+
           {/* Time slot selection */}
           {selectedDate ? (
             <>
               <div className={styles.timeSlotHeader}>
-                Time slots for {selectedDate.toLocaleDateString('en-US', { 
-                  weekday: 'short', 
-                  day: 'numeric', 
-                  month: 'short' 
+                Time slots for {selectedDate.toLocaleDateString('en-US', {
+                  weekday: 'short',
+                  day: 'numeric',
+                  month: 'short'
                 })}
               </div>
               <div className={styles.timeSlots}>

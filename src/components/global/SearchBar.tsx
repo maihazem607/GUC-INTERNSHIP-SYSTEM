@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './SearchBar.module.css';
+import { Search, X } from 'lucide-react';
 
 interface SearchBarProps {
   searchTerm: string;
@@ -15,24 +16,28 @@ const SearchBar: React.FC<SearchBarProps> = ({
   return (
     <div className={styles.searchBarContainer}>
       <div className={styles.searchInputWrapper}>
-      <img 
-          src="assets/images/icons/search.png" 
-          alt="Search Icon" 
-          className={styles.searchIcon} 
-        />      <input 
-          type="text" 
-          className={styles.searchInput} 
-          placeholder={placeholder} 
+        <Search
+          size={18}
+          className={styles.searchIcon}
+          color="#4c51bf"
+        />
+        <input
+          type="text"
+          className={styles.searchInput}
+          placeholder={placeholder}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           suppressHydrationWarning
         />
-        {searchTerm && (          <button 
+        {searchTerm && (
+          <button
             className={styles.clearSearchButton}
             onClick={() => setSearchTerm('')}
             suppressHydrationWarning
+            title="Clear search"
+            aria-label="Clear search"
           >
-            ✕
+            <X size={14} />
           </button>
         )}
       </div>

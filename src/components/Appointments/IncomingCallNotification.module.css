@@ -3,59 +3,67 @@
   bottom: 24px;
   right: 24px;
   z-index: 1000;
-  animation: slideInFromBottom 0.3s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .incomingCallCard {
   background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
-  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  padding: 20px;
   width: 320px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.callRinging {
+.callIconContainer {
   display: flex;
   justify-content: center;
-  align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
-.ringIcon {
-  width: 60px;
-  height: 60px;
-  background-color: #3b82f6;
+.callIcon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #4a6cf7, #6366f1);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  animation: pulse 2s infinite;
 }
 
-.ringIcon::before {
-  content: '📞';
-  font-size: 24px;
-  color: white;
+.userIconContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+  color: #4a6cf7;
 }
 
-.incomingCallHeader {
+.callInfo {
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
-.incomingCallHeader h3 {
-  font-size: 1.25rem;
-  margin: 0 0 4px;
-  color: #111827;
-}
-
-.callerInfo {
+.callLabel {
+  display: block;
   font-size: 0.875rem;
   color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.callerName {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: #111827;
 }
 
 .incomingCallActions {
@@ -71,61 +79,29 @@
   border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
   display: flex;
-  flex-direction: column;
   align-items: center;
-}
-
-.actionIcon {
-  margin-bottom: 4px;
-  font-size: 1.25rem;
+  justify-content: center;
+  gap: 8px;
 }
 
 .acceptCallButton {
-  background-color: #10b981;
+  background-color: #4ade80;
   color: white;
 }
 
 .acceptCallButton:hover {
-  background-color: #059669;
+  background-color: #22c55e;
 }
 
 .rejectCallButton {
-  background-color: #ef4444;
+  background-color: #f87171;
   color: white;
 }
 
 .rejectCallButton:hover {
-  background-color: #dc2626;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
-  }
-  
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
-  }
-  
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
-  }
-}
-
-@keyframes slideInFromBottom {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  background-color: #ef4444;
 }
 
 /* Responsive adjustments */
@@ -135,7 +111,7 @@
     right: 16px;
     bottom: 16px;
   }
-  
+
   .incomingCallCard {
     width: 100%;
   }

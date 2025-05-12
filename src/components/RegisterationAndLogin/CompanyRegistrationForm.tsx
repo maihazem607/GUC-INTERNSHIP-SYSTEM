@@ -5,6 +5,10 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './CompanyRegistrationForm.module.css';
+import {
+  Factory, Mail, Lock, Upload,
+  ArrowRight, ArrowLeft
+} from 'lucide-react';
 
 interface CompanySize {
   value: string;
@@ -60,7 +64,7 @@ const CompanyRegistrationForm: React.FC = () => {
       ...formValues,
       [name]: value
     });
-    
+
     // Clear error for this field when user starts typing again
     if (errors[name]) {
       setErrors({
@@ -76,7 +80,7 @@ const CompanyRegistrationForm: React.FC = () => {
       ...formValues,
       [name]: checked
     });
-    
+
     if (errors[name]) {
       setErrors({
         ...errors,
@@ -84,7 +88,7 @@ const CompanyRegistrationForm: React.FC = () => {
       });
     }
   };
-  
+
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -96,7 +100,7 @@ const CompanyRegistrationForm: React.FC = () => {
         });
         return;
       }
-      
+
       // Check file type
       if (!['image/jpeg', 'image/png', 'image/svg+xml'].includes(file.type)) {
         setErrors({
@@ -105,14 +109,14 @@ const CompanyRegistrationForm: React.FC = () => {
         });
         return;
       }
-      
+
       // Create preview URL
       const reader = new FileReader();
       reader.onload = () => {
         setLogoPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
-      
+
       // Clear error if exists
       if (errors.companyLogo) {
         setErrors({
@@ -125,16 +129,16 @@ const CompanyRegistrationForm: React.FC = () => {
 
   const validateStep = (currentStep: number): boolean => {
     const newErrors: Record<string, string> = {};
-    
+
     if (currentStep === 1) {
       if (!formValues.companyName.trim()) {
         newErrors.companyName = 'Company name is required';
       }
-      
+
       if (!formValues.industry) {
         newErrors.industry = 'Please select your industry';
       }
-      
+
       if (!formValues.companySize) {
         newErrors.companySize = 'Please select your company size';
       }
@@ -142,31 +146,31 @@ const CompanyRegistrationForm: React.FC = () => {
       if (!logoPreview) {
         newErrors.companyLogo = 'Company logo is required';
       }
-      
+
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!formValues.companyEmail.trim()) {
         newErrors.companyEmail = 'Company email is required';
       } else if (!emailRegex.test(formValues.companyEmail)) {
         newErrors.companyEmail = 'Please enter a valid email address';
       }
-      
+
       if (!formValues.password) {
         newErrors.password = 'Password is required';
       } else if (formValues.password.length < 8) {
         newErrors.password = 'Password must be at least 8 characters';
       }
-      
+
       if (!formValues.confirmPassword) {
         newErrors.confirmPassword = 'Please confirm your password';
       } else if (formValues.password !== formValues.confirmPassword) {
         newErrors.confirmPassword = 'Passwords do not match';
       }
-      
+
       if (!formValues.termsAccepted) {
         newErrors.termsAccepted = 'You must accept the terms and conditions';
       }
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -183,17 +187,17 @@ const CompanyRegistrationForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateStep(step)) {
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     // Simulate API call with a timeout
     setTimeout(() => {
       setIsSubmitting(false);
-      
+
       // Redirect to success page or login page
       router.push('/CompanyLogin?registered=true');
     }, 1500);
@@ -202,7 +206,7 @@ const CompanyRegistrationForm: React.FC = () => {
   const handleLogoUploadClick = () => {
     fileInputRef.current?.click();
   };
-  
+
   return (
     <div className={styles.registrationContainer}>
       <div className={styles.formCard}>
@@ -217,7 +221,7 @@ const CompanyRegistrationForm: React.FC = () => {
           <h1 className={styles.title}>Company Registration</h1>
           <div className={styles.divider}></div>
         </div>
-        
+
         {/* Progress Indicator */}
         <div className={styles.progressContainer}>
           <div className={styles.progressStep}>
@@ -230,7 +234,7 @@ const CompanyRegistrationForm: React.FC = () => {
             <span className={styles.progressLabel}>Account Setup</span>
           </div>
         </div>
-        
+
         <form onSubmit={handleSubmit} className={styles.form}>
           {/* Step 1: Company Information */}
           {step === 1 && (
@@ -251,11 +255,13 @@ const CompanyRegistrationForm: React.FC = () => {
                 </div>
                 {errors.companyName && <span className={styles.errorText}>{errors.companyName}</span>}
               </div>
-              
+
               <div className={styles.inputGroup}>
                 <label htmlFor="industry" className={styles.label}>Industry <span className={styles.required}>*</span></label>
                 <div className={styles.selectWrapper}>
-                  <span className={styles.inputIcon}>🏭</span>
+                  <span className={styles.inputIcon}>
+                    <Factory size={16} color="#4c51bf" />
+                  </span>
                   <select
                     id="industry"
                     name="industry"
@@ -271,15 +277,15 @@ const CompanyRegistrationForm: React.FC = () => {
                 </div>
                 {errors.industry && <span className={styles.errorText}>{errors.industry}</span>}
               </div>
-              
+
               <div className={styles.inputGroup}>
                 <label className={styles.label}>Company Size <span className={styles.required}>*</span></label>
                 <div className={styles.sizeOptionsContainer}>
                   {companySizes.map(size => (
-                    <div 
-                      key={size.value} 
+                    <div
+                      key={size.value}
                       className={`${styles.sizeOption} ${formValues.companySize === size.value ? styles.selectedSize : ''}`}
-                      onClick={() => setFormValues({...formValues, companySize: size.value})}
+                      onClick={() => setFormValues({ ...formValues, companySize: size.value })}
                     >
                       <input
                         type="radio"
@@ -299,25 +305,25 @@ const CompanyRegistrationForm: React.FC = () => {
                 </div>
                 {errors.companySize && <span className={styles.errorText}>{errors.companySize}</span>}
               </div>
-              
+
               <div className={styles.buttonGroup}>
                 <button
                   type="button"
                   onClick={handleNext}
                   className={styles.nextButton}
                 >
-                  Next <span className={styles.buttonArrow}>→</span>
+                  Next <span className={styles.buttonArrow}><ArrowRight size={16} /></span>
                 </button>
               </div>
             </div>
           )}
-          
+
           {/* Step 2: Account Information */}
           {step === 2 && (
             <div className={styles.formStep}>
               <div className={styles.logoUploadSection}>
                 <label className={styles.label}>Company Logo <span className={styles.required}>*</span></label>
-                <div 
+                <div
                   className={`${styles.logoUploader} ${errors.companyLogo ? styles.logoUploaderError : ''}`}
                   onClick={handleLogoUploadClick}
                 >
@@ -331,7 +337,9 @@ const CompanyRegistrationForm: React.FC = () => {
                     />
                   ) : (
                     <div className={styles.uploadPlaceholder}>
-                      <span className={styles.uploadIcon}>📤</span>
+                      <span className={styles.uploadIcon}>
+                        <Upload size={24} color="#4c51bf" />
+                      </span>
                       <span>Click to upload logo</span>
                       <span className={styles.uploadHint}>(JPEG, PNG, SVG, max 5MB)</span>
                     </div>
@@ -348,11 +356,13 @@ const CompanyRegistrationForm: React.FC = () => {
                 </div>
                 {errors.companyLogo && <span className={styles.errorText}>{errors.companyLogo}</span>}
               </div>
-              
+
               <div className={styles.inputGroup}>
                 <label htmlFor="companyEmail" className={styles.label}>Official Company Email <span className={styles.required}>*</span></label>
                 <div className={styles.inputWrapper}>
-                  <span className={styles.inputIcon}>✉️</span>
+                  <span className={styles.inputIcon}>
+                    <Mail size={16} color="#4c51bf" />
+                  </span>
                   <input
                     type="email"
                     id="companyEmail"
@@ -365,11 +375,13 @@ const CompanyRegistrationForm: React.FC = () => {
                 </div>
                 {errors.companyEmail && <span className={styles.errorText}>{errors.companyEmail}</span>}
               </div>
-              
+
               <div className={styles.inputGroup}>
                 <label htmlFor="password" className={styles.label}>Password <span className={styles.required}>*</span></label>
                 <div className={styles.inputWrapper}>
-                  <span className={styles.inputIcon}>🔒</span>
+                  <span className={styles.inputIcon}>
+                    <Lock size={16} color="#4c51bf" />
+                  </span>
                   <input
                     type="password"
                     id="password"
@@ -382,11 +394,13 @@ const CompanyRegistrationForm: React.FC = () => {
                 </div>
                 {errors.password && <span className={styles.errorText}>{errors.password}</span>}
               </div>
-              
+
               <div className={styles.inputGroup}>
                 <label htmlFor="confirmPassword" className={styles.label}>Confirm Password <span className={styles.required}>*</span></label>
                 <div className={styles.inputWrapper}>
-                  <span className={styles.inputIcon}>🔒</span>
+                  <span className={styles.inputIcon}>
+                    <Lock size={16} color="#4c51bf" />
+                  </span>
                   <input
                     type="password"
                     id="confirmPassword"
@@ -399,7 +413,7 @@ const CompanyRegistrationForm: React.FC = () => {
                 </div>
                 {errors.confirmPassword && <span className={styles.errorText}>{errors.confirmPassword}</span>}
               </div>
-              
+
               <div className={styles.checkboxGroup}>
                 <div className={styles.checkboxWrapper}>
                   <input
@@ -416,16 +430,16 @@ const CompanyRegistrationForm: React.FC = () => {
                 </div>
                 {errors.termsAccepted && <span className={styles.errorText}>{errors.termsAccepted}</span>}
               </div>
-              
+
               <div className={styles.buttonGroup}>
                 <button
                   type="button"
                   onClick={handlePrevious}
                   className={styles.backButton}
                 >
-                  <span className={styles.buttonArrowLeft}>←</span> Back
+                  <span className={styles.buttonArrowLeft}><ArrowLeft size={16} /></span> Back
                 </button>
-                
+
                 <button
                   type="submit"
                   className={styles.submitButton}
@@ -441,7 +455,7 @@ const CompanyRegistrationForm: React.FC = () => {
             </div>
           )}
         </form>
-        
+
         <div className={styles.loginLink}>
           <p>
             Already have an account? <Link href="/CompanyLogin" className={styles.link}>Login</Link>
