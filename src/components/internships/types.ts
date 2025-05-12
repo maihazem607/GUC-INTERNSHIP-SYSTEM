@@ -7,6 +7,7 @@ export interface FilterOptions {
   type?: string;
   date?: string;
   internStatus?: string;
+  reportStatus?: string;
 }
 
 // Internship types

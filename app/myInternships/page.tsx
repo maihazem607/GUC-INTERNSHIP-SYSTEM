@@ -6,6 +6,8 @@ import FilterSidebar from "../../src/components/global/FilterSidebar";
 import MyInternshipCard from "../../src/components/MyInternships/MyInternshipCard";
 import EvaluationModal from "../../src/components/MyInternships/EvaluationModal";
 import ReportModal from "../../src/components/MyInternships/ReportModal";
+import ReportsList from "../../src/components/MyInternships/ReportsList";
+import ReportResultsModal from "../../src/components/MyInternships/ReportResultsModal";
 import DashboardTab from "../../src/components/global/DashboardTab";
 import { Internship, FilterOptions } from "../../src/components/internships/types";
 import NotificationSystem, { useNotification } from "../../src/components/global/NotificationSystem";
@@ -30,6 +32,10 @@ interface MyInternship extends Internship {
     body: string;
     coursesApplied?: string[];
     finalized?: boolean;
+    status?: 'pending' | 'accepted' | 'flagged' | 'rejected';
+    scadComments?: string;
+    appealMessage?: string;
+    appealDate?: string;
   } | null;
   major?: string;
 }
@@ -66,18 +72,21 @@ const getMajorCourses = (major: string) => {
 };
 
 const MyInternshipsPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'applications' | 'internships'>('applications');
+  const [activeTab, setActiveTab] = useState<'applications' | 'internships' | 'reports'>('applications');
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState<FilterOptions>({
     status: 'All',
     internStatus: 'All',
+    reportStatus: 'All',
     date: 'All',
   });
   const [myInternships, setMyInternships] = useState<MyInternship[]>([]);
   const [filteredInternships, setFilteredInternships] = useState<MyInternship[]>([]);
   const [selectedInternship, setSelectedInternship] = useState<MyInternship | null>(null);
   const [showEvaluationModal, setShowEvaluationModal] = useState(false);
-  const [showReportModal, setShowReportModal] = useState(false);  // Define the evaluation type to match the interface in EvaluationForm/EvaluationModal
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [showReportResultsModal, setShowReportResultsModal] = useState(false);
+  const [isSubmittingAppeal, setIsSubmittingAppeal] = useState(false);// Define the evaluation type to match the interface in EvaluationForm/EvaluationModal
   interface EvaluationType {
     rating: number;
     comment: string;
@@ -92,8 +101,7 @@ const MyInternshipsPage: React.FC = () => {
     finalized: false
   });  
   const [isSubmittingEval, setIsSubmittingEval] = useState(false);
-  const [isSubmittingReport, setIsSubmittingReport] = useState(false);  
-  const [report, setReport] = useState({
+  const [isSubmittingReport, setIsSubmittingReport] = useState(false);    const [report, setReport] = useState({
     title: '',
     introduction: '',
     body: '',
@@ -105,11 +113,12 @@ const MyInternshipsPage: React.FC = () => {
   const [availableCourses, setAvailableCourses] = useState<{id: string, name: string}[]>([]);
   const [activeReportTab, setActiveReportTab] = useState<'edit' | 'preview' | 'courses'>('edit');
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const [highlightedReportId, setHighlightedReportId] = useState<number | undefined>(undefined);
   const { notification, visible, showNotification, hideNotification } = useNotification();
-  
-  // Filter options
+    // Filter options  
   const statusOptions = ['All', 'Pending', 'Finalized', 'Accepted', 'Rejected'];
   const internStatusOptions = ['All', 'Current Intern', 'Internship Complete'];
+  const reportStatusOptions = ['All', 'Pending', 'Accepted', 'Flagged', 'Rejected'];
   const dateOptions = ['All', 'Recent', '2023', '2022'];
   
   // Format filters for the global FilterSidebar component based on active tab
@@ -138,10 +147,18 @@ const MyInternshipsPage: React.FC = () => {
           value: activeFilters.date || 'All'
         }
       ];
+    } else if (activeTab === 'reports') {
+      return [
+        {
+          title: "Report Status",
+          options: reportStatusOptions,
+          type: "reportStatus",
+          value: activeFilters.reportStatus || 'All'
+        }
+      ];
     }
     return [];
-  };
-  // Mock data for internships
+  };  // Mock data for internships
   useEffect(() => {
     // This would typically be an API call to fetch the user's internships
     const mockInternships: MyInternship[] = [
@@ -157,16 +174,29 @@ const MyInternshipsPage: React.FC = () => {
         salary: '$25/hr',
         logo: '/logos/amazon.png',
         description: 'Design user interfaces for Amazon web services products.',
-        applicationStatus: 'rejected',
+        applicationStatus: 'accepted',
         applicationDate: '15 April 2023',
         startDate: '20 May 2023',
         endDate: '20 August 2023',
         isActive: false,
         skills: ['UI/UX Design', 'Figma', 'Adobe XD'],
-        evaluation: null,
+        evaluation: {
+          rating: 4,
+          comment: 'Great opportunity to work with talented designers on real products. The team was supportive and I learned a lot about user-centric design approaches.',
+          recommended: true,
+          finalized: true
+        },
+        report: {
+          title: 'UI/UX Design Internship at Amazon',
+          introduction: 'During my three-month internship at Amazon, I worked on designing user interfaces for AWS products and gained valuable experience in user research and prototyping.',
+          body: 'My internship at Amazon was focused on improving the user experience of AWS console interfaces. I collaborated with product managers and engineers to identify pain points in the current UI and proposed design solutions to address them.\n\nI conducted user research sessions with existing customers to understand their needs better, and created wireframes and high-fidelity prototypes using Figma. My designs were implemented in the AWS Management Console, specifically improving the navigation experience for first-time users.\n\nI also participated in several design critique sessions where I received valuable feedback from senior designers that significantly improved my design thinking process.',
+          coursesApplied: ['cs101', 'cs505'],
+          finalized: true,
+          status: 'accepted',
+          scadComments: 'Excellent report that clearly demonstrates the application of software engineering principles and UI design concepts from your coursework.'
+        },
         major: 'Computer Science'
-      },
-      {
+      },      {
         id: 2,
         company: 'Google',
         title: 'Frontend Developer Intern',
@@ -178,11 +208,12 @@ const MyInternshipsPage: React.FC = () => {
         salary: '$30/hr',
         logo: '/logos/google.png',
         description: 'Develop frontend components for Google Cloud Platform.',        
-        applicationStatus: 'finalized',
+        applicationStatus: 'pending',
         applicationDate: '1 May 2023',
-        skills: ['React', 'TypeScript', 'CSS']
-      },
-      {
+        major: 'Computer Science',
+        skills: ['React', 'TypeScript', 'CSS'],        evaluation: null,
+        report: null
+      },      {
         id: 3,
         company: 'Microsoft',
         title: 'Software Engineer Intern',
@@ -194,11 +225,29 @@ const MyInternshipsPage: React.FC = () => {
         salary: '$28/hr',
         logo: '/logos/microsoft.png',
         description: 'Work on backend systems for Microsoft Azure.',        
-        applicationStatus: 'pending',
+        applicationStatus: 'accepted',
         applicationDate: '10 May 2023',
-        skills: ['Java', 'Spring Boot', 'Azure']
-      },
-      {        id: 4,
+        startDate: '15 July 2023',
+        endDate: '15 October 2023',
+        isActive: false,
+        major: 'Computer Science',
+        skills: ['Java', 'Spring Boot', 'Azure'],
+        evaluation: {
+          rating: 5,
+          comment: 'My internship at Microsoft was outstanding. I worked on critical backend services for Azure and gained valuable experience in building scalable cloud systems. The team was extremely supportive and I had the opportunity to learn from experienced engineers.',
+          recommended: true,
+          finalized: true
+        },
+        report: {
+          title: 'Backend Development for Microsoft Azure',
+          introduction: 'During my internship at Microsoft, I worked on developing and optimizing backend services for the Azure cloud platform using Java and Spring Boot.',
+          body: 'My time at Microsoft was focused on developing microservices that power critical Azure functions. I implemented several REST APIs that handle resource provisioning and management within the Azure ecosystem.\n\nA major project I worked on was optimizing the database access layer to improve response times for high-traffic API endpoints. By implementing connection pooling and query optimizations, I helped reduce average response time by 35%.\n\nI also contributed to the internal monitoring tools that track service health and performance metrics. This involved implementing custom metrics collection and designing dashboards that help the team quickly identify and respond to potential issues.\n\nThe experience gave me practical insights into building enterprise-grade distributed systems and allowed me to apply database concepts from my coursework in a real-world setting.',
+          coursesApplied: ['cs303', 'cs404'],
+          finalized: true,
+          status: 'flagged',
+          scadComments: 'The report provides good details about the technical work, but needs more specific examples of how database concepts from CS303 were applied. Please include more details about the database schema design, query optimization techniques, and how they relate to concepts covered in the course.'
+        }
+      },      {        id: 4,
         company: 'Spotify',
         title: 'Data Analyst Intern',
         duration: '4 months',
@@ -209,20 +258,10 @@ const MyInternshipsPage: React.FC = () => {
         salary: '$26/hr',
         logo: '/logos/spotify.png',
         description: 'Analyze user data to improve music recommendations.',
-        applicationStatus: 'finalized',
+        applicationStatus: 'pending',
         applicationDate: '15 May 2023',
-        startDate: '1 August 2023',
-        endDate: '1 December 2023',
-        isActive: false,
         major: 'Computer Science',
-        skills: ['Python', 'SQL', 'Data Visualization'],
-        report: {
-          title: 'Data Analysis Internship Final Report',
-          introduction: 'During my internship at Spotify, I worked on user data analysis to improve music recommendations and personalization features.',
-          body: 'The internship provided valuable experience in data visualization and analysis. I worked with large datasets and created insightful dashboards.\n\nDuring my four months at Spotify, I collaborated with the data science team to analyze user listening patterns and helped implement algorithms that improved song recommendations by 15%. I used Python, SQL, and various data visualization tools to create detailed reports and interactive dashboards that helped stakeholders understand user engagement metrics.\n\nI also had the opportunity to work on an A/B testing project that measured the impact of UI changes on user retention, which resulted in a 7% increase in daily active users for the test group.',
-          coursesApplied: ['cs303', 'cs707'],
-          finalized: true
-        }
+        skills: ['Python', 'SQL', 'Data Visualization'],        report: null
       },
       {
         id: 5,
@@ -286,8 +325,7 @@ const MyInternshipsPage: React.FC = () => {
           comment: 'Great experience with cutting-edge technology, but long working hours.',
           recommended: true
         }
-      }, 
-      {
+      },      {
         id: 8,
         company: 'Apple',
         title: 'iOS Development Intern',
@@ -305,7 +343,8 @@ const MyInternshipsPage: React.FC = () => {
         endDate: '10 March 2025',
         isActive: false,
         skills: ['Swift', 'UIKit', 'XCode'],
-        major: 'Computer Science',        evaluation: {
+        major: 'Computer Science',
+        evaluation: {
           rating: 5,
           comment: 'My internship at Apple was an incredible learning experience. The team was very supportive and I got to work on meaningful projects that actually shipped to customers. The work-life balance was great and I received excellent mentorship.',
           recommended: true,
@@ -316,10 +355,10 @@ const MyInternshipsPage: React.FC = () => {
           introduction: 'During my six-month internship at Apple, I worked with the iOS development team on several key features for the upcoming iOS release.',
           body: 'My internship at Apple provided invaluable experience in professional software development practices and cutting-edge mobile technologies.\n\nI was primarily responsible for implementing new UI components and optimizing existing ones for better performance. I collaborated closely with designers and senior developers to ensure that all features met Apple\'s high standards for user experience.\n\nOne of my major contributions was helping to develop a more accessible version of the core navigation system, which improved usability for visually impaired users. This project taught me a lot about the importance of inclusive design in technology.\n\nI also participated in code reviews and testing processes, which helped me understand the importance of quality assurance in commercial software development. The attention to detail required at Apple has significantly improved my own programming practices.',
           coursesApplied: ['cs101', 'cs202', 'cs505'],
-          finalized: true
+          finalized: true,
+          status: 'accepted'
         }
-      },
-      {
+      },      {
         id: 9,
         company: 'Facebook',
         title: 'Data Science Intern',
@@ -348,7 +387,9 @@ const MyInternshipsPage: React.FC = () => {
           introduction: 'This report outlines my experience as a Data Science Intern at Facebook, focusing on user engagement analysis.',
           body: 'During my internship at Facebook, I worked with massive datasets to extract meaningful insights about user behavior and engagement patterns.\n\nI learned to use Facebook\'s internal data tools which allowed me to process and analyze terabytes of information efficiently. My primary project involved developing models to predict user engagement with new features before they were fully launched.\n\nThe technical skills I gained were substantial, particularly in terms of scaling data processing pipelines and implementing machine learning algorithms in production environments.\n\nI also gained valuable experience in presenting technical findings to non-technical stakeholders, which improved my communication skills significantly.',
           coursesApplied: ['cs303', 'cs707'],
-          finalized: false
+          finalized: true,
+          status: 'flagged',
+          scadComments: 'The report needs more specific details about how the learning outcomes align with the course objectives. Please provide more concrete examples of how you applied the database concepts from CS303 in your work. Also, the machine learning section needs more technical depth to satisfy the CS707 requirements.'
         }
       },
       {
@@ -378,13 +419,114 @@ const MyInternshipsPage: React.FC = () => {
           coursesApplied: [],
           finalized: false
         }
+      },
+      {
+        id: 11,
+        company: 'Twitter',
+        title: 'Machine Learning Intern',
+        duration: '4 months',
+        date: '1 February 2025',
+        location: 'San Francisco, CA',
+        industry: 'Technology',
+        isPaid: true,
+        salary: '$29/hr',
+        logo: '/logos/twitter.png',
+        description: 'Develop ML algorithms for content recommendation.',
+        applicationStatus: 'pending',
+        applicationDate: '15 December 2024',
+        skills: ['Python', 'TensorFlow', 'NLP']
+      },
+      {
+        id: 12,
+        company: 'Netflix',
+        title: 'Recommendation Algorithm Intern',
+        duration: '6 months',
+        date: '15 March 2025',
+        location: 'Los Gatos, CA',
+        industry: 'Entertainment',
+        isPaid: true,
+        salary: '$32/hr',
+        logo: '/logos/netflix.png',
+        description: 'Improve content recommendation algorithms.',
+        applicationStatus: 'finalized',
+        applicationDate: '10 January 2025',
+        skills: ['Python', 'Machine Learning', 'Recommendation Systems']
+      },      {
+        id: 13,
+        company: 'Airbnb',
+        title: 'UX Research Intern',
+        duration: '3 months',
+        date: '1 June 2025',
+        location: 'San Francisco, CA',
+        industry: 'Technology',
+        isPaid: true,
+        salary: '$28/hr',
+        logo: '/logos/airbnb.png',
+        description: 'Conduct user research to improve product experience.',
+        applicationStatus: 'rejected',
+        applicationDate: '15 April 2025',
+        major: 'Computer Science',
+        skills: ['User Research', 'Prototyping', 'Data Analysis'],
+        evaluation: null,
+        report: null
+      },      {
+        id: 14,
+        company: 'Dribbble',
+        title: 'UI Design Intern',
+        duration: '4 months',
+        date: '15 January 2024',
+        location: 'Remote',
+        industry: 'Design',
+        isPaid: true,
+        salary: '$25/hr',
+        logo: '/logos/dribbble.png',
+        description: 'Create user interface designs for web and mobile applications.',
+        applicationStatus: 'rejected',
+        applicationDate: '20 November 2023',
+        major: 'Computer Science',
+        skills: ['UI Design', 'Figma', 'Visual Design'],        evaluation: null,
+        report: null
+      },
+      {
+        id: 15,
+        company: 'IBM',
+        title: 'Cybersecurity Intern',
+        duration: '3 months',
+        date: '1 March 2024',
+        location: 'Armonk, NY',
+        industry: 'Technology',
+        isPaid: true,
+        salary: '$27/hr',
+        logo: '/logos/ibm.png',
+        description: 'Work on security vulnerability assessment and mitigation.',
+        applicationStatus: 'accepted',
+        applicationDate: '15 January 2024',
+        startDate: '1 March 2024',
+        endDate: '1 June 2024',
+        isActive: false,
+        major: 'Computer Science',
+        skills: ['Network Security', 'Cryptography', 'Vulnerability Assessment'],
+        evaluation: {
+          rating: 5,
+          comment: 'This internship provided exceptional exposure to enterprise-level security practices. The team was knowledgeable and supportive, and I gained invaluable hands-on experience with security tools and methodologies.',
+          recommended: true,
+          finalized: true
+        },
+        report: {
+          title: 'Cybersecurity Practices at IBM',
+          introduction: 'During my three-month internship at IBM, I worked with the cybersecurity team to identify, assess, and mitigate security vulnerabilities in enterprise systems.',
+          body: 'My internship at IBM gave me comprehensive exposure to enterprise cybersecurity practices. I was involved in conducting vulnerability assessments for client systems, analyzing potential security threats, and developing mitigation strategies.\n\nA significant project I worked on was developing an automated scanning tool that identifies common security misconfigurations in cloud deployments. This tool integrated with IBM\'s existing security monitoring systems and helped reduce the manual effort required for routine security checks.\n\nI also participated in red team exercises where we simulated cyber attacks to test the effectiveness of security measures. This gave me practical insights into how attackers think and operate, which is crucial for designing effective security systems.\n\nThe internship allowed me to apply network security concepts from my coursework, particularly in understanding how different security controls work together to protect enterprise systems.',
+          coursesApplied: ['cs404', 'cs505'],
+          finalized: true,
+          status: 'rejected',
+          scadComments: 'The report fails to adequately demonstrate application of Computer Networks (CS404) concepts. While security is mentioned, there is insufficient technical detail about network protocols, architecture, or how specific network security measures were implemented. Please revise with more technical content directly related to the course material.'
+        }
       }
     ];
     
     setMyInternships(mockInternships);
     setFilteredInternships(mockInternships);
-  }, []);
-  // Filter internships based on active tab, search term, and filters
+  }, []);  // Filter internships based on active tab, search term, and filters
   useEffect(() => {
     let results = [...myInternships];
     
@@ -436,6 +578,19 @@ const MyInternshipsPage: React.FC = () => {
             return (internship.startDate && internship.startDate.includes(year));
           });
         }
+      }    } else if (activeTab === 'reports') {
+      // Show only internships with finalized reports that have a status
+      results = myInternships.filter(internship => 
+        internship.report?.finalized && 
+        internship.report?.status && 
+        ['pending', 'accepted', 'flagged', 'rejected'].includes(internship.report.status)
+      );
+        // Apply report status filter if not "All"
+      if (activeFilters.reportStatus && activeFilters.reportStatus !== 'All') {
+        const reportStatus = activeFilters.reportStatus.toLowerCase();
+        results = results.filter(internship => 
+          internship.report?.status === reportStatus
+        );
       }
     }
     
@@ -568,7 +723,7 @@ const MyInternshipsPage: React.FC = () => {
       });
     }
   };
-    // Handle finalizing a report (makes it read-only)
+  // Handle finalizing a report (makes it read-only)
   const handleFinalizeReport = () => {
     if (selectedInternship) {
       // Set report as finalized
@@ -578,11 +733,11 @@ const MyInternshipsPage: React.FC = () => {
       // This ensures the finalized flag is saved properly
       if (selectedInternship) {
         setIsSubmittingReport(true);
-        
-        // Create a finalized copy of the report
+          // Create a finalized copy of the report with pending status
         const finalizedReport = {
           ...report,
-          finalized: true
+          finalized: true,
+          status: 'pending' as const
         };
         
         // Simulate API call with a slight delay
@@ -615,10 +770,19 @@ const MyInternshipsPage: React.FC = () => {
             message: `Your report for ${selectedInternship.title} at ${selectedInternship.company} has been finalized and submitted.`,
             type: 'success'
           });
+            // First set the highlighted report ID, then change the active tab
+          setHighlightedReportId(selectedInternship.id);
+          setActiveTab('reports');
+          
+          // Clear the highlight after animation completes (3 seconds)
+          setTimeout(() => {
+            setHighlightedReportId(undefined);
+          }, 3000);
         }, 800); // Simulate network delay
       }
     }
-  };// Handle submitting a report
+  };
+  // Handle submitting a report
   const handleSubmitReport = () => {
     if (selectedInternship) {
       // Add confirmation if report is finalized
@@ -627,15 +791,21 @@ const MyInternshipsPage: React.FC = () => {
       }
       
       setIsSubmittingReport(true);
-      
-      // Simulate API call with a slight delay
+        // Simulate API call with a slight delay
       setTimeout(() => {
+        // Create updated report with status if finalized
+        const updatedReport = {
+          ...report,
+          // Always set status to 'pending' if report is finalized
+          status: report.finalized ? 'pending' as const : undefined
+        };
+        
         // Update the internship with the new report
         const updatedInternships = myInternships.map(internship => {
           if (internship.id === selectedInternship.id) {
             return {
               ...internship,
-              report: report
+              report: updatedReport
             };
           }
           return internship;
@@ -645,7 +815,7 @@ const MyInternshipsPage: React.FC = () => {
         setFilteredInternships(prev => 
           prev.map(item => 
             item.id === selectedInternship.id 
-              ? { ...item, report: report }
+              ? { ...item, report: updatedReport }
               : item
           )
         );
@@ -656,13 +826,28 @@ const MyInternshipsPage: React.FC = () => {
         // Show success notification with appropriate message
         showNotification({
           message: report.finalized 
-            ? `Finalized report for ${selectedInternship.title} at ${selectedInternship.company} submitted successfully!` 
+            ? `Your report for ${selectedInternship.title} at ${selectedInternship.company} has been submitted for review!` 
             : `Draft report for ${selectedInternship.title} at ${selectedInternship.company} saved successfully!`,
           type: 'success'
         });
+          // If the report is finalized, redirect to reports tab and highlight the new report
+        if (report.finalized) {
+          // First set the highlighted report ID
+          setHighlightedReportId(selectedInternship.id);
+          
+          // Then change the active tab to reports
+          setActiveTab('reports');
+          
+          // Clear the highlight after animation completes (3 seconds)
+          setTimeout(() => {
+            setHighlightedReportId(undefined);
+          }, 3000);
+        }
       }, 800); // Simulate network delay
     }
-  };// Handle deleting an evaluation
+  };
+  
+  // Handle deleting an evaluation
   const handleDeleteEvaluation = () => {
     if (selectedInternship) {
       // Show confirmation dialog
@@ -700,7 +885,9 @@ const MyInternshipsPage: React.FC = () => {
         });
       }
     }
-  };  // Handle deleting a report
+  };  
+  
+  // Handle deleting a report
   const handleDeleteReport = () => {
     if (selectedInternship) {
       // Show confirmation dialog
@@ -821,6 +1008,74 @@ const MyInternshipsPage: React.FC = () => {
       }
     }
   };
+  // Handle viewing report results
+  const handleViewReportResults = (report: any) => {
+    const internship = myInternships.find(i => i.id === report.id);
+    if (internship) {
+      setSelectedInternship(internship);
+      setShowReportResultsModal(true);
+    }
+  };
+  // Handle submitting an appeal for a flagged or rejected report
+  const handleSubmitAppeal = (internshipId: number, appealMessage: string) => {
+    setIsSubmittingAppeal(true);
+    
+    // Find the internship to get its details for better notifications
+    const internship = myInternships.find(intern => intern.id === internshipId);
+    
+    if (!internship) {
+      setIsSubmittingAppeal(false);
+      showNotification({
+        message: "Error: Could not find the internship to submit appeal.",
+        type: 'error'
+      });
+      return;
+    }
+    
+    // Simulate API call with a slight delay
+    setTimeout(() => {
+      // Update the internship with the appeal
+      const now = new Date();
+      const appealDate = now.toISOString();
+      const formattedDate = `${now.getDate()} ${now.toLocaleString('default', { month: 'long' })} ${now.getFullYear()}`;
+      
+      const updatedInternships = myInternships.map(internship => {
+        if (internship.id === internshipId && internship.report) {
+          return {
+            ...internship,
+            report: {
+              ...internship.report,
+              appealMessage,
+              appealDate
+            }
+          };
+        }
+        return internship;
+      });
+      
+      setMyInternships(updatedInternships);
+      setFilteredInternships(prev => 
+        prev.map(item => 
+          item.id === internshipId && item.report
+            ? { ...item, report: { ...item.report, appealMessage, appealDate } }
+            : item
+        )
+      );
+      
+      setIsSubmittingAppeal(false);
+      
+      // Show success notification with specific details
+      showNotification({
+        message: `Appeal for "${internship.report?.title}" at ${internship.company} has been submitted successfully! SCAD will review your appeal and respond within 5-7 business days.`,
+        type: 'success'
+      });
+      
+      // Close modal after a brief delay so user can see the changes
+      setTimeout(() => {
+        setShowReportResultsModal(false);
+      }, 1000);
+    }, 800); // Simulate network delay
+  };
 
   // Handle filter changes
   const handleFilterChange = (filterType: string, value: string) => {
@@ -842,22 +1097,29 @@ const MyInternshipsPage: React.FC = () => {
         />
 
         {/* Main Content */}
-        <main className={styles.mainContent}>
-          {/* Tab Navigation */}          <DashboardTab
+        <main className={styles.mainContent}>          {/* Tab Navigation */}          <DashboardTab
             tabs={[
               { 
                 id: 'applications', 
                 label: 'My Applications',
-                count: myInternships.filter(app => ['pending', 'rejected', 'finalized'].includes(app.applicationStatus)).length
+                count: myInternships.filter(app => ['pending', 'rejected', 'finalized', 'accepted'].includes(app.applicationStatus)).length
               },
               { 
                 id: 'internships', 
                 label: 'My Internships',
                 count: myInternships.filter(app => app.applicationStatus === 'accepted').length
+              },
+              {
+                id: 'reports',
+                label: 'Report Results',                count: myInternships.filter(app => 
+                  app.report?.finalized && 
+                  app.report?.status && 
+                  ['pending', 'accepted', 'flagged', 'rejected'].includes(app.report.status)
+                ).length
               }
             ]}
             activeTab={activeTab}
-            onTabChange={(tabId) => setActiveTab(tabId as 'applications' | 'internships')}
+            onTabChange={(tabId) => setActiveTab(tabId as 'applications' | 'internships' | 'reports')}
             className={styles.dashboardTabs}
           />
           {/* Search Bar */}
@@ -868,43 +1130,48 @@ const MyInternshipsPage: React.FC = () => {
           />          <div className={styles.internshipListings}>
             <div className={styles.listingHeader}>
               <h2 className={styles.listingTitle}>
-                {activeTab === 'applications' ? 'My Applications' : 'My Internships'}
+                {activeTab === 'applications' ? 'My Applications' : 
+                 activeTab === 'internships' ? 'My Internships' : 'Report Results'}
               </h2>
               <span className={styles.internshipCount}>
-                {filteredInternships.length} Internship{filteredInternships.length !== 1 ? 's' : ''}
-                {activeTab === 'internships' && (
-                  <span className={styles.statusIndicator}>
-                    <span className={styles.statusDot}></span>
-                    {myInternships.filter(app => app.applicationStatus === 'accepted' && app.isActive).length} Active
-                  </span>
-                )}
+                {filteredInternships.length} {activeTab === 'reports' ? 'Report' : 'Internship'}{filteredInternships.length !== 1 ? 's' : ''}
               </span>
             </div>            
-            {filteredInternships.length > 0 ? (
-              <div className={styles.cardsList}>
-                {filteredInternships.map((internship) => (
-                  <div key={internship.id} className={styles.cardWrapper}>
-                    <MyInternshipCard
-                      internship={internship}
-                      onViewDetails={handleViewDetails}
-                      onEvaluate={handleEvaluate}
-                      onReport={handleReport}
-                      activeTab={activeTab}
-                    />
-                  </div>
-                ))}
-              </div>
-            ) : (              <div className={styles.noResults}>
+            {filteredInternships.length > 0 ? (              activeTab === 'reports' ? (
+                <ReportsList 
+                  reports={filteredInternships} 
+                  onViewReportResults={handleViewReportResults}
+                  highlightedReportId={highlightedReportId}
+                />
+              ) : (
+                <div className={styles.cardsList}>
+                  {filteredInternships.map((internship) => (
+                    <div key={internship.id} className={styles.cardWrapper}>
+                      <MyInternshipCard
+                        internship={internship}
+                        onViewDetails={handleViewDetails}
+                        onEvaluate={handleEvaluate}
+                        onReport={handleReport}
+                        activeTab={activeTab}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )
+            ) : (
+              <div className={styles.noResults}>
                 <img 
                   src="assets/images/icons/search.png" 
                   alt="Search Icon" 
                   className={styles.searchIcon} 
                 /> 
-                <h3>No internships found</h3>
+                <h3>No {activeTab === 'reports' ? 'reports' : 'internships'} found</h3>
                 <p>
                   {activeTab === 'applications' ? 
                     'You haven\'t applied to any internships yet. Browse the internship listings to find opportunities.' : 
-                    'You don\'t have any active internships yet. Check your applications status.'
+                   activeTab === 'internships' ?
+                    'You don\'t have any active internships yet. Check your applications status.' :
+                    'You don\'t have any report results yet. Make sure to finalize and submit your internship reports.'
                   }
                 </p>
               </div>
@@ -940,6 +1207,16 @@ const MyInternshipsPage: React.FC = () => {
           onFinalizeReport={handleFinalizeReport}
           isGeneratingPDF={isGeneratingPDF}
           onDownloadPDF={handleDownloadPDF}
+        />
+      )}
+      
+      {/* Report Results Modal */}
+      {showReportResultsModal && selectedInternship && (
+        <ReportResultsModal
+          internship={selectedInternship}
+          onClose={() => setShowReportResultsModal(false)}
+          onSubmitAppeal={handleSubmitAppeal}
+          isSubmittingAppeal={isSubmittingAppeal}
         />
       )}
       
