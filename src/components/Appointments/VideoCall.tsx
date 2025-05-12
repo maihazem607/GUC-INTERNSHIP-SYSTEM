@@ -20,8 +20,7 @@ const VideoCall: React.FC<VideoCallProps> = ({
   const [callDuration, setCallDuration] = useState(0);  const [otherUserLeft, setOtherUserLeft] = useState(false);
   const [showControls, setShowControls] = useState(true);  
   const [notifications, setNotifications] = useState<string[]>([]);
-  const [showEndCallConfirmation, setShowEndCallConfirmation] = useState(false);
-  useEffect(() => {
+  const [showEndCallConfirmation, setShowEndCallConfirmation] = useState(false);  useEffect(() => {
     if (!isOpen) return;
     
     // Start timer for call duration
@@ -29,8 +28,8 @@ const VideoCall: React.FC<VideoCallProps> = ({
       setCallDuration(prev => prev + 1);
     }, 1000);
     
-    // Show notification that the participant joined
-    setTimeout(() => {
+    // Show notification that the participant joined - only happens once when the call starts
+    const joinNotificationTimeout = setTimeout(() => {
       addNotification(`${participantName} joined the call`);
     }, 2000);
     
@@ -59,9 +58,9 @@ const VideoCall: React.FC<VideoCallProps> = ({
       setControlsTimeout();
     };
     
-    window.addEventListener('mousemove', handleMouseMove);
-      return () => {
+    window.addEventListener('mousemove', handleMouseMove);      return () => {
       clearInterval(timerInterval);
+      clearTimeout(joinNotificationTimeout);
       clearTimeout(simulateParticipantEvents);
       clearTimeout(controlsTimeout);
       window.removeEventListener('mousemove', handleMouseMove);
@@ -186,7 +185,11 @@ const VideoCall: React.FC<VideoCallProps> = ({
               {/* Display microphone status on local video */}
               {isMuted && (
                 <div className={styles.micStatus}>
-                  🔇
+                  <img 
+                  src="/assets/images/icons/mute.png" 
+                  alt="Mute Icon" 
+                  className={styles.searchIcon} 
+                />
                 </div>
               )}
             </div>
@@ -198,7 +201,20 @@ const VideoCall: React.FC<VideoCallProps> = ({
               onClick={toggleMute}
               title={isMuted ? "Unmute microphone" : "Mute microphone"}
             >
-              <span className={styles.controlIcon}>{isMuted ? '🔇' : '🎤'}</span>
+              <span className={styles.controlIcon}>{isMuted ?
+               <img 
+                  src="/assets/images/icons/mute.png" 
+                  alt="Mute Icon" 
+                  className={styles.controlIcon} 
+                />
+                 : 
+                 <img 
+                src="/assets/images/icons/unmute.png" 
+                alt="Unmute Icon" 
+                className={styles.controlIcon} 
+              /> 
+              }
+              </span>
               <span className={styles.controlLabel}>{isMuted ? 'Unmute' : 'Mute'}</span>
             </button>
             

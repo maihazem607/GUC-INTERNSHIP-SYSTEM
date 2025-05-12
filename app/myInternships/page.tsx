@@ -694,7 +694,11 @@ const MyInternshipsPage: React.FC = () => {
               </div>
             ) : (
               <div className={styles.noResults}>
-                <div className={styles.noResultsIcon}>🔍</div>
+               <img 
+                  src="assets/images/icons/search.png" 
+                  alt="Search Icon" 
+                  className={styles.searchIcon} 
+                /> 
                 <h3>No internships found</h3>
                 <p>
                   {activeTab === 'applications' ? 'You haven\'t applied to any internships yet.' : 'You don\'t have any internships yet.'}

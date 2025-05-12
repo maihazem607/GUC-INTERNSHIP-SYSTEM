@@ -806,7 +806,11 @@ export default function SCADDashboardPage() {
                   </div>
                 ) : (
                   <div className={styles.noResults}>
-                    <div className={styles.noResultsIcon}>🔍</div>
+                    <img 
+                      src="assets/images/icons/search.png" 
+                      alt="Search Icon" 
+                      className={styles.searchIcon} 
+                    /> 
                     <p>No companies found matching your criteria.</p>
                   </div>
                 )}
@@ -855,7 +859,11 @@ export default function SCADDashboardPage() {
                   </div>
                 ) : (
                   <div className={styles.noResults}>
-                    <div className={styles.noResultsIcon}>🔍</div>
+                    <img 
+                      src="assets/images/icons/search.png" 
+                      alt="Search Icon" 
+                      className={styles.searchIcon} 
+                    /> 
                     <p>No students found matching your criteria.</p>
                   </div>
                 )}
@@ -929,7 +937,11 @@ export default function SCADDashboardPage() {
                   </div>
                 ) : (
                   <div className={styles.noResults}>
-                    <div className={styles.noResultsIcon}>🔍</div>
+                    <img 
+                      src="assets/images/icons/search.png" 
+                      alt="Search Icon" 
+                      className={styles.searchIcon} 
+                    /> 
                     <p>No evaluations found matching your criteria.</p>
                   </div>
                 )}
@@ -982,7 +994,11 @@ export default function SCADDashboardPage() {
                   </div>
                 ) : (
                   <div className={styles.noResults}>
-                    <div className={styles.noResultsIcon}>🔍</div>
+                   <img 
+                      src="assets/images/icons/search.png" 
+                      alt="Search Icon" 
+                      className={styles.searchIcon} 
+                    /> 
                     <p>No internships found matching your criteria.</p>
                   </div>
                 )}

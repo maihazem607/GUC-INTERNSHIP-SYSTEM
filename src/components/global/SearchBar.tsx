@@ -15,7 +15,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
   return (
     <div className={styles.searchBarContainer}>
       <div className={styles.searchInputWrapper}>
-        <span className={styles.searchIcon}>🔍</span>        <input 
+      <img 
+          src="assets/images/icons/search.png" 
+          alt="Search Icon" 
+          className={styles.searchIcon} 
+        />      <input 
           type="text" 
           className={styles.searchInput} 
           placeholder={placeholder} 

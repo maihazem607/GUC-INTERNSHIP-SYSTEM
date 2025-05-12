@@ -411,7 +411,11 @@ export default function InternshipListPage() {
                 ))
               ) : (
                 <div className={styles.noResults}>
-                  <div className={styles.noResultsIcon}>🔍</div>
+                  <img 
+                    src="assets/images/icons/search.png" 
+                    alt="Search Icon" 
+                    className={styles.searchIcon} 
+                  /> 
                   <h3>No internships found</h3>
                   <p>Try adjusting your search criteria or filters</p>
                 </div>

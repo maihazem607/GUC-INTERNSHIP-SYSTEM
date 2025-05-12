@@ -107,7 +107,11 @@ const ReportTable: React.FC<ReportTableProps> = ({ reports, onViewReport }) => (
       </table>
     ) : (
       <div className={styles.noResults}>
-        <div className={styles.noResultsIcon}>🔍</div>
+        <img 
+          src="assets/images/icons/search.png" 
+          alt="Search Icon" 
+          className={styles.searchIcon} 
+        /> 
         <p>No reports found matching your criteria.</p>
       </div>
     )}

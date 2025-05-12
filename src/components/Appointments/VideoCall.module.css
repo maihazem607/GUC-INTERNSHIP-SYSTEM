@@ -266,8 +266,8 @@
 }
 
 .controlIcon {
-  font-size: 1.5rem;
-  margin-bottom: 4px;
+  width: 24px;
+  margin-bottom: 2px;
 }
 
 .controlLabel {
