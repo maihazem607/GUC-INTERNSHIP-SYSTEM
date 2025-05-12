@@ -22,6 +22,7 @@ interface MyInternship extends Internship {
     rating: number;
     comment: string;
     recommended: boolean;
+    finalized?: boolean;
   } | null;
   report?: {
     title: string;
@@ -76,13 +77,23 @@ const MyInternshipsPage: React.FC = () => {
   const [filteredInternships, setFilteredInternships] = useState<MyInternship[]>([]);
   const [selectedInternship, setSelectedInternship] = useState<MyInternship | null>(null);
   const [showEvaluationModal, setShowEvaluationModal] = useState(false);
-  const [showReportModal, setShowReportModal] = useState(false);
-  const [evaluation, setEvaluation] = useState({
+  const [showReportModal, setShowReportModal] = useState(false);  // Define the evaluation type to match the interface in EvaluationForm/EvaluationModal
+  interface EvaluationType {
+    rating: number;
+    comment: string;
+    recommended: boolean;
+    finalized?: boolean;
+  }
+  
+  const [evaluation, setEvaluation] = useState<EvaluationType>({
     rating: 0,
     comment: '',
-    recommended: false
-  });  const [isSubmittingEval, setIsSubmittingEval] = useState(false);
-  const [isSubmittingReport, setIsSubmittingReport] = useState(false);  const [report, setReport] = useState({
+    recommended: false,
+    finalized: false
+  });  
+  const [isSubmittingEval, setIsSubmittingEval] = useState(false);
+  const [isSubmittingReport, setIsSubmittingReport] = useState(false);  
+  const [report, setReport] = useState({
     title: '',
     introduction: '',
     body: '',
@@ -130,7 +141,6 @@ const MyInternshipsPage: React.FC = () => {
     }
     return [];
   };
-
   // Mock data for internships
   useEffect(() => {
     // This would typically be an API call to fetch the user's internships
@@ -153,7 +163,8 @@ const MyInternshipsPage: React.FC = () => {
         endDate: '20 August 2023',
         isActive: false,
         skills: ['UI/UX Design', 'Figma', 'Adobe XD'],
-        evaluation: null
+        evaluation: null,
+        major: 'Computer Science'
       },
       {
         id: 2,
@@ -231,6 +242,27 @@ const MyInternshipsPage: React.FC = () => {
         isActive: true,
         skills: ['UI Design', 'UX Research', 'Adobe CC']
       },
+      {
+        id: 7,
+        company: 'IBM',
+        title: 'Backend Developer Intern',
+        duration: '4 months',
+        date: '15 February 2023',
+        location: 'Armonk, NY',
+        industry: 'Technology',
+        isPaid: true,
+        salary: '$25/hr',
+        logo: '/logos/ibm.png',
+        description: 'Develop microservices for IBM Cloud.',
+        applicationStatus: 'accepted',
+        applicationDate: '1 December 2022',
+        startDate: '15 February 2023',
+        endDate: '15 June 2025', // End date in the future
+        isActive: true, // Currently active internship
+        skills: ['Java', 'Spring', 'Docker'],
+        report: null,
+        major: 'Computer Science'
+      },
       {        id: 6,
         company: 'Tesla',
         title: 'Engineering Intern',
@@ -254,26 +286,98 @@ const MyInternshipsPage: React.FC = () => {
           comment: 'Great experience with cutting-edge technology, but long working hours.',
           recommended: true
         }
-      },
+      }, 
       {
-        id: 7,
-        company: 'IBM',
-        title: 'Backend Developer Intern',
-        duration: '4 months',
-        date: '15 February 2023',
-        location: 'Armonk, NY',
+        id: 8,
+        company: 'Apple',
+        title: 'iOS Development Intern',
+        duration: '6 months',
+        date: '10 September 2024',
+        location: 'Cupertino, CA',
         industry: 'Technology',
         isPaid: true,
-        salary: '$25/hr',
-        logo: '/logos/ibm.png',
-        description: 'Develop microservices for IBM Cloud.',
+        salary: '$30/hr',
+        logo: '/logos/apple.png',
+        description: 'Develop mobile applications for iOS devices.',
         applicationStatus: 'accepted',
-        applicationDate: '1 December 2022',
-        startDate: '15 February 2023',
-        endDate: '15 June 2023',
-        isActive: true,
-        skills: ['Java', 'Spring', 'Docker'],
-        report: null
+        applicationDate: '15 July 2024',
+        startDate: '10 September 2024',
+        endDate: '10 March 2025',
+        isActive: false,
+        skills: ['Swift', 'UIKit', 'XCode'],
+        major: 'Computer Science',        evaluation: {
+          rating: 5,
+          comment: 'My internship at Apple was an incredible learning experience. The team was very supportive and I got to work on meaningful projects that actually shipped to customers. The work-life balance was great and I received excellent mentorship.',
+          recommended: true,
+          finalized: true // This evaluation is finalized and read-only
+        },
+        report: {
+          title: 'iOS Development at Apple: Insights and Learning',
+          introduction: 'During my six-month internship at Apple, I worked with the iOS development team on several key features for the upcoming iOS release.',
+          body: 'My internship at Apple provided invaluable experience in professional software development practices and cutting-edge mobile technologies.\n\nI was primarily responsible for implementing new UI components and optimizing existing ones for better performance. I collaborated closely with designers and senior developers to ensure that all features met Apple\'s high standards for user experience.\n\nOne of my major contributions was helping to develop a more accessible version of the core navigation system, which improved usability for visually impaired users. This project taught me a lot about the importance of inclusive design in technology.\n\nI also participated in code reviews and testing processes, which helped me understand the importance of quality assurance in commercial software development. The attention to detail required at Apple has significantly improved my own programming practices.',
+          coursesApplied: ['cs101', 'cs202', 'cs505'],
+          finalized: true
+        }
+      },
+      {
+        id: 9,
+        company: 'Facebook',
+        title: 'Data Science Intern',
+        duration: '4 months',
+        date: '5 January 2025',
+        location: 'Menlo Park, CA',
+        industry: 'Technology',
+        isPaid: true,
+        salary: '$28/hr',
+        logo: '/logos/facebook.png',
+        description: 'Work on data analysis for user engagement features.',
+        applicationStatus: 'accepted',
+        applicationDate: '10 November 2024',
+        startDate: '5 January 2025',
+        endDate: '5 May 2025',
+        isActive: false,
+        skills: ['Python', 'SQL', 'Machine Learning'],
+        major: 'Computer Science',
+        evaluation: {
+          rating: 3,
+          comment: 'The internship had good technical exposure, but work-life balance was challenging. Sometimes the expectations were unclear, and the team was often under tight deadlines which created a stressful environment.',
+          recommended: false
+        },
+        report: {
+          title: 'Data Science Internship at Facebook',
+          introduction: 'This report outlines my experience as a Data Science Intern at Facebook, focusing on user engagement analysis.',
+          body: 'During my internship at Facebook, I worked with massive datasets to extract meaningful insights about user behavior and engagement patterns.\n\nI learned to use Facebook\'s internal data tools which allowed me to process and analyze terabytes of information efficiently. My primary project involved developing models to predict user engagement with new features before they were fully launched.\n\nThe technical skills I gained were substantial, particularly in terms of scaling data processing pipelines and implementing machine learning algorithms in production environments.\n\nI also gained valuable experience in presenting technical findings to non-technical stakeholders, which improved my communication skills significantly.',
+          coursesApplied: ['cs303', 'cs707'],
+          finalized: false
+        }
+      },
+      {
+        id: 10,
+        company: 'Salesforce',
+        title: 'Software Engineering Intern',
+        duration: '3 months',
+        date: '1 February 2025',
+        location: 'San Francisco, CA',
+        industry: 'Technology',
+        isPaid: true,
+        salary: '$27/hr',
+        logo: '/logos/salesforce.png',
+        description: 'Develop features for Salesforce CRM platform.',
+        applicationStatus: 'accepted',
+        applicationDate: '5 December 2024',
+        startDate: '1 February 2025',
+        endDate: '1 May 2025',
+        isActive: false,
+        skills: ['JavaScript', 'React', 'Node.js'],
+        major: 'Computer Science',
+        evaluation: null,
+        report: {
+          title: '',
+          introduction: 'During my internship at Salesforce, I had the opportunity to work on their customer relationship management platform.',
+          body: 'My time at Salesforce was focused on developing new features for their enterprise CRM solution. I mainly worked with JavaScript, React, and their proprietary Lightning component framework.',
+          coursesApplied: [],
+          finalized: false
+        }
       }
     ];
     
@@ -361,17 +465,22 @@ const MyInternshipsPage: React.FC = () => {
     setShowEvaluationModal(false);
     setShowReportModal(false);
   };
-
   // Handle opening evaluation modal
   const handleEvaluate = (internship: MyInternship) => {
     // Pre-fill existing evaluation if any
     if (internship.evaluation) {
-      setEvaluation(internship.evaluation);
+      setEvaluation({
+        rating: internship.evaluation.rating,
+        comment: internship.evaluation.comment,
+        recommended: internship.evaluation.recommended,
+        finalized: internship.evaluation.finalized || false
+      });
     } else {
       setEvaluation({
         rating: 0,
         comment: '',
-        recommended: false
+        recommended: false,
+        finalized: false
       });
     }
     
@@ -406,7 +515,7 @@ const MyInternshipsPage: React.FC = () => {
     setActiveReportTab('edit');
     setShowReportModal(true);
     setSelectedInternship(internship);
-  };// Handle submitting an evaluation
+  };  // Handle submitting an evaluation
   const handleSubmitEvaluation = () => {
     if (selectedInternship) {
       setIsSubmittingEval(true);
@@ -443,7 +552,73 @@ const MyInternshipsPage: React.FC = () => {
         });
       }, 800); // Simulate network delay
     }
-  };  // Handle submitting a report
+  };
+    // Handle finalizing an evaluation (makes it read-only)
+  const handleFinalizeEvaluation = () => {
+    if (selectedInternship) {
+      // Set evaluation as finalized
+      setEvaluation(prev => ({...prev, finalized: true}));
+      
+      // Submit the evaluation
+      handleSubmitEvaluation();
+      
+      showNotification({
+        message: `Your evaluation for ${selectedInternship.title} at ${selectedInternship.company} has been finalized.`,
+        type: 'success'
+      });
+    }
+  };
+    // Handle finalizing a report (makes it read-only)
+  const handleFinalizeReport = () => {
+    if (selectedInternship) {
+      // Set report as finalized
+      setReport(prev => ({...prev, finalized: true}));
+      
+      // We'll call handleSubmitReport manually after setting finalized to true
+      // This ensures the finalized flag is saved properly
+      if (selectedInternship) {
+        setIsSubmittingReport(true);
+        
+        // Create a finalized copy of the report
+        const finalizedReport = {
+          ...report,
+          finalized: true
+        };
+        
+        // Simulate API call with a slight delay
+        setTimeout(() => {
+          // Update the internship with the new report
+          const updatedInternships = myInternships.map(internship => {
+            if (internship.id === selectedInternship.id) {
+              return {
+                ...internship,
+                report: finalizedReport
+              };
+            }
+            return internship;
+          });
+          
+          setMyInternships(updatedInternships);
+          setFilteredInternships(prev => 
+            prev.map(item => 
+              item.id === selectedInternship.id 
+                ? { ...item, report: finalizedReport }
+                : item
+            )
+          );
+          
+          setIsSubmittingReport(false);
+          setShowReportModal(false);
+          
+          // Show success notification
+          showNotification({
+            message: `Your report for ${selectedInternship.title} at ${selectedInternship.company} has been finalized and submitted.`,
+            type: 'success'
+          });
+        }, 800); // Simulate network delay
+      }
+    }
+  };// Handle submitting a report
   const handleSubmitReport = () => {
     if (selectedInternship) {
       // Add confirmation if report is finalized
@@ -668,13 +843,12 @@ const MyInternshipsPage: React.FC = () => {
 
         {/* Main Content */}
         <main className={styles.mainContent}>
-          {/* Tab Navigation */}
-          <DashboardTab
+          {/* Tab Navigation */}          <DashboardTab
             tabs={[
               { 
                 id: 'applications', 
                 label: 'My Applications',
-                count: myInternships.filter(app => app.applicationStatus !== 'accepted').length
+                count: myInternships.filter(app => ['pending', 'rejected', 'finalized'].includes(app.applicationStatus)).length
               },
               { 
                 id: 'internships', 
@@ -748,239 +922,25 @@ const MyInternshipsPage: React.FC = () => {
           onDelete={handleDeleteEvaluation}
           isSubmitting={isSubmittingEval}
         />
-      )}{/* Report Modal */}
+      )}      {/* Report Modal */}
       {showReportModal && selectedInternship && (
-        <div className={styles.modalBackdrop} onClick={() => setShowReportModal(false)}>
-          <div className={styles.modalContent} onClick={e => e.stopPropagation()} style={{ width: '95%', maxWidth: '800px' }}>
-            <button className={styles.closeButton} onClick={() => setShowReportModal(false)}>×</button>
-            
-            <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>Internship Report</h2>
-              <div className={styles.modalHost}>
-                {selectedInternship.logo && (
-                  <img 
-                    src={selectedInternship.logo} 
-                    alt={`${selectedInternship.company} logo`} 
-                    width={40} 
-                    height={40} 
-                    className={styles.modalHostLogo}
-                  />
-                )}
-                <span className={styles.modalHostName}>{selectedInternship.company} - {selectedInternship.title}</span>
-              </div>
-            </div>
-            
-            {/* Report tabs */}
-            <div className={styles.reportTabs}>
-              <button 
-                className={`${styles.reportTab} ${activeReportTab === 'edit' ? styles.activeReportTab : ''}`}
-                onClick={() => setActiveReportTab('edit')}
-              >
-                Edit Report
-              </button>
-              <button 
-                className={`${styles.reportTab} ${activeReportTab === 'courses' ? styles.activeReportTab : ''}`}
-                onClick={() => setActiveReportTab('courses')}
-              >
-                Select Courses
-              </button>
-              <button 
-                className={`${styles.reportTab} ${activeReportTab === 'preview' ? styles.activeReportTab : ''}`}
-                onClick={() => setActiveReportTab('preview')}
-              >
-                Preview & Finalize
-              </button>
-            </div>
-            
-            {/* Edit Report Tab */}
-            {activeReportTab === 'edit' && (
-              <div className={styles.reportForm}>
-                
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel} htmlFor="report-title">Report Title</label>
-                  <input
-                    id="report-title"
-                    className={styles.textInput}
-                    placeholder="Enter a title for your report..."
-                    value={report.title}
-                    onChange={(e) => setReport({...report, title: e.target.value})}
-                    readOnly={report.finalized}
-                  />
-                </div>
-                
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel} htmlFor="report-introduction">Introduction</label>
-                  <textarea
-                    id="report-introduction"
-                    className={styles.commentTextarea}
-                    placeholder="Provide a brief introduction about your internship..."
-                    value={report.introduction}
-                    onChange={(e) => setReport({...report, introduction: e.target.value})}
-                    rows={3}
-                    readOnly={report.finalized}
-                  />
-                </div>
-                  
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel} htmlFor="report-body">Report Body</label>
-                  <textarea
-                    id="report-body"
-                    className={styles.commentTextarea}
-                    placeholder="Describe your experience, tasks performed, skills learned..."
-                    value={report.body}
-                    onChange={(e) => setReport({...report, body: e.target.value})}
-                    rows={6}
-                    readOnly={report.finalized}
-                  />
-                </div>
-              </div>
-            )}
-            
-            {/* Courses Tab */}
-            {activeReportTab === 'courses' && (
-              <div className={styles.reportForm}>
-                <div className={styles.formGroup}>
-                  <label className={styles.formLabel}>
-                    Select courses that helped you during this internship
-                  </label>
-                  <p style={{ marginBottom: '20px', color: '#666' }}>
-                    Select any courses from your major that provided knowledge or skills applicable to this internship.
-                  </p>
-                  
-                  <div className={styles.coursesContainer}>
-                    {availableCourses.map(course => (
-                      <div key={course.id} className={styles.courseItem}>
-                        <input
-                          type="checkbox"
-                          id={`course-${course.id}`}
-                          className={styles.courseCheckbox}
-                          checked={report.coursesApplied.includes(course.id)}
-                          onChange={() => handleToggleCourse(course.id)}
-                          disabled={report.finalized}
-                        />
-                        <label 
-                          htmlFor={`course-${course.id}`} 
-                          className={styles.courseLabel}
-                        >
-                          {course.name}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            {/* Preview Tab */}
-            {activeReportTab === 'preview' && (
-              <div className={styles.reportForm}>                <div className={styles.reportPreviewContainer}>
-                  <h2 className={styles.reportPreviewTitle}>{report.title || 'Untitled Report'}</h2>
-                  
-                  {/* Report metadata */}
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between', 
-                    borderBottom: '1px solid #eee',
-                    paddingBottom: '15px',
-                    marginBottom: '20px',
-                    fontSize: '14px',
-                    color: '#666'
-                  }}>
-                    <div>
-                      <strong>Company:</strong> {selectedInternship.company}
-                    </div>
-                    <div>
-                      <strong>Position:</strong> {selectedInternship.title}
-                    </div>
-                    <div>
-                      <strong>Duration:</strong> {selectedInternship.duration}
-                    </div>
-                    <div>
-                      <strong>Status:</strong> <span style={{
-                        color: report.finalized ? '#2e7d32' : '#f57c00', 
-                        fontWeight: 'bold'
-                      }}>
-                        {report.finalized ? 'FINALIZED' : 'DRAFT'}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className={styles.reportPreviewSection}>
-                    <h3>Introduction</h3>
-                    <p>{report.introduction || 'No introduction provided.'}</p>
-                  </div>
-                  
-                  <div className={styles.reportPreviewSection}>
-                    <h3>Main Content</h3>
-                    <p>{report.body || 'No content provided.'}</p>
-                  </div>
-                    {report.coursesApplied.length > 0 && (
-                    <div className={styles.reportPreviewSection}>
-                      <h3>Relevant Courses</h3>
-                      <div className={styles.reportPreviewCourses}>
-                        {report.coursesApplied.map(courseId => (
-                          <div key={courseId} className={styles.reportPreviewCourse}>
-                            {getCourseNameById(courseId)}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                
-                <div style={{ display: 'flex', gap: '20px', marginTop: '20px', justifyContent: 'center' }}>                  <div style={{ display: 'flex', flexDirection: 'column', width: '200px' }}>
-                    <button 
-                      className={styles.downloadButton}
-                      onClick={handleDownloadPDF}
-                      disabled={isGeneratingPDF}
-                    >
-                      {isGeneratingPDF ? 'Generating...' : (
-                        <>
-                          Download as PDF
-                        </>
-                      )}
-                    </button>
-                    
-                    {/* PDF generation progress bar */}
-                    {isGeneratingPDF && (
-                      <div className={styles.pdfProgressBar}>
-                        <div className={styles.pdfProgressFill} />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            {/* Action Buttons */}
-            <div className={styles.modalActions}>
-              <div>
-                {selectedInternship.report && (
-                  <button 
-                    className={styles.deleteButton}
-                    onClick={handleDeleteReport}
-                  >
-                    Reset
-                  </button>
-                )}
-              </div>
-              
-              <button 
-                className={styles.submitButton}
-                onClick={handleSubmitReport}
-                disabled={isSubmittingReport || report.title.trim() === '' || report.body.trim() === ''}
-              >
-                {isSubmittingReport ? (
-                  <span>Processing...</span>
-                ) : (
-                  <>
-                    {selectedInternship.report ? 'Update' : 'Submit'}
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
+        <ReportModal
+          report={report}
+          setReport={setReport}
+          selectedInternship={selectedInternship}
+          onClose={() => setShowReportModal(false)}
+          onSubmit={handleSubmitReport}
+          onDelete={handleDeleteReport}
+          isSubmitting={isSubmittingReport}
+          activeTab={activeReportTab}
+          setActiveTab={setActiveReportTab}
+          availableCourses={availableCourses}
+          onToggleCourse={handleToggleCourse}
+          getCourseNameById={getCourseNameById}
+          onFinalizeReport={handleFinalizeReport}
+          isGeneratingPDF={isGeneratingPDF}
+          onDownloadPDF={handleDownloadPDF}
+        />
       )}
       
       {/* Global notification system */}

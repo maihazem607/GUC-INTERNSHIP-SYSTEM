@@ -5,6 +5,7 @@ interface EvaluationType {
   rating: number;
   comment: string;
   recommended: boolean;
+  finalized?: boolean;
 }
 
 interface EvaluationFormProps {
@@ -18,18 +19,19 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({
   setEvaluation,
   readOnly = false
 }) => {
+  // Consider an evaluation as read-only if explicitly set or if finalized
+  const isReadOnly = readOnly || evaluation.finalized;
   return (
     <div className={styles.evaluationForm}>
       <div className={`${styles.formGroup} ${styles.ratingGroup}`}>
         <label className={styles.formLabel}>How would you rate this internship?</label>
         <div className={styles.starRating}>
-          {[1, 2, 3, 4, 5].map((star) => (
-            <button
+          {[1, 2, 3, 4, 5].map((star) => (            <button
               key={star}
               type="button"
               className={star <= evaluation.rating ? styles.starActive : styles.star}
-              onClick={() => !readOnly && setEvaluation({...evaluation, rating: star})}
-              disabled={readOnly}
+              onClick={() => !isReadOnly && setEvaluation({...evaluation, rating: star})}
+              disabled={isReadOnly}
             >
               ★
             </button>
@@ -47,24 +49,23 @@ const EvaluationForm: React.FC<EvaluationFormProps> = ({
       </div>
       
       <div className={styles.formGroup}>
-        <label className={styles.formLabel} htmlFor="evaluation-comment">Share your experience</label>
+        <label className={styles.formLabel} htmlFor="evaluation-comment">Share your experience</label>        
         <textarea
           id="evaluation-comment"
           className={styles.commentTextarea}
           placeholder="Share your experience with this internship... What did you learn? What skills did you develop? What was the work environment like?"
           value={evaluation.comment}
-          onChange={(e) => !readOnly && setEvaluation({...evaluation, comment: e.target.value})}
+          onChange={(e) => !isReadOnly && setEvaluation({...evaluation, comment: e.target.value})}
           rows={5}
-          readOnly={readOnly}
+          readOnly={isReadOnly}
         />
       </div>
       
-      <label className={styles.recommendationLabel}>
-        <input
+      <label className={styles.recommendationLabel}>        <input
           type="checkbox"
           checked={evaluation.recommended}
-          onChange={(e) => !readOnly && setEvaluation({...evaluation, recommended: e.target.checked})}
-          disabled={readOnly}
+          onChange={(e) => !isReadOnly && setEvaluation({...evaluation, recommended: e.target.checked})}
+          disabled={isReadOnly}
         />
         I would recommend this internship to other students
       </label>

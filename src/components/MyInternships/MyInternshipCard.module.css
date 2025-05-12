@@ -13,7 +13,8 @@
 }
 
 .cardInner {
-  padding: 20px;
+  padding: 20px 20px 15px;
+  flex-grow: 1;
 }
 
 /* Status Badges */
@@ -47,6 +48,16 @@
 
 .interviewBadge {
   background-color: #1976d2;
+  color: white;
+}
+
+.activeBadge {
+  background-color: #2196F3;  /* Blue for active internships */
+  color: white;
+}
+
+.completedBadge {
+  background-color: #4CAF50;  /* Green for completed internships */
   color: white;
 }
 
@@ -123,7 +134,7 @@
   padding: 15px 20px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;  /* Changed from center to flex-start for better vertical alignment */
   border-top: 1px solid #f0f0f0;
 }
 
@@ -170,16 +181,24 @@
   gap: 8px;
 }
 
+.verticalButtonsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 130px; /* Ensure buttons have consistent width */
+}
+
 .reportButton {
-  padding: 6px 12px;
+  padding: 8px 12px;
   background-color: #2196f3;
   color: white;
   border: none;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
   font-size: 0.85rem;
+  text-align: center;
 }
 
 .reportButton:hover {
@@ -187,7 +206,7 @@
 }
 
 .evaluateButton {
-  padding: 6px 12px;
+  padding: 8px 12px;
   background-color: #4caf50;
   color: white;
   border: none;
@@ -196,6 +215,7 @@
   cursor: pointer;
   transition: background-color 0.2s;
   font-size: 0.85rem;
+  text-align: center;
 }
 
 .evaluateButton:hover {
@@ -211,4 +231,6 @@
   font-weight: 600;
   cursor: not-allowed;
   transition: background-color 0.2s;
+  min-width: 130px;  /* Ensure consistent width with other buttons */
+  text-align: center;
 }

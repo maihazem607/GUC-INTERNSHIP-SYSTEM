@@ -109,17 +109,6 @@ const ReportPreview: React.FC<ReportPreviewProps> = ({
             </div>
           )}
         </div>
-        
-        {!report.finalized && (
-          <button 
-            className={styles.finalizeButton}
-            onClick={onFinalizeReport}
-            disabled={report.title.trim() === '' || report.body.trim() === ''}
-          >
-            <span>✓</span>
-            Finalize Report
-          </button>
-        )}
       </div>
     </div>
   );

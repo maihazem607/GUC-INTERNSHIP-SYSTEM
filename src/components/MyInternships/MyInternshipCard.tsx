@@ -14,11 +14,14 @@ interface MyInternship extends Internship {
     rating: number;
     comment: string;
     recommended: boolean;
+    finalized?: boolean;
   } | null;
   report?: {
     title: string;
     introduction: string;
     body: string;
+    coursesApplied?: string[];
+    finalized?: boolean;
   } | null;
 }
 
@@ -85,13 +88,18 @@ const MyInternshipCard: React.FC<MyInternshipCardProps> = ({
             ) : (
               <>Started: {internship.startDate || 'Not specified'}</>
             )}
-          </span>
-          {/* We'll keep the status badge here for internships tab, but applications tab will show in footer */}
+          </span>          {/* We'll keep the status badge here for internships tab, but applications tab will show in footer */}
           {activeTab === 'internships' && (
             <div className={styles.statusContainer}>
-              <span className={`${styles.statusBadge} ${getStatusBadgeClass(internship.applicationStatus)}`}>
-                {getStatusText(internship.applicationStatus)}
-              </span>
+              {internship.isActive ? (
+                <span className={`${styles.statusBadge} ${styles.activeBadge}`}>
+                  Active
+                </span>
+              ) : (
+                <span className={`${styles.statusBadge} ${styles.completedBadge}`}>
+                  Completed
+                </span>
+              )}
             </div>
           )}
         </div>
@@ -119,16 +127,15 @@ const MyInternshipCard: React.FC<MyInternshipCardProps> = ({
         <div className={styles.jobMeta}>
           <div className={styles.salary}>{internship.salary}</div>
           <div className={styles.location}>{internship.location}</div>
-        </div>        {/* Show different elements based on the active tab and internship status */}
+        </div>        
+        {/* Show different elements based on the active tab and internship status */}
         {activeTab === 'applications' && (
           <div className={styles.badgeContainer}>
             <span className={`${styles.statusBadge} ${getStatusBadgeClass(internship.applicationStatus)}`}>
               {getStatusText(internship.applicationStatus)}
             </span>
           </div>
-        )}
-
-        {activeTab === 'internships' && internship.isActive && (
+        )}        {activeTab === 'internships' && internship.isActive && (
           <button 
             className={styles.inProgressButton}
             disabled
@@ -136,20 +143,25 @@ const MyInternshipCard: React.FC<MyInternshipCardProps> = ({
             In Progress
           </button>
         )}
-
         {activeTab === 'internships' && !internship.isActive && (
-          <div className={styles.buttonsContainer}>
+          <div className={styles.verticalButtonsContainer}>
             <button 
               className={styles.reportButton}
               onClick={() => onReport && onReport(internship)}
             >
-              {internship.report ? 'View Report' : 'Submit Report'}
+              {internship.report ? 
+                (internship.report.finalized ? 'View Report' : 'Continue Report') : 
+                'Submit Report'
+              }
             </button>
             <button 
               className={styles.evaluateButton}
               onClick={() => onEvaluate && onEvaluate(internship)}
             >
-              {internship.evaluation ? 'View Evaluation' : 'Evaluate'}
+              {internship.evaluation ? 
+                (internship.evaluation.finalized ? 'View Evaluation' : 'Continue Evaluation') : 
+                'Evaluate'
+              }
             </button>
           </div>
         )}

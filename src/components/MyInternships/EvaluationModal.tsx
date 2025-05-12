@@ -11,6 +11,7 @@ interface MyInternship extends Internship {
     rating: number;
     comment: string;
     recommended: boolean;
+    finalized?: boolean;
   } | null;
 }
 
@@ -18,6 +19,7 @@ interface EvaluationType {
   rating: number;
   comment: string;
   recommended: boolean;
+  finalized?: boolean;
 }
 
 interface EvaluationModalProps {
@@ -41,7 +43,8 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({
 }) => {  // Prepare action buttons for the modal
   const actions = (
     <>
-      {selectedInternship.evaluation && (
+      {/* Only show delete button if evaluation exists and is not finalized */}
+      {selectedInternship.evaluation && !evaluation.finalized && (
         <button 
           className={styles.deleteButton}
           onClick={onDelete}
@@ -49,17 +52,38 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({
           Reset
         </button>
       )}
-      <button 
-        className={styles.submitButton}
-        onClick={onSubmit}
-        disabled={isSubmitting || evaluation.rating === 0 || evaluation.comment.trim() === ''}
-      >
-        {isSubmitting ? (
-          <span>Processing...</span>
-        ) : (
-          selectedInternship.evaluation ? 'Update' : 'Submit'
-        )}
-      </button>
+      
+      {/* If evaluation is finalized, show a "Finalized" badge instead of buttons */}
+      {evaluation.finalized ? (
+        <div className={styles.finalizedBadge}>
+          <span>Finalized</span>
+          <span className={styles.finalizedNote}>(Read-only)</span>
+        </div>
+      ) : (
+        <div className={styles.actionButtonsGroup}>
+          <button 
+            className={styles.saveDraftButton}
+            onClick={onSubmit}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Saving...' : 'Save Draft'}
+          </button>
+          
+          <button 
+            className={styles.submitButton}
+            onClick={() => {
+              if (window.confirm('Once submitted, this evaluation will become read-only and cannot be edited. Continue?')) {
+                // Set as finalized before submitting
+                evaluation.finalized = true;
+                onSubmit();
+              }
+            }}
+            disabled={isSubmitting || evaluation.rating === 0 || evaluation.comment.trim() === ''}
+          >
+            Submit
+          </button>
+        </div>
+      )}
     </>
   );
   

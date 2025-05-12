@@ -70,36 +70,50 @@ const ReportModal: React.FC<ReportModalProps> = ({
   onFinalizeReport,
   isGeneratingPDF,
   onDownloadPDF
-}) => {
-  // Prepare action buttons for the modal
+}) => {  // Prepare action buttons for the modal
   const actions = (
     <>
       <div>
-        {selectedInternship.report && (
+        {/* Only show delete button if report exists and is not finalized */}
+        {selectedInternship.report && !report.finalized && (
           <button 
             className={styles.deleteButton}
             onClick={onDelete}
           >
-            <span style={{marginRight: '8px'}}>🗑️</span>
-            Remove Report
+            Reset
           </button>
         )}
       </div>
       
-      <button 
-        className={styles.submitButton}
-        onClick={onSubmit}
-        disabled={isSubmitting || report.title.trim() === '' || report.body.trim() === ''}
-      >
-        {isSubmitting ? (
-          <span>Processing...</span>
-        ) : (
-          <>
-            <span style={{marginRight: '8px'}}>📝</span>
-            {selectedInternship.report ? 'Update Report' : 'Submit Report'}
-          </>
-        )}
-      </button>
+      {/* If report is finalized, show a "Finalized" badge instead of buttons */}
+      {report.finalized ? (
+        <div className={styles.finalizedBadge}>
+          <span>Finalized</span>
+          <span className={styles.finalizedNote}>(Read-only)</span>
+        </div>
+      ) : (
+        <div className={styles.actionButtonsGroup}>
+          <button 
+            className={styles.saveDraftButton}
+            onClick={onSubmit}
+            disabled={isSubmitting}
+          >
+            Save Draft
+          </button>            
+            <button 
+              className={styles.submitButton}
+              onClick={() => {
+                if (window.confirm('Once submitted, this report will become read-only and cannot be edited. Continue?')) {
+                  // Call the finalize function to properly set the report as finalized
+                  onFinalizeReport();
+                }
+              }}
+              disabled={isSubmitting || report.title.trim() === '' || report.body.trim() === ''}
+            >
+              Submit
+            </button>
+        </div>
+      )}
     </>
   );
 
