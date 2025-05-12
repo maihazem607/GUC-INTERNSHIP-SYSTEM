@@ -4,7 +4,7 @@ export interface Appointment {
   title: string;
   date: string;
   time: string;
-  status: 'pending' | 'accepted' | 'rejected' | 'completed';
+  status: 'pending' | 'waiting-approval' | 'accepted' | 'rejected' | 'completed';
   participantName: string;
   participantType: 'student' | 'pro-student' | 'scad' | 'faculty';
   participantEmail: string;

@@ -6,7 +6,7 @@ export interface AppointmentCardProps {
   title: string;
   date: string;
   time: string;
-  status: 'pending' | 'accepted' | 'rejected' | 'completed';
+  status: 'pending' | 'waiting-approval' | 'accepted' | 'rejected' | 'completed';
   participantName: string;
   participantType: 'student' | 'pro-student' | 'scad' | 'faculty';
   participantEmail: string;
@@ -30,6 +30,7 @@ const getCardBackground = (id: string): string => {
 const getStatusColor = (status: string): string => {
   switch(status) {
     case 'pending': return '#FF9800';
+    case 'waiting-approval': return '#3498DB'; // Blue color for waiting approval
     case 'accepted': return '#4CAF50';
     case 'rejected': return '#F44336';
     case 'completed': return '#3F51B5';
@@ -40,6 +41,7 @@ const getStatusColor = (status: string): string => {
 const getStatusLabel = (status: string): string => {
   switch(status) {
     case 'pending': return 'Pending';
+    case 'waiting-approval': return 'Waiting for Approval';
     case 'accepted': return 'Accepted';
     case 'rejected': return 'Rejected';
     case 'completed': return 'Completed';
@@ -92,10 +94,10 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             <span>{isOnline ? 'Online' : 'Offline'}</span>
           </div>
         </div>
-          <div className={styles.statusContainer}>
-          <span className={styles.statusBadge} style={{ backgroundColor: statusColor }}>
+          <div className={styles.statusContainer}>          <span className={styles.statusBadge} style={{ backgroundColor: statusColor }}>
             <span className={styles.statusIcon}>
               {status === 'pending' && '⏳'}
+              {status === 'waiting-approval' && '⌛'}
               {status === 'accepted' && '✓'}
               {status === 'rejected' && '✕'}
               {status === 'completed' && '✓✓'}
@@ -103,8 +105,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             {statusLabel}
           </span>
         </div>
-        
-        {status === 'pending' && (
+          {(status === 'pending') && (
           <div className={styles.actionButtons} onClick={(e) => e.stopPropagation()}>            <button 
               className={`${styles.actionButton} ${styles.acceptButton}`}
               onClick={(e) => {

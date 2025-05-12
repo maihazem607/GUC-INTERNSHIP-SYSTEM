@@ -23,6 +23,11 @@
   flex-direction: column;
 }
 
+/* Tab Styles */
+.appointmentTabs {
+  margin-bottom: 24px;
+}
+
 /* Appointment Listings */
 .appointmentListings {
   background-color: white;
@@ -158,6 +163,25 @@
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+/* Highlight animation for newly updated appointments */
+.highlightCard {
+  animation: highlightFade 2s ease-in-out;
+}
+
+@keyframes highlightFade {
+  0% {
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: translateY(-5px);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(76, 175, 80, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0);
+    transform: translateY(0);
   }
 }
 

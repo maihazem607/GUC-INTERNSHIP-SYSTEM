@@ -9,7 +9,7 @@ interface AppointmentDetailsModalProps {
     title: string;
     date: string;
     time: string;
-    status: 'pending' | 'accepted' | 'rejected' | 'completed';
+    status: 'pending' | 'waiting-approval' | 'accepted' | 'rejected' | 'completed';
     participantName: string;
     participantType: 'student' | 'pro-student' | 'scad' | 'faculty';
     participantEmail: string;
@@ -39,10 +39,10 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
      (currentUserType === 'scad' && appointment.participantType === 'pro-student'));
   
   const canStartCall = appointment.status === 'accepted' && appointment.isOnline;
-  
-  const getStatusColor = (status: string): string => {
+    const getStatusColor = (status: string): string => {
     switch(status) {
       case 'pending': return '#FFB800';
+      case 'waiting-approval': return '#3498DB'; // Blue color for waiting approval
       case 'accepted': return '#4CAF50';
       case 'rejected': return '#F44336';
       case 'completed': return '#6200EA';
@@ -53,6 +53,7 @@ const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
   const getStatusLabel = (status: string): string => {
     switch(status) {
       case 'pending': return 'Pending';
+      case 'waiting-approval': return 'Waiting for Approval';
       case 'accepted': return 'Accepted';
       case 'rejected': return 'Rejected';
       case 'completed': return 'Completed';
