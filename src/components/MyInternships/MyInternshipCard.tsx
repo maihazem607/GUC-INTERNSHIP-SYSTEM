@@ -77,10 +77,15 @@ const MyInternshipCard: React.FC<MyInternshipCardProps> = ({
   activeTab
 }) => {
   return (
-    <div className={styles.card}>
-      <div className={styles.cardInner} style={{ backgroundColor: getCardBackground(internship.id) }}>
+    <div className={styles.card}>      <div className={styles.cardInner} style={{ backgroundColor: getCardBackground(internship.id) }}>
         <div className={styles.cardDate}>
-          <span>{internship.applicationDate}</span>
+          <span>
+            {activeTab === 'applications' ? (
+              <>Submitted: {internship.applicationDate}</>
+            ) : (
+              <>Started: {internship.startDate || 'Not specified'}</>
+            )}
+          </span>
           {/* We'll keep the status badge here for internships tab, but applications tab will show in footer */}
           {activeTab === 'internships' && (
             <div className={styles.statusContainer}>

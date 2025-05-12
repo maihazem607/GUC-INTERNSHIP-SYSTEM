@@ -322,14 +322,13 @@ const MyInternshipsPage: React.FC = () => {
             if (!internship.startDate) return false;
             const internshipDate = new Date(internship.startDate);
             return internshipDate >= threeMonthsAgo;
-          });        } else {
+          });        
+        } else {
           // Filter by specific year
           const year = activeFilters.date;
           results = results.filter(internship => {
-            // Check if year is in startDate, endDate, or applicationDate
-            return (internship.startDate && internship.startDate.includes(year)) || 
-                   (internship.endDate && internship.endDate.includes(year)) || 
-                   (internship.applicationDate && internship.applicationDate.includes(year));
+            // Check if year is in startDate
+            return (internship.startDate && internship.startDate.includes(year));
           });
         }
       }
@@ -590,9 +589,8 @@ const MyInternshipsPage: React.FC = () => {
     const course = availableCourses.find(c => c.id === courseId);
     return course ? course.name : courseId;
   };
-
   // Handle downloading report as PDF
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = async () => {
     if (selectedInternship) {
       setIsGeneratingPDF(true);
       
@@ -608,21 +606,43 @@ const MyInternshipsPage: React.FC = () => {
         }
       }
       
-      // In a real app, we would use a library like jsPDF or html2pdf 
-      // to convert the report content to PDF
-      setTimeout(() => {
-        setIsGeneratingPDF(false);
+      try {
+        // Import the PDF utility dynamically to avoid SSR issues
+        const pdfUtils = await import('../../src/utils/pdfUtils');
+        const generateReportPDF = pdfUtils.default;
         
-        // Generate a filename based on internship details
-        const fileName = `${selectedInternship.company.replace(' ', '_')}_${
-          selectedInternship.title.replace(' ', '_')
-        }_Report${report.finalized ? '' : '_DRAFT'}.pdf`;
+        // Get course names for the report
+        const courseNames = report.coursesApplied.map(id => getCourseNameById(id));
         
+        // Generate the PDF
+        const fileName = await generateReportPDF({
+          title: report.title,
+          company: selectedInternship.company,
+          position: selectedInternship.title,
+          duration: selectedInternship.duration,
+          introduction: report.introduction,
+          body: report.body,
+          coursesApplied: report.coursesApplied,
+          finalized: report.finalized,
+          courseNames: courseNames
+        });
+        
+        // Show success notification
         showNotification({
-          message: `Report "${fileName}" has been downloaded to your downloads folder.`,
+          message: `Report "${fileName}" has been downloaded to your device.`,
           type: 'success'
         });
-      }, 1500);
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        
+        // Show error notification
+        showNotification({
+          message: 'Failed to generate PDF. Please try again.',
+          type: 'error'
+        });
+      } finally {
+        setIsGeneratingPDF(false);
+      }
     }
   };
 
@@ -676,7 +696,9 @@ const MyInternshipsPage: React.FC = () => {
               <h2 className={styles.listingTitle}>
                 {activeTab === 'applications' ? 'My Applications' : 'My Internships'}
               </h2>
-              <span className={styles.internshipCount}>{filteredInternships.length}</span>
+              <span className={styles.internshipCount}>
+                {filteredInternships.length} Internship{filteredInternships.length !== 1 ? 's' : ''}
+              </span>
             </div>            
             {filteredInternships.length > 0 ? (
               <div className={styles.cardsList}>

@@ -204,6 +204,46 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.uploadAreaError {
+  border-color: #d32f2f;
+  background-color: rgba(255, 235, 238, 0.4);
+}
+
+.errorTooltip {
+  position: absolute;
+  top: -45px;
+  background-color: #d32f2f;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  margin-bottom: 10px;
+  width: max-content;
+  max-width: 250px;
+  animation: fadeIn 0.3s;
+}
+
+.errorTooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 8px 8px 0;
+  border-style: solid;
+  border-color: #d32f2f transparent transparent transparent;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .fileInput {
@@ -247,6 +287,19 @@
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1), 0 0 2px rgba(0, 0, 0, 0.08);
   transition: all 0.2s;
   border-left: 3px solid #1976d2;
+  animation: slideIn 0.3s ease-out;
+  transform-origin: top;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .documentInfo {
