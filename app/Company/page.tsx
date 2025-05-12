@@ -230,7 +230,8 @@ const DashboardContent = () => {
                             post.description.toLowerCase().includes(internshipSearchTerm.toLowerCase());
         const matchesFilter = internshipFilter === 'all' || post.department.toLowerCase() === internshipFilter.toLowerCase();
         return matchesSearch && matchesFilter;
-    });    const filteredApplications = applications.filter(app => {
+    });    
+    const filteredApplications = applications.filter(app => {
         // Search term filter
         const matchesSearch = app.applicantName.toLowerCase().includes(applicationSearchTerm.toLowerCase()) || 
                               app.internshipTitle.toLowerCase().includes(applicationSearchTerm.toLowerCase());
@@ -762,7 +763,7 @@ const DashboardContent = () => {
                     filters={getCurrentFilters().filters}
                     onFilterChange={getCurrentFilters().onFilterChange}
                 />
-                <main className={styles.mainContent}>
+                <main className={styles.mainContent}> 
                     <DashboardTab
                         tabs={[
                             { 
@@ -786,6 +787,14 @@ const DashboardContent = () => {
                         className={styles.dashboardTabs}
                     />
                     
+                    <div className={styles.filterControls}>
+                        <SearchBar
+                            searchTerm={getSearchProps().searchTerm}
+                            setSearchTerm={getSearchProps().setSearchTerm}
+                            placeholder={getSearchProps().placeholder}
+                        />
+                    </div>
+
                     {/* INTERNSHIPS TAB */}
                     {activeTab === 'internships' && (
                         <div className={styles.internshipListings}>                            <div className={styles.listingHeader}>
@@ -817,13 +826,7 @@ const DashboardContent = () => {
                                     </button>
                                 </div>
                             </div>
-                            <div className={styles.filterControls}>
-                                <SearchBar
-                                    searchTerm={getSearchProps().searchTerm}
-                                    setSearchTerm={getSearchProps().setSearchTerm}
-                                    placeholder={getSearchProps().placeholder}
-                                />
-                            </div>                            {filteredInternshipPosts.length > 0 ? (
+                            {filteredInternshipPosts.length > 0 ? (
                                 <div className={styles.cards}>
                                     {filteredInternshipPosts.map(post => {
                                         const internship = convertToInternshipFormat(post);
@@ -857,13 +860,6 @@ const DashboardContent = () => {
                                     {pendingApplicationsCount} pending applications
                                 </span>
                             </div>
-                            <div className={styles.filterControls}>
-                                <SearchBar
-                                    searchTerm={getSearchProps().searchTerm}
-                                    setSearchTerm={getSearchProps().setSearchTerm}
-                                    placeholder={getSearchProps().placeholder}
-                                />
-                            </div>
                             {filteredApplications.length > 0 ? (
                                 <ApplicationsList 
                                     applications={filteredApplications}
@@ -887,13 +883,6 @@ const DashboardContent = () => {
                                 <span className={styles.internCount}>
                                     {currentInternsCount} active interns
                                 </span>
-                            </div>
-                            <div className={styles.filterControls}>
-                                <SearchBar
-                                    searchTerm={getSearchProps().searchTerm}
-                                    setSearchTerm={getSearchProps().setSearchTerm}
-                                    placeholder={getSearchProps().placeholder}
-                                />
                             </div>
                             {filteredInterns.length > 0 ? (
                                // <div className={styles.cards}>  
