@@ -228,7 +228,8 @@
 }
 
 .applyButton:hover {
-  background-color: #34399b
+  background-color: #34399b;
+}
 .editButton {
   background-color: #f39c12;
 }
