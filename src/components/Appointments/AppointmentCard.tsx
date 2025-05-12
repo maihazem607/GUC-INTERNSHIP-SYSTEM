@@ -30,7 +30,7 @@ const getCardBackground = (id: string): string => {
 const getStatusColor = (status: string): string => {
   switch(status) {
     case 'pending': return '#FF9800';
-    case 'waiting-approval': return '#3498DB'; // Blue color for waiting approval
+    case 'waiting-approval': return '#4c51bf'; // Blue color for waiting approval
     case 'accepted': return '#4CAF50';
     case 'rejected': return '#F44336';
     case 'completed': return '#3F51B5';

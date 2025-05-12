@@ -132,7 +132,7 @@
   background-color: #f9f9f9;
   border-radius: 6px;
   padding: 16px;
-  border-left: 4px solid #3498db;
+  border-left: 4px solid #4c51bf;
   position: relative;
 }
 
@@ -157,7 +157,7 @@
 }
 
 .internshipBadge {
-  background-color: #3498db;
+  background-color: #4c51bf;
   color: white;
 }
 
@@ -191,7 +191,7 @@
 
 .editExperienceButton {
   padding: 6px 12px;
-  background-color: #3498db;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 4px;
@@ -200,8 +200,7 @@
 }
 
 .editExperienceButton:hover {
-  background-color: #2980b9;
-}
+  background-color: #34399b}
 
 .deleteExperienceButton {
   padding: 6px 12px;

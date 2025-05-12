@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { User, Briefcase, GraduationCap, ShieldCheck } from 'lucide-react';
 import styles from './HomePage.module.css';
 import Navigation from '../global/Navigation';
+import Image from 'next/image';
 
 interface UserType {
   id: string;
@@ -12,18 +13,25 @@ interface UserType {
   icon: React.ReactNode;
   description: string;
   colorClass: string;
+  bgColor: string;
 }
 
 const HomePage: React.FC = () => {
   const [hoveredUser, setHoveredUser] = useState<string | null>(null);
   const router = useRouter();
 
-  const userTypes: UserType[] = [
+  // Color palette for user cards and UI elements
+  const colors = [
+    '#ffe8f0', '#e8f3ff', '#e8ffe8', '#fff0e8', '#f0e8ff',
+    '#e8fff0', '#fff8e8', '#e8f0ff', '#ffe8e8', '#e8ffea',
+    '#f0ffe8', '#fff0f0'
+  ]; const userTypes: UserType[] = [
     {
       id: 'student',
       title: 'Student',
       icon: <GraduationCap size={48} className={styles.icon} />,
       colorClass: styles.bgPurple,
+      bgColor: colors[1], // Light blue
       description: 'Access internship opportunities and manage applications',
     },
     {
@@ -31,6 +39,7 @@ const HomePage: React.FC = () => {
       title: 'Company',
       icon: <Briefcase size={48} className={styles.icon} />,
       colorClass: styles.bgGold,
+      bgColor: colors[3], // Light orange
       description: 'Post internships and review student applications',
     },
     {
@@ -38,6 +47,7 @@ const HomePage: React.FC = () => {
       title: 'Faculty Academic',
       icon: <User size={48} className={styles.icon} />,
       colorClass: styles.bgLavender,
+      bgColor: colors[2], // Light green
       description: 'Supervise student internships and approve reports',
     },
     {
@@ -45,43 +55,57 @@ const HomePage: React.FC = () => {
       title: 'SCAD Officer',
       icon: <ShieldCheck size={48} className={styles.icon} />,
       colorClass: styles.bgGray,
+      bgColor: colors[4], // Light purple
       description: 'Administer system and manage all users',
     }
   ];
 
   const handleUserClick = (userId: string) => {
     if (userId === 'company') {
-      router.push('/CompanyLogin'); 
+      router.push('/CompanyLogin');
     } else if (userId === 'student') {
       router.push("/StudentLogin");
     } else if (userId === 'faculty') {
       router.push("/FacultyLogin");
-    } else if (userId === 'admin') {  
+    } else if (userId === 'admin') {
       router.push("/SCADLogin");
     } else {
       console.log(`User selected: ${userId}`);
     }
-  };
-
-  return (
+  }; return (
     <div className={styles.pageContainer}>
       {/* Use the global Navigation component */}
       <Navigation title="GUC Internship System" />
 
       {/* Main Content */}
       <div className={styles.contentWrapper}>
-        <main className={styles.mainContent}>
-          <section className={styles.welcome}>
+        <main className={styles.mainContent}>          <div className={styles.heroSection}>
+          <div className={styles.heroContent}>
             <h1 className={styles.title}>Welcome to GUC Internship System</h1>
             <p className={styles.subtitle}>Connecting Students, Companies, and Faculty for Successful Internships</p>
-          </section>
+
+            <div className={styles.heroCTA}>
+              <p className={styles.ctaText}>Get started by selecting your role below</p>
+              <div className={styles.arrowDown}></div>
+            </div>
+          </div>
+          <div className={styles.heroImageContainer}>
+            <Image
+              src="/assets/Jobhunt.svg"
+              alt="Job Hunt Illustration"
+              width={600}
+              height={500}
+              className={styles.heroImage}
+            />
+          </div>
+        </div>
 
           <section className={styles.userSelection}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>Who Are You?</h2>
-              <span className={styles.sectionDescription}>Select your user type to continue</span>
+              <p className={styles.sectionDescription}>Select your user type to continue</p>
             </div>
-            
+
             <div className={styles.cards}>
               {userTypes.map(user => (
                 <div
@@ -101,8 +125,8 @@ const HomePage: React.FC = () => {
                     <p className={styles.userDescription}>
                       {user.description}
                     </p>
-                    <button 
-                      className={styles.actionButton} 
+                    <button
+                      className={styles.actionButton}
                       onClick={() => handleUserClick(user.id)}
                     >
                       Continue as {user.title}
@@ -111,9 +135,7 @@ const HomePage: React.FC = () => {
                 </div>
               ))}
             </div>
-          </section>
-
-          <section className={styles.infoSection}>
+          </section>          <section className={styles.infoSection}>
             <div className={styles.infoCard}>
               <div className={styles.infoContent}>
                 <div className={styles.infoIconContainer}>

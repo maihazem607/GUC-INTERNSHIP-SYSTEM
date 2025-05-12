@@ -141,8 +141,8 @@
 }
 
 .activeTab {
-  color: #3498db;
-  border-bottom: 2px solid #3498db;
+  color: #4c51bf;
+  border-bottom: 2px solid #4c51bf;
 }
 
 .videoContainer {
@@ -255,7 +255,7 @@
 .circle {
   fill: none;
   stroke-width: 3.8;
-  stroke: #3498db;
+  stroke: #4c51bf;
   stroke-linecap: round;
   animation: progress 1s ease-out forwards;
 }
@@ -284,7 +284,7 @@
 }
 
 .playPauseButton {
-  background-color: #3498db;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 20px;
@@ -404,7 +404,7 @@
 }
 
 .resourcesList a {
-  color: #3498db;
+  color: #4c51bf;
   text-decoration: none;
   font-size: 14px;
 }
@@ -436,8 +436,8 @@
 
 .downloadButton {
   background-color: transparent;
-  color: #3498db;
-  border: 1px solid #3498db;
+  color: #4c51bf;
+  border: 1px solid #4c51bf;
   border-radius: 4px;
   padding: 5px 10px;
   font-size: 12px;
@@ -502,7 +502,7 @@
 
 .saveNoteButton {
   width: 100%;
-  background-color: #3498db;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 8px;
@@ -589,7 +589,7 @@
 }
 
 .submitRatingButton {
-  background-color: #3498db;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 6px;
@@ -679,7 +679,7 @@
 .userName {
   font-size: 22px;
   font-weight: bold;
-  color: #3498db;
+  color: #4c51bf;
   margin: 15px 0;
 }
 

@@ -121,7 +121,7 @@
 
 .actionButton {
   padding: 8px 16px;
-  background-color: #3498db;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 8px;
@@ -131,8 +131,7 @@
 }
 
 .actionButton:hover {
-  background-color: #2980b9;
-}
+  background-color: #34399b}
 
 .acceptButton {
   background-color: #27ae60;

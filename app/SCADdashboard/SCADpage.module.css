@@ -133,7 +133,7 @@
 .viewButton {
   width: 100%;
   padding: 0.8rem;
-  background-color: #3498db;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 4px;
@@ -143,8 +143,7 @@
 }
 
 .viewButton:hover {
-  background-color: #2980b9;
-}
+  background-color: #34399b}
 
 .noResults {
   display: flex;

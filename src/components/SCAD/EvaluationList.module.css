@@ -108,7 +108,7 @@
 
 .detailsButton {
   padding: 8px 16px;
-  background-color: #3498db;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 8px;
@@ -118,8 +118,7 @@
 }
 
 .detailsButton:hover {
-  background-color: #2980b9;
-}
+  background-color: #34399b}
 
 /* List View Styles */
 .evaluationListContainer {
@@ -234,7 +233,7 @@
 
 .actionButton {
   padding: 6px 12px;
-  background-color: #3498db;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 6px;
@@ -245,8 +244,7 @@
 }
 
 .actionButton:hover {
-  background-color: #2980b9;
-}
+  background-color: #34399b}
 
 .noResults {
   text-align: center;

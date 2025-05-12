@@ -75,7 +75,7 @@
 }
 
 .formGroup:focus-within label {
-  color: #4cc9f0;
+  color: #4c51bf;
 }
 
 .formGroup input,
@@ -163,7 +163,7 @@
 }
 
 .submitButton {
-  background-color: #4cc9f0;
+  background-color: #4c51bf;
   color: white;
   border: none;
   padding: 14px 32px;
@@ -396,7 +396,7 @@
 }
 
 .dateCell.selectedDate {
-  background-color: #4cc9f0;
+  background-color: #4c51bf;
   color: white;
   font-weight: 600;
 }
@@ -457,14 +457,14 @@
 }
 
 .timeSlot:hover:not(.selectedTimeSlot):not(.disabledTimeSlot) {
-  border-color: #4cc9f0;
-  color: #4cc9f0;
+  border-color: #4c51bf;
+  color: #4c51bf;
 }
 
 .selectedTimeSlot {
-  background-color: #4cc9f0;
+  background-color: #4c51bf;
   color: white;
-  border-color: #4cc9f0;
+  border-color: #4c51bf;
 }
 
 .disabledTimeSlot {
@@ -553,13 +553,13 @@
 }
 
 .advisorCard:hover {
-  border-color: #4cc9f0;
+  border-color: #4c51bf;
   background-color: #f0f9ff;
   transform: translateY(-1px);
 }
 
 .selectedAdvisor {
-  border-color: #4cc9f0;
+  border-color: #4c51bf;
   background-color: #f0f9ff;
   box-shadow: 0 2px 8px rgba(76, 201, 240, 0.2);
 }
@@ -590,7 +590,7 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background-color: #4cc9f0;
+  background-color: #4c51bf;
   color: white;
   font-weight: bold;
   font-size: 14px;
@@ -632,8 +632,8 @@
 
 .changeButton {
   background-color: transparent;
-  color: #4cc9f0;
-  border: 1px solid #4cc9f0;
+  color: #4c51bf;
+  border: 1px solid #4c51bf;
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 14px;
@@ -643,6 +643,6 @@
 }
 
 .changeButton:hover {
-  background-color: #4cc9f0;
+  background-color: #4c51bf;
   color: white;
 }
