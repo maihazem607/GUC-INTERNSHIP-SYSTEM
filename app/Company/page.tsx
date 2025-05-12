@@ -6,6 +6,7 @@ import styles from './page.module.css';
 // Import global components
 import Navigation from "../../src/components/global/Navigation";
 import NotificationSystem, { useNotification } from "../../src/components/global/NotificationSystem";
+import NotificationsPanel from "../../src/components/global/NotificationsPanel";
 import FilterSidebar from "../../src/components/global/FilterSidebar";
 import SearchBar from "../../src/components/global/SearchBar";
 import Modal from "../../src/components/global/Modal";
@@ -18,6 +19,7 @@ import ApplicationDetailsModal from "../../src/components/Companyy/ApplicationDe
 import InternshipPostModal from "../../src/components/Companyy/InternshipPostModal";
 import InternshipCard from "../../src/components/internships/InternshipCard";
 import InternshipDetailsModal from "../../src/components/internships/InternshipDetailsModal";
+import CompanyInternshipDetailsModal from "../../src/components/Companyy/CompanyInternshipDetailsModal";
 
 // Import types
 import { 
@@ -47,6 +49,7 @@ const convertToInternshipFormat = (post: InternshipPost): Internship => {
     salary: post.isPaid && post.expectedSalary ? `$${post.expectedSalary}` : "Unpaid",
     logo: "/logos/google.png", // Default logo
     skills: post.skillsRequired,
+    applicationsCount: post.applicationsCount,
   };
 };
 
@@ -57,12 +60,14 @@ export default function InternshipDashboard() {
     // Search states for different tabs
     const [internshipSearchTerm, setInternshipSearchTerm] = useState('');
     const [applicationSearchTerm, setApplicationSearchTerm] = useState('');
-    const [internSearchTerm, setInternSearchTerm] = useState('');
-    
-    // Filter states
+    const [internSearchTerm, setInternSearchTerm] = useState('');    // Filter states
     const [internshipFilter, setInternshipFilter] = useState('all');
     const [applicationFilter, setApplicationFilter] = useState('all');
     const [internFilter, setInternFilter] = useState('all');
+    
+    // Track active filters separately for status and post
+    const [activeStatusFilter, setActiveStatusFilter] = useState<string>('all');
+    const [activePostFilter, setActivePostFilter] = useState<string>('All');
     
     // Data states
     const [internshipPosts, setInternshipPosts] = useState<InternshipPost[]>([]);
@@ -79,6 +84,7 @@ export default function InternshipDashboard() {
     const [showEvaluationForm, setShowEvaluationForm] = useState(false);
     const [showPostForm, setShowPostForm] = useState(false);
     const [showInternshipDetails, setShowInternshipDetails] = useState(false);
+    const [showNotificationsPanel, setShowNotificationsPanel] = useState(false);
     
     // Star tracking
     const [starredInternships, setStarredInternships] = useState<number[]>([]);
@@ -94,7 +100,7 @@ export default function InternshipDashboard() {
     const [newPost, setNewPost] = useState<Omit<InternshipPost, 'id' | 'postedDate' | 'applicationsCount'>>({
         title: '',
         description: '',
-        department: 'Engineering',
+        department: '',
         deadline: new Date(),
         duration: '',
         isPaid: false,
@@ -178,6 +184,17 @@ export default function InternshipDashboard() {
                 endDate: new Date('2023-08-31'),
                 status: 'current',
             },
+             {
+                id: '3',
+                name: 'Grace Morgen',
+                email: 'grace@university.edu',
+                university: 'SCAD',
+                major: 'Computer Science',
+                internshipTitle: 'Backend Developer Intern',
+                startDate: new Date('2025-06-01'),
+                endDate: new Date('2026-08-31'),
+                status: 'current',
+            },
         ];
 
         setInternshipPosts(mockPosts);
@@ -210,15 +227,31 @@ export default function InternshipDashboard() {
                             post.description.toLowerCase().includes(internshipSearchTerm.toLowerCase());
         const matchesFilter = internshipFilter === 'all' || post.department.toLowerCase() === internshipFilter.toLowerCase();
         return matchesSearch && matchesFilter;
-    });
-
-    const filteredApplications = applications.filter(app => {
+    });    const filteredApplications = applications.filter(app => {
+        // Search term filter
         const matchesSearch = app.applicantName.toLowerCase().includes(applicationSearchTerm.toLowerCase()) || 
-                            app.internshipTitle.toLowerCase().includes(applicationSearchTerm.toLowerCase());
-        const matchesFilter = applicationFilter === 'all' || 
-                            (applicationFilter === 'post' && selectedPost ? app.internshipPostId === selectedPost.id : true) ||
-                            app.status === applicationFilter;
-        return matchesSearch && matchesFilter;
+                              app.internshipTitle.toLowerCase().includes(applicationSearchTerm.toLowerCase());
+        
+        // Status filter
+        const matchesStatusFilter = activeStatusFilter === 'all' || 
+                                    activeStatusFilter === app.status;
+        
+        // Post filter
+        let matchesPostFilter = true;
+        if (activePostFilter !== 'All') {
+            // Find the corresponding post ID for this title
+            const selectedPostByTitle = internshipPosts.find(post => 
+                post.title === activePostFilter
+            );
+            
+            // Only include applications for this post
+            matchesPostFilter = selectedPostByTitle ? 
+                               app.internshipPostId === selectedPostByTitle.id : 
+                               true;
+        }
+        
+        // Apply all filters (search, status, and post)
+        return matchesSearch && matchesStatusFilter && matchesPostFilter;
     });
 
     const filteredInterns = interns.filter(intern => {
@@ -233,11 +266,23 @@ export default function InternshipDashboard() {
     // Calculate counters
     const pendingApplicationsCount = applications.filter(app => app.status === 'pending').length;
     const currentInternsCount = interns.filter(intern => intern.status === 'current').length;
-    const internshipPostsCount = internshipPosts.length;
-
-    // CRUD for Internship Posts
+    const internshipPostsCount = internshipPosts.length;    // CRUD for Internship Posts
     const handleCreateOrUpdatePost = () => {
+        console.log('handleCreateOrUpdatePost called');
+        console.log('Current form data:', newPost);
+        
+        // Check if required fields are filled
+        if (!newPost.title || !newPost.description || !newPost.duration) {
+            console.error("Cannot create/update post: missing required fields");
+            showNotification({
+                message: "Please fill in all required fields (Title, Description, Duration)",
+                type: 'error'
+            });
+            return;
+        }
+        
         if (selectedPost) {
+            // Update existing post
             setInternshipPosts(internshipPosts.map(post => 
                 post.id === selectedPost.id ? { ...post, ...newPost, postedDate: new Date(), applicationsCount: post.applicationsCount } : post
             ));
@@ -249,13 +294,22 @@ export default function InternshipDashboard() {
                 type: 'success'
             });
         } else {
+            // Create new post with a unique ID
             const post: InternshipPost = {
-                id: Date.now().toString(),
+                id: `post-${Date.now()}`, // Ensure unique ID
                 ...newPost,
                 postedDate: new Date(),
                 applicationsCount: 0,
             };
-            setInternshipPosts([...internshipPosts, post]);
+            
+            console.log("Creating new internship post:", post);
+            
+            // Add the new post to the list
+            setInternshipPosts(prev => {
+                const updated = [...prev, post];
+                console.log("Updated internships list:", updated);
+                return updated;
+            });
             
             // Show success notification
             showNotification({
@@ -263,13 +317,14 @@ export default function InternshipDashboard() {
                 type: 'success'
             });
         }
-        setShowPostForm(false);
-        setNewPost({
+        
+        // Close the form and reset data
+        setShowPostForm(false);        setNewPost({
             title: '',
             description: '',
-            department: 'engineering',
+            department: 'Technology',
             deadline: new Date(),
-            duration: '',
+            duration: '', // Empty string to show "Select duration" option
             isPaid: false,
             expectedSalary: undefined,
             skillsRequired: [],
@@ -287,22 +342,44 @@ export default function InternshipDashboard() {
                 type: 'info'
             });
         }
-    };
-
-    // Status change handlers
+    };    // Status change handlers
     const handleApplicationStatusChange = (applicationId: string, status: Application['status']) => {
         const application = applications.find(app => app.id === applicationId);
         setApplications(applications.map(app => 
             app.id === applicationId ? {...app, status} : app
         ));
         
-        // Show notification based on status
+        // Add to interns list when finalized
+        if (application && status === 'finalized') {
+            // Create a new intern object from the application data
+            const newIntern: Intern = {
+                id: application.id,
+                name: application.applicantName,
+                email: application.applicantEmail,
+                university: application.applicantUniversity,
+                major: application.applicantMajor,
+                internshipTitle: application.internshipTitle,
+                startDate: new Date(), // Start date is today
+                endDate: null, // End date will be set when completed
+                status: 'current' // New interns start with 'current' status
+            };
+            
+            // Check if intern already exists
+            const internExists = interns.some(intern => intern.id === newIntern.id);
+            if (!internExists) {
+                setInterns(prevInterns => [...prevInterns, newIntern]);
+            }
+        }
+          // Show notification based on status
         if (application) {
             let message = '';
             let type: 'success' | 'error' | 'warning' | 'info' = 'info';
             
             if (status === 'accepted') {
                 message = `Application from ${application.applicantName} has been accepted.`;
+                type = 'success';
+            } else if (status === 'finalized') {
+                message = `Application from ${application.applicantName} has been finalized. Added to Current Interns.`;
                 type = 'success';
             } else if (status === 'rejected') {
                 message = `Application from ${application.applicantName} has been rejected.`;
@@ -378,22 +455,18 @@ export default function InternshipDashboard() {
             message: `Evaluation for ${selectedIntern.name} has been submitted successfully.`,
             type: 'success'
         });
-    };
-
-    // Notification handling
+    };    // Notification handling - simulate random applications for demo purposes
     useEffect(() => {
+        if (internshipPosts.length === 0) return;
+        
+        // For demo purposes, simulate a new application every 30 seconds
         const interval = setInterval(() => {
-            const newNotification: Notification = {
-                id: Date.now().toString(),
-                message: 'New application received for ' + 
-                        internshipPosts[Math.floor(Math.random() * internshipPosts.length)].title,
-                type: 'application',
-                timestamp: new Date(),
-                read: false,
-                emailSent: true
-            };
-            setNotifications(prev => [newNotification, ...prev]);
+            // Choose a random internship post
+            const randomPost = internshipPosts[Math.floor(Math.random() * internshipPosts.length)];
+            // Simulate an application
+            handleNewApplication(randomPost.id);
         }, 30000);
+        
         return () => clearInterval(interval);
     }, [internshipPosts]);
     
@@ -401,18 +474,22 @@ export default function InternshipDashboard() {
     const internshipFilters = [
         {
             title: "Department",
-            options: ["All", "Engineering", "Marketing", "Design", "Business"],
+            options: ["All", "Engineering", "Marketing", "Design", "Business", "HR","Technology"],
             type: "department",
             value: internshipFilter
-        }
-    ];
-
-    const applicationFilters = [
+        }    ];
+      const applicationFilters = [
         {
             title: "Status",
             options: ["All", "Pending", "Accepted", "Rejected"],
             type: "status",
-            value: applicationFilter
+            value: applicationFilter === 'all' ? 'All' : applicationFilter.charAt(0).toUpperCase() + applicationFilter.slice(1)
+        },
+        {
+            title: "Internship Post",
+            options: ["All", ...internshipPosts.map(post => post.title)],
+            type: "post",
+            value: selectedPost ? selectedPost.title : "All"
         }
     ];
 
@@ -462,11 +539,29 @@ export default function InternshipDashboard() {
                 return {
                     filters: internshipFilters,
                     onFilterChange: (type: string, value: string) => setInternshipFilter(value.toLowerCase())
-                };
-            case 'applications':
+                };            case 'applications':
                 return {
                     filters: applicationFilters,
-                    onFilterChange: (type: string, value: string) => setApplicationFilter(value.toLowerCase())
+                    onFilterChange: (type: string, value: string) => {
+                        if (type === "status") {
+                            setActiveStatusFilter(value.toLowerCase());
+                            setApplicationFilter(value.toLowerCase());
+                        } else if (type === "post") {
+                            setActivePostFilter(value); // Update the visible selection
+                            
+                            if (value === "All") {
+                                setApplicationFilter("all");
+                                setSelectedPost(null);
+                            } else {
+                                // Find the post by title and set it as selected
+                                const post = internshipPosts.find(p => p.title === value);
+                                if (post) {
+                                    setSelectedPost(post);
+                                    setApplicationFilter(value); // Store the title as filter value
+                                }
+                            }
+                        }
+                    }
                 };
             case 'interns':
                 return {
@@ -568,16 +663,99 @@ export default function InternshipDashboard() {
                 </div>
             </Modal>
         );
+    };    // Notification handling functions
+    const markNotificationAsRead = (id: string) => {
+        setNotifications(prev => prev.map(n => 
+            n.id === id ? {...n, read: true} : n
+        ));
     };
+
+    const markAllNotificationsAsRead = () => {
+        setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    };
+
+    // Function to handle new application submission (simulation)
+    const handleNewApplication = (postId: string) => {
+        // Find the internship post
+        const post = internshipPosts.find(p => p.id === postId);
+        if (!post) return;
+        
+        // Create new application
+        const newApplication: Application = {
+            id: `app-${Date.now()}`,
+            internshipPostId: postId,
+            internshipTitle: post.title,
+            applicantName: `Applicant ${Math.floor(Math.random() * 1000)}`,
+            applicantEmail: `applicant${Math.floor(Math.random() * 1000)}@university.edu`,
+            applicantUniversity: 'SCAD',
+            applicantMajor: 'Computer Science',
+            applicationDate: new Date(),
+            status: 'pending',
+            resumeUrl: '#',
+            coverLetterUrl: '#',
+        };
+        
+        // Update applications list
+        setApplications(prev => [...prev, newApplication]);
+        
+        // Update application count for the post
+        setInternshipPosts(internshipPosts.map(p => 
+            p.id === postId 
+                ? {...p, applicationsCount: p.applicationsCount + 1} 
+                : p
+        ));
+        
+        // Create a notification
+        createApplicationNotification(post.title, newApplication.applicantName);
+    };
+    
+    // Function to create application notification and send email
+    const createApplicationNotification = (internshipTitle: string, applicantName: string) => {
+        // Create notification
+        const newNotification: Notification = {
+            id: Date.now().toString(),
+            message: `New application received from ${applicantName} for "${internshipTitle}"`,
+            type: 'application',
+            timestamp: new Date(),
+            read: false,
+            emailSent: false
+        };
+        
+        // Add to notifications list
+        setNotifications(prev => [newNotification, ...prev]);
+        
+        // Show toast notification
+        showNotification({
+            message: `New application received from ${applicantName} for "${internshipTitle}"`,
+            type: 'info'
+        });
+        
+        // Play notification sound
+        const audio = new Audio('/sounds/notification.mp3');
+        audio.play().catch(error => console.error('Error playing sound:', error));
+        
+        // Simulate sending email (in a real application, this would call an API endpoint)
+        setTimeout(() => {
+            console.log(`Email sent: New application received for ${internshipTitle}`);
+            // Update notification to reflect email sent
+            setNotifications(prev => prev.map(n => 
+                n.id === newNotification.id 
+                    ? {...n, emailSent: true} 
+                    : n
+            ));
+        }, 1000);
+    };    // Using the markNotificationAsRead function defined earlier
 
     return (
         <div className={styles.pageContainer}>
             <Head>
                 <title>Company Dashboard - Internship Management System</title>
-            </Head>
-            
-            {/* Header/Navigation */}
-            <Navigation title="Company Internship Dashboard" />
+            </Head>            {/* Header/Navigation */}
+            <Navigation 
+                title="Company Internship Dashboard"
+                notificationCount={unreadNotificationsCount}
+                onNotificationClick={() => setShowNotificationsPanel(!showNotificationsPanel)}
+            />
               {/* Tab Navigation */}
             <DashboardTab
                 tabs={[
@@ -612,18 +790,32 @@ export default function InternshipDashboard() {
                 <div className={styles.mainContent}>
                     {/* INTERNSHIPS TAB */}
                     {activeTab === 'internships' && (
-                        <div className={styles.internshipListings}>
-                            <div className={styles.listingHeader}>
+                        <div className={styles.internshipListings}>                            <div className={styles.listingHeader}>
                                 <h1 className={styles.listingTitle}>Internship Postings</h1>
                                 <div className={styles.headerActions}>
                                     <span className={styles.itemCount}>
                                         {filteredInternshipPosts.length} Posting{filteredInternshipPosts.length !== 1 ? 's' : ''}
-                                    </span>
-                                    <button 
-                                        className={styles.actionButton}
-                                        onClick={() => setShowPostForm(true)}
+                                    </span>                                    <button 
+                                        className={`${styles.actionButton} ${styles.createButton}`}
+                                        onClick={() => {
+                                            console.log("Create New Internship button clicked");                                            // Reset form data to ensure we're creating a new post
+                                            setNewPost({
+                                                title: '',
+                                                description: '',
+                                                department: '',
+                                                deadline: new Date(),
+                                                duration: '', // Empty string to show "Select duration" as default
+                                                isPaid: false,
+                                                expectedSalary: undefined,
+                                                skillsRequired: [],
+                                            });
+                                            setSelectedPost(null);
+                                            setShowPostForm(true);
+                                            console.log("showPostForm set to", true);
+                                            setTimeout(() => console.log("Form visible state after timeout:", showPostForm), 100);
+                                        }}
                                     >
-                                        + New Posting
+                                        + Create New Internship
                                     </button>
                                 </div>
                             </div>
@@ -633,19 +825,19 @@ export default function InternshipDashboard() {
                                     setSearchTerm={getSearchProps().setSearchTerm}
                                     placeholder={getSearchProps().placeholder}
                                 />
-                            </div>
-                            {filteredInternshipPosts.length > 0 ? (
+                            </div>                            {filteredInternshipPosts.length > 0 ? (
                                 <div className={styles.cards}>
                                     {filteredInternshipPosts.map(post => {
                                         const internship = convertToInternshipFormat(post);
                                         return (
-                                            <InternshipCard
-                                                key={internship.id}
-                                                internship={internship}
-                                                isStarred={starredInternships.includes(internship.id)}
-                                                onToggleStar={() => handleStarInternship(internship.id)}
-                                                onViewDetails={() => handleViewInternshipDetails(post, internship)}
-                                            />
+                                            <div key={internship.id} className={styles.cardWrapper}>
+                                                <InternshipCard
+                                                    internship={internship}
+                                                    isStarred={starredInternships.includes(internship.id)}
+                                                    onToggleStar={() => handleStarInternship(internship.id)}
+                                                    onViewDetails={() => handleViewInternshipDetails(post, internship)}
+                                                />
+                                            </div>
                                         );
                                     })}
                                 </div>
@@ -706,7 +898,8 @@ export default function InternshipDashboard() {
                                 />
                             </div>
                             {filteredInterns.length > 0 ? (
-                                <div className={styles.cards}>                                    <InternsList 
+                               // <div className={styles.cards}>  
+                               <InternsList 
                                         interns={filteredInterns}
                                         onStatusChange={handleInternStatusChange}
                                         onEvaluate={(intern: any) => {
@@ -721,7 +914,7 @@ export default function InternshipDashboard() {
                                             setShowEvaluationForm(true);
                                         }}
                                     />
-                                </div>
+                               // </div>
                             ) : (
                                 <div className={styles.noResults}>
                                     <div className={styles.noResultsIcon}>👨‍💼</div>
@@ -743,48 +936,41 @@ export default function InternshipDashboard() {
             
             {/* Render custom evaluation modal */}
             {renderEvaluationModal()}
-            
-            {showPostForm && (
-                <InternshipPostModal
+              {showPostForm && (                <InternshipPostModal
                     post={newPost}
                     isEditing={!!selectedPost}
-                    onClose={() => { setShowPostForm(false); setSelectedPost(null); }}
-                    onSubmit={handleCreateOrUpdatePost}
-                    onChange={(post) => setNewPost(post)}
+                    onClose={() => { 
+                        console.log("Modal closed");
+                        setShowPostForm(false); 
+                        setSelectedPost(null); 
+                    }}
+                    onSubmit={() => {
+                        console.log("Modal submit button clicked");
+                        handleCreateOrUpdatePost();
+                    }}
+                    onChange={(post) => {
+                        console.log("Form data changed:", post);
+                        setNewPost(post);
+                        // Debug validation status after each change
+                        const isValid = post.title && post.description && post.duration;
+                        console.log(`Form validation status: ${isValid ? 'VALID' : 'INVALID'}`);
+                    }}
                 />
-            )}
-            
-            {/* InternshipDetailsModal with edit and delete buttons */}
+            )}            {/* InternshipDetailsModal with edit and delete buttons */}
             {showInternshipDetails && selectedInternship && selectedPost && (
-                <div className={styles.modalBackdrop} onClick={handleCloseInternshipDetails}>
-                    <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
-                        <InternshipDetailsModal
-                            internship={selectedInternship}
-                            onClose={handleCloseInternshipDetails}
-                        />
-                        <div className={styles.modalCustomActions}>
-                            <button 
-                                className={styles.actionButton}
-                                onClick={() => {
-                                    setShowInternshipDetails(false);
-                                    setNewPost(selectedPost);
-                                    setShowPostForm(true);
-                                }}
-                            >
-                                Edit Internship
-                            </button>
-                            <button 
-                                className={`${styles.actionButtonOutline} ${styles.deleteButton}`}
-                                onClick={() => {
-                                    handleDeletePost(selectedPost.id);
-                                    handleCloseInternshipDetails();
-                                }}
-                            >
-                                Delete Internship
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <CompanyInternshipDetailsModal
+                    internship={selectedInternship}
+                    onClose={handleCloseInternshipDetails}
+                    onEdit={() => {
+                        setShowInternshipDetails(false);
+                        setNewPost(selectedPost);
+                        setShowPostForm(true);
+                    }}
+                    onDelete={() => {
+                        handleDeletePost(selectedPost.id);
+                        handleCloseInternshipDetails();
+                    }}
+                />
             )}
             
             {/* Global notification system */}
@@ -794,6 +980,20 @@ export default function InternshipDashboard() {
                     type={notification.type}
                     visible={visible}
                     onClose={hideNotification}
+                />
+            )}            {/* Notifications panel - show when state is true */}
+            {showNotificationsPanel && (
+                <NotificationsPanel
+                    notifications={notifications}
+                    onClose={() => setShowNotificationsPanel(false)}
+                    onMarkAsRead={(id) => {
+                        setNotifications(prev => prev.map(n => 
+                            n.id === id ? {...n, read: true} : n
+                        ));
+                    }}
+                    onMarkAllAsRead={() => {
+                        setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+                    }}
                 />
             )}
         </div>

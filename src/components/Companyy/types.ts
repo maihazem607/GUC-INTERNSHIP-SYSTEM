@@ -22,7 +22,7 @@ export type Application = {
     applicantUniversity: string;
     applicantMajor: string;
     applicationDate: Date;
-    status: 'pending' | 'finalized' | 'accepted' | 'rejected' | 'current' | 'completed';
+    status: 'pending' | 'finalized' | 'accepted' | 'rejected';
     resumeUrl: string;
     coverLetterUrl: string;
 };
@@ -49,6 +49,8 @@ export type Evaluation = {
     attitudeRating: number;
     comments: string;
 };
+
+
 
 export type Notification = {
     id: string;

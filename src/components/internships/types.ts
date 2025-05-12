@@ -26,6 +26,7 @@ export interface Internship {
   applicationStatus?: 'none' | 'pending' | 'accepted' | 'rejected' | 'finalized'; 
   applicationType?: 'standard' | 'pro';
   requiredDocuments?: DocumentInfo[]; 
+  applicationsCount?: number;
 }
 
 // Application types

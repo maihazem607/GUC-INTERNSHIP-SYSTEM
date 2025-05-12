@@ -88,14 +88,11 @@ const ApplicationsList: React.FC<ApplicationsListProps> = ({
                             e.stopPropagation();
                             onStatusChange(app.id, e.target.value as Application['status']);
                           }}
-                          onClick={(e) => e.stopPropagation()}
-                        >
+                          onClick={(e) => e.stopPropagation()}                        >
                           <option value="pending">PENDING</option>
                           <option value="finalized">FINALIZED</option>
                           <option value="accepted">ACCEPTED</option>
                           <option value="rejected">REJECTED</option>
-                          <option value="current">CURRENT</option>
-                          <option value="completed">COMPLETED</option>
                         </select>
                       </td>
                     </tr>

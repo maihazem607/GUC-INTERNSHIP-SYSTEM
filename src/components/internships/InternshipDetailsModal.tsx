@@ -7,6 +7,8 @@ import { Internship, DocumentInfo } from './types';
 interface DetailsModalProps {
   internship: Internship;
   onClose: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
   onApply?: (application: {
     internshipId: number;
     documents: File[];
@@ -17,6 +19,8 @@ interface DetailsModalProps {
 const InternshipDetailsModal: React.FC<DetailsModalProps> = ({
   internship,
   onClose,
+  onEdit,
+  onDelete,
   onApply
 }) => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -82,7 +86,6 @@ const InternshipDetailsModal: React.FC<DetailsModalProps> = ({
       setIsSubmitting(false);
     }
   };
-
   return (
     <div className={styles.modalBackdrop} onClick={onClose}>
       <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
@@ -112,8 +115,7 @@ const InternshipDetailsModal: React.FC<DetailsModalProps> = ({
             <div className={styles.modalInfoItem}>
               <div className={styles.modalInfoLabel}>Location</div>
               <div className={styles.modalInfoValue}>{internship.location}</div>
-            </div>
-            <div className={styles.modalInfoItem}>
+            </div>            <div className={styles.modalInfoItem}>
               <div className={styles.modalInfoLabel}>Compensation</div>
               <div className={styles.modalInfoValue}>
                 {internship.isPaid ? 
@@ -125,6 +127,12 @@ const InternshipDetailsModal: React.FC<DetailsModalProps> = ({
             <div className={styles.modalInfoItem}>
               <div className={styles.modalInfoLabel}>Start Date</div>
               <div className={styles.modalInfoValue}>{internship.date}</div>
+            </div>
+            <div className={styles.modalInfoItem}>
+              <div className={styles.modalInfoLabel}>Applications</div>
+              <div className={styles.modalInfoValue}>
+                {internship.applicationsCount || 0} applicant{(internship.applicationsCount !== 1) ? 's' : ''}
+              </div>
             </div>
           </div>
         </div>
@@ -244,8 +252,7 @@ const InternshipDetailsModal: React.FC<DetailsModalProps> = ({
             </div>
           </>
         )}
-        
-        {onApply && !showApplicationSection && (
+          {onApply && !showApplicationSection && (
           <div className={styles.modalActions}>
             <button 
               className={styles.applyButton}
@@ -253,6 +260,25 @@ const InternshipDetailsModal: React.FC<DetailsModalProps> = ({
             >
               Apply Now
             </button>
+          </div>
+        )}          {(onEdit || onDelete) && !showApplicationSection && (
+          <div className={styles.modalActions} style={{ justifyContent: 'space-between' }}>
+              {onDelete && (
+              <button 
+                className={`${styles.cancelBtn}`}
+                onClick={onDelete}
+              >
+                Delete Internship
+              </button>
+            )}
+            {onEdit && (
+              <button 
+                className={styles.applyButton}
+                onClick={onEdit}
+              >
+                Edit Internship
+              </button>
+            )}
           </div>
         )}
       </div>

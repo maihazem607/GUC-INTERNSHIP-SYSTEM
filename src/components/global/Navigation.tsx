@@ -1,3 +1,4 @@
+import React from "react";
 import Image from "next/image";
 import styles from "./Navigation.module.css";
 
@@ -5,15 +6,22 @@ interface NavigationProps {
   title?: string;
   logoSrc?: string;
   notificationCount?: number;
+  onNotificationClick?: () => void;
 }
 
-export default function Navigation({ title = "GUC Internship System", logoSrc = '/logos/GUCInternshipSystemLogo.png', notificationCount = 0 }: NavigationProps) {
+export default function Navigation({ 
+  title = "GUC Internship System", 
+  logoSrc = '/logos/GUCInternshipSystemLogo.png', 
+  notificationCount = 0,
+  onNotificationClick
+}: NavigationProps) {
   return (
     <header className={styles.navBar}>
       <div className={styles.navLeft}>
         <div className={styles.logoContainer}>
           <Image src={logoSrc} alt={title} width={150} height={150} style={{ margin: -13 }} />
-        </div>        <nav className={styles.mainNav}>
+        </div>
+        <nav className={styles.mainNav}>
           <a href="#" className={styles.navLink}>Find job</a>
           <a href="/Appointments" className={styles.navLink}>Appointments</a>
           <a href="#" className={styles.navLink}>Messages</a>
@@ -27,9 +35,15 @@ export default function Navigation({ title = "GUC Internship System", logoSrc = 
           <span className={styles.locationIcon}>📍</span>
           <span>New York, NY</span>
         </div>
-        <div className={styles.userControls}>          <div className={styles.userAvatar}></div>
+        <div className={styles.userControls}>
+          <div className={styles.userAvatar}></div>
           <button className={styles.settingsButton} suppressHydrationWarning>⚙️</button>
-          <button className={styles.notificationsButton} suppressHydrationWarning>
+          <button 
+            className={styles.notificationsButton} 
+            suppressHydrationWarning
+            onClick={onNotificationClick}
+            aria-label={notificationCount > 0 ? `${notificationCount} notifications` : "No notifications"}
+          >
             🔔
             {notificationCount > 0 && (
               <span className={styles.notificationBadge}>{notificationCount}</span>

@@ -1,214 +1,115 @@
-/* Table Styles for InternsList - Enhanced Spacing */
+/* Table Styles for InternsList */
 .section {
   background: none;
   border-radius: 0;
   box-shadow: none;
-  padding: 0 25px;
-  margin-bottom: 30px;
+  padding: 0;
+  margin-bottom: 18px;
   width: 100%;
-  max-width: 1600px; /* Increased max-width */
-  margin-left: auto;
-  margin-right: auto;
-  overflow: visible;
+  overflow-x: auto;
 }
 
 /* Card-based Styles */
 .applicationCardContainer {
   width: 100%;
-  padding: 20px 40px; /* Increased horizontal padding */
-  overflow: visible;
-  max-width: 1500px; /* Increased container width */
-  margin: 0 auto;
+  padding: 10px 0;
 }
 
-/* List-based Styles - Improved spacing */
+/* List-based Styles */
 .applicationsTable {
   width: 100%;
-  table-layout: fixed;
   border-collapse: separate;
-  border-spacing: 0 24px; /* Increased vertical spacing between rows */
-  overflow: visible;
-  display: table;
-  padding: 0 20px;
-  margin: 0 auto;
+  border-spacing: 0 8px;
 }
 
 .applicationRow {
   cursor: pointer;
-  transition: box-shadow 0.3s;
+  transition: box-shadow 0.2s;
 }
 
 .applicationRow:hover {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .applicationRow td {
-  padding: 24px 36px; /* Increased cell padding */
+  padding: 12px 16px;
   vertical-align: middle;
   background-color: white;
-  white-space: normal;
-  word-break: normal;
-  overflow: visible;
-  text-overflow: clip;
-  min-width: 0;
-  letter-spacing: 1.2px;
-  word-spacing: 3px;
-  /* Increase height of white box */
-  min-height: 90px;
-}
-
-/* Add space between text elements */
-.applicationRow div {
-  line-height: 2; /* Increased line height */
-  letter-spacing: 1.2px;
-  word-spacing: 3px;
-}
-
-/* Column width specifications - Adjusted widths */
-.applicationRow td:nth-child(1) {
-  width: 18%; /* Profile column */
-}
-
-.applicationRow td:nth-child(2) {
-  width: 22%; /* Position title column - increased width */
-}
-
-.applicationRow td:nth-child(3) {
-  width: 22%; /* University & major column - increased width */
-}
-
-.applicationRow td:nth-child(4) {
-  width: 18%; /* Dates column */
-}
-
-.applicationRow td:nth-child(5) {
-  width: 12%; /* Status column - increased width */
-}
-
-.applicationRow td:nth-child(6) {
-  width: 16%; /* Actions column - increased width */
 }
 
 .applicationRow td:first-child {
-  border-top-left-radius: 12px; /* Increased border radius */
-  border-bottom-left-radius: 12px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
 }
 
 .applicationRow td:last-child {
-  border-top-right-radius: 12px; /* Increased border radius */
-  border-bottom-right-radius: 12px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 
 .applicantProfile {
   display: flex;
   align-items: center;
-  max-width: 100%;
-  gap: 22px; /* Increased gap */
 }
 
 .applicantAvatar {
-  width: 50px; /* Increased avatar size */
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background-color: #f0f0f0;
   overflow: hidden;
+  margin-right: 12px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   color: #666;
-  font-size: 18px; /* Increased font size */
 }
 
 .applicantDetails {
   display: flex;
   flex-direction: column;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  margin-left: 10px;
-}
-
-/* Ensure university name has proper spacing */
-.applicationRow td:nth-child(3) div > div:first-child {
-  margin-bottom: 12px; /* Increased margin */
-  font-size: 16px; /* Increased font size */
-  font-weight: 500;
-  letter-spacing: 0.8px;
-  word-spacing: 2px;
-}
-
-/* Date field spacing */
-.applicationRow td:nth-child(4) div {
-  letter-spacing: 0.8px;
-  word-spacing: 2px;
-  padding: 0 10px; /* Increased padding */
-  font-size: 15px; /* Increased font size */
 }
 
 .universityTag {
   display: inline-block;
   background-color: #f5f5f5;
   color: #555;
-  padding: 10px 18px; /* Increased padding */
-  border-radius: 14px; /* Increased border radius */
-  font-size: 13px; /* Increased font size */
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
   font-weight: 500;
-  margin-top: 12px; /* Increased margin */
-  letter-spacing: 1px;
-  word-spacing: 3px;
+  margin-top: 4px;
 }
 
 .internshipTitle {
-  font-size: 17px; /* Increased font size */
+  font-size: 16px;
   font-weight: 700;
   color: #333;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  letter-spacing: 1.2px;
-  word-spacing: 3px;
-  padding: 6px 12px; /* Increased padding */
 }
 
 .applicantName {
-  font-size: 17px; /* Increased font size */
+  font-size: 16px;
   font-weight: 600;
   color: #333;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  letter-spacing: 0.8px;
-  margin-bottom: 8px; /* Increased margin */
-  word-spacing: 2px;
 }
 
 .applicantEmail {
-  font-size: 15px; /* Increased font size */
+  font-size: 14px;
   color: #666;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  letter-spacing: 0.6px;
-  word-spacing: 1px;
+  margin-top: 2px;
 }
 
-/* Status Badge Styles - Increased size and padding */
+/* Status Badge Styles */
 .statusBadge {
   display: inline-block;
-  padding: 8px 18px; /* Increased padding */
-  border-radius: 8px; /* Increased border radius */
-  font-size: 14px; /* Increased font size */
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 13px;
   font-weight: 600;
   background: #f4f6fa;
   color: #555;
-  letter-spacing: 1px;
-  word-spacing: 2px;
-  text-align: center;
-  min-width: 120px; /* Set minimum width for consistency */
 }
 
 .statusBadge.pending {
@@ -242,39 +143,35 @@
 }
 
 .pending {
-  background-color: #FFF9C4;
-  color: #F9A825;
+  background: #fffbe6;
+  color: #bfa100;
 }
 
 .accepted {
-  background-color: #C8E6C9;
-  color: #2E7D32;
+  background: #e6fff2;
+  color: #1aaf5d;
 }
 
 .flagged {
-  background-color: #BBDEFB;
-  color: #1565C0;
+  background: #e6f7ff;
+  color: #217dbb;
 }
 
 .rejected {
-  background-color: #FFCDD2;
-  color: #C62828;
+  background: #ffeaea;
+  color: #d32f2f;
 }
 
-/* Action Buttons - Increased size */
+/* Action Buttons */
 .actionButton {
-  padding: 10px 18px; /* Increased padding */
+  padding: 8px 16px;
   background-color: #3498db;
   color: white;
   border: none;
-  border-radius: 10px; /* Increased border radius */
+  border-radius: 8px;
   font-weight: 600;
-  font-size: 14px; /* Increased font size */
   cursor: pointer;
   transition: background-color 0.2s;
-  letter-spacing: 0.8px;
-  word-spacing: 2px;
-  min-width: 130px; /* Set minimum width for consistency */
 }
 
 .actionButton:hover {
@@ -282,11 +179,11 @@
 }
 
 .evaluateButton {
-  background-color: #f39c12;
+  background-color: #4CAF50;
 }
 
 .evaluateButton:hover {
-  background-color: #d68910;
+  background-color: #388E3C;
 }
 
 .completeButton {
@@ -297,26 +194,21 @@
   background-color: #219653;
 }
 
-/* Rating Styles */
-.ratingContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 6px; /* Added margin */
+/* No Results Message */
+.noResults {
+  text-align: center;
+  color: #888;
+  padding: 30px 0 10px 0;
 }
 
-.ratingStars {
-  display: flex;
-  align-items: center;
-  gap: 3px; /* Increased gap */
+.noResultsIcon {
+  font-size: 24px;
+  margin-bottom: 10px;
 }
 
-.star {
-  color: #f1c40f;
-  font-size: 16px; /* Increased font size */
-}
-
-.ratingLabel {
-  font-size: 13px; /* Increased font size */
-  color: #666;
+.sectionTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #333;
 }
