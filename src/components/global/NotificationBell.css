@@ -1,0 +1,142 @@
+/* NotificationBell.css */
+
+.notification-container {
+  position: relative;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.bell-button {
+  position: relative;
+  padding: 8px;
+  border-radius: 50%;
+  background: transparent;
+  color: #4a5568;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.bell-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.bell-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.5);
+}
+
+.notification-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  background-color: #f56565;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  margin-top: 8px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  width: 320px;
+  z-index: 50;
+  animation: slideDown 0.2s ease-out;
+}
+
+.dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fc8181;
+  color: white;
+  padding: 16px;
+}
+
+.dropdown-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.settings-icon {
+  cursor: pointer;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+.settings-icon:hover {
+  opacity: 1;
+}
+
+.notification-list {
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  padding: 16px;
+  border-bottom: 1px solid #f1f1f1;
+  display: flex;
+  align-items: flex-start;
+  transition: background-color 0.2s;
+}
+
+.notification-item:hover {
+  background-color: #f9fafb;
+}
+
+.notification-item.unread {
+  background-color: #ebf8ff;
+}
+
+.notification-content {
+  flex-grow: 1;
+}
+
+.notification-message {
+  margin: 0 0 4px 0;
+  font-weight: 500;
+  color: #2d3748;
+  line-height: 1.4;
+}
+
+.notification-time {
+  font-size: 14px;
+  color: #718096;
+  margin: 0;
+}
+
+.notification-indicator {
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.unread-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #38b2ac;
+  border-radius: 50%;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

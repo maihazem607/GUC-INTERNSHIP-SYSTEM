@@ -1,0 +1,436 @@
+ 
+ 
+/* .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.titleIcon {
+  margin-right: 12px;
+  color: #4a5568;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #718096;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.majorsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.majorButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-align: center;
+  height: 160px;
+}
+
+.majorButton:hover {
+  border-color: #3182ce;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.majorIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background-color: #ebf8ff;
+  border-radius: 50%;
+  margin-bottom: 16px;
+  color: #3182ce;
+}
+
+.majorName {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.videoOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.videoContainer {
+  background-color: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.videoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.videoTitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: #2d3748;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: #718096;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.closeButton:hover {
+  background-color: #f7fafc;
+  color: #4a5568;
+}
+
+.videoWrapper {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.videoPlaceholder {
+  color: #a0aec0;
+  margin-bottom: 16px;
+}
+
+.videoDescription {
+  font-size: 16px;
+  color: #4a5568;
+  text-align: center;
+  margin-bottom: 24px;
+  max-width: 600px;
+}
+
+.video {
+  width: 100%;
+  max-width: 640px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+  aspect-ratio: 16 / 9; /* Added to ensure proper aspect ratio for iframe 
+}
+
+/* New styles for the Approved Internship Types section */
+/*.approvedTypes {
+  background-color: #ebf8ff;
+  padding: 16px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 640px;
+  margin-top: 16px;
+}
+
+.approvedTypesTitle {
+  font-size: 16px;
+  font-weight: 500;
+  color: #2b6cb0;
+  margin: 0 0 8px 0;
+}
+
+.approvedTypesList {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin: 0;
+  color: #2c5282;
+}
+
+.approvedTypesList li {
+  margin-bottom: 4px;
+}
+
+.approvedTypesList li:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive adjustments */
+/*@media (max-width: 768px) {
+  .majorsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .videoContainer {
+    width: 95%;
+  }
+}
+
+@media (max-width: 480px) {
+  .majorsGrid {
+    grid-template-columns: 1fr;
+  }
+} */
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.titleIcon {
+  margin-right: 12px;
+  color: #4a5568;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #718096;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.majorsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.majorButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-align: center;
+  height: 160px;
+}
+
+.majorButton:hover {
+  border-color: #3182ce;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.majorIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background-color: #f3f4f6; /* Light gray background to contrast with icon colors */
+  border-radius: 50%;
+  margin-bottom: 16px;
+}
+
+.majorName {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.videoOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.videoContainer {
+  background-color: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.videoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.videoTitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: #2d3748;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: #718096;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.closeButton:hover {
+  background-color: #f7fafc;
+  color: #4a5568;
+}
+
+.videoWrapper {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.videoPlaceholder {
+  color: #a0aec0;
+  margin-bottom: 16px;
+}
+
+.videoDescription {
+  font-size: 16px;
+  color: #4a5568;
+  text-align: center;
+  margin-bottom: 24px;
+  max-width: 600px;
+}
+
+.video {
+  width: 100%;
+  max-width: 640px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+  aspect-ratio: 16 / 9;
+}
+
+/* New styles for the Approved Internship Types section */
+.approvedTypes {
+  background-color: #ebf8ff;
+  padding: 16px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 640px;
+  margin-top: 16px;
+}
+
+.approvedTypesTitle {
+  font-size: 16px;
+  font-weight: 500;
+  color: #2b6cb0;
+  margin: 0 0 8px 0;
+}
+
+.approvedTypesList {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin: 0;
+  color: #2c5282;
+}
+
+.approvedTypesList li {
+  margin-bottom: 4px;
+}
+
+.approvedTypesList li:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .majorsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .videoContainer {
+    width: 95%;
+  }
+}
+
+@media (max-width: 480px) {
+  .majorsGrid {
+    grid-template-columns: 1fr;
+  }
+}
