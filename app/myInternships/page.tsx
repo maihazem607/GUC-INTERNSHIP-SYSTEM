@@ -6,6 +6,7 @@ import FilterSidebar from "../../src/components/global/FilterSidebar";
 import MyInternshipCard from "../../src/components/MyInternships/MyInternshipCard";
 import EvaluationModal from "../../src/components/MyInternships/EvaluationModal";
 import ReportModal from "../../src/components/MyInternships/ReportModal";
+import DashboardTab from "../../src/components/global/DashboardTab";
 import { Internship, FilterOptions } from "../../src/components/internships/types";
 import NotificationSystem, { useNotification } from "../../src/components/global/NotificationSystem";
 import styles from "./page.module.css";
@@ -653,29 +654,12 @@ const MyInternshipsPage: React.FC = () => {
       [filterType]: value
     }));
   };
-
   return (
     <div className={styles.pageContainer}>
       {/* Header/Navigation */}
       <Navigation title="My Internships" />
       
       <div className={styles.contentWrapper}>
-        {/* Tabs Navigation */}
-        <div className={styles.tabsContainer}>
-          <button 
-            className={`${styles.tabButton} ${activeTab === 'applications' ? styles.activeTab : ''}`}
-            onClick={() => setActiveTab('applications')}
-          >
-            My Applications
-          </button>
-          <button 
-            className={`${styles.tabButton} ${activeTab === 'internships' ? styles.activeTab : ''}`}
-            onClick={() => setActiveTab('internships')}
-          >
-            My Internships
-          </button>
-        </div>
-
         {/* Filter Sidebar - Show for both tabs */}
         <FilterSidebar
           filters={getFormattedFilters()}
@@ -684,20 +668,42 @@ const MyInternshipsPage: React.FC = () => {
 
         {/* Main Content */}
         <main className={styles.mainContent}>
+          {/* Tab Navigation */}
+          <DashboardTab
+            tabs={[
+              { 
+                id: 'applications', 
+                label: 'My Applications',
+                count: myInternships.filter(app => app.applicationStatus !== 'accepted').length
+              },
+              { 
+                id: 'internships', 
+                label: 'My Internships',
+                count: myInternships.filter(app => app.applicationStatus === 'accepted').length
+              }
+            ]}
+            activeTab={activeTab}
+            onTabChange={(tabId) => setActiveTab(tabId as 'applications' | 'internships')}
+            className={styles.dashboardTabs}
+          />
           {/* Search Bar */}
           <SearchBar 
             searchTerm={searchTerm} 
             setSearchTerm={setSearchTerm} 
             placeholder="Search by job title or company..."
-          />
-
-          <div className={styles.internshipListings}>
+          />          <div className={styles.internshipListings}>
             <div className={styles.listingHeader}>
               <h2 className={styles.listingTitle}>
                 {activeTab === 'applications' ? 'My Applications' : 'My Internships'}
               </h2>
               <span className={styles.internshipCount}>
                 {filteredInternships.length} Internship{filteredInternships.length !== 1 ? 's' : ''}
+                {activeTab === 'internships' && (
+                  <span className={styles.statusIndicator}>
+                    <span className={styles.statusDot}></span>
+                    {myInternships.filter(app => app.applicationStatus === 'accepted' && app.isActive).length} Active
+                  </span>
+                )}
               </span>
             </div>            
             {filteredInternships.length > 0 ? (
@@ -714,16 +720,18 @@ const MyInternshipsPage: React.FC = () => {
                   </div>
                 ))}
               </div>
-            ) : (
-              <div className={styles.noResults}>
-               <img 
+            ) : (              <div className={styles.noResults}>
+                <img 
                   src="assets/images/icons/search.png" 
                   alt="Search Icon" 
                   className={styles.searchIcon} 
                 /> 
                 <h3>No internships found</h3>
                 <p>
-                  {activeTab === 'applications' ? 'You haven\'t applied to any internships yet.' : 'You don\'t have any internships yet.'}
+                  {activeTab === 'applications' ? 
+                    'You haven\'t applied to any internships yet. Browse the internship listings to find opportunities.' : 
+                    'You don\'t have any active internships yet. Check your applications status.'
+                  }
                 </p>
               </div>
             )}

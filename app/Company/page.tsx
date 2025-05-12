@@ -1,16 +1,16 @@
-"use client";
+'use client';
 import { useState, useEffect } from 'react';
-import Head from 'next/head';
 import styles from './page.module.css';
 
 // Import global components
 import Navigation from "../../src/components/global/Navigation";
-import NotificationSystem, { useNotification } from "../../src/components/global/NotificationSystem";
+import NotificationSystem from "../../src/components/global/NotificationSystem";
 import NotificationsPanel from "../../src/components/global/NotificationsPanel";
 import FilterSidebar from "../../src/components/global/FilterSidebar";
 import SearchBar from "../../src/components/global/SearchBar";
 import Modal from "../../src/components/global/Modal";
 import DashboardTab from "../../src/components/global/DashboardTab";
+import { NotificationProvider, useNotification } from "../../src/context/NotificationContext";
 
 // Import components
 import ApplicationsList from "../../src/components/Companyy/ApplicationsList";
@@ -53,7 +53,8 @@ const convertToInternshipFormat = (post: InternshipPost): Internship => {
   };
 };
 
-export default function InternshipDashboard() {
+// Dashboard Component Wrapper
+const DashboardContent = () => {
     // State for navigation and content
     const [activeTab, setActiveTab] = useState<DashboardTab>('internships');
     
@@ -108,8 +109,10 @@ export default function InternshipDashboard() {
         skillsRequired: [],
     });
     
-    // Notification states
+    // Notification states - import from context
     const [notifications, setNotifications] = useState<Notification[]>([]);
+    
+    // Now we can safely use the hook inside the NotificationProvider
     const { notification, visible, showNotification, hideNotification } = useNotification();
 
     // Mock data initialization
@@ -748,46 +751,41 @@ export default function InternshipDashboard() {
 
     return (
         <div className={styles.pageContainer}>
-            <Head>
-                <title>Company Dashboard - Internship Management System</title>
-            </Head>            {/* Header/Navigation */}
             <Navigation 
                 title="Company Internship Dashboard"
                 notificationCount={unreadNotificationsCount}
-                onNotificationClick={() => setShowNotificationsPanel(!showNotificationsPanel)}
-            />
-              {/* Tab Navigation */}
-            <DashboardTab
-                tabs={[
-                    { 
-                        id: 'internships', 
-                        label: 'Internship Posts', 
-                        count: internshipPostsCount 
-                    },
-                    { 
-                        id: 'applications', 
-                        label: 'Applications', 
-                        count: pendingApplicationsCount 
-                    },
-                    { 
-                        id: 'interns', 
-                        label: 'Current Interns', 
-                        count: currentInternsCount 
-                    }
-                ]}
-                activeTab={activeTab}
-                onTabChange={(tabId) => setActiveTab(tabId as DashboardTab)}
+                onNotificationClick={() => setShowNotificationsPanel(!showNotificationsPanel)} 
             />
 
             <div className={styles.contentWrapper}>
-                {/* Left Sidebar with Filters */}
                 <FilterSidebar 
                     filters={getCurrentFilters().filters}
                     onFilterChange={getCurrentFilters().onFilterChange}
                 />
-
-                {/* Main Content */}
-                <div className={styles.mainContent}>
+                <main className={styles.mainContent}>
+                    <DashboardTab
+                        tabs={[
+                            { 
+                                id: 'internships', 
+                                label: 'Internship Posts', 
+                                count: internshipPostsCount 
+                            },
+                            { 
+                                id: 'applications', 
+                                label: 'Applications', 
+                                count: pendingApplicationsCount 
+                            },
+                            { 
+                                id: 'interns', 
+                                label: 'Current Interns', 
+                                count: currentInternsCount 
+                            }
+                        ]}
+                        activeTab={activeTab}
+                        onTabChange={(tabId) => setActiveTab(tabId as DashboardTab)}
+                        className={styles.dashboardTabs}
+                    />
+                    
                     {/* INTERNSHIPS TAB */}
                     {activeTab === 'internships' && (
                         <div className={styles.internshipListings}>                            <div className={styles.listingHeader}>
@@ -902,7 +900,7 @@ export default function InternshipDashboard() {
                                <InternsList 
                                         interns={filteredInterns}
                                         onStatusChange={handleInternStatusChange}
-                                        onEvaluate={(intern: any) => {
+                                        onEvaluate={(intern) => {
                                             setSelectedIntern(intern);
                                             setNewEvaluation({
                                                 internId: intern.id,
@@ -918,12 +916,12 @@ export default function InternshipDashboard() {
                             ) : (
                                 <div className={styles.noResults}>
                                     <div className={styles.noResultsIcon}>👨‍💼</div>
-                                    <p>No interns found matching your criteria.</p>
+                                    <p>No interns found matching your criteria.</p>                                
                                 </div>
                             )}
-                        </div>                    
+                        </div>
                     )}
-                </div>
+                </main>
             </div>
             
             {/* Modals */}
@@ -997,5 +995,14 @@ export default function InternshipDashboard() {
                 />
             )}
         </div>
+    );
+};
+
+// Main component that provides context
+export default function InternshipDashboard() {
+    return (
+        <NotificationProvider>
+            <DashboardContent />
+        </NotificationProvider>
     );
 }

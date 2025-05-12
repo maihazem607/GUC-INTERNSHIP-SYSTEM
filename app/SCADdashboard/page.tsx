@@ -5,11 +5,11 @@ import Navigation from "../../src/components/global/Navigation";
 import FilterSidebar from "../../src/components/global/FilterSidebar";
 import SearchBar from "../../src/components/global/SearchBar";
 import DashboardTab, { TabItem } from "../../src/components/global/DashboardTab";
-import CompanyCard from "../../src/components/SCAD/CompanyCard";
+import CompanyApplicationCard from "../../src/components/SCAD/CompanyApplicationCard";
+import CompanyApplicationModal from "../../src/components/SCAD/CompanyApplicationModal";
 import StudentCard from "../../src/components/SCAD/StudentCard";
 import ReportTable from "../../src/components/SCAD/ReportList";
 import SettingsCard from "../../src/components/SCAD/SettingsCard";
-import CompanyDetailsModal from "../../src/components/SCAD/CompanyDetailsModal";
 import StudentDetailsModal from "../../src/components/SCAD/StudentDetailsModal";
 import ReportDetailsModal from "../../src/components/SCAD/ReportDetailsModal";
 import EvaluationCard, { Evaluation } from "../../src/components/SCAD/EvaluationList";
@@ -32,42 +32,167 @@ interface Company {
   phone: string;
   applicationDate: string;
   status: 'pending' | 'accepted' | 'rejected';
+  size: 'small' | 'medium' | 'large' | 'corporate';
+  logo: string;
+  documents: Array<{
+    id: number;
+    name: string;
+    type: string;
+    url: string;
+  }>;
 }
 
 const mockCompanies: Company[] = [
   {
     id: 1,
-    name: 'Tech Solutions Inc.',
+    name: 'Google',
     industry: 'Technology',
-    description: 'Providing innovative software solutions for businesses.',
-    contactPerson: 'John Doe',
-    email: 'john@techsolutions.com',
-    phone: '+1 123-456-7890',
+    description: 'A leading multinational technology company specializing in Internet-related services and products, including search engine, cloud computing, software, and hardware.',
+    contactPerson: 'Sundar Pichai',
+    email: 'recruiting@google.com',
+    phone: '+1 650-253-0000',
     applicationDate: '2023-05-15',
-    status: 'pending'
+    status: 'pending',
+    size: 'corporate',
+    logo: '/logos/google.png',
+    documents: [
+      {
+        id: 1,
+        name: 'Business Registration Certificate',
+        type: 'PDF',
+        url: '/documents/google-registration.pdf'
+      },
+      {
+        id: 2,
+        name: 'Tax Compliance Certificate',
+        type: 'PDF',
+        url: '/documents/google-tax-compliance.pdf'
+      }
+    ]
   },
   {
     id: 2,
-    name: 'Global Finance',
-    industry: 'Finance',
-    description: 'Financial services and investment management.',
-    contactPerson: 'Jane Smith',
-    email: 'jane@globalfinance.com',
-    phone: '+1 987-654-3210',
+    name: 'Microsoft',
+    industry: 'Technology',
+    description: 'A global technology corporation that develops, manufactures, licenses, supports, and sells computer software, consumer electronics, personal computers, and related services.',
+    contactPerson: 'Satya Nadella',
+    email: 'careers@microsoft.com',
+    phone: '+1 425-882-8080',
     applicationDate: '2023-06-02',
-    status: 'pending'
+    status: 'accepted',
+    size: 'corporate',
+    logo: '/logos/microsoft.png',
+    documents: [
+      {
+        id: 3,
+        name: 'Business Registration',
+        type: 'PDF',
+        url: '/documents/microsoft-registration.pdf'
+      },
+      {
+        id: 4,
+        name: 'Tax Documents',
+        type: 'PDF',
+        url: '/documents/microsoft-tax-docs.pdf'
+      }
+    ]
   },
   {
     id: 3,
-    name: 'Health Partners',
-    industry: 'Healthcare',
-    description: 'Healthcare management and services.',
-    contactPerson: 'Robert Johnson',
-    email: 'robert@healthpartners.com',
-    phone: '+1 555-123-4567',
+    name: 'Amazon',
+    industry: 'Technology',
+    description: 'An American multinational technology company focusing on e-commerce, cloud computing, digital streaming, and artificial intelligence.',
+    contactPerson: 'Andy Jassy',
+    email: 'university-recruiting@amazon.com',
+    phone: '+1 206-266-1000',
     applicationDate: '2023-06-10',
-    status: 'pending'
+    status: 'pending',
+    size: 'corporate',
+    logo: '/logos/amazon.png',
+    documents: [
+      {
+        id: 5,
+        name: 'Business License',
+        type: 'PDF',
+        url: '/documents/amazon-license.pdf'
+      },
+      {
+        id: 6,
+        name: 'Corporate Structure',
+        type: 'PDF',
+        url: '/documents/amazon-structure.pdf'
+      }
+    ]
   },
+  {
+    id: 4,
+    name: 'IBM',
+    industry: 'Technology',
+    description: 'International Business Machines Corporation is an American multinational technology corporation specializing in computer hardware, middleware, and software.',
+    contactPerson: 'Arvind Krishna',
+    email: 'campus@ibm.com',
+    phone: '+1 914-499-1900',
+    applicationDate: '2023-07-05',
+    status: 'rejected',
+    size: 'corporate',
+    logo: '/logos/ibm.png',
+    documents: [
+      {
+        id: 7,
+        name: 'Company Registration',
+        type: 'PDF',
+        url: '/documents/ibm-registration.pdf'
+      }
+    ]
+  },
+  {
+    id: 5,
+    name: 'Apple',
+    industry: 'Technology',
+    description: 'An American multinational technology company that designs, develops, and sells consumer electronics, computer software, and online services.',
+    contactPerson: 'Tim Cook',
+    email: 'students@apple.com',
+    phone: '+1 408-996-1010',
+    applicationDate: '2023-07-12',
+    status: 'pending',
+    size: 'corporate',
+    logo: '/logos/apple.png',
+    documents: [
+      {
+        id: 8,
+        name: 'Business Registration',
+        type: 'PDF',
+        url: '/documents/apple-registration.pdf'
+      },
+      {
+        id: 9,
+        name: 'Tax Documents',
+        type: 'PDF',
+        url: '/documents/apple-tax-docs.pdf'
+      }
+    ]
+  },
+  {
+    id: 6,
+    name: 'Tesla',
+    industry: 'Automotive',
+    description: 'An American electric vehicle and clean energy company that designs and manufactures electric cars, battery energy storage, solar panels and solar roof tiles.',
+    contactPerson: 'Elon Musk',
+    email: 'careers@tesla.com',
+    phone: '+1 888-518-3752',
+    applicationDate: '2023-08-03',
+    status: 'accepted',
+    size: 'large',
+    logo: '/logos/tesla.png',
+    documents: [
+      {
+        id: 10,
+        name: 'Company Registration',
+        type: 'PDF',
+        url: '/documents/tesla-registration.pdf'
+      }
+    ]
+  }
 ];
 
 // Mock data for students
@@ -425,10 +550,12 @@ export default function SCADDashboardPage() {
       });
     }
   };
-
   // Filter companies
   const filteredCompanies = companies.filter((company: Company) => {
-    const matchesSearch = company.name.toLowerCase().includes(companySearchTerm.toLowerCase());
+    const matchesSearch = 
+      company.name.toLowerCase().includes(companySearchTerm.toLowerCase()) ||
+      company.description.toLowerCase().includes(companySearchTerm.toLowerCase()) ||
+      company.industry.toLowerCase().includes(companySearchTerm.toLowerCase());
     const matchesIndustry = selectedIndustry === '' || company.industry === selectedIndustry;
     return matchesSearch && matchesIndustry;
   });
@@ -440,6 +567,16 @@ export default function SCADDashboardPage() {
 
   const handleInternshipStatusChange = (filterType: string, value: string) => {
     setSelectedInternshipStatus(value.toLowerCase());
+  };
+
+  // Adding missing student filter handler
+  const handleStudentFilterChange = (filterType: string, value: string) => {
+    if (filterType === 'status') {
+      setSelectedInternshipStatus(value.toLowerCase());
+    } else if (filterType === 'major') {
+      // If major filtering is added in the future
+      console.log('Major filtering not implemented yet');
+    }
   };
 
   const handleViewStudentDetails = (student: Student) => {
@@ -466,6 +603,15 @@ export default function SCADDashboardPage() {
   };
 
   const handleReportStatusChange = (filterType: string, value: string) => {
+    if (filterType === 'status') {
+      setSelectedReportStatus(value.toLowerCase());
+    } else if (filterType === 'major') {
+      setSelectedReportMajor(value);
+    }
+  };
+
+  // Adding missing report filter handler
+  const handleReportFilterChange = (filterType: string, value: string) => {
     if (filterType === 'status') {
       setSelectedReportStatus(value.toLowerCase());
     } else if (filterType === 'major') {
@@ -622,6 +768,17 @@ export default function SCADDashboardPage() {
     );
   };
 
+  // Adding missing internship filter handler
+  const handleInternshipFilterChange = (filterType: string, value: string) => {
+    if (filterType === 'industry') {
+      handleInternshipIndustryChange(filterType, value);
+    } else if (filterType === 'duration') {
+      handleInternshipDurationChange(filterType, value);
+    } else if (filterType === 'paid') {
+      handleInternshipPaidChange(filterType, value);
+    }
+  };
+
   // Filter internships
   const filteredInternships = internships.filter((internship: Internship) => {
     const matchesSearch = internship.title.toLowerCase().includes(internshipSearchTerm.toLowerCase()) ||
@@ -723,79 +880,97 @@ export default function SCADDashboardPage() {
       message: 'Internship cycle dates have been saved successfully!',
       type: 'success'
     });
-  }
-
-  return (
+  }  return (
     <div className={styles.pageContainer}>
-      <Navigation title="SCAD Dashboard" />      {/* Tab Navigation */}
-      <DashboardTab
-        tabs={[
-          { 
-            id: 'companies', 
-            label: 'Companies', 
-            count: pendingCompanyCount 
-          },
-          { 
-            id: 'students', 
-            label: 'Students', 
-            count: activeInternshipCount 
-          },
-          { 
-            id: 'reports', 
-            label: 'Reports', 
-            count: pendingReportsCount 
-          },
-          { 
-            id: 'evaluations', 
-            label: 'Evaluations', 
-            count: completedEvaluationsCount 
-          },
-          { 
-            id: 'internships', 
-            label: 'Internships', 
-            count: activeInternshipsCount 
-          },
-          { 
-            id: 'settings', 
-            label: 'Settings' 
+      <Navigation title="SCAD Dashboard" />      <div className={styles.contentWrapper}>
+        {/* Filter Sidebar - shows filters based on active tab */}
+        <FilterSidebar 
+          filters={
+            activeTab === 'companies' ? companyFilters : 
+            activeTab === 'students' ? studentFilters :
+            activeTab === 'reports' ? reportFilters :
+            activeTab === 'evaluations' ? evaluationFilters :
+            activeTab === 'internships' ? internshipFilters : []
           }
-        ]}
-        activeTab={activeTab}
-        onTabChange={(tabId) => setActiveTab(tabId as DashboardTab)}
-      />
-      
-      <div className={styles.contentWrapper}>
-        {/* COMPANIES TAB */}
-        {activeTab === 'companies' && (
-          <>
-            <FilterSidebar 
-              filters={companyFilters}
-              onFilterChange={handleIndustryChange}
-            />
-            <div className={styles.mainContent}>
-              <div className={styles.companyListings}>
+          onFilterChange={
+            activeTab === 'companies' ? handleIndustryChange : 
+            activeTab === 'students' ? handleStudentFilterChange :
+            activeTab === 'reports' ? handleReportFilterChange :
+            activeTab === 'evaluations' ? handleEvaluationFilterChange :
+            activeTab === 'internships' ? handleInternshipFilterChange : () => {}
+          }
+        />
+          {/* Main Content */}
+        <main className={styles.mainContent}>
+          {/* Tab Navigation */}
+          <DashboardTab
+            tabs={[
+              { 
+                id: 'companies', 
+                label: 'Companies', 
+                count: pendingCompanyCount 
+              },
+              { 
+                id: 'students', 
+                label: 'Students', 
+                count: activeInternshipCount 
+              },              { 
+                id: 'reports', 
+                label: 'Reports', 
+                count: pendingReportsCount 
+              },
+              { 
+                id: 'evaluations', 
+                label: 'Evaluations',
+                count: completedEvaluationsCount 
+              },
+              { 
+                id: 'internships', 
+                label: 'Internships', 
+                count: activeInternshipsCount 
+              },
+              { 
+                id: 'settings', 
+                label: 'Settings' 
+              }
+            ]}
+            activeTab={activeTab}
+            onTabChange={(tabId) => setActiveTab(tabId as DashboardTab)}
+            className={styles.dashboardTabs}
+          />          {/* COMPANIES TAB */}
+          {activeTab === 'companies' && (
+            <>
+              {/* Search Bar */}
+              <SearchBar 
+                searchTerm={companySearchTerm} 
+                setSearchTerm={handleCompanySearch} 
+                placeholder="Search by company name, description or industry..."
+              />
+              
+              {/* Company Listings */}
+              <div className={styles.listings}>
                 <div className={styles.listingHeader}>
-                  <h1 className={styles.listingTitle}>Company Applications</h1>
-                  <span className={styles.companyCount}>
-                    {pendingCompanyCount} pending applications
-                  </span>
-                </div>
-                <div className={styles.filterControls}>
-                  <SearchBar
-                    searchTerm={companySearchTerm}
-                    setSearchTerm={handleCompanySearch}
-                    placeholder="Search companies..."
-                  />
+                  <div className={styles.titleSection}>
+                    <h1 className={styles.listingTitle}>Company Applications</h1>
+                    <div className={styles.statusCounts}>
+                      <span className={`${styles.statusBadge} ${styles.pending}`}>
+                        {companies.filter(c => c.status === 'pending').length} Pending
+                      </span>
+                      <span className={`${styles.statusBadge} ${styles.accepted}`}>
+                        {companies.filter(c => c.status === 'accepted').length} Accepted
+                      </span>
+                      <span className={`${styles.statusBadge} ${styles.rejected}`}>
+                        {companies.filter(c => c.status === 'rejected').length} Rejected
+                      </span>
+                    </div>
+                  </div>
                 </div>
                 {filteredCompanies.length > 0 ? (
                   <div className={styles.cards}>
                     {filteredCompanies.map(company => (
-                      <CompanyCard
+                      <CompanyApplicationCard
                         key={company.id}
-                        name={company.name}
-                        industry={company.industry}
-                        applicationDate={company.applicationDate}
-                        status={company.status}
+                        company={company}
                         onViewDetails={() => handleViewCompanyDetails(company)}
                       />
                     ))}
@@ -806,36 +981,30 @@ export default function SCADDashboardPage() {
                       src="assets/images/icons/search.png" 
                       alt="Search Icon" 
                       className={styles.searchIcon} 
-                    /> 
+                    />                    
                     <p>No companies found matching your criteria.</p>
                   </div>
                 )}
               </div>
-            </div>
-          </>
-        )}
-
-        {/* STUDENTS TAB */}
+            </>
+          )}        
+          {/* STUDENTS TAB */}
         {activeTab === 'students' && (
           <>
-            <FilterSidebar 
-              filters={studentFilters}
-              onFilterChange={handleInternshipStatusChange}
-            />
-            <div className={styles.mainContent}>
-              <div className={styles.studentListings}>
+              {/* Search Bar */}
+              <SearchBar 
+                searchTerm={studentSearchTerm} 
+                setSearchTerm={handleStudentSearch} 
+                placeholder="Search students by name or email..."
+              />
+              
+              {/* Student Listings */}
+              <div className={styles.listings}>
                 <div className={styles.listingHeader}>
                   <h1 className={styles.listingTitle}>Students</h1>
                   <span className={styles.studentCount}>
                     {activeInternshipCount} active internships
                   </span>
-                </div>
-                <div className={styles.filterControls}>
-                  <SearchBar
-                    searchTerm={studentSearchTerm}
-                    setSearchTerm={handleStudentSearch}
-                    placeholder="Search students by name or email..."
-                  />
                 </div>
                 {filteredStudents.length > 0 ? (
                   <div className={styles.cards}>
@@ -859,67 +1028,52 @@ export default function SCADDashboardPage() {
                       src="assets/images/icons/search.png" 
                       alt="Search Icon" 
                       className={styles.searchIcon} 
-                    /> 
-                    <p>No students found matching your criteria.</p>
+                    />                    <p>No students found matching your criteria.</p>
                   </div>
                 )}
-              </div>
-            </div>
-          </>
+              </div>            </>
         )}
-
+          
         {/* REPORTS TAB */}
         {activeTab === 'reports' && (
           <>
-            <FilterSidebar 
-              filters={reportFilters}
-              onFilterChange={handleReportStatusChange}
-            />
-            <div className={styles.mainContent}>
-              <div className={styles.reportListings}>
+              {/* Search Bar */}
+              <SearchBar 
+                searchTerm={reportSearchTerm}
+                setSearchTerm={handleReportSearch}
+                placeholder="Search reports by title or student name..."
+              />
+              
+              {/* Report Listings */}
+              <div className={styles.listings}>
                 <div className={styles.listingHeader}>
                   <h1 className={styles.listingTitle}>Internship Reports</h1>
                   <span className={styles.reportCount}>
                     {pendingReportsCount} pending reviews
                   </span>
-                </div>
-                <div className={styles.filterControls}>
-                  <SearchBar
-                    searchTerm={reportSearchTerm}
-                    setSearchTerm={handleReportSearch}
-                    placeholder="Search reports by title or student name..."
-                  />
-                </div>
-                <ReportTable
+                </div>                <ReportTable
                   reports={filteredReports}
                   onViewReport={handleViewReportDetails}
                 />
               </div>
-            </div>
           </>
-        )}
-
+        )}        
         {/* EVALUATIONS TAB */}
         {activeTab === 'evaluations' && (
           <>
-            <FilterSidebar 
-              filters={evaluationFilters}
-              onFilterChange={handleEvaluationFilterChange}
-            />
-            <div className={styles.mainContent}>
-              <div className={styles.evaluationListings}>
+              {/* Search Bar */}
+              <SearchBar 
+                searchTerm={evaluationSearchTerm}
+                setSearchTerm={handleEvaluationSearch}
+                placeholder="Search evaluations by student or company..."
+              />
+              {/* Evaluation Listings */}
+              <div className={styles.listings}>
                 <div className={styles.listingHeader}>
                   <h1 className={styles.listingTitle}>Internship Evaluations</h1>
                   <span className={styles.evaluationCount}>
                     {completedEvaluationsCount} completed evaluations
                   </span>
-                </div>
-                <div className={styles.filterControls}>
-                  <SearchBar
-                    searchTerm={evaluationSearchTerm}
-                    setSearchTerm={handleEvaluationSearch}
-                    placeholder="Search evaluations by student or company..."
-                  />
                 </div>
                 {filteredEvaluations.length > 0 ? (
                   <div className={styles.cards}>
@@ -937,44 +1091,28 @@ export default function SCADDashboardPage() {
                       src="assets/images/icons/search.png" 
                       alt="Search Icon" 
                       className={styles.searchIcon} 
-                    /> 
+                    />
                     <p>No evaluations found matching your criteria.</p>
                   </div>
                 )}
               </div>
-            </div>
           </>
-        )}
-
-        {/* INTERNSHIPS TAB */}
+        )}        {/* INTERNSHIPS TAB */}
         {activeTab === 'internships' && (
           <>
-            <FilterSidebar 
-              filters={internshipFilters}
-              onFilterChange={(filterType, value) => {
-                if (filterType === 'industry') {
-                  handleInternshipIndustryChange(filterType, value);
-                } else if (filterType === 'duration') {
-                  handleInternshipDurationChange(filterType, value);
-                } else if (filterType === 'paid') {
-                  handleInternshipPaidChange(filterType, value);
-                }
-              }}
-            />
-            <div className={styles.mainContent}>
-              <div className={styles.internshipListings}>
+              {/* Search Bar */}
+              <SearchBar 
+                searchTerm={internshipSearchTerm}
+                setSearchTerm={handleInternshipSearch}
+                placeholder="Search internships by title or company..."
+              />
+              {/* Internship Listings */}
+              <div className={styles.listings}>
                 <div className={styles.listingHeader}>
                   <h1 className={styles.listingTitle}>Internships</h1>
                   <span className={styles.internshipCount}>
                     {activeInternshipsCount} active internships
                   </span>
-                </div>
-                <div className={styles.filterControls}>
-                  <SearchBar
-                    searchTerm={internshipSearchTerm}
-                    setSearchTerm={handleInternshipSearch}
-                    placeholder="Search internships by title or company..."
-                  />
                 </div>
                 {filteredInternships.length > 0 ? (
                   <div className={styles.cards}>
@@ -994,12 +1132,10 @@ export default function SCADDashboardPage() {
                       src="assets/images/icons/search.png" 
                       alt="Search Icon" 
                       className={styles.searchIcon} 
-                    /> 
-                    <p>No internships found matching your criteria.</p>
+                    />                    <p>No internships found matching your criteria.</p>
                   </div>
                 )}
               </div>
-            </div>
           </>
         )}
 
@@ -1011,25 +1147,18 @@ export default function SCADDashboardPage() {
             endDate={internshipCycleEnd}
             onStartDateChange={setInternshipCycleStart}
             onEndDateChange={setInternshipCycleEnd}
-            onSave={handleSaveInternshipCycle}
-          />
+            onSave={handleSaveInternshipCycle}          />
         )}
+        </main>
       </div>
       
       {/* MODALS */}
       {showCompanyDetails && selectedCompany && (
-        <CompanyDetailsModal
-          name={selectedCompany.name}
-          industry={selectedCompany.industry}
-          description={selectedCompany.description}
-          contactPerson={selectedCompany.contactPerson}
-          email={selectedCompany.email}
-          phone={selectedCompany.phone}
-          applicationDate={selectedCompany.applicationDate}
-          status={selectedCompany.status}
+        <CompanyApplicationModal
+          company={selectedCompany}
           onClose={handleCloseCompanyDetails}
-          onAccept={() => handleAccept(selectedCompany.id)}
-          onReject={() => handleReject(selectedCompany.id)}
+          onAccept={handleAccept}
+          onReject={handleReject}
         />
       )}
       {showStudentDetails && selectedStudent && (
@@ -1084,7 +1213,8 @@ export default function SCADDashboardPage() {
           onDelete={handleDeleteEvaluation}
         />
       )}
-      {showInternshipDetails && selectedInternship && (        <InternshipDetailsModal
+      {showInternshipDetails && selectedInternship && (        
+        <InternshipDetailsModal
           internship={selectedInternship}
           onClose={handleCloseInternshipDetails}
         />

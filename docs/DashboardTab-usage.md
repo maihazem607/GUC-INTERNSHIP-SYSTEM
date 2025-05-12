@@ -80,3 +80,118 @@ const [activeTab, setActiveTab] = useState<MyTabType>("home");
   onTabChange={(tabId) => setActiveTab(tabId as MyTabType)}
 />;
 ```
+
+## UI Hierarchy Guidelines
+
+To maintain consistent UI hierarchy across pages, follow these implementation guidelines:
+
+### Correct Page Structure
+
+```jsx
+<div className={styles.pageContainer}>
+  {/* Header/Navigation */}
+  <Navigation title="Page Title" />
+  
+  <div className={styles.contentWrapper}>
+    {/* Filter Sidebar - Show for all tabs */}
+    <FilterSidebar
+      filters={getFormattedFilters()}
+      onFilterChange={handleFilterChange}
+    />
+
+    {/* Main Content */}
+    <main className={styles.mainContent}>
+      {/* Tab Navigation */}
+      <DashboardTab
+        tabs={[
+          { 
+            id: 'tab1', 
+            label: 'Tab 1',
+            count: countForTab1
+          },
+          { 
+            id: 'tab2', 
+            label: 'Tab 2',
+            count: countForTab2
+          }
+        ]}
+        activeTab={activeTab}
+        onTabChange={(tabId) => setActiveTab(tabId)}
+        className={styles.dashboardTabs}
+      />
+      
+      {/* Tab Content */}
+      {activeTab === 'tab1' && (
+        <div className={styles.tabContent}>
+          {/* Content for Tab 1 */}
+          <SearchBar 
+            searchTerm={searchTerm} 
+            setSearchTerm={setSearchTerm} 
+            placeholder="Search..."
+          />
+          {/* Rest of tab content */}
+        </div>
+      )}
+    </main>
+  </div>
+</div>
+```
+
+### CSS Styling
+
+Add this CSS to your page's module CSS file for consistent styling:
+
+```css
+/* Enhanced DashboardTab styling */
+.dashboardTabs {
+  margin-bottom: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  background: linear-gradient(to bottom, #ffffff, #f8fafd);
+  border-bottom: 1px solid #e0e7ef;
+  width: 100%;
+}
+
+/* Additional active tab styling */
+.dashboardTabs :global(.active) {
+  position: relative;
+  font-weight: 600;
+  background-color: rgba(2, 132, 199, 0.08);
+}
+
+.dashboardTabs :global(.active)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: #0284c7;
+  border-radius: 3px 3px 0 0;
+}
+
+/* No Results Section */
+.noResults {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  text-align: center;
+  background-color: #f9fafb;
+  border-radius: 12px;
+  border: 1px dashed #e0e0e0;
+  margin: 20px 0;
+}
+
+.noResultsIcon {
+  font-size: 32px;
+  margin-bottom: 16px;
+  color: #94a3b8;
+}
+```
+
+### Key Implementation Points
+
+1. **DashboardTab Inside Main Content**: Place the DashboardTab component inside the main content area, not outside it.
+2. **Single FilterSidebar**: Use only one FilterSidebar component that changes its filters based on the active tab.
+3. **Consistent Styling**: Apply the `dashboardTabs` class for consistent visual appearance.
+4. **"No Results" Styling**: Use consistent styling for empty states across all pages.

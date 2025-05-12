@@ -23,11 +23,6 @@
   flex-direction: column;
 }
 
-/* Tab Styles */
-.appointmentTabs {
-  margin-bottom: 24px;
-}
-
 /* Appointment Listings */
 .appointmentListings {
   background-color: white;

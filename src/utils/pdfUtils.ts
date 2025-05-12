@@ -13,9 +13,6 @@ export interface ReportData {
   courseNames: string[];
 }
 
-/**
- * Generates a PDF from report data and downloads it to the user's device
- */
 export const generateReportPDF = async ({
   title,
   company,
@@ -36,10 +33,10 @@ export const generateReportPDF = async ({
   pdf.setFont('helvetica');
   let yPos = margin;
   
-  // Add logo if available (commented out for now)
-  // const logoUrl = '/logos/GUCInternshipSystemLogo.png';
-  // pdf.addImage(logoUrl, 'PNG', (pageWidth / 2) - 15, yPos, 30, 30);
-  // yPos += 40;
+  // Add logo if available
+  const logoUrl = '/logos/GUCInternshipSystemLogo.png';
+  pdf.addImage(logoUrl, 'PNG', (pageWidth / 2) - 15, yPos, 30, 30);
+  yPos += 40;
   
   // Add report title
   pdf.setFontSize(20);

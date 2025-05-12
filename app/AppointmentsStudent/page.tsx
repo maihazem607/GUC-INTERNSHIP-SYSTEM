@@ -611,7 +611,6 @@ export default function AppointmentsPage() {
           ]}
             activeTab={activeTab}
             onTabChange={setActiveTab}
-            className={styles.appointmentTabs}
           />
           
           {/* Tab content based on which tab is active */}
