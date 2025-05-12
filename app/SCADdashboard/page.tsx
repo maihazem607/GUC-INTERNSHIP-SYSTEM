@@ -58,13 +58,13 @@ const mockCompanies: Company[] = [
     documents: [
       {
         id: 1,
-        name: 'Business Registration Certificate',
+        name: 'Business Certificate',
         type: 'PDF',
         url: '/documents/google-registration.pdf'
       },
       {
         id: 2,
-        name: 'Tax Compliance Certificate',
+        name: 'Tax Certificate',
         type: 'PDF',
         url: '/documents/google-tax-compliance.pdf'
       }
@@ -882,7 +882,8 @@ export default function SCADDashboardPage() {
     });
   }  return (
     <div className={styles.pageContainer}>
-      <Navigation title="SCAD Dashboard" />      <div className={styles.contentWrapper}>
+      <Navigation title="SCAD Dashboard" />      
+      <div className={styles.contentWrapper}>
         {/* Filter Sidebar - shows filters based on active tab */}
         <FilterSidebar 
           filters={

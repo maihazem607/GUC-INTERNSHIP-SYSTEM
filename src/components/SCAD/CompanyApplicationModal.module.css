@@ -10,15 +10,18 @@
   align-items: center;
   z-index: 1000;
   backdrop-filter: blur(8px);
+  padding: 0 10px; /* Add padding to prevent content from touching edges */
 }
 
 .modalContent {
   background-color: white;
   border-radius: 16px;
-  width: 90%;
-  max-width: 900px;
+  width: 95%;
+  max-width: 1000px;
+  height: auto;
   max-height: 90vh;
-  overflow-y: auto;
+  overflow-x: hidden; /* Hide horizontal overflow */
+  overflow-y: auto;   /* Allow vertical scrolling if needed */
   display: flex;
   flex-direction: column;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
@@ -49,6 +52,7 @@
   position: relative;
   overflow: hidden;
   background: linear-gradient(to right, #f8fafc, #edf2f7);
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
 }
 
 .companyLogo {
@@ -63,6 +67,7 @@
   font-size: 2rem;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
   margin-right: 1.5rem;
+  margin-bottom: 1rem; /* Add margin for when it wraps */
   flex-shrink: 0;
 }
 
@@ -115,6 +120,8 @@
   font-weight: 700;
   font-size: 0.9rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-left: 1rem;
+  flex-shrink: 0;
 }
 
 .statusIcon {
@@ -165,16 +172,15 @@
 }
 
 .modalBody {
-  padding: 2rem;
-  flex-grow: 1;
+  padding: 1rem;
 }
 
 .statusSummary {
-  margin-bottom: 2rem;
-  padding: 1rem 1.5rem;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
   border-radius: 12px;
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: 0.95rem;
+  line-height: 1.5;
   position: relative;
   font-weight: 500;
 }
@@ -247,6 +253,7 @@
   line-height: 1.7;
   color: #4a5568;
   margin: 0;
+  max-height: 260px; /* Limit description height */
 }
 
 .contactInfo {
@@ -257,13 +264,14 @@
 
 .contactItem {
   display: grid;
-  grid-template-columns: 24px auto 1fr;
-  gap: 0.5rem;
+  grid-template-columns: 24px 110px 1fr;
+  gap: 0.8rem;
   align-items: center;
 }
 
 .contactIcon {
   font-size: 1.1rem;
+  color: #3182ce;
 }
 
 .contactLabel {
@@ -275,6 +283,7 @@
 .contactValue {
   color: #1a202c;
   font-size: 0.95rem;
+  word-break: break-word;
   text-align: right;
 }
 
@@ -284,6 +293,7 @@
   padding: 1.5rem 2rem;
   border-top: 1px solid #e2e8f0;
   background-color: #f8fafc;
+  border-radius: 0 0 16px 16px;
 }
 
 .decisionActions {
@@ -384,7 +394,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
-  margin-top: 1rem;
 }
 
 .documentItem {
@@ -406,15 +415,21 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
+  overflow: hidden;
+  flex: 1;
 }
 
 .documentIcon {
   font-size: 1.2rem;
+  flex-shrink: 0;
 }
 
 .documentName {
   font-weight: 600;
   color: #2d3748;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .documentType {
@@ -424,6 +439,7 @@
   border-radius: 4px;
   color: #4a5568;
   margin-left: 0.5rem;
+  flex-shrink: 0;
 }
 
 .documentDownload {
@@ -438,11 +454,13 @@
   font-size: 0.85rem;
   text-decoration: none;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .documentDownload:hover {
   background-color: #bee3f8;
   transform: translateY(-2px);
+  margin-left: 5px;
 }
 
 .downloadIcon {

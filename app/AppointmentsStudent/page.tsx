@@ -634,7 +634,8 @@ export default function AppointmentsPage() {
                   </span>
                 </div>
 
-                <div className={styles.cards}>                  {filteredAppointments.length > 0 ? (
+                <div className={styles.cards}>                  
+                  {filteredAppointments.length > 0 ? (
                     filteredAppointments.map(appointment => (
                       <div 
                         key={appointment.id} 

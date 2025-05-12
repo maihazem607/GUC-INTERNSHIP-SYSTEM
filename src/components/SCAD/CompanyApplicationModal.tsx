@@ -102,12 +102,34 @@ const CompanyApplicationModal: React.FC<CompanyApplicationModalProps> = ({
     }
   };
 
+  // Function to get document type icon and short name
+  const getDocumentTypeInfo = (docName: string, docType: string) => {
+    const lowerType = docType.toLowerCase();
+    let icon = '📄'; // Default
+    
+    if (lowerType.includes('pdf')) icon = '📕';
+    else if (lowerType.includes('doc') || lowerType.includes('docx')) icon = '📝';
+    else if (lowerType.includes('jpg') || lowerType.includes('jpeg') || lowerType.includes('png')) icon = '🖼️';
+    else if (lowerType.includes('xls') || lowerType.includes('xlsx')) icon = '📊';
+    else if (lowerType.includes('ppt') || lowerType.includes('pptx')) icon = '📊';
+    else if (lowerType.includes('zip') || lowerType.includes('rar')) icon = '📦';
+    
+    // Get shortened version of the type for display
+    let displayType = docType;
+    if (docType.length > 10) {
+      const extension = docName.split('.').pop() || '';
+      displayType = extension.toUpperCase();
+    }
+    
+    return { icon, displayType };
+  };
+
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <button className={styles.closeButton} onClick={onClose}>×</button>
-            <div className={styles.companyBanner}>
+          <div className={styles.companyBanner}>
             {company.logo ? (
               <img 
                 src={company.logo} 
@@ -121,7 +143,8 @@ const CompanyApplicationModal: React.FC<CompanyApplicationModalProps> = ({
             )}
             
             <div className={styles.companyInfo}>
-              <h2 className={styles.companyName}>{company.name}</h2>              <div className={styles.companyMeta}>
+              <h2 className={styles.companyName}>{company.name}</h2>
+              <div className={styles.companyMeta}>
                 <span className={styles.industryBadge}>{company.industry}</span>
                 {company.size && (
                   <span className={styles.sizeBadge}>{formatCompanySize(company.size)}</span>
@@ -169,7 +192,8 @@ const CompanyApplicationModal: React.FC<CompanyApplicationModalProps> = ({
                     <span className={styles.contactIcon}>📧</span>
                     <span className={styles.contactLabel}>Email</span>
                     <span className={styles.contactValue}>{company.email}</span>
-                  </div>                  <div className={styles.contactItem}>
+                  </div>
+                  <div className={styles.contactItem}>
                     <span className={styles.contactIcon}>📱</span>
                     <span className={styles.contactLabel}>Phone</span>
                     <span className={styles.contactValue}>{company.phone}</span>
@@ -180,34 +204,43 @@ const CompanyApplicationModal: React.FC<CompanyApplicationModalProps> = ({
               {company.documents && company.documents.length > 0 && (
                 <div className={styles.sectionCard}>
                   <h3 className={styles.sectionTitle}>
-                    <span className={styles.sectionIcon}>📄</span>
+                    <span className={styles.sectionIcon}>📑</span>
                     Verification Documents
                   </h3>
                   <div className={styles.documentsList}>
-                    {company.documents.map(doc => (
-                      <div key={doc.id} className={styles.documentItem}>
-                        <div className={styles.documentInfo}>
-                          <span className={styles.documentIcon}>
-                            {doc.type === 'PDF' ? '📑' : 
-                             doc.type === 'DOC' ? '📝' : 
-                             doc.type === 'IMG' ? '🖼️' : '📄'}
-                          </span>
-                          <span className={styles.documentName}>{doc.name}</span>
-                          <span className={styles.documentType}>{doc.type}</span>
+                    {company.documents.map(doc => {
+                      const { icon, displayType } = getDocumentTypeInfo(doc.name, doc.type);
+                      return (
+                        <div key={doc.id} className={styles.documentItem}>
+                          <div className={styles.documentInfo}>
+                            <span className={styles.documentIcon}>{icon}</span>
+                            <span className={styles.documentName} title={doc.name}>
+                              {doc.name.length > 20 ? `${doc.name.substring(0, 18)}...` : doc.name}
+                            </span>
+                          </div>
+                          <a 
+                            href={doc.url} 
+                            className={styles.documentDownload}
+                            download={doc.name}
+                            onClick={(e) => {
+                              if (!doc.url.startsWith('blob:') && !doc.url.startsWith('data:')) {
+                                e.preventDefault();
+                                const link = document.createElement('a');
+                                link.href = doc.url;
+                                link.download = doc.name;
+                                link.target = '_blank';
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                              }
+                            }}
+                          >
+                            <span className={styles.downloadIcon}>📥</span>
+                            Download
+                          </a>
                         </div>
-                        <a 
-                          href={doc.url} 
-                          className={styles.documentDownload}
-                          download
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <span className={styles.downloadIcon}>📥</span>
-                          Download
-                        </a>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}

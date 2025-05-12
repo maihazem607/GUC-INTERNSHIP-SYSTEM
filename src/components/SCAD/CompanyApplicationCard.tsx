@@ -54,26 +54,37 @@ const CompanyApplicationCard: React.FC<CompanyApplicationCardProps> = ({ company
   
   const initials = getCompanyInitials(company.name);
   const logoBackground = getLogoBackground(company.name);
-    // Format company size for display
+  
+  // Format company size for display
   const formatCompanySize = (size?: string) => {
     if (!size) return 'Unknown size';
     
     switch (size) {
-      case 'small': return 'Small (≤50 employees)';
-      case 'medium': return 'Medium (51-100 employees)';
-      case 'large': return 'Large (101-500 employees)';
-      case 'corporate': return 'Corporate (500+ employees)';
+      case 'small': return 'Small (≤50)';
+      case 'medium': return 'Medium (51-100)';
+      case 'large': return 'Large (101-500)';
+      case 'corporate': return 'Corporate (500+)';
       default: return size;
     }
   };
   
   // Count company documents
   const documentCount = company.documents?.length || 0;
-    
+  
+  // Get status icon
+  const getStatusIcon = () => {
+    switch(company.status) {
+      case 'pending': return '⏳';
+      case 'accepted': return '✅';
+      case 'rejected': return '❌';
+      default: return '';
+    }
+  };
+  
   return (
     <div className={styles.card} onClick={onViewDetails}>
       <div className={styles.statusBadge} data-status={company.status}>
-        {company.status.charAt(0).toUpperCase() + company.status.slice(1)}
+        {getStatusIcon()} {company.status.charAt(0).toUpperCase() + company.status.slice(1)}
       </div>
       
       <div className={styles.header}>
@@ -90,13 +101,17 @@ const CompanyApplicationCard: React.FC<CompanyApplicationCardProps> = ({ company
             </div>
           )}
         </div>
-        <h3 className={styles.companyName}>{company.name}</h3>
+        <h3 className={styles.companyName} title={company.name}>
+          {company.name.length > 18 ? `${company.name.substring(0, 18)}...` : company.name}
+        </h3>
       </div>
       
       <div className={styles.details}>
         <div className={styles.detailItem}>
           <span className={styles.icon}>🏢</span>
-          <span className={styles.detailText}>{company.industry}</span>
+          <span className={styles.detailText} title={company.industry}>
+            {company.industry.length > 15 ? `${company.industry.substring(0, 15)}...` : company.industry}
+          </span>
         </div>
         <div className={styles.detailItem}>
           <span className={styles.icon}>📊</span>
@@ -104,18 +119,21 @@ const CompanyApplicationCard: React.FC<CompanyApplicationCardProps> = ({ company
         </div>
         <div className={styles.detailItem}>
           <span className={styles.icon}>📧</span>
-          <span className={styles.detailText}>{company.email}</span>
+          <span className={styles.detailText} title={company.email}>
+            {company.email.length > 15 ? `${company.email.substring(0, 15)}...` : company.email}
+          </span>
         </div>
         <div className={styles.detailItem}>
           <span className={styles.icon}>📅</span>
           <span className={styles.detailText}>Applied: {formattedDate}</span>
         </div>
       </div>
-        <div className={styles.descriptionContainer}>
+      
+      <div className={styles.descriptionContainer}>
         <h4 className={styles.descriptionTitle}>About</h4>
-        <p className={styles.description}>
-          {company.description.length > 120 
-            ? `${company.description.substring(0, 120)}...` 
+        <p className={styles.description} title={company.description}>
+          {company.description.length > 100 
+            ? `${company.description.substring(0, 100)}...` 
             : company.description
           }
         </p>
@@ -136,7 +154,7 @@ const CompanyApplicationCard: React.FC<CompanyApplicationCardProps> = ({ company
             onViewDetails();
           }}
         >
-          View Application Details
+          View Details
         </button>
       </div>
     </div>

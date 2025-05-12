@@ -1,8 +1,25 @@
-.container {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+.pageContainer {
+  display: flex;
+  flex-direction: column;
   font-family: 'Arial', sans-serif;
+  background-color: #f9fafb;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* Content Layout */
+.contentWrapper {
+  display: flex;
+  flex: 1;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* Main Content */
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .title {
@@ -257,24 +274,6 @@
   flex-direction: column;
   font-family: 'Arial', sans-serif;
   color: #333;
-}
-
-/* Content Layout */
-.contentWrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  flex: 1;
-  padding: 20px;
-  gap: 20px;
-  width: 100%;
-  min-height: 80vh;
-}
-
-.mainContent {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
 }
 
 /* Company, Student, Report Listing Common Styles */
