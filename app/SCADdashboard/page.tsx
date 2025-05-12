@@ -4,6 +4,7 @@ import styles from './SCADpage.module.css';
 import Navigation from "../../src/components/global/Navigation";
 import FilterSidebar from "../../src/components/global/FilterSidebar";
 import SearchBar from "../../src/components/global/SearchBar";
+import DashboardTab, { TabItem } from "../../src/components/global/DashboardTab";
 import CompanyCard from "../../src/components/SCAD/CompanyCard";
 import StudentCard from "../../src/components/SCAD/StudentCard";
 import ReportTable from "../../src/components/SCAD/ReportList";
@@ -726,47 +727,42 @@ export default function SCADDashboardPage() {
 
   return (
     <div className={styles.pageContainer}>
-      <Navigation title="SCAD Dashboard" />
-      
-      {/* Tab Navigation */}
-      <div className={styles.tabNavigation}>
-        <button 
-          className={`${styles.tabButton} ${activeTab === 'companies' ? styles.activeTab : ''}`}
-          onClick={() => setActiveTab('companies')}
-        >
-          Companies <span className={styles.tabCount}>{pendingCompanyCount}</span>
-        </button>
-        <button 
-          className={`${styles.tabButton} ${activeTab === 'students' ? styles.activeTab : ''}`}
-          onClick={() => setActiveTab('students')}
-        >
-          Students <span className={styles.tabCount}>{activeInternshipCount}</span>
-        </button>
-        <button 
-          className={`${styles.tabButton} ${activeTab === 'reports' ? styles.activeTab : ''}`}
-          onClick={() => setActiveTab('reports')}
-        >
-          Reports <span className={styles.tabCount}>{pendingReportsCount}</span>
-        </button>
-        <button 
-          className={`${styles.tabButton} ${activeTab === 'evaluations' ? styles.activeTab : ''}`}
-          onClick={() => setActiveTab('evaluations')}
-        >
-          Evaluations <span className={styles.tabCount}>{completedEvaluationsCount}</span>
-        </button>
-        <button 
-          className={`${styles.tabButton} ${activeTab === 'internships' ? styles.activeTab : ''}`}
-          onClick={() => setActiveTab('internships')}
-        >
-          Internships <span className={styles.tabCount}>{activeInternshipsCount}</span>
-        </button>
-        <button 
-          className={`${styles.tabButton} ${activeTab === 'settings' ? styles.activeTab : ''}`}
-          onClick={() => setActiveTab('settings')}
-        >
-          Settings
-        </button>
-      </div>
+      <Navigation title="SCAD Dashboard" />      {/* Tab Navigation */}
+      <DashboardTab
+        tabs={[
+          { 
+            id: 'companies', 
+            label: 'Companies', 
+            count: pendingCompanyCount 
+          },
+          { 
+            id: 'students', 
+            label: 'Students', 
+            count: activeInternshipCount 
+          },
+          { 
+            id: 'reports', 
+            label: 'Reports', 
+            count: pendingReportsCount 
+          },
+          { 
+            id: 'evaluations', 
+            label: 'Evaluations', 
+            count: completedEvaluationsCount 
+          },
+          { 
+            id: 'internships', 
+            label: 'Internships', 
+            count: activeInternshipsCount 
+          },
+          { 
+            id: 'settings', 
+            label: 'Settings' 
+          }
+        ]}
+        activeTab={activeTab}
+        onTabChange={(tabId) => setActiveTab(tabId as DashboardTab)}
+      />
       
       <div className={styles.contentWrapper}>
         {/* COMPANIES TAB */}

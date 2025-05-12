@@ -9,6 +9,7 @@ import NotificationSystem, { useNotification } from "../../src/components/global
 import FilterSidebar from "../../src/components/global/FilterSidebar";
 import SearchBar from "../../src/components/global/SearchBar";
 import Modal from "../../src/components/global/Modal";
+import DashboardTab from "../../src/components/global/DashboardTab";
 
 // Import components
 import ApplicationsList from "../../src/components/Companyy/ApplicationsList";
@@ -577,28 +578,28 @@ export default function InternshipDashboard() {
             
             {/* Header/Navigation */}
             <Navigation title="Company Internship Dashboard" />
-            
-            {/* Tab Navigation */}
-            <div className={styles.tabNavigation}>
-                <button 
-                    className={`${styles.tabButton} ${activeTab === 'internships' ? styles.activeTab : ''}`}
-                    onClick={() => setActiveTab('internships')}
-                >
-                    Internship Posts <span className={styles.tabCount}>{internshipPostsCount}</span>
-                </button>
-                <button 
-                    className={`${styles.tabButton} ${activeTab === 'applications' ? styles.activeTab : ''}`}
-                    onClick={() => setActiveTab('applications')}
-                >
-                    Applications <span className={styles.tabCount}>{pendingApplicationsCount}</span>
-                </button>
-                <button 
-                    className={`${styles.tabButton} ${activeTab === 'interns' ? styles.activeTab : ''}`}
-                    onClick={() => setActiveTab('interns')}
-                >
-                    Current Interns <span className={styles.tabCount}>{currentInternsCount}</span>
-                </button>
-            </div>
+              {/* Tab Navigation */}
+            <DashboardTab
+                tabs={[
+                    { 
+                        id: 'internships', 
+                        label: 'Internship Posts', 
+                        count: internshipPostsCount 
+                    },
+                    { 
+                        id: 'applications', 
+                        label: 'Applications', 
+                        count: pendingApplicationsCount 
+                    },
+                    { 
+                        id: 'interns', 
+                        label: 'Current Interns', 
+                        count: currentInternsCount 
+                    }
+                ]}
+                activeTab={activeTab}
+                onTabChange={(tabId) => setActiveTab(tabId as DashboardTab)}
+            />
 
             <div className={styles.contentWrapper}>
                 {/* Left Sidebar with Filters */}
@@ -705,11 +706,10 @@ export default function InternshipDashboard() {
                                 />
                             </div>
                             {filteredInterns.length > 0 ? (
-                                <div className={styles.cards}>
-                                    <InternsList 
+                                <div className={styles.cards}>                                    <InternsList 
                                         interns={filteredInterns}
                                         onStatusChange={handleInternStatusChange}
-                                        onEvaluate={(intern) => {
+                                        onEvaluate={(intern: any) => {
                                             setSelectedIntern(intern);
                                             setNewEvaluation({
                                                 internId: intern.id,
