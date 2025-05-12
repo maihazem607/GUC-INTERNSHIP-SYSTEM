@@ -75,9 +75,8 @@ const StudentDetailsModal: React.FC<StudentDetailsModalProps> = ({
       </div>
       {reports.length > 0 && (
         <div className={styles.modalDescription}>
-          <h3>Submitted Reports</h3>
-          <ul>
-            {reports.map(report => (
+          <h3>Submitted Reports</h3> 
+          <ul>{reports.map(report => (
               <li key={report.id}>
                 <strong>{report.title}</strong> - <span>{report.status.toUpperCase()}</span> - <span>Submitted: {report.submissionDate}</span>
                 <button className={styles.applyButton} style={{marginLeft:8}} onClick={report.onView}>View Report</button>

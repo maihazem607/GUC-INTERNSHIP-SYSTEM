@@ -72,9 +72,8 @@ const ReportsList: React.FC<ReportsListProps> = ({
             <th>Status</th>
             <th>Actions</th>
           </tr>
-        </thead>
-        <tbody>
-          {reports.length > 0 ? (            reports.map((report) => (
+        </thead> 
+            <tbody>{reports.length > 0 ? (reports.map((report) => (
               <tr 
                 key={report.id} 
                 className={`${styles.reportRow} ${highlightedReportId === report.id ? highlightStyles.highlightedRow : ''}`}

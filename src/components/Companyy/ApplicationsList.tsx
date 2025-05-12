@@ -40,8 +40,7 @@ const ApplicationsList: React.FC<ApplicationsListProps> = ({
           {/* Table view (like ReportList) */}
           <div className={styles.applicationCardContainer}>
             <table className={styles.applicationsTable}>
-              <tbody>
-                {applications.map((app) => {
+              <tbody>{applications.map((app) => {
                   return (
                     <tr key={app.id} className={styles.applicationRow} onClick={() => onViewDetails(app)}>
                       {/* Applicant Profile Column */}

@@ -42,9 +42,8 @@ const getStatusChip = (status: Report['status']) => {
 const ReportTable: React.FC<ReportTableProps> = ({ reports, onViewReport }) => (
   <div className={styles.reportCardContainer}>
     {reports && reports.length > 0 ? (
-      <table className={styles.studentsTable}>
-        <tbody>
-          {reports.map((report) => {
+      <table className={styles.studentsTable}> 
+          <tbody>{reports.map((report) => {
             return (
               <tr key={report.id} className={styles.studentRow} onClick={() => onViewReport(report)}>
                 {/* Name and Title Column */}

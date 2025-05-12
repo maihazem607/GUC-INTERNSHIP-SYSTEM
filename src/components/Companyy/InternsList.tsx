@@ -40,9 +40,8 @@ const InternsList: React.FC<InternsListProps> = ({
       {interns.length > 0 ? (
         <>
           {/* Table view for interns */}
-          <div className={styles.applicationCardContainer}>
-            <table className={styles.applicationsTable}>
-              <tbody>                {interns.map((intern) => (
+          <div className={styles.applicationCardContainer}>            <table className={styles.applicationsTable}>
+              <tbody>{interns.map((intern) => (
                   <tr key={intern.id} className={styles.applicationRow}>
                     <td>
                       <div className={styles.applicantProfile}>
