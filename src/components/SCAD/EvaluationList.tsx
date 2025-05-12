@@ -13,6 +13,10 @@ export interface Evaluation {
   internshipEndDate: string;
   evaluationDate: string;
   evaluationScore: number;
+  performanceRating?: number;
+  skillsRating?: number;
+  attitudeRating?: number;
+  comments?: string;
   status: 'completed' | 'pending';
 }
 

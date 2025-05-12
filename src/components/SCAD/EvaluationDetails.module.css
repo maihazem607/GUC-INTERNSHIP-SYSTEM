@@ -57,6 +57,19 @@
   gap: 10px;
 }
 
+.modeIndicator {
+  position: absolute;
+  top: 20px;
+  right: 55px;
+  font-size: 13px;
+  color: #666;
+  background-color: #f9f9f9;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
 .modalCompanyLogo {
   border-radius: 8px;
   object-fit: contain;
@@ -134,6 +147,66 @@
   border-radius: 6px;
   font-size: 16px;
   resize: vertical;
+}
+
+.evaluationMetrics {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.evaluationMetrics p {
+  margin: 8px 0;
+}
+
+.evaluationMetricsEdit {
+  margin-bottom: 20px;
+}
+
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.rangeInputContainer {
+  display: flex;
+  align-items: center;
+}
+
+.rangeInput {
+  flex: 1;
+  margin-right: 10px;
+  height: 4px;
+  background-color: #ddd;
+  outline: none;
+  transition: opacity 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.rangeInput::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #4a6cf7;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.rangeInput::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #4a6cf7;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.calculatedScore {
+  font-size: 18px;
+  font-weight: 600;
+  color: #3498db;
+  padding: 5px 0;
 }
 
 .modalActions {

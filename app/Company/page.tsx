@@ -20,6 +20,9 @@ import InternshipPostModal from "../../src/components/Companyy/InternshipPostMod
 import InternshipCard from "../../src/components/internships/InternshipCard";
 import InternshipDetailsModal from "../../src/components/internships/InternshipDetailsModal";
 import CompanyInternshipDetailsModal from "../../src/components/Companyy/CompanyInternshipDetailsModal";
+import EvaluationModal from "../../src/components/Companyy/EvaluationModal";
+import EvaluationDetailsModal from "../../src/components/Companyy/EvaluationDetailsModal";
+import { Evaluation as SCADEvaluation } from "../../src/components/SCAD/EvaluationList";
 
 // Import types
 import { 
@@ -79,10 +82,10 @@ const DashboardContent = () => {
     const [selectedPost, setSelectedPost] = useState<InternshipPost | null>(null);
     const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
     const [selectedIntern, setSelectedIntern] = useState<Intern | null>(null);
-    const [selectedInternship, setSelectedInternship] = useState<Internship | null>(null);
-    
-    // Modal states
+    const [selectedInternship, setSelectedInternship] = useState<Internship | null>(null);    // Modal states
     const [showEvaluationForm, setShowEvaluationForm] = useState(false);
+    const [isEditingEvaluation, setIsEditingEvaluation] = useState(false); // New state for edit mode
+    const [showEvaluationDetails, setShowEvaluationDetails] = useState(false);
     const [showPostForm, setShowPostForm] = useState(false);
     const [showInternshipDetails, setShowInternshipDetails] = useState(false);
     const [showNotificationsPanel, setShowNotificationsPanel] = useState(false);
@@ -428,24 +431,30 @@ const DashboardContent = () => {
                 type
             });
         }
-    };
-
-    const handleSubmitEvaluation = () => {
+    };    const handleSubmitEvaluation = () => {
         if (!selectedIntern) return;
         
+        // Create a new evaluation or preserve the existing ID when editing
         const evaluation: Evaluation = {
-            id: Date.now().toString(),
+            id: isEditingEvaluation && selectedIntern.evaluation 
+                ? selectedIntern.evaluation.id 
+                : Date.now().toString(),
             evaluationDate: new Date(),
             ...newEvaluation,
         };
         
-        setInterns(interns.map(intern => 
+        // Update interns array with the evaluation
+        const updatedInterns = interns.map(intern => 
             intern.id === selectedIntern.id 
                 ? {...intern, evaluation} 
                 : intern
-        ));
+        );
         
+        setInterns(updatedInterns);
+        
+        // Close the form and reset form fields
         setShowEvaluationForm(false);
+        setIsEditingEvaluation(false); // Reset edit mode
         setNewEvaluation({
             internId: '',
             performanceRating: 0,
@@ -454,12 +463,39 @@ const DashboardContent = () => {
             comments: '',
         });
         
-        // Show success notification
+        // Show success notification with appropriate message
         showNotification({
-            message: `Evaluation for ${selectedIntern.name} has been submitted successfully.`,
+            message: isEditingEvaluation 
+                ? `Evaluation for ${selectedIntern.name} has been updated successfully.`
+                : `Evaluation for ${selectedIntern.name} has been submitted successfully.`,
             type: 'success'
         });
-    };    // Notification handling - simulate random applications for demo purposes
+    };
+
+    // Handler to delete an evaluation
+    const handleDeleteEvaluation = () => {
+        if (!selectedIntern || !selectedIntern.evaluation) return;
+        
+        if (window.confirm(`Are you sure you want to delete the evaluation for ${selectedIntern.name}?`)) {
+            // Update the interns array by removing the evaluation
+            const updatedInterns = interns.map(intern => 
+                intern.id === selectedIntern.id 
+                    ? {...intern, evaluation: undefined} 
+                    : intern
+            );
+            
+            setInterns(updatedInterns);
+            
+            // Close the form
+            setShowEvaluationForm(false);
+            
+            // Show success notification
+            showNotification({
+                message: `Evaluation for ${selectedIntern.name} has been deleted.`,
+                type: 'info'
+            });
+        }
+    };// Notification handling - simulate random applications for demo purposes
     useEffect(() => {
         if (internshipPosts.length === 0) return;
         
@@ -578,96 +614,98 @@ const DashboardContent = () => {
                     onFilterChange: () => {}
                 };
         }
-    };
-
-    // Custom Evaluation Modal using generic Modal component
+    };    // Use the imported EvaluationDetailsModal component with EvaluationDetails from SCAD folder
     const renderEvaluationModal = () => {
         if (!showEvaluationForm || !selectedIntern) return null;
         
+        // Check if we're viewing or editing an existing evaluation
+        if (selectedIntern.evaluation) {
+            // Transform company evaluation to the format expected by EvaluationDetailsModal
+            const evaluation: SCADEvaluation = {
+                id: parseInt(selectedIntern.evaluation.id),
+                studentName: selectedIntern.name,
+                studentId: parseInt(selectedIntern.id),
+                companyName: "Your Company", // Could be replaced with actual company name from context
+                major: selectedIntern.major,
+                supervisorName: "Supervisor", // Could be replaced with actual supervisor name from context
+                internshipStartDate: selectedIntern.startDate.toLocaleDateString(),
+                internshipEndDate: selectedIntern.endDate ? selectedIntern.endDate.toLocaleDateString() : "Present",
+                evaluationDate: selectedIntern.evaluation.evaluationDate.toLocaleDateString(),
+                performanceRating: isEditingEvaluation ? newEvaluation.performanceRating : selectedIntern.evaluation.performanceRating,
+                skillsRating: isEditingEvaluation ? newEvaluation.skillsRating : selectedIntern.evaluation.skillsRating,
+                attitudeRating: isEditingEvaluation ? newEvaluation.attitudeRating : selectedIntern.evaluation.attitudeRating,
+                comments: isEditingEvaluation ? newEvaluation.comments : selectedIntern.evaluation.comments,
+                evaluationScore: Math.round((
+                    (isEditingEvaluation ? newEvaluation.performanceRating : selectedIntern.evaluation.performanceRating) + 
+                    (isEditingEvaluation ? newEvaluation.skillsRating : selectedIntern.evaluation.skillsRating) + 
+                    (isEditingEvaluation ? newEvaluation.attitudeRating : selectedIntern.evaluation.attitudeRating)
+                ) / 3 * 2), // Convert 5-point scale to 10-point
+                status: 'completed' as 'completed',
+            };
+
+            // Use EvaluationDetailsModal for both viewing and editing
+            return (
+                <EvaluationDetailsModal
+                    evaluation={evaluation}
+                    onClose={() => {
+                        setShowEvaluationForm(false);
+                        setIsEditingEvaluation(false);
+                    }}
+                    onUpdate={(id, performanceRating, skillsRating, attitudeRating, comments) => {
+                        if (isEditingEvaluation) {
+                            // When update button is clicked in edit mode, save the changes
+                            setNewEvaluation({
+                                internId: selectedIntern.id,
+                                performanceRating,
+                                skillsRating,
+                                attitudeRating,
+                                comments,
+                            });
+                            handleSubmitEvaluation();
+                        } else {
+                            // Switch to edit mode when edit button is clicked
+                            setIsEditingEvaluation(true);
+                            setNewEvaluation({
+                                internId: selectedIntern.id,
+                                performanceRating,
+                                skillsRating,
+                                attitudeRating,
+                                comments: comments || selectedIntern.evaluation?.comments || '',
+                            });
+                        }
+                    }}
+                    onDelete={handleDeleteEvaluation ? () => handleDeleteEvaluation() : undefined}
+                />
+            );
+        }
+
+        // If creating a new evaluation (intern doesn't have an evaluation yet)
+        let modalTitle = `Evaluate ${selectedIntern.name}`;
+        
         return (
-            <Modal 
-                title={`Evaluate ${selectedIntern.name}`}
-                onClose={() => setShowEvaluationForm(false)}
-                width="600px"
-                actions={
-                    <div className={styles.modalActions}>
-                        <button 
-                            className={styles.actionButton} 
-                            onClick={handleSubmitEvaluation}
-                        >
-                            Submit Evaluation
-                        </button>
-                        <button 
-                            className={styles.actionButtonOutline}
-                            onClick={() => setShowEvaluationForm(false)}
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                }
-            >
-                <div className={styles.evaluationForm}>
-                    <div className={styles.formGroup}>
-                        <label>Performance Rating (1-5)</label>
-                        <input
-                            type="range"
-                            min="1"
-                            max="5"
-                            value={newEvaluation.performanceRating}
-                            onChange={(e) => setNewEvaluation({
-                                ...newEvaluation,
-                                performanceRating: parseInt(e.target.value)
-                            })}
-                        />
-                        <span>{newEvaluation.performanceRating}/5</span>
-                    </div>
-                    
-                    <div className={styles.formGroup}>
-                        <label>Skills Rating (1-5)</label>
-                        <input
-                            type="range"
-                            min="1"
-                            max="5"
-                            value={newEvaluation.skillsRating}
-                            onChange={(e) => setNewEvaluation({
-                                ...newEvaluation,
-                                skillsRating: parseInt(e.target.value)
-                            })}
-                        />
-                        <span>{newEvaluation.skillsRating}/5</span>
-                    </div>
-                    
-                    <div className={styles.formGroup}>
-                        <label>Attitude Rating (1-5)</label>
-                        <input
-                            type="range"
-                            min="1"
-                            max="5"
-                            value={newEvaluation.attitudeRating}
-                            onChange={(e) => setNewEvaluation({
-                                ...newEvaluation,
-                                attitudeRating: parseInt(e.target.value)
-                            })}
-                        />
-                        <span>{newEvaluation.attitudeRating}/5</span>
-                    </div>
-                    
-                    <div className={styles.formGroup}>
-                        <label>Comments</label>
-                        <textarea
-                            value={newEvaluation.comments}
-                            onChange={(e) => setNewEvaluation({
-                                ...newEvaluation,
-                                comments: e.target.value
-                            })}
-                            rows={5}
-                            placeholder="Provide detailed feedback about the intern's performance..."
-                        />
-                    </div>
-                </div>
-            </Modal>
+            <EvaluationModal
+                title={modalTitle}
+                onClose={() => {
+                    setShowEvaluationForm(false);
+                    setIsEditingEvaluation(false); // Reset edit mode when closing
+                    // Reset evaluation data
+                    setNewEvaluation({
+                        internId: '',
+                        performanceRating: 0,
+                        skillsRating: 0,
+                        attitudeRating: 0,
+                        comments: '',
+                    });
+                }}
+                onSubmit={handleSubmitEvaluation}
+                intern={selectedIntern}
+                evaluation={newEvaluation}
+                setEvaluation={setNewEvaluation}
+                onEditMode={() => setIsEditingEvaluation(true)}
+                onDelete={handleDeleteEvaluation}
+            />
         );
-    };    // Notification handling functions
+    };// Notification handling functions
     const markNotificationAsRead = (id: string) => {
         setNotifications(prev => prev.map(n => 
             n.id === id ? {...n, read: true} : n
@@ -888,9 +926,11 @@ const DashboardContent = () => {
                                // <div className={styles.cards}>  
                                <InternsList 
                                         interns={filteredInterns}
-                                        onStatusChange={handleInternStatusChange}
-                                        onEvaluate={(intern) => {
+                                        onStatusChange={handleInternStatusChange}                                        onEvaluate={(intern) => {
                                             setSelectedIntern(intern);
+                                            // Reset the editing state
+                                            setIsEditingEvaluation(false);
+                                            // Set the evaluation form values based on existing evaluation or defaults
                                             setNewEvaluation({
                                                 internId: intern.id,
                                                 performanceRating: intern.evaluation?.performanceRating ?? 3,

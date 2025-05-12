@@ -93,6 +93,21 @@
   font-size: 16px;
   font-weight: 600;
   color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.evaluatedBadge {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #4CAF50;
+  color: white;
+  font-size: 11px;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
 }
 
 .applicantEmail {
@@ -186,12 +201,28 @@
   background-color: #388E3C;
 }
 
+.viewButton {
+  background-color: #2196F3;
+}
+
+.viewButton:hover {
+  background-color: #1976D2;
+}
+
 .completeButton {
   background-color: #27ae60;
 }
 
 .completeButton:hover {
   background-color: #219653;
+}
+
+.viewButton {
+  background-color: #2196F3;
+}
+
+.viewButton:hover {
+  background-color: #1976D2;
 }
 
 /* No Results Message */

@@ -42,17 +42,20 @@ const InternsList: React.FC<InternsListProps> = ({
           {/* Table view for interns */}
           <div className={styles.applicationCardContainer}>
             <table className={styles.applicationsTable}>
-              <tbody>
-                {interns.map((intern) => (
+              <tbody>                {interns.map((intern) => (
                   <tr key={intern.id} className={styles.applicationRow}>
-                    {/* Profile Column */}
                     <td>
                       <div className={styles.applicantProfile}>
                         <div className={styles.applicantAvatar}>
                           {intern.name.charAt(0)}
                         </div>
                         <div className={styles.applicantDetails}>
-                          <div className={styles.applicantName}>{intern.name}</div>
+                          <div className={styles.applicantName}>
+                            {intern.name}
+                            {intern.evaluation && (
+                              <span className={styles.evaluatedBadge} title="Evaluated">✓</span>
+                            )}
+                          </div>
                           <div className={styles.applicantEmail}>{intern.email}</div>
                         </div>
                       </div>
@@ -94,10 +97,7 @@ const InternsList: React.FC<InternsListProps> = ({
                       >
                         <option value="current">CURRENT</option>
                         <option value="completed">COMPLETED</option>
-                      </select>
-                    </td>
-                    
-                    {/* Actions */}
+                      </select>                    </td>
                     <td>
                       {intern.status === 'current' ? (
                         <button 
@@ -111,13 +111,13 @@ const InternsList: React.FC<InternsListProps> = ({
                         </button>
                       ) : (
                         <button 
-                          className={`${styles.actionButton} ${styles.evaluateButton}`}
+                          className={`${styles.actionButton} ${intern.evaluation ? styles.viewButton : styles.evaluateButton}`}
                           onClick={(e) => {
                             e.stopPropagation();
                             handleEvaluate(intern);
                           }}
                         >
-                          Evaluate
+                          {intern.evaluation ? 'View Evaluation' : 'Evaluate'}
                         </button>
                       )}
                     </td>

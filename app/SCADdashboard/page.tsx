@@ -1210,8 +1210,8 @@ export default function SCADDashboardPage() {
         <EvaluationDetails
           evaluation={selectedEvaluation}
           onClose={handleCloseEvaluationDetails}
-          onUpdate={handleUpdateEvaluation}
-          onDelete={handleDeleteEvaluation}
+         // onUpdate={handleUpdateEvaluation}
+          //onDelete={handleDeleteEvaluation}
         />
       )}
       {showInternshipDetails && selectedInternship && (        

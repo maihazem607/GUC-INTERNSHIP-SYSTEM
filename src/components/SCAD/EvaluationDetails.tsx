@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./EvaluationDetails.module.css";
 import { Evaluation } from "./EvaluationList";
 
 interface EvaluationDetailsProps {
   evaluation: Evaluation;
   onClose: () => void;
-  onUpdate?: (id: number, score: number, comments: string) => void;
+  onUpdate?: (id: number, performanceRating: number, skillsRating: number, attitudeRating: number, comments: string) => void;
   onDelete?: (id: number) => void;
 }
 
@@ -16,12 +16,30 @@ const EvaluationDetails: React.FC<EvaluationDetailsProps> = ({
   onDelete
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [score, setScore] = useState(evaluation.evaluationScore);
-  const [comments, setComments] = useState(""); // You'd load actual comments here
+  
+  // Initialize with values from evaluation or defaults
+  const [performanceRating, setPerformanceRating] = useState(evaluation.performanceRating || Math.floor(evaluation.evaluationScore / 2));
+  const [skillsRating, setSkillsRating] = useState(evaluation.skillsRating || Math.floor(evaluation.evaluationScore / 2));
+  const [attitudeRating, setAttitudeRating] = useState(evaluation.attitudeRating || Math.floor(evaluation.evaluationScore / 2));
+  const [comments, setComments] = useState(evaluation.comments || "");
+  
+  // Update state if props change
+  useEffect(() => {
+    setPerformanceRating(evaluation.performanceRating || Math.floor(evaluation.evaluationScore / 2));
+    setSkillsRating(evaluation.skillsRating || Math.floor(evaluation.evaluationScore / 2));
+    setAttitudeRating(evaluation.attitudeRating || Math.floor(evaluation.evaluationScore / 2));
+    setComments(evaluation.comments || "");
+  }, [evaluation]);
   
   const handleUpdate = () => {
     if (onUpdate) {
-      onUpdate(evaluation.id, score, comments);
+      onUpdate(
+        evaluation.id, 
+        performanceRating, 
+        skillsRating, 
+        attitudeRating, 
+        comments
+      );
       setIsEditing(false);
     }
   };
@@ -32,7 +50,11 @@ const EvaluationDetails: React.FC<EvaluationDetailsProps> = ({
       onClose();
     }
   };
-
+  // Calculate overall score (average of three ratings * 2 for 10-point scale)
+  const overallScore = Math.round(
+    (performanceRating + skillsRating + attitudeRating) / 3 * 2
+  );
+  
   return (
     <div className={styles.modalBackdrop}>
       <div className={styles.modalContent}>
@@ -44,6 +66,12 @@ const EvaluationDetails: React.FC<EvaluationDetailsProps> = ({
             <span className={styles.modalCompanyName}>{evaluation.companyName}</span>
           </div>
         </div>
+        
+        {isEditing && (
+          <div className={styles.modeIndicator}>
+            Edit Mode
+          </div>
+        )}
         
         <div className={styles.modalInfo}>
           <div className={styles.modalInfoItem}>
@@ -79,23 +107,68 @@ const EvaluationDetails: React.FC<EvaluationDetailsProps> = ({
         {!isEditing ? (
           <div className={styles.modalDescription}>
             <h3>Performance Evaluation</h3>
-            <p><strong>Score:</strong> {evaluation.evaluationScore}/10</p>
+            <div className={styles.evaluationMetrics}>
+              <p><strong>Performance Rating:</strong> {performanceRating}/5</p>
+              <p><strong>Skills Rating:</strong> {skillsRating}/5</p>
+              <p><strong>Attitude Rating:</strong> {attitudeRating}/5</p>
+              <p><strong>Overall Score:</strong> {overallScore}/10</p>
+            </div>
             <p><strong>Comments:</strong> {comments || "No comments provided."}</p>
           </div>
-        ) : (
+        ): (
           <div className={styles.modalDescription}>
             <h3>Edit Evaluation</h3>
-            <div className={styles.inputGroup}>
-              <label className={styles.inputLabel}>Score (1-10)</label>
-              <input
-                type="number"
-                min="1"
-                max="10"
-                value={score}
-                onChange={(e) => setScore(Number(e.target.value))}
-                className={styles.input}
-              />
+            <div className={styles.evaluationMetricsEdit}>              <div className={styles.formGroup}>
+                <label className={styles.inputLabel}>Performance Rating (1-5)</label>
+                <div className={styles.rangeInputContainer}>
+                  <input
+                    type="range"
+                    min="1"
+                    max="5"
+                    value={performanceRating}
+                    onChange={(e) => setPerformanceRating(Number(e.target.value))}
+                    className={styles.rangeInput}
+                  />
+                  <span>{performanceRating}/5</span>
+                </div>
+              </div>
+              
+              <div className={styles.formGroup}>
+                <label className={styles.inputLabel}>Skills Rating (1-5)</label>
+                <div className={styles.rangeInputContainer}>
+                  <input
+                    type="range"
+                    min="1"
+                    max="5"
+                    value={skillsRating}
+                    onChange={(e) => setSkillsRating(Number(e.target.value))}
+                    className={styles.rangeInput}
+                  />
+                  <span>{skillsRating}/5</span>
+                </div>
+              </div>
+              
+              <div className={styles.formGroup}>
+                <label className={styles.inputLabel}>Attitude Rating (1-5)</label>
+                <div className={styles.rangeInputContainer}>
+                  <input
+                    type="range"
+                    min="1"
+                    max="5"
+                    value={attitudeRating}
+                    onChange={(e) => setAttitudeRating(Number(e.target.value))}
+                    className={styles.rangeInput}
+                  />
+                  <span>{attitudeRating}/5</span>
+                </div>
+              </div>
+              
+              <div className={styles.formGroup}>
+                <label className={styles.inputLabel}>Overall Score</label>
+                <div className={styles.calculatedScore}>{overallScore}/10</div>
+              </div>
             </div>
+            
             <div className={styles.inputGroup}>
               <label className={styles.inputLabel}>Comments</label>
               <textarea
@@ -107,8 +180,7 @@ const EvaluationDetails: React.FC<EvaluationDetailsProps> = ({
             </div>
           </div>
         )}
-        
-        <div className={styles.modalActions}>
+          <div className={styles.modalActions}>
           {!isEditing ? (
             <>
               {onUpdate && (
@@ -127,6 +199,12 @@ const EvaluationDetails: React.FC<EvaluationDetailsProps> = ({
                   Delete
                 </button>
               )}
+              <button
+                className={`${styles.applyButton} ${styles.cancelButton}`}
+                onClick={onClose}
+              >
+                Close
+              </button>
             </>
           ) : (
             <>
