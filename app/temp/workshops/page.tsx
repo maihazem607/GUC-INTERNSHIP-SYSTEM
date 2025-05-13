@@ -3,15 +3,15 @@ import styles from "./page.module.css";
 import React, { useState, useEffect } from 'react';
 
 // Import modular components
-import Navigation from "../../src/components/global/Navigation";
-import FilterSidebar from "../../src/components/global/FilterSidebar";
-import SearchBar from "../../src/components/global/SearchBar";
-import WorkshopCard from "../../src/components/workshops/WorkshopCard";
-import WorkshopDetailsModal from "../../src/components/workshops/WorkshopDetailsModal";
-import LiveSessionModal from "../../src/components/workshops/LiveSessionModal";
-import RecordedSessionModal from "../../src/components/workshops/RecordedSessionModal";
-import NotificationSystem, { NOTIFICATION_CONSTANTS } from "../../src/components/global/NotificationSystem";
-import { Workshop } from "../../src/components/workshops/types";
+import Navigation from "@/components/global/Navigation";
+import FilterSidebar from "@/components/global/FilterSidebar";
+import SearchBar from "@/components/global/SearchBar";
+import WorkshopCard from "@/components/workshops/WorkshopCard";
+import WorkshopDetailsModal from "@/components/workshops/WorkshopDetailsModal";
+import LiveSessionModal from "@/components/workshops/LiveSessionModal";
+import RecordedSessionModal from "@/components/workshops/RecordedSessionModal";
+import NotificationSystem, { NOTIFICATION_CONSTANTS } from "@/components/global/NotificationSystem";
+import { Workshop } from "@/components/workshops/types";
 
 // Workshop data (would typically come from an API)
 const workshops: Workshop[] = [

@@ -3,13 +3,12 @@ import { useState, useEffect } from 'react';
 import styles from './page.module.css';
 
 // Import global components
-import Navigation from "../../../src/components/global/Navigation";
+import NavigationMenu, { MenuItem } from "../../../src/components/global/NavigationMenu";
+import { Briefcase, FileText, Users } from 'lucide-react';
 import NotificationSystem from "../../../src/components/global/NotificationSystem";
 import NotificationsPanel from "../../../src/components/global/NotificationsPanel";
 import FilterSidebar from "../../../src/components/global/FilterSidebar";
 import SearchBar from "../../../src/components/global/SearchBar";
-import Modal from "../../../src/components/global/Modal";
-import DashboardTab from "../../../src/components/global/DashboardTab";
 import { NotificationProvider, useNotification } from "../../../src/context/NotificationContext";
 
 // Import components
@@ -18,7 +17,6 @@ import InternsList from "../../../src/components/Companyy/InternsList";
 import ApplicationDetailsModal from "../../../src/components/Companyy/ApplicationDetailsModal";
 import InternshipPostModal from "../../../src/components/Companyy/InternshipPostModal";
 import InternshipCard from "../../../src/components/internships/InternshipCard";
-import InternshipDetailsModal from "../../../src/components/internships/InternshipDetailsModal";
 import CompanyInternshipDetailsModal from "../../../src/components/Companyy/CompanyInternshipDetailsModal";
 import EvaluationModal from "../../../src/components/Companyy/EvaluationModal";
 import EvaluationDetailsModal from "../../../src/components/Companyy/EvaluationDetailsModal";
@@ -31,11 +29,12 @@ import {
   Intern, 
   Evaluation, 
   Notification 
-} from "../../src/components/Companyy/types";
-import { Internship } from "../../src/components/internships/types";
+} from "@/components/Companyy/types";
+import { Internship } from "@/components/internships/types";
 
 // Dashboard tabs type
-type DashboardTab = 'internships' | 'applications' | 'interns';
+// Define the active tab types
+type ActiveTab = 'internships' | 'applications' | 'interns';
 
 // Helper function to convert InternshipPost to Internship format
 const convertToInternshipFormat = (post: InternshipPost): Internship => {
@@ -59,7 +58,7 @@ const convertToInternshipFormat = (post: InternshipPost): Internship => {
 // Dashboard Component Wrapper
 const DashboardContent = () => {
     // State for navigation and content
-    const [activeTab, setActiveTab] = useState<DashboardTab>('internships');
+    const [activeTab, setActiveTab] = useState<ActiveTab>('internships');
     
     // Search states for different tabs
     const [internshipSearchTerm, setInternshipSearchTerm] = useState('');
@@ -789,11 +788,37 @@ const DashboardContent = () => {
     };    // Using the markNotificationAsRead function defined earlier
 
     return (
-        <div className={styles.pageContainer}>
-            <Navigation 
-                title="Company Internship Dashboard"
+        <div className={styles.pageContainer}>            <NavigationMenu
+                items={[
+                    { 
+                        id: 'internships', 
+                        label: 'Internship Posts', 
+                        icon: <Briefcase size={18} />,
+                        onClick: () => setActiveTab('internships'),
+                        count: internshipPostsCount 
+                    },
+                    { 
+                        id: 'applications', 
+                        label: 'Applications', 
+                        icon: <FileText size={18} />,
+                        onClick: () => setActiveTab('applications'),
+                        count: pendingApplicationsCount 
+                    },
+                    { 
+                        id: 'interns', 
+                        label: 'Current Interns', 
+                        icon: <Users size={18} />,
+                        onClick: () => setActiveTab('interns'),
+                        count: currentInternsCount 
+                    }
+                ]}
+                activeItemId={activeTab}
+                logo={{
+                    src: '/logos/GUCInternshipSystemLogo.png',
+                    alt: 'GUC Internship System'
+                }}
+                variant="tabs"
                 notificationCount={unreadNotificationsCount}
-                onNotificationClick={() => setShowNotificationsPanel(!showNotificationsPanel)} 
             />
 
             <div className={styles.contentWrapper}>
@@ -801,29 +826,7 @@ const DashboardContent = () => {
                     filters={getCurrentFilters().filters}
                     onFilterChange={getCurrentFilters().onFilterChange}
                 />
-                <main className={styles.mainContent}> 
-                    <DashboardTab
-                        tabs={[
-                            { 
-                                id: 'internships', 
-                                label: 'Internship Posts', 
-                                count: internshipPostsCount 
-                            },
-                            { 
-                                id: 'applications', 
-                                label: 'Applications', 
-                                count: pendingApplicationsCount 
-                            },
-                            { 
-                                id: 'interns', 
-                                label: 'Current Interns', 
-                                count: currentInternsCount 
-                            }
-                        ]}
-                        activeTab={activeTab}
-                        onTabChange={(tabId) => setActiveTab(tabId as DashboardTab)}
-                        className={styles.dashboardTabs}
-                    />
+                <main className={styles.mainContent}>                    {/* Tab Navigation is now handled by NavigationMenu */}
                     
                     <div className={styles.filterControls}>
                         <SearchBar

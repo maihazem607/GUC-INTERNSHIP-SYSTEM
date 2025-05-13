@@ -1,16 +1,16 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import Navigation from "../../src/components/global/Navigation";
-import SearchBar from "../../src/components/global/SearchBar";
-import FilterSidebar from "../../src/components/global/FilterSidebar";
-import MyInternshipCard from "../../src/components/MyInternships/MyInternshipCard";
-import EvaluationModal from "../../src/components/MyInternships/EvaluationModal";
-import ReportModal from "../../src/components/MyInternships/ReportModal";
-import ReportsList from "../../src/components/MyInternships/ReportsList";
-import ReportResultsModal from "../../src/components/MyInternships/ReportResultsModal";
-import DashboardTab from "../../src/components/global/DashboardTab";
-import { Internship, FilterOptions } from "../../src/components/internships/types";
-import NotificationSystem, { useNotification } from "../../src/components/global/NotificationSystem";
+import NavigationMenu, { MenuItem } from "../../../src/components/global/NavigationMenu";
+import { Clipboard, ClipboardCheck, FileText, Search } from 'lucide-react';
+import SearchBar from "../../../src/components/global/SearchBar";
+import FilterSidebar from "../../../src/components/global/FilterSidebar";
+import MyInternshipCard from "../../../src/components/MyInternships/MyInternshipCard";
+import EvaluationModal from "../../../src/components/MyInternships/EvaluationModal";
+import ReportModal from "../../../src/components/MyInternships/ReportModal";
+import ReportsList from "../../../src/components/MyInternships/ReportsList";
+import ReportResultsModal from "../../../src/components/MyInternships/ReportResultsModal";
+import { Internship, FilterOptions } from "../../../src/components/internships/types";
+import NotificationSystem, { useNotification } from "../../../src/components/global/NotificationSystem";
 import styles from "./page.module.css";
 
 // Extended Internship type to include application status and evaluation
@@ -101,7 +101,8 @@ const MyInternshipsPage: React.FC = () => {
     finalized: false
   });  
   const [isSubmittingEval, setIsSubmittingEval] = useState(false);
-  const [isSubmittingReport, setIsSubmittingReport] = useState(false);    const [report, setReport] = useState({
+  const [isSubmittingReport, setIsSubmittingReport] = useState(false);    
+  const [report, setReport] = useState({
     title: '',
     introduction: '',
     body: '',
@@ -115,7 +116,7 @@ const MyInternshipsPage: React.FC = () => {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [highlightedReportId, setHighlightedReportId] = useState<number | undefined>(undefined);
   const { notification, visible, showNotification, hideNotification } = useNotification();
-    // Filter options  
+  // Filter options  
   const statusOptions = ['All', 'Pending', 'Finalized', 'Accepted', 'Rejected'];
   const internStatusOptions = ['All', 'Current Intern', 'Internship Complete'];
   const reportStatusOptions = ['All', 'Pending', 'Accepted', 'Flagged', 'Rejected'];
@@ -971,7 +972,7 @@ const MyInternshipsPage: React.FC = () => {
       
       try {
         // Import the PDF utility dynamically to avoid SSR issues
-        const pdfUtils = await import('../../src/utils/pdfUtils');
+        const pdfUtils = await import('../../../src/utils/pdfUtils');
         const generateReportPDF = pdfUtils.default;
         
         // Get course names for the report
@@ -1083,11 +1084,43 @@ const MyInternshipsPage: React.FC = () => {
       ...prev,
       [filterType]: value
     }));
-  };
-  return (
+  };  return (
     <div className={styles.pageContainer}>
       {/* Header/Navigation */}
-      <Navigation title="My Internships" />
+      <NavigationMenu
+        items={[
+          { 
+            id: 'applications', 
+            label: 'My Applications',
+            icon: <Clipboard size={18} />,
+            onClick: () => setActiveTab('applications'),
+            count: myInternships.filter(app => ['pending', 'rejected', 'finalized', 'accepted'].includes(app.applicationStatus)).length
+          },
+          { 
+            id: 'internships', 
+            label: 'My Internships',
+            icon: <ClipboardCheck size={18} />,
+            onClick: () => setActiveTab('internships'),
+            count: myInternships.filter(app => app.applicationStatus === 'accepted').length
+          },
+          {
+            id: 'reports',
+            label: 'Report Results',
+            icon: <FileText size={18} />,
+            onClick: () => setActiveTab('reports'),
+            count: myInternships.filter(app => 
+              app.report?.finalized && 
+              app.report?.status && 
+              ['pending', 'accepted', 'flagged', 'rejected'].includes(app.report.status)
+            ).length
+          }
+        ]}
+        activeItemId={activeTab}
+        logo={{
+          src: '/logos/GUCInternshipSystemLogo.png',
+          alt: 'GUC Internship System'
+        }}
+      />
       
       <div className={styles.contentWrapper}>
         {/* Filter Sidebar - Show for both tabs */}
@@ -1096,34 +1129,9 @@ const MyInternshipsPage: React.FC = () => {
           onFilterChange={handleFilterChange}
         />
 
-        {/* Main Content */}
-        <main className={styles.mainContent}>          {/* Tab Navigation */}          <DashboardTab
-            tabs={[
-              { 
-                id: 'applications', 
-                label: 'My Applications',
-                count: myInternships.filter(app => ['pending', 'rejected', 'finalized', 'accepted'].includes(app.applicationStatus)).length
-              },
-              { 
-                id: 'internships', 
-                label: 'My Internships',
-                count: myInternships.filter(app => app.applicationStatus === 'accepted').length
-              },
-              {
-                id: 'reports',
-                label: 'Report Results',                count: myInternships.filter(app => 
-                  app.report?.finalized && 
-                  app.report?.status && 
-                  ['pending', 'accepted', 'flagged', 'rejected'].includes(app.report.status)
-                ).length
-              }
-            ]}
-            activeTab={activeTab}
-            onTabChange={(tabId) => setActiveTab(tabId as 'applications' | 'internships' | 'reports')}
-            className={styles.dashboardTabs}
-          />
+        {/* Main Content */}        <main className={styles.mainContent}>
           {/* Search Bar */}
-          <SearchBar 
+          <SearchBar
             searchTerm={searchTerm} 
             setSearchTerm={setSearchTerm} 
             placeholder="Search by job title or company..."

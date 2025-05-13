@@ -18,13 +18,6 @@
     border-bottom: 1px solid #eaeaea;
 }
 
-/* Tabs variant */
-.tabs {
-    padding: 18px 32px 0;
-    border-bottom: 1px solid #eaeaea;
-    margin-bottom: 24px;
-}
-
 /* Left section with logo and menu items */
 .leftSection {
     display: flex;

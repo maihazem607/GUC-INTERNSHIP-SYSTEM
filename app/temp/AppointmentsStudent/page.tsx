@@ -3,16 +3,16 @@ import styles from "./page.module.css";
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 
 // Import modular components
-import Navigation from "../../src/components/global/Navigation";
-import FilterSidebar from "../../src/components/global/FilterSidebar";
-import SearchBar from "../../src/components/global/SearchBar";
-import AppointmentCard from "../../src/components/Appointments/AppointmentCard";
+import NavigationMenu, { MenuItem } from "@/components/global/NavigationMenu";
+import { Calendar, Clock, PlusCircle } from 'lucide-react';
+import FilterSidebar from "@/components/global/FilterSidebar";
+import SearchBar from "@/components/global/SearchBar";
+import AppointmentCard from "@/components/Appointments/AppointmentCard";
 import AppointmentDetailsModal from "@/components/Appointments/AppointmentDetailsModal";
 import VideoCall from "@/components/Appointments/VideoCall";
 import NotificationSystem, { NOTIFICATION_CONSTANTS } from "@/components/global/NotificationSystem";
 import IncomingCallNotification from "@/components/Appointments/IncomingCallNotification";
 import { Appointment } from "@/components/Appointments/types";
-import DashboardTab from "@/components/global/DashboardTab";
 import NewAppointmentForm from "@/components/Appointments/NewAppointmentForm";
 
 // Mock appointment data (would typically come from an API)
@@ -569,10 +569,41 @@ export default function AppointmentsPage() {
 
   return (
     <div className={styles.pageContainer}>
-      {/* Header/Navigation */}
-      <Navigation 
-        title="Appointments" 
-        notificationCount={(incomingCall ? 1 : 0) + (notification ? 1 : 0)} 
+      {/* Header/Navigation */}      <NavigationMenu
+        items={[
+          {
+            id: 'my-appointments',
+            label: 'My Appointments',
+            icon: <Calendar size={18} />,
+            onClick: () => setActiveTab('my-appointments'),
+            count: appointments.filter(app => 
+              app.status === 'waiting-approval' || 
+              app.status === 'accepted' || 
+              app.status === 'rejected' || 
+              app.status === 'completed'
+            ).length 
+          },
+          {
+            id: 'requests',
+            label: 'Requests',
+            icon: <Clock size={18} />,
+            onClick: () => setActiveTab('requests'),
+            count: appointments.filter(app => app.status === 'pending').length
+          },
+          {
+            id: 'new-appointment',
+            label: 'New Appointment',
+            icon: <PlusCircle size={18} />,
+            onClick: () => setActiveTab('new-appointment')
+          }
+        ]}
+        activeItemId={activeTab}
+        logo={{
+          src: '/logos/GUCInternshipSystemLogo.png',
+          alt: 'GUC Internship System'
+        }}
+        variant="tabs"
+        notificationCount={(incomingCall ? 1 : 0) + (notification ? 1 : 0)}
       />
 
       <div className={styles.contentWrapper}>
@@ -585,33 +616,7 @@ export default function AppointmentsPage() {
         )}
 
         {/* Main Content */}
-        <main className={styles.mainContent}>
-          {/* Tab Navigation */}
-          <DashboardTab
-           tabs={[
-            {
-              id: 'my-appointments',
-              label: 'My Appointments',
-              count: appointments.filter(app => 
-                app.status === 'waiting-approval' || 
-                app.status === 'accepted' || 
-                app.status === 'rejected' || 
-                app.status === 'completed'
-              ).length 
-            },
-            {
-              id: 'requests',
-              label: 'Requests',
-              count: appointments.filter(app => app.status === 'pending').length
-            },
-            {
-              id: 'new-appointment',
-              label: 'New Appointment'
-            }
-          ]}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-          />
+        <main className={styles.mainContent}>          {/* Tab Navigation is now handled by NavigationMenu */}
           
           {/* Tab content based on which tab is active */}
           {(activeTab === 'my-appointments' || activeTab === 'requests') && (

@@ -25,11 +25,7 @@ import {
   Settings,
   ClipboardCheck,
   Briefcase,
-  Bell,
-  MapPin,
-  User,
   Search,
-  AlertCircle,
   Calendar
 } from 'lucide-react';
 import EvaluationTable from '../../../src/components/SCAD/EvaluationList';
@@ -754,6 +750,7 @@ export default function SCADDashboardPage() {
     setShowEvaluationDetails(false);
     setSelectedEvaluation(null);
   };
+  
   const handleUpdateEvaluation = (id: number, score: number, comments: string) => {
     // In a real app, you would call an API here
     const evaluation = evaluations.find(evaluation => evaluation.id === id);

@@ -3,13 +3,13 @@ import React, { useState, useEffect } from 'react';
 import styles from "./page.module.css";
 
 // Import modular components
-import Navigation from "../../src/components/global/Navigation";
-import FilterSidebar from "../../src/components/global/FilterSidebar";
-import SearchBar from "../../src/components/global/SearchBar";
-import CompanyCard from "../../src/components/Companies/CompanyCard";
-import CompanyDetailsModal from "../../src/components/Companies/CompanyDetailsModal";
-import NotificationSystem, { useNotification } from "../../src/components/global/NotificationSystem";
-import { Company, FilterOptions } from "../../src/components/Companies/types";
+import Navigation from "../../../src/components/global/Navigation";
+import FilterSidebar from "../../../src/components/global/FilterSidebar";
+import SearchBar from "../../../src/components/global/SearchBar";
+import CompanyCard from "../../../src/components/Companies/CompanyCard";
+import CompanyDetailsModal from "../../../src/components/Companies/CompanyDetailsModal";
+import NotificationSystem, { useNotification } from "../../../src/components/global/NotificationSystem";
+import { Company, FilterOptions } from "../../../src/components/Companies/types";
 
 export default function CompaniesPage() {
   const [searchTerm, setSearchTerm] = useState('');
