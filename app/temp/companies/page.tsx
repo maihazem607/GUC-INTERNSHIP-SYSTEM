@@ -3,15 +3,36 @@ import React, { useState, useEffect } from 'react';
 import styles from "./page.module.css";
 
 // Import modular components
-import Navigation from "../../../src/components/global/Navigation";
-import FilterSidebar from "../../../src/components/global/FilterSidebar";
-import SearchBar from "../../../src/components/global/SearchBar";
-import CompanyCard from "../../../src/components/Companies/CompanyCard";
-import CompanyDetailsModal from "../../../src/components/Companies/CompanyDetailsModal";
-import NotificationSystem, { useNotification } from "../../../src/components/global/NotificationSystem";
-import { Company, FilterOptions } from "../../../src/components/Companies/types";
+import Navigation from "@/components/global/Navigation";
+import NavigationMenu, { MenuItem } from "@/components/global/NavigationMenu";
+import FilterSidebar from "@/components/global/FilterSidebar";
+import SearchBar from "@/components/global/SearchBar";
+import CompanyCard from "@/components/Companies/CompanyCard";
+import CompanyDetailsModal from "@/components/Companies/CompanyDetailsModal";
+import ProfileViewsList from "@/components/ProfileViews/ProfileViewsList";
+import ProfileViewDetailsModal from "@/components/ProfileViews/ProfileViewDetailsModal";
+import NotificationSystem, { useNotification } from "@/components/global/NotificationSystem";
+import { Company, FilterOptions } from "@/components/Companies/types";
+import { Eye, Building } from 'lucide-react';
+
+// Define the profile view interface
+interface ProfileView {
+  id: number;
+  company: string;
+  logo: string;
+  viewDate: string;
+  viewTime: string;
+  jobTitle?: string;
+  recruiterName?: string;
+  industry: string;
+  isRecurring: boolean;
+}
 
 export default function CompaniesPage() {
+  // Tab state
+  const [activeTab, setActiveTab] = useState<'companies' | 'profileViews'>('companies');
+  
+  // Companies tab states
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState<FilterOptions>({
     industry: 'All',
@@ -21,14 +42,29 @@ export default function CompaniesPage() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([]);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+    // Profile views tab states
+  const [profileViews, setProfileViews] = useState<ProfileView[]>([]);
+  const [filteredProfileViews, setFilteredProfileViews] = useState<ProfileView[]>([]);
+  const [selectedProfileView, setSelectedProfileView] = useState<ProfileView | null>(null);
+  const [highlightedViewId, setHighlightedViewId] = useState<number | undefined>(undefined);
+  const [profileViewSearchTerm, setProfileViewSearchTerm] = useState('');
+  const [profileViewFilters, setProfileViewFilters] = useState({
+    industry: 'All',
+    viewType: 'All',
+    timeRange: 'All'
+  });
+  
   const { notification, visible, showNotification, hideNotification } = useNotification();
-
   // Filter options
-  const industryOptions = ['All', 'Technology', 'Finance', 'Healthcare', 'Education', 'Entertainment', 'Automotive', 'Design', 'Marketing'];
+  const industryOptions = ['All', 'Technology', 'Finance', 'Healthcare', 'Education', 'Entertainment', 'Automotive', 'Design', 'Marketing', 'E-commerce'];
   const recommendationOptions = ['All', 'High', 'Medium', 'Low'];
   const ratingOptions = ['All', '5 Stars', '4+ Stars', '3+ Stars'];
+  
+  // Profile view filter options
+  const viewTypeOptions = ['All', 'New Views', 'Recurring Views'];
+  const timeRangeOptions = ['All', 'Last 24 Hours', 'Last 7 Days', 'Last 30 Days'];
 
-  // Format filters for the global FilterSidebar component
+  // Format filters for the companies tab
   const getFormattedFilters = () => {
     return [
       {
@@ -51,8 +87,32 @@ export default function CompaniesPage() {
       }
     ];
   };
+  
+  // Format filters for the profile views tab
+  const getFormattedProfileViewFilters = () => {
+    return [
+      {
+        title: "Industry",
+        options: industryOptions,
+        type: "industry",
+        value: profileViewFilters.industry || 'All'
+      },
+      {
+        title: "View Type",
+        options: viewTypeOptions,
+        type: "viewType",
+        value: profileViewFilters.viewType || 'All'
+      },
+      {
+        title: "Time Range",
+        options: timeRangeOptions,
+        type: "timeRange",
+        value: profileViewFilters.timeRange || 'All'
+      }
+    ];
+  };
 
-  // Mock data for companies
+  // Mock data for companies  
   useEffect(() => {
     // This would typically be an API call to fetch companies
     const mockCompanies: Company[] = [
@@ -274,12 +334,59 @@ export default function CompaniesPage() {
         matchScore: 72
       }
     ];
-    
-    setCompanies(mockCompanies);
+      // Mock profile views data
+    const mockProfileViews: ProfileView[] = [
+      {
+        id: 1,
+        company: 'Google',
+        logo: '/logos/google.png',
+        viewDate: '2025-05-10',
+        viewTime: '10:30 AM',
+        jobTitle: 'Software Engineer',
+        recruiterName: 'Sarah Johnson',
+        industry: 'Technology',
+        isRecurring: false
+      },
+      {
+        id: 2,
+        company: 'Microsoft',
+        logo: '/logos/microsoft.png',
+        viewDate: '2025-05-09',
+        viewTime: '2:45 PM',
+        jobTitle: 'Full Stack Developer',
+        recruiterName: 'James Wilson',
+        industry: 'Technology',
+        isRecurring: true
+      },
+      {
+        id: 3,
+        company: 'Amazon',
+        logo: '/logos/amazon.png',
+        viewDate: '2025-05-05',
+        viewTime: '11:15 AM',
+        jobTitle: 'Backend Engineer',
+        recruiterName: 'Michael Brown',
+        industry: 'E-commerce',
+        isRecurring: false
+      },
+      {
+        id: 4,
+        company: 'Tesla',
+        logo: '/logos/tesla.png',
+        viewDate: '2025-04-30',
+        viewTime: '9:20 AM',
+        jobTitle: 'Data Scientist',
+        recruiterName: 'Emily Davis',
+        industry: 'Automotive',
+        isRecurring: true
+      }
+    ];    setCompanies(mockCompanies);
     setFilteredCompanies(mockCompanies);
+    setProfileViews(mockProfileViews);
+    setFilteredProfileViews(mockProfileViews);
   }, []);
 
-  // Filter companies based on search term and filters
+  // Filter companies based on search term and filters  // Filter companies based on search term and filters
   useEffect(() => {
     let results = [...companies];
     
@@ -325,6 +432,77 @@ export default function CompaniesPage() {
     
     setFilteredCompanies(results);
   }, [companies, searchTerm, activeFilters]);
+  
+  // Filter profile views based on search term and filters
+  useEffect(() => {
+    let results = [...profileViews];
+    
+    // Apply search term (company name or industry)
+    if (profileViewSearchTerm.trim() !== '') {
+      const term = profileViewSearchTerm.toLowerCase();
+      results = results.filter(
+        view => 
+          view.company.toLowerCase().includes(term) || 
+          view.industry.toLowerCase().includes(term) ||
+          (view.recruiterName && view.recruiterName.toLowerCase().includes(term)) ||
+          (view.jobTitle && view.jobTitle.toLowerCase().includes(term))
+      );
+    }
+    
+    // Apply industry filter if not "All"
+    if (profileViewFilters.industry !== 'All') {
+      results = results.filter(view => 
+        view.industry === profileViewFilters.industry
+      );
+    }
+    
+    // Apply view type filter if not "All"
+    if (profileViewFilters.viewType !== 'All') {
+      if (profileViewFilters.viewType === 'New Views') {
+        results = results.filter(view => !view.isRecurring);
+      } else if (profileViewFilters.viewType === 'Recurring Views') {
+        results = results.filter(view => view.isRecurring);
+      }
+    }
+    
+    // Apply time range filter
+    if (profileViewFilters.timeRange !== 'All') {
+      const now = new Date();
+      const viewDate = (dateStr: string) => new Date(dateStr);
+      
+      if (profileViewFilters.timeRange === 'Last 24 Hours') {
+        results = results.filter(view => {
+          const date = viewDate(view.viewDate);
+          const diffTime = now.getTime() - date.getTime();
+          const diffDays = diffTime / (1000 * 3600 * 24);
+          return diffDays <= 1;
+        });
+      } else if (profileViewFilters.timeRange === 'Last 7 Days') {
+        results = results.filter(view => {
+          const date = viewDate(view.viewDate);
+          const diffTime = now.getTime() - date.getTime();
+          const diffDays = diffTime / (1000 * 3600 * 24);
+          return diffDays <= 7;
+        });
+      } else if (profileViewFilters.timeRange === 'Last 30 Days') {
+        results = results.filter(view => {
+          const date = viewDate(view.viewDate);
+          const diffTime = now.getTime() - date.getTime();
+          const diffDays = diffTime / (1000 * 3600 * 24);
+          return diffDays <= 30;
+        });
+      }
+    }
+    
+    // Sort by view date (newest first)
+    results.sort((a, b) => {
+      const dateA = new Date(`${a.viewDate} ${a.viewTime}`);
+      const dateB = new Date(`${b.viewDate} ${b.viewTime}`);
+      return dateB.getTime() - dateA.getTime();
+    });
+    
+    setFilteredProfileViews(results);
+  }, [profileViews, profileViewSearchTerm, profileViewFilters]);
 
   // Handle viewing company details
   const handleViewDetails = (company: Company) => {
@@ -335,7 +513,6 @@ export default function CompaniesPage() {
   const handleCloseModal = () => {
     setSelectedCompany(null);
   };
-
   // Handle filter changes
   const handleFilterChange = (filterType: string, value: string) => {
     setActiveFilters(prev => ({
@@ -343,7 +520,24 @@ export default function CompaniesPage() {
       [filterType]: value
     }));
   };
-
+  
+  // Handle profile view filter changes
+  const handleProfileViewFilterChange = (filterType: string, value: string) => {
+    setProfileViewFilters(prev => ({
+      ...prev,
+      [filterType]: value
+    }));
+  };
+  
+  // Clear all profile view filters
+  const handleClearProfileViewFilters = () => {
+    setProfileViewFilters({
+      industry: 'All',
+      viewType: 'All',
+      timeRange: 'All'
+    });
+    setProfileViewSearchTerm('');
+  };
   // Handle saving a company
   const handleSaveCompany = (companyId: number) => {
     // Implement save company functionality (would be API call in real app)
@@ -352,67 +546,159 @@ export default function CompaniesPage() {
       type: 'success'
     });
   };
+  
+  // Handle view profile view details
+  const handleViewProfileDetails = (view: ProfileView) => {
+    setSelectedProfileView(view);
+  };
+  
+  // Handle closing the profile view details modal
+  const handleCloseProfileViewModal = () => {
+    setSelectedProfileView(null);
+  };
+  
+  // Navigation menu items for tabs
+  const navItems: MenuItem[] = [
+    {
+      id: 'companies',
+      label: 'Companies',
+      icon: <Building size={18} />,
+      onClick: () => setActiveTab('companies')
+    },
+    {
+      id: 'profileViews',
+      label: 'Profile Views',
+      icon: <Eye size={18} />,
+      count: profileViews.length,
+      onClick: () => setActiveTab('profileViews')
+    }
+  ];
+  
   return (
-    <div className={styles.pageContainer}>
-      {/* Header/Navigation */}
-      <Navigation title="GUC Internship Portal" />
+    <div className={styles.pageContainer}>      
+      {/* Tab Navigation */}
+      <NavigationMenu 
+        items={navItems} 
+        activeItemId={activeTab}
+        onItemChange={(tabId) => setActiveTab(tabId as 'companies' | 'profileViews')}
+        variant="tabs"
+        className={styles.tabNavigation}
+      />
 
       <div className={styles.contentWrapper}>
-        {/* Left Sidebar with Filters */}
-        <FilterSidebar 
-          filters={getFormattedFilters()}
-          onFilterChange={handleFilterChange}
-        />
+        {activeTab === 'companies' ? (
+          <>
+            {/* Left Sidebar with Filters */}
+            <FilterSidebar 
+              filters={getFormattedFilters()}
+              onFilterChange={handleFilterChange}
+            />
 
-        {/* Main Content */}
-        <main className={styles.mainContent}>
-          {/* Search Bar */}
-          <SearchBar 
-            searchTerm={searchTerm} 
-            setSearchTerm={setSearchTerm} 
-            placeholder="Search by company name or industry..."
-          />
+            {/* Main Content */}
+            <main className={styles.mainContent}>
+              {/* Search Bar */}
+              <SearchBar 
+                searchTerm={searchTerm} 
+                setSearchTerm={setSearchTerm} 
+                placeholder="Search by company name or industry..."
+              />
 
-          {/* Company Listings */}
-          <div className={styles.companyListings}>
-            <div className={styles.listingHeader}>
-              <h2 className={styles.listingTitle}>Suggested Companies</h2>
-              <span className={styles.companyCount}>
-                {filteredCompanies.length} Compan{filteredCompanies.length !== 1 ? 'ies' : 'y'}
-              </span>
-            </div>
-            
-            <div className={styles.cards}>
-              {filteredCompanies.length > 0 ? (
-                filteredCompanies.map((company) => (
-                  <CompanyCard
-                    key={company.id}
-                    company={company}
-                    onViewDetails={() => handleViewDetails(company)}
-                    onSave={() => handleSaveCompany(company.id)}
-                  />
-                ))
-              ) : (
-                <div className={styles.noResults}>
-                  <img 
-                    src="assets/images/icons/search.png" 
-                    alt="Search Icon" 
-                    className={styles.searchIcon} 
-                  /> 
-                  <h3>No companies found</h3>
-                  <p>Try adjusting your search criteria or filters</p>
+              {/* Company Listings */}
+              <div className={styles.companyListings}>
+                <div className={styles.listingHeader}>
+                  <h2 className={styles.listingTitle}>Suggested Companies</h2>
+                  <span className={styles.companyCount}>
+                    {filteredCompanies.length} Compan{filteredCompanies.length !== 1 ? 'ies' : 'y'}
+                  </span>
                 </div>
-              )}
-            </div>
-          </div>
-        </main>
+                
+                <div className={styles.cards}>
+                  {filteredCompanies.length > 0 ? (
+                    filteredCompanies.map((company) => (
+                      <CompanyCard
+                        key={company.id}
+                        company={company}
+                        onViewDetails={() => handleViewDetails(company)}
+                        onSave={() => handleSaveCompany(company.id)}
+                      />
+                    ))
+                  ) : (
+                    <div className={styles.noResults}>
+                      <img 
+                        src="assets/images/icons/search.png" 
+                        alt="Search Icon" 
+                        className={styles.searchIcon} 
+                      /> 
+                      <h3>No companies found</h3>
+                      <p>Try adjusting your search criteria or filters</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </main>
+          </>        
+          ) : (
+          <>
+            {/* Left Sidebar with Filters for Profile Views */}
+            <FilterSidebar 
+              filters={getFormattedProfileViewFilters()}
+              onFilterChange={handleProfileViewFilterChange}
+              onClearFilters={handleClearProfileViewFilters}
+            />
+
+            <main className={styles.mainContent}>
+              {/* Search Bar for Profile Views */}
+              <SearchBar 
+                searchTerm={profileViewSearchTerm}
+                setSearchTerm={setProfileViewSearchTerm}
+                placeholder="Search by company, industry, recruiter..."
+              />
+
+              <div className={styles.companyListings}>              
+                <div className={styles.profileViewsHeaderContainer}>
+                  <div className={styles.profileViewsHeader}>
+                    <h2 className={styles.listingTitle}>Companies that viewed your profile</h2>
+                  </div>
+                
+                  {/* Profile Views Stats */}
+                  <div className={styles.viewsStats}>
+                    <span className={styles.viewsCount}>
+                      {profileViews.length} Total Views
+                    </span>
+                    <span className={styles.companyCount}>
+                      {profileViews.filter(view => !view.isRecurring).length} New Companies
+                    </span>
+                    <span className={styles.recurringCount}>
+                      {profileViews.filter(view => view.isRecurring).length} Recurring Views
+                    </span>
+                  </div>
+                </div>
+                
+                <ProfileViewsList
+                  profileViews={filteredProfileViews}
+                  onViewDetails={handleViewProfileDetails}
+                  highlightedViewId={highlightedViewId}
+                />
+              </div>
+            </main>
+          </>
+        )}
       </div>
-        {/* Details Modal */}
+
+      {/* Company Details Modal */}
       {selectedCompany && (
         <CompanyDetailsModal
           company={selectedCompany}
           onClose={handleCloseModal}
           onSave={() => handleSaveCompany(selectedCompany.id)}
+        />
+      )}
+      
+      {/* Profile View Details Modal */}
+      {selectedProfileView && (
+        <ProfileViewDetailsModal
+          view={selectedProfileView}
+          onClose={handleCloseProfileViewModal}
         />
       )}
       

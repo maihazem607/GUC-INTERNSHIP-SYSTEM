@@ -45,16 +45,6 @@
   margin: 0;
 }
 
-.companyCount {
-  font-size: 0.9rem;
-  color: #43a047;
-  padding: 6px 12px;
-  background: #edf2f7;
-  border-radius: 20px;
-  display: inline-flex;
-  align-items: center;
-}
-
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -97,6 +87,101 @@
   opacity: 0.5;
 }
 
+/* Profile Views Tab Styles */
+.profileViewsHeaderContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+}
+
+.profileViewsHeader {
+  flex: 1;
+}
+
+.profileViewsDescription {
+  color: #718096;
+  margin-top: 8px;
+  font-size: 0.95rem;
+  max-width: 600px;
+}
+
+.viewsStats {
+  display: flex;
+  gap: 12px;
+}
+
+.companyCount {
+  font-size: 0.9rem;
+  color: #43a047;
+  padding: 6px 12px;
+  background: #edf2f7;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.recurringCount {
+  font-size: 0.9rem;
+  color: #7b1fa2;
+  padding: 6px 12px;
+  background: #edf2f7;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.viewsCount {
+  font-size: 0.9rem;
+  color: #1976d2;
+  padding: 6px 12px;
+  background: #edf2f7;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.statValue {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.totalViews .statValue {
+  color: #1976d2;
+}
+
+.newViews .statValue {
+  color: #2e7d32;
+}
+
+.recurringViews .statValue {
+  color: #7b1fa2;
+}
+
+.statLabel {
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 5px;
+}
+
+.totalViews .statLabel {
+  color: #1976d2;
+}
+
+.newViews .statLabel {
+  color: #2e7d32;
+}
+
+.recurringViews .statLabel {
+  color: #7b1fa2;
+}
+
+/* Make the sidebar full width on profile views tab - useful for small screens */
+.fullWidth {
+  width: 100%;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .contentWrapper {
@@ -111,5 +196,36 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
+  }
+  
+  .profileViewsHeaderContainer {
+    flex-direction: column;
+  }
+  
+  .viewsStatsContainer {
+    margin-left: 0;
+    margin-top: 20px;
+    width: 100%;
+  }
+  
+  .viewsStats {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .statItem {
+    flex: 1;
+    min-width: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .viewsStats {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .statItem {
+    width: 100%;
   }
 }

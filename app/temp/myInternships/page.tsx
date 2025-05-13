@@ -1129,13 +1129,15 @@ const MyInternshipsPage: React.FC = () => {
           onFilterChange={handleFilterChange}
         />
 
-        {/* Main Content */}        <main className={styles.mainContent}>
+        {/* Main Content */}        
+        <main className={styles.mainContent}>
           {/* Search Bar */}
           <SearchBar
             searchTerm={searchTerm} 
             setSearchTerm={setSearchTerm} 
             placeholder="Search by job title or company..."
-          />          <div className={styles.internshipListings}>
+          />          
+          <div className={styles.internshipListings}>
             <div className={styles.listingHeader}>
               <h2 className={styles.listingTitle}>
                 {activeTab === 'applications' ? 'My Applications' : 
@@ -1145,7 +1147,8 @@ const MyInternshipsPage: React.FC = () => {
                 {filteredInternships.length} {activeTab === 'reports' ? 'Report' : 'Internship'}{filteredInternships.length !== 1 ? 's' : ''}
               </span>
             </div>            
-            {filteredInternships.length > 0 ? (              activeTab === 'reports' ? (
+            {filteredInternships.length > 0 ? (              
+              activeTab === 'reports' ? (
                 <ReportsList 
                   reports={filteredInternships} 
                   onViewReportResults={handleViewReportResults}

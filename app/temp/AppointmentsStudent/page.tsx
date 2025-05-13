@@ -569,7 +569,8 @@ export default function AppointmentsPage() {
 
   return (
     <div className={styles.pageContainer}>
-      {/* Header/Navigation */}      <NavigationMenu
+      {/* Navigation */}      
+      <NavigationMenu
         items={[
           {
             id: 'my-appointments',
