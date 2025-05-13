@@ -26,8 +26,11 @@ import {
   ClipboardCheck,
   Briefcase,
   Search,
-  Calendar
+  AlertCircle,
+  Calendar,
+  BarChart2
 } from 'lucide-react';
+import StatisticsSection, { StatisticsData } from "../../../src/components/SCAD/StatisticsSection";
 import EvaluationTable from '../../../src/components/SCAD/EvaluationList';
 
 // Mock data for companies
@@ -488,7 +491,58 @@ const mockInternships: Internship[] = [
 ];
 
 // Dashboard tabs type
-type ActiveMenuItem = 'companies' | 'students' | 'reports' | 'settings' | 'evaluations' | 'internships' | 'appointments';
+type ActiveMenuItem = 'companies' | 'students' | 'reports' | 'settings' | 'evaluations' | 'internships' | 'appointments' | 'statistics';
+
+// Mock statistics data
+const mockStatisticsData: StatisticsData = {
+  reports: {
+    accepted: 52,
+    rejected: 18,
+    flagged: 12,
+    total: 82,
+    trend: { value: 8.2, isPositive: true }
+  },
+  reviewTime: {
+    average: '2.3 days',
+    trend: { value: 15, isPositive: true }
+  },
+  courses: {
+    topCourses: [
+      { name: 'CSEN 704 Advanced Computer Lab', count: 87 },
+      { name: 'DMET 502 Computer Graphics', count: 62 },
+      { name: 'CSEN 603 Software Engineering', count: 58 },
+      { name: 'CSEN 401 Computer Programming', count: 45 },
+      { name: 'CSEN 501 Data Structures', count: 42 },
+      { name: 'CSEN 702 Microprocessors', count: 38 },
+      { name: 'CSEN 503 Database Systems', count: 35 },
+      { name: 'CSEN 402 Computer Organization', count: 30 }
+    ],
+    trend: { value: 5, isPositive: true }
+  },
+  companies: {
+    topRated: [
+      { name: 'Google', rating: 9.2 },
+      { name: 'Microsoft', rating: 9.0 },
+      { name: 'Amazon', rating: 8.8 },
+      { name: 'IBM', rating: 8.5 },
+      { name: 'Apple', rating: 8.4 }
+    ],
+    trend: { value: 2, isPositive: true }
+  },
+  internships: {
+    topCompanies: [
+      { name: 'Google', count: 24 },
+      { name: 'Microsoft', count: 18 },
+      { name: 'Amazon', count: 16 },
+      { name: 'IBM', count: 14 },
+      { name: 'Apple', count: 12 },
+      { name: 'Facebook', count: 10 },
+      { name: 'Tesla', count: 8 }
+    ],
+    total: 120,
+    trend: { value: 12, isPositive: true }
+  }
+};
 
 export default function SCADDashboardPage() {
   // Router and search params for handling URL query parameters
@@ -927,8 +981,7 @@ export default function SCADDashboardPage() {
       type: "paid",
       value: selectedInternshipPaid
     }
-  ];
-  function handleSaveInternshipCycle(): void {
+  ];  function handleSaveInternshipCycle(): void {
     // In a real application, this would involve an API call to save the internship cycle dates
     console.log('Internship cycle saved:', {
       startDate: internshipCycleStart,
@@ -941,16 +994,28 @@ export default function SCADDashboardPage() {
       type: 'success'
     });
   }
+  
+  // Function to handle report generation from the statistics section
+  function handleGenerateStatisticsReport(): void {
+    // In a real application, this would generate and potentially download a PDF report
+    console.log('Generating statistics report...');
+    
+    // Show a success notification when the "report" is generated
+    showNotification({
+      message: 'Statistics report generated successfully! Ready for download.',
+      type: 'success'
+    });
+  }
 
   return (
-    <div className={styles.pageContainer}>
-      <NavigationMenu
+    <div className={styles.pageContainer}>      <NavigationMenu
         items={[
           { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => setActiveItem('companies') },
           { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => setActiveItem('students') },
           { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => setActiveItem('reports') },
           { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => setActiveItem('evaluations') },
           { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => setActiveItem('internships') },
+          { id: 'statistics', label: 'Statistics', icon: <BarChart2 size={18} />, onClick: () => setActiveItem('statistics') },
           {
             id: 'appointments',
             label: 'Appointments',
@@ -969,11 +1034,9 @@ export default function SCADDashboardPage() {
           alt: 'GUC Internship System'
         }}
         variant="navigation"
-      />
-
-      <div className={styles.contentWrapper}>
-        {/* Filter Sidebar - shows filters based on active tab, hidden for settings */}
-        {activeItem !== 'settings' && (
+      />      <div className={styles.contentWrapper}>
+        {/* Filter Sidebar - shows filters based on active tab, hidden for settings and statistics */}
+        {activeItem !== 'settings' && activeItem !== 'statistics' && (
           <FilterSidebar
             filters={
               activeItem === 'companies' ? companyFilters :
@@ -995,14 +1058,14 @@ export default function SCADDashboardPage() {
         )}
 
         {/* Main Content */}
-        <main className={`${styles.mainContent} ${activeItem === 'settings' ? styles.fullWidth : ''}`}>
-          {/* Current section title */}
-          <div className={styles.sectionTitle}>
+        <main className={`${styles.mainContent} ${(activeItem === 'settings' || activeItem === 'statistics') ? styles.fullWidth : ''}`}>
+          {/* Current section title */}          <div className={styles.sectionTitle}>
             {activeItem === 'companies' && <h2>Companies</h2>}
             {activeItem === 'students' && <h2>Students</h2>}
             {activeItem === 'reports' && <h2>Reports</h2>}
             {activeItem === 'evaluations' && <h2>Evaluations</h2>}
             {activeItem === 'internships' && <h2>Internships</h2>}
+            {activeItem === 'statistics' && <h2>Statistics</h2>}
             {activeItem === 'settings' && <h2>Settings</h2>}
           </div>
 
@@ -1189,8 +1252,14 @@ export default function SCADDashboardPage() {
                 )}
               </div>
             </>
+          )}          {/* STATISTICS TAB */}
+          {activeItem === 'statistics' && (
+            <StatisticsSection 
+              data={mockStatisticsData}
+              onGenerateReport={handleGenerateStatisticsReport}
+            />
           )}
-
+          
           {/* SETTINGS TAB */}
           {activeItem === 'settings' && (
             <SettingsCard
