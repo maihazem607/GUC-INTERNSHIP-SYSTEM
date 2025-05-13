@@ -1,23 +1,37 @@
 'use client';
 import { useState, useEffect } from 'react';
 import styles from './SCADpage.module.css';
-import Navigation from "../../src/components/global/Navigation";
-import FilterSidebar from "../../src/components/global/FilterSidebar";
-import SearchBar from "../../src/components/global/SearchBar";
-import DashboardTab, { TabItem } from "../../src/components/global/DashboardTab";
-import CompanyApplicationCard from "../../src/components/SCAD/CompanyApplicationCard";
-import CompanyApplicationModal from "../../src/components/SCAD/CompanyApplicationModal";
-import StudentCard from "../../src/components/SCAD/StudentCard";
-import ReportTable from "../../src/components/SCAD/ReportList";
-import SettingsCard from "../../src/components/SCAD/SettingsCard";
-import StudentDetailsModal from "../../src/components/SCAD/StudentDetailsModal";
-import ReportDetailsModal from "../../src/components/SCAD/ReportDetailsModal";
-import EvaluationCard, { Evaluation } from "../../src/components/SCAD/EvaluationList";
-import EvaluationDetails from "../../src/components/SCAD/EvaluationDetails";
-import InternshipCard from "../../src/components/internships/InternshipCard";
-import InternshipDetailsModal from "../../src/components/internships/InternshipDetailsModal";
-import { Internship } from "../../src/components/internships/types";
-import NotificationSystem, { useNotification } from "../../src/components/global/NotificationSystem";
+import NavigationMenu, { MenuItem } from "../../../src/components/global/NavigationMenu";
+import { useRouter, useSearchParams } from 'next/navigation';
+import FilterSidebar from "../../../src/components/global/FilterSidebar";
+import SearchBar from "../../../src/components/global/SearchBar";
+import CompanyApplicationCard from "../../../src/components/SCAD/CompanyApplicationCard";
+import CompanyApplicationModal from "../../../src/components/SCAD/CompanyApplicationModal";
+import StudentCard from "../../../src/components/SCAD/StudentCard";
+import ReportTable from "../../../src/components/SCAD/ReportList";
+import SettingsCard from "../../../src/components/SCAD/SettingsCard";
+import StudentDetailsModal from "../../../src/components/SCAD/StudentDetailsModal";
+import ReportDetailsModal from "../../../src/components/SCAD/ReportDetailsModal";
+import EvaluationCard, { Evaluation } from "../../../src/components/SCAD/EvaluationList";
+import EvaluationDetails from "../../../src/components/SCAD/EvaluationDetails";
+import InternshipCard from "../../../src/components/internships/InternshipCard";
+import InternshipDetailsModal from "../../../src/components/internships/InternshipDetailsModal";
+import { Internship } from "../../../src/components/internships/types";
+import NotificationSystem, { useNotification } from "../../../src/components/global/NotificationSystem";
+import {
+  Building,
+  Users,
+  FileText,
+  Settings,
+  ClipboardCheck,
+  Briefcase,
+  Bell,
+  MapPin,
+  User,
+  Search,
+  AlertCircle,
+  Calendar
+} from 'lucide-react';
 
 // Mock data for companies
 const industryOptions = ['Technology', 'Finance', 'Healthcare', 'Education', 'Manufacturing', 'Other'];
@@ -442,12 +456,23 @@ const mockInternships: Internship[] = [
 ];
 
 // Dashboard tabs type
-type DashboardTab = 'companies' | 'students' | 'reports' | 'settings' | 'evaluations' | 'internships';
+type ActiveMenuItem = 'companies' | 'students' | 'reports' | 'settings' | 'evaluations' | 'internships' | 'appointments';
 
 export default function SCADDashboardPage() {
-  // State for tab navigation
-  const [activeTab, setActiveTab] = useState<DashboardTab>('companies');
+  // Router and search params for handling URL query parameters
+  const router = useRouter();
+  const searchParams = useSearchParams();
   
+  // State for navigation - Get from URL or default to 'companies'
+  const [activeItem, setActiveItem] = useState<ActiveMenuItem>(
+    (searchParams.get('activeItem') as ActiveMenuItem) || 'companies'
+  );
+  
+  // Update the URL when activeItem changes
+  useEffect(() => {
+    router.push(`/SCADLogin/SCADdashboard${activeItem !== 'companies' ? `?activeItem=${activeItem}` : ''}`);
+  }, [activeItem, router]);
+
   // Companies states
   const [companies, setCompanies] = useState<Company[]>([]);
   const [companySearchTerm, setCompanySearchTerm] = useState('');
@@ -477,7 +502,7 @@ export default function SCADDashboardPage() {
   const [selectedEvaluationMajor, setSelectedEvaluationMajor] = useState('');
   const [selectedEvaluation, setSelectedEvaluation] = useState<Evaluation | null>(null);
   const [showEvaluationDetails, setShowEvaluationDetails] = useState(false);
-  
+
   // Internships states
   const [internships, setInternships] = useState<Internship[]>([]);
   const [internshipSearchTerm, setInternshipSearchTerm] = useState('');
@@ -487,10 +512,10 @@ export default function SCADDashboardPage() {
   const [selectedInternship, setSelectedInternship] = useState<Internship | null>(null);
   const [showInternshipDetails, setShowInternshipDetails] = useState(false);
   const [starredInternships, setStarredInternships] = useState<number[]>([]);
-    // Settings states
+  // Settings states
   const [internshipCycleStart, setInternshipCycleStart] = useState('2023-09-01');
   const [internshipCycleEnd, setInternshipCycleEnd] = useState('2024-06-30');
-  
+
   // Global notification state
   const { notification, visible, showNotification, hideNotification } = useNotification();
 
@@ -502,7 +527,7 @@ export default function SCADDashboardPage() {
     setEvaluations(mockEvaluations);
     setInternships(mockInternships);
   }, []);
-  
+
   // COMPANIES SECTION HANDLERS
   const handleCompanySearch = (term: string) => {
     setCompanySearchTerm(term);
@@ -523,11 +548,11 @@ export default function SCADDashboardPage() {
   };
   const handleAccept = (id: number) => {
     const company = companies.find(company => company.id === id);
-    setCompanies(companies.map((company: Company) => 
+    setCompanies(companies.map((company: Company) =>
       company.id === id ? { ...company, status: 'accepted' } : company
     ));
     setShowCompanyDetails(false);
-      // Show success notification
+    // Show success notification
     if (company) {
       showNotification({
         message: `${company.name} has been accepted successfully.`,
@@ -538,11 +563,11 @@ export default function SCADDashboardPage() {
 
   const handleReject = (id: number) => {
     const company = companies.find(company => company.id === id);
-    setCompanies(companies.map((company: Company) => 
+    setCompanies(companies.map((company: Company) =>
       company.id === id ? { ...company, status: 'rejected' } : company
     ));
     setShowCompanyDetails(false);
-      // Show info notification
+    // Show info notification
     if (company) {
       showNotification({
         message: `${company.name} has been rejected.`,
@@ -552,7 +577,7 @@ export default function SCADDashboardPage() {
   };
   // Filter companies
   const filteredCompanies = companies.filter((company: Company) => {
-    const matchesSearch = 
+    const matchesSearch =
       company.name.toLowerCase().includes(companySearchTerm.toLowerCase()) ||
       company.description.toLowerCase().includes(companySearchTerm.toLowerCase()) ||
       company.industry.toLowerCase().includes(companySearchTerm.toLowerCase());
@@ -591,8 +616,8 @@ export default function SCADDashboardPage() {
 
   // Filter students
   const filteredStudents: Student[] = students.filter((student: Student) => {
-    const matchesSearch: boolean = student.name.toLowerCase().includes(studentSearchTerm.toLowerCase()) || 
-                                   student.email.toLowerCase().includes(studentSearchTerm.toLowerCase());
+    const matchesSearch: boolean = student.name.toLowerCase().includes(studentSearchTerm.toLowerCase()) ||
+      student.email.toLowerCase().includes(studentSearchTerm.toLowerCase());
     const matchesStatus: boolean = selectedInternshipStatus === '' || student.internshipStatus === selectedInternshipStatus;
     return matchesSearch && matchesStatus;
   });
@@ -630,10 +655,10 @@ export default function SCADDashboardPage() {
   };
   const handleUpdateReportStatus = (id: number, newStatus: 'pending' | 'flagged' | 'rejected' | 'accepted') => {
     const report = reports.find(report => report.id === id);
-    setReports(reports.map((report: any) => 
+    setReports(reports.map((report: any) =>
       report.id === id ? { ...report, status: newStatus } : report
     ));
-    
+
     // Show notification based on action
     if (report) {
       const statusMessages = {
@@ -654,7 +679,7 @@ export default function SCADDashboardPage() {
           type: 'info'
         }
       };
-      
+
       showNotification({
         message: statusMessages[newStatus].message,
         type: statusMessages[newStatus].type as 'success' | 'error' | 'warning' | 'info'
@@ -665,7 +690,7 @@ export default function SCADDashboardPage() {
   // Filter reports
   const filteredReports = reports.filter((report: any) => {
     const matchesSearch = report.title.toLowerCase().includes(reportSearchTerm.toLowerCase()) ||
-                          report.studentName.toLowerCase().includes(reportSearchTerm.toLowerCase());
+      report.studentName.toLowerCase().includes(reportSearchTerm.toLowerCase());
     const matchesStatus = selectedReportStatus === '' || report.status === selectedReportStatus;
     const matchesMajor = selectedReportMajor === '' || report.major === selectedReportMajor;
     return matchesSearch && matchesStatus && matchesMajor;
@@ -675,7 +700,7 @@ export default function SCADDashboardPage() {
   const handleEvaluationSearch = (term: string) => {
     setEvaluationSearchTerm(term);
   };
-  
+
   const handleEvaluationFilterChange = (filterType: string, value: string) => {
     if (filterType === 'status') {
       setSelectedEvaluationStatus(value.toLowerCase());
@@ -683,52 +708,54 @@ export default function SCADDashboardPage() {
       setSelectedEvaluationMajor(value);
     }
   };
-  
+
   const handleViewEvaluationDetails = (evaluation: Evaluation) => {
     setSelectedEvaluation(evaluation);
     setShowEvaluationDetails(true);
   };
-  
+
   const handleCloseEvaluationDetails = () => {
     setShowEvaluationDetails(false);
     setSelectedEvaluation(null);
   };
-    const handleUpdateEvaluation = (id: number, score: number, comments: string) => {
+  const handleUpdateEvaluation = (id: number, score: number, comments: string) => {
     // In a real app, you would call an API here
     const evaluation = evaluations.find(evaluation => evaluation.id === id);
-    setEvaluations(evaluations.map(evaluation => 
+    setEvaluations(evaluations.map(evaluation =>
       evaluation.id === id ? { ...evaluation, evaluationScore: score } : evaluation
     ));
-    
+
     // Close the modal or keep it open with updated data
     setSelectedEvaluation(prev => prev ? { ...prev, evaluationScore: score } : null);
-    
+
     // Show success notification
-    if (evaluation) {      showNotification({
+    if (evaluation) {
+      showNotification({
         message: `Evaluation for ${evaluation.studentName} has been updated successfully.`,
         type: 'success'
       });
     }
   };
-  
+
   const handleDeleteEvaluation = (id: number) => {
     // In a real app, you would call an API here
     const evaluation = evaluations.find(evaluation => evaluation.id === id);
     setEvaluations(evaluations.filter(evaluation => evaluation.id !== id));
     setShowEvaluationDetails(false);
-    
+
     // Show info notification
-    if (evaluation) {      showNotification({
+    if (evaluation) {
+      showNotification({
         message: `Evaluation for ${evaluation.studentName} has been deleted.`,
         type: 'info'
       });
     }
   };
-  
+
   // Filter evaluations
   const filteredEvaluations = evaluations.filter((evaluation: Evaluation) => {
-    const matchesSearch = 
-      evaluation.studentName.toLowerCase().includes(evaluationSearchTerm.toLowerCase()) || 
+    const matchesSearch =
+      evaluation.studentName.toLowerCase().includes(evaluationSearchTerm.toLowerCase()) ||
       evaluation.companyName.toLowerCase().includes(evaluationSearchTerm.toLowerCase());
     const matchesStatus = selectedEvaluationStatus === '' || evaluation.status === selectedEvaluationStatus;
     const matchesMajor = selectedEvaluationMajor === '' || evaluation.major === selectedEvaluationMajor;
@@ -763,7 +790,7 @@ export default function SCADDashboardPage() {
   };
 
   const handleStarInternship = (id: number) => {
-    setStarredInternships(prev => 
+    setStarredInternships(prev =>
       prev.includes(id) ? prev.filter(starId => starId !== id) : [...prev, id]
     );
   };
@@ -782,7 +809,7 @@ export default function SCADDashboardPage() {
   // Filter internships
   const filteredInternships = internships.filter((internship: Internship) => {
     const matchesSearch = internship.title.toLowerCase().includes(internshipSearchTerm.toLowerCase()) ||
-                          internship.company.toLowerCase().includes(internshipSearchTerm.toLowerCase());
+      internship.company.toLowerCase().includes(internshipSearchTerm.toLowerCase());
     const matchesIndustry = selectedInternshipIndustry === '' || internship.industry === selectedInternshipIndustry;
     const matchesDuration = selectedInternshipDuration === '' || internship.duration === selectedInternshipDuration;
     const matchesPaid = selectedInternshipPaid === '' || (selectedInternshipPaid === 'true' ? internship.isPaid : !internship.isPaid);
@@ -874,80 +901,88 @@ export default function SCADDashboardPage() {
       startDate: internshipCycleStart,
       endDate: internshipCycleEnd,
     });
-    
+
     // Show success notification instead of alert    
     showNotification({
       message: 'Internship cycle dates have been saved successfully!',
       type: 'success'
     });
-  }  return (
+  }
+
+  return (
     <div className={styles.pageContainer}>
-      <Navigation title="SCAD Dashboard" />      
+      <NavigationMenu
+        items={[
+          { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => setActiveItem('companies') },
+          { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => setActiveItem('students') },
+          { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => setActiveItem('reports') },
+          { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => setActiveItem('evaluations') },
+          { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => setActiveItem('internships') },
+          {
+            id: 'appointments',
+            label: 'Appointments',
+            icon: <Calendar size={18} />,
+            dropdownItems: [
+              { id: 'my-appointments', label: 'My Appointments', onClick: () => { router.push('/SCADLogin/AppointmentsSCAD'); } },
+              { id: 'requests', label: 'Requests', onClick: () => { router.push('/SCADLogin/AppointmentsSCAD?tab=requests'); } },
+              { id: 'new-appointment', label: 'New Appointment', onClick: () => { router.push('/SCADLogin/AppointmentsSCAD?tab=new-appointment'); } }
+            ]
+          },
+          { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => setActiveItem('settings') }
+        ]}
+        activeItemId={activeItem}
+        logo={{
+          src: '/logos/GUCInternshipSystemLogo.png',
+          alt: 'GUC Internship System'
+        }}
+        variant="navigation"
+      />
+
       <div className={styles.contentWrapper}>
-        {/* Filter Sidebar - shows filters based on active tab */}
-        <FilterSidebar 
-          filters={
-            activeTab === 'companies' ? companyFilters : 
-            activeTab === 'students' ? studentFilters :
-            activeTab === 'reports' ? reportFilters :
-            activeTab === 'evaluations' ? evaluationFilters :
-            activeTab === 'internships' ? internshipFilters : []
-          }
-          onFilterChange={
-            activeTab === 'companies' ? handleIndustryChange : 
-            activeTab === 'students' ? handleStudentFilterChange :
-            activeTab === 'reports' ? handleReportFilterChange :
-            activeTab === 'evaluations' ? handleEvaluationFilterChange :
-            activeTab === 'internships' ? handleInternshipFilterChange : () => {}
-          }
-        />
-          {/* Main Content */}
-        <main className={styles.mainContent}>
-          {/* Tab Navigation */}
-          <DashboardTab
-            tabs={[
-              { 
-                id: 'companies', 
-                label: 'Companies', 
-                count: pendingCompanyCount 
-              },
-              { 
-                id: 'students', 
-                label: 'Students', 
-                count: activeInternshipCount 
-              },              { 
-                id: 'reports', 
-                label: 'Reports', 
-                count: pendingReportsCount 
-              },
-              { 
-                id: 'evaluations', 
-                label: 'Evaluations',
-                count: completedEvaluationsCount 
-              },
-              { 
-                id: 'internships', 
-                label: 'Internships', 
-                count: activeInternshipsCount 
-              },
-              { 
-                id: 'settings', 
-                label: 'Settings' 
-              }
-            ]}
-            activeTab={activeTab}
-            onTabChange={(tabId) => setActiveTab(tabId as DashboardTab)}
-            className={styles.dashboardTabs}
-          />          {/* COMPANIES TAB */}
-          {activeTab === 'companies' && (
+        {/* Filter Sidebar - shows filters based on active tab, hidden for settings */}
+        {activeItem !== 'settings' && (
+          <FilterSidebar
+            filters={
+              activeItem === 'companies' ? companyFilters :
+                activeItem === 'students' ? studentFilters :
+                  activeItem === 'reports' ? reportFilters :
+                    activeItem === 'evaluations' ? evaluationFilters :
+                      activeItem === 'internships' ? internshipFilters :
+                        []
+            }
+            onFilterChange={
+              activeItem === 'companies' ? handleIndustryChange :
+                activeItem === 'students' ? handleStudentFilterChange :
+                  activeItem === 'reports' ? handleReportFilterChange :
+                    activeItem === 'evaluations' ? handleEvaluationFilterChange :
+                      activeItem === 'internships' ? handleInternshipFilterChange :
+                        () => { }
+            }
+          />
+        )}
+
+        {/* Main Content */}
+        <main className={`${styles.mainContent} ${activeItem === 'settings' ? styles.fullWidth : ''}`}>
+          {/* Current section title */}
+          <div className={styles.sectionTitle}>
+            {activeItem === 'companies' && <h2>Companies</h2>}
+            {activeItem === 'students' && <h2>Students</h2>}
+            {activeItem === 'reports' && <h2>Reports</h2>}
+            {activeItem === 'evaluations' && <h2>Evaluations</h2>}
+            {activeItem === 'internships' && <h2>Internships</h2>}
+            {activeItem === 'settings' && <h2>Settings</h2>}
+          </div>
+
+          {/* COMPANIES TAB */}
+          {activeItem === 'companies' && (
             <>
               {/* Search Bar */}
-              <SearchBar 
-                searchTerm={companySearchTerm} 
-                setSearchTerm={handleCompanySearch} 
+              <SearchBar
+                searchTerm={companySearchTerm}
+                setSearchTerm={handleCompanySearch}
                 placeholder="Search by company name, description or industry..."
               />
-              
+
               {/* Company Listings */}
               <div className={styles.listings}>
                 <div className={styles.listingHeader}>
@@ -978,27 +1013,23 @@ export default function SCADDashboardPage() {
                   </div>
                 ) : (
                   <div className={styles.noResults}>
-                    <img 
-                      src="assets/images/icons/search.png" 
-                      alt="Search Icon" 
-                      className={styles.searchIcon} 
-                    />                    
+                    <Search size={48} className={styles.noResultsIcon} />
                     <p>No companies found matching your criteria.</p>
                   </div>
                 )}
               </div>
             </>
-          )}        
+          )}
           {/* STUDENTS TAB */}
-        {activeTab === 'students' && (
-          <>
+          {activeItem === 'students' && (
+            <>
               {/* Search Bar */}
-              <SearchBar 
-                searchTerm={studentSearchTerm} 
-                setSearchTerm={handleStudentSearch} 
+              <SearchBar
+                searchTerm={studentSearchTerm}
+                setSearchTerm={handleStudentSearch}
                 placeholder="Search students by name or email..."
               />
-              
+
               {/* Student Listings */}
               <div className={styles.listings}>
                 <div className={styles.listingHeader}>
@@ -1025,26 +1056,24 @@ export default function SCADDashboardPage() {
                   </div>
                 ) : (
                   <div className={styles.noResults}>
-                    <img 
-                      src="assets/images/icons/search.png" 
-                      alt="Search Icon" 
-                      className={styles.searchIcon} 
-                    />                    <p>No students found matching your criteria.</p>
+                    <Search size={48} className={styles.noResultsIcon} />
+                    <p>No students found matching your criteria.</p>
                   </div>
                 )}
-              </div>            </>
-        )}
-          
-        {/* REPORTS TAB */}
-        {activeTab === 'reports' && (
-          <>
+              </div>
+            </>
+          )}
+
+          {/* REPORTS TAB */}
+          {activeItem === 'reports' && (
+            <>
               {/* Search Bar */}
-              <SearchBar 
+              <SearchBar
                 searchTerm={reportSearchTerm}
                 setSearchTerm={handleReportSearch}
                 placeholder="Search reports by title or student name..."
               />
-              
+
               {/* Report Listings */}
               <div className={styles.listings}>
                 <div className={styles.listingHeader}>
@@ -1052,18 +1081,19 @@ export default function SCADDashboardPage() {
                   <span className={styles.reportCount}>
                     {pendingReportsCount} pending reviews
                   </span>
-                </div>                <ReportTable
+                </div>
+                <ReportTable
                   reports={filteredReports}
                   onViewReport={handleViewReportDetails}
                 />
               </div>
-          </>
-        )}        
-        {/* EVALUATIONS TAB */}
-        {activeTab === 'evaluations' && (
-          <>
+            </>
+          )}
+          {/* EVALUATIONS TAB */}
+          {activeItem === 'evaluations' && (
+            <>
               {/* Search Bar */}
-              <SearchBar 
+              <SearchBar
                 searchTerm={evaluationSearchTerm}
                 setSearchTerm={handleEvaluationSearch}
                 placeholder="Search evaluations by student or company..."
@@ -1088,21 +1118,17 @@ export default function SCADDashboardPage() {
                   </div>
                 ) : (
                   <div className={styles.noResults}>
-                    <img 
-                      src="assets/images/icons/search.png" 
-                      alt="Search Icon" 
-                      className={styles.searchIcon} 
-                    />
+                    <Search size={48} className={styles.noResultsIcon} />
                     <p>No evaluations found matching your criteria.</p>
                   </div>
                 )}
               </div>
-          </>
-        )}        {/* INTERNSHIPS TAB */}
-        {activeTab === 'internships' && (
-          <>
+            </>
+          )}        {/* INTERNSHIPS TAB */}
+          {activeItem === 'internships' && (
+            <>
               {/* Search Bar */}
-              <SearchBar 
+              <SearchBar
                 searchTerm={internshipSearchTerm}
                 setSearchTerm={handleInternshipSearch}
                 placeholder="Search internships by title or company..."
@@ -1129,30 +1155,27 @@ export default function SCADDashboardPage() {
                   </div>
                 ) : (
                   <div className={styles.noResults}>
-                   <img 
-                      src="assets/images/icons/search.png" 
-                      alt="Search Icon" 
-                      className={styles.searchIcon} 
-                    />                    <p>No internships found matching your criteria.</p>
+                    <Search size={48} className={styles.noResultsIcon} />
+                    <p>No internships found matching your criteria.</p>
                   </div>
                 )}
               </div>
-          </>
-        )}
+            </>
+          )}
 
-        {/* SETTINGS TAB */}
-        {activeTab === 'settings' && (
-          <SettingsCard
-            cycleName="2023-2024 Academic Year"
-            startDate={internshipCycleStart}
-            endDate={internshipCycleEnd}
-            onStartDateChange={setInternshipCycleStart}
-            onEndDateChange={setInternshipCycleEnd}
-            onSave={handleSaveInternshipCycle}          />
-        )}
+          {/* SETTINGS TAB */}
+          {activeItem === 'settings' && (
+            <SettingsCard
+              cycleName="2023-2024 Academic Year"
+              startDate={internshipCycleStart}
+              endDate={internshipCycleEnd}
+              onStartDateChange={setInternshipCycleStart}
+              onEndDateChange={setInternshipCycleEnd}
+              onSave={handleSaveInternshipCycle} />
+          )}
         </main>
       </div>
-      
+
       {/* MODALS */}
       {showCompanyDetails && selectedCompany && (
         <CompanyApplicationModal
@@ -1210,26 +1233,24 @@ export default function SCADDashboardPage() {
         <EvaluationDetails
           evaluation={selectedEvaluation}
           onClose={handleCloseEvaluationDetails}
-         // onUpdate={handleUpdateEvaluation}
-          //onDelete={handleDeleteEvaluation}
+        // onUpdate={handleUpdateEvaluation}
+        //onDelete={handleDeleteEvaluation}
         />
       )}
-      {showInternshipDetails && selectedInternship && (        
+      {showInternshipDetails && selectedInternship && (
         <InternshipDetailsModal
           internship={selectedInternship}
           onClose={handleCloseInternshipDetails}
         />
       )}
-      
+
       {/* Global notification system */}
-      {notification && (
-        <NotificationSystem
-          message={notification.message}
-          type={notification.type}
-          visible={visible}
-          onClose={hideNotification}
-        />
-      )}
+      <NotificationSystem
+        message={notification?.message || ''}
+        type={notification?.type || 'info'}
+        visible={visible}
+        onClose={hideNotification}
+      />
     </div>
   );
 }

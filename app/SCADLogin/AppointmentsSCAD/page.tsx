@@ -1,17 +1,20 @@
 "use client";
 import styles from "./page.module.css";
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 
 // Import modular components
-import Navigation from "../../src/components/global/Navigation";
-import FilterSidebar from "../../src/components/global/FilterSidebar";
-import SearchBar from "../../src/components/global/SearchBar";
-import AppointmentCard from "../../src/components/Appointments/AppointmentCard";
-import AppointmentDetailsModal from "@/components/Appointments/AppointmentDetailsModal";
-import VideoCall from "@/components/Appointments/VideoCall";
-import NotificationSystem, { NOTIFICATION_CONSTANTS } from "@/components/global/NotificationSystem";
-import IncomingCallNotification from "@/components/Appointments/IncomingCallNotification";
-import { Appointment } from "@/components/Appointments/types";
+import NavigationMenu from "../../../src/components/global/NavigationMenu";
+import FilterSidebar from "../../../src/components/global/FilterSidebar";
+import SearchBar from "../../../src/components/global/SearchBar";
+import AppointmentCard from "../../../src/components/Appointments/AppointmentCard";
+import AppointmentDetailsModal from "../../../src/components/Appointments/AppointmentDetailsModal";
+import VideoCall from "../../../src/components/Appointments/VideoCall";
+import NotificationSystem, { NOTIFICATION_CONSTANTS } from "../../../src/components/global/NotificationSystem";
+import IncomingCallNotification from "../../../src/components/Appointments/IncomingCallNotification";
+import { Appointment } from "../../../src/components/Appointments/types";
+import NewAppointmentForm from "../../../src/components/Appointments/NewAppointmentForm";
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Building, Users, FileText, Settings, ClipboardCheck, Briefcase, Calendar } from 'lucide-react';
 
 // Mock appointment data (would typically come from an API)
 const mockAppointments: Appointment[] = [
@@ -21,9 +24,9 @@ const mockAppointments: Appointment[] = [
     date: "May 15, 2025",
     time: "10:00 AM - 11:00 AM",
     status: 'pending',
-    participantName: "Ahmed Mohamed",
-    participantType: "student",
-    participantEmail: "ahmed.mohamed@student.guc.edu",
+    participantName: "Dr. Sarah Johnson",
+    participantType: "scad",
+    participantEmail: "sarah.johnson@guc.edu",
     isOnline: true,
     description: "Discuss career options in software engineering and potential internship opportunities.",
   },
@@ -33,9 +36,9 @@ const mockAppointments: Appointment[] = [
     date: "May 17, 2025",
     time: "2:00 PM - 3:00 PM",
     status: 'accepted',
-    participantName: "Mariam Hassan",
-    participantType: "student",
-    participantEmail: "mariam.hassan@student.guc.edu",
+    participantName: "Dr. Ahmed Hassan",
+    participantType: "scad",
+    participantEmail: "ahmed.hassan@guc.edu",
     isOnline: true,
     description: "Review course options for next semester and discuss prerequisites needed for specialization tracks.",
   },
@@ -44,10 +47,10 @@ const mockAppointments: Appointment[] = [
     title: "Academic Progress Review",
     date: "May 20, 2025",
     time: "11:30 AM - 12:30 PM",
-    status: 'completed',
-    participantName: "Youssef Rodriguez",
-    participantType: "pro-student",
-    participantEmail: "youssef.rodriguez@student.guc.edu",
+    status: 'waiting-approval',
+    participantName: "Dr. Emily Rodriguez",
+    participantType: "scad",
+    participantEmail: "emily.rodriguez@guc.edu",
     isOnline: false,
     description: "Review academic performance from previous semester and discuss areas for improvement.",
   },
@@ -57,9 +60,9 @@ const mockAppointments: Appointment[] = [
     date: "May 22, 2025",
     time: "3:30 PM - 4:30 PM",
     status: 'rejected',
-    participantName: "Sara Chen",
-    participantType: "student",
-    participantEmail: "sara.chen@student.guc.edu",
+    participantName: "Dr. Michael Chen",
+    participantType: "scad",
+    participantEmail: "michael.chen@guc.edu",
     isOnline: true,
     description: "Explore undergraduate research opportunities and faculty-led projects.",
   },
@@ -69,18 +72,42 @@ const mockAppointments: Appointment[] = [
     date: "May 25, 2025",
     time: "1:00 PM - 2:00 PM",
     status: 'pending',
-    participantName: "Omar Mahmoud",
-    participantType: "pro-student",
-    participantEmail: "omar.mahmoud@student.guc.edu",
+    participantName: "Dr. Layla Mahmoud",
+    participantType: "scad",
+    participantEmail: "layla.mahmoud@guc.edu",
     isOnline: true,
     description: "Practice technical interview skills with feedback from SCAD career counselor.",
   }
 ];
+type ActiveMenuItem = 'companies' | 'students' | 'reports' | 'settings' | 'evaluations' | 'internships' | 'appointments';
 
 export default function AppointmentsPage() {
+  // Router and search params for handling URL query parameters
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
   // Current user type - in a real app, this would be from authentication
   const currentUserType = 'pro-student'; // or 'scad', depending on who is logged in
-    // State for notifications
+  
+  // Tab navigation state - Always set to 'appointments' for this page
+  const [activeItem, setActiveItem] = useState<ActiveMenuItem>('appointments');
+  
+  // Get the active tab from URL query parameter or default to 'my-appointments'
+  const [activeTab, setActiveTab] = useState<string>(
+    searchParams.get('tab') || 'my-appointments'
+  );
+  
+  // Update URL when tab changes
+  useEffect(() => {
+    router.push(`/SCADLogin/AppointmentsSCAD${activeTab !== 'my-appointments' ? `?tab=${activeTab}` : ''}`);
+  }, [activeTab, router]);
+  
+  // Always set activeItem to 'appointments' whenever this page is loaded
+  useEffect(() => {
+    setActiveItem('appointments');
+  }, []);
+    
+  // State for notifications
   const [notification, setNotification] = useState<{message: string, type: 'success' | 'error' | 'info' | 'warning'} | null>(null);
   
   // Audio references for notification sounds
@@ -110,14 +137,37 @@ export default function AppointmentsPage() {
     };
   }, []);
   
+  // Listen for custom tab change events from the appointment form
+  useEffect(() => {
+    const handleTabChange = (event: Event) => {
+      const customEvent = event as CustomEvent<{ tab: string }>;
+      if (customEvent.detail && customEvent.detail.tab) {
+        setActiveTab(customEvent.detail.tab);
+      }
+    };
+    
+    window.addEventListener('changeTab', handleTabChange);
+    
+    return () => {
+      window.removeEventListener('changeTab', handleTabChange);
+    };
+  }, []);
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState({
     status: 'All',
     date: 'All'
   });
-  
-  const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments);
-  const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>(appointments);  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+    const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments);
+  const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>(
+    mockAppointments.filter(app => 
+      app.status === 'waiting-approval' || 
+      app.status === 'accepted' || 
+      app.status === 'rejected' || 
+      app.status === 'completed'
+    )
+  );  
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [showAppointmentDetails, setShowAppointmentDetails] = useState(false);
   const [showVideoCall, setShowVideoCall] = useState(false);
   const [incomingCall, setIncomingCall] = useState<Appointment | null>(null);
@@ -125,13 +175,39 @@ export default function AppointmentsPage() {
   useEffect(() => {
     // Display an initial notification that someone accepted your appointment
     setTimeout(() => {
-      setNotification({
-        message: "Youssef Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
-        type: 'success'
-      });
+      // Find Dr. Emily Rodriguez's appointment and update its status
+      const appointmentId = appointments.find(app => 
+        app.participantName === "Dr. Emily Rodriguez" && 
+        app.title === "Academic Progress Review"
+      )?.id;
       
-      // Try to play notification sound
-      playNotificationSound('notification');
+      if (appointmentId) {
+        // Update the appointment status with a visual notification
+        setAppointments(prevAppointments => 
+          prevAppointments.map(app => 
+            app.participantName === "Dr. Emily Rodriguez" && app.title === "Academic Progress Review"
+              ? { ...app, status: 'accepted' }
+              : app
+          )
+        );
+        
+        setNotification({
+          message: "Dr. Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
+          type: 'success'
+        });
+        
+        // Try to play notification sound
+        playNotificationSound('notification');
+        
+        // Add a temporary highlight class to the accepted appointment card
+        const appointmentCard = document.querySelector(`[data-appointment-id="${appointmentId}"]`);
+        if (appointmentCard) {
+          appointmentCard.classList.add(styles.highlightCard);
+          setTimeout(() => {
+            appointmentCard.classList.remove(styles.highlightCard);
+          }, 1100);
+        }
+      }
     }, 2000); // Show 2 seconds after page load
   }, []);
   
@@ -164,13 +240,25 @@ export default function AppointmentsPage() {
       type: "date",
       value: activeFilters.date
     }
-  ];
-  
-  // Apply filters and search
-  useEffect(() => {
+  ];  // Apply filters and search - using useLayoutEffect to run before browser paint
+  useLayoutEffect(() => {
     let results = [...appointments];
     
-    // Apply status filter
+    // First apply tab-specific filters
+    if (activeTab === 'my-appointments') {
+      // Show only appointments with waiting-approval, accepted, rejected, or completed status
+      results = results.filter(appointment => 
+        appointment.status === 'waiting-approval' || 
+        appointment.status === 'accepted' || 
+        appointment.status === 'rejected' || 
+        appointment.status === 'completed'
+      );
+    } else if (activeTab === 'requests') {
+      // Show only appointments with pending status
+      results = results.filter(appointment => appointment.status === 'pending');
+    }
+    
+    // Then apply user-selected status filter
     if (activeFilters.status !== 'All') {
       const statusLower = activeFilters.status.toLowerCase();
       results = results.filter(appointment => appointment.status === statusLower);
@@ -211,7 +299,7 @@ export default function AppointmentsPage() {
     }
     
     setFilteredAppointments(results);
-  }, [searchTerm, activeFilters, appointments]);
+  }, [searchTerm, activeFilters, appointments, activeTab]);
   
   // Handle filter changes
   const handleFilterChange = (filterType: string, value: string) => {
@@ -358,32 +446,32 @@ export default function AppointmentsPage() {
     }
     
     // No demo notification needed since we'll simulate Dr. Hassan ending the call
-  };  // Simulate an incoming call from Mariam Hassan specifically (for demonstration purposes)
+  };// Simulate an incoming call from Dr. Ahmed Hassan specifically (for demonstration purposes)
   useEffect(() => {
-    // Only run once, find Mariam Hassan's appointment
-    const mariamAppointment = appointments.find(
-      app => app.participantName === "Mariam Hassan" && app.isOnline
+    // Only run once, find Dr. Hassan's appointment
+    const drHassanAppointment = appointments.find(
+      app => app.participantName === "Dr. Ahmed Hassan" && app.isOnline
     );
-      if (mariamAppointment) {
+      if (drHassanAppointment) {
       const simulateIncomingCall = setTimeout(() => {
-        setIncomingCall(mariamAppointment);
-        setActiveCall(mariamAppointment);
+        setIncomingCall(drHassanAppointment);
+        setActiveCall(drHassanAppointment);
         playNotificationSound('call');
       }, 10000); // Simulate after 10 seconds
       
       return () => clearTimeout(simulateIncomingCall);
     }
   }, []); // Empty dependency array ensures it only runs once
-  // Simulate Mariam Hassan ending the call after 1 minute of being in the call
+  // Simulate Dr. Hassan ending the call after 1 minute of being in the call
   useEffect(() => {
-    if (showVideoCall && selectedAppointment?.participantName === "Mariam Hassan") {
+    if (showVideoCall && selectedAppointment?.participantName === "Dr. Ahmed Hassan") {
       const simulateCallEnding = setTimeout(() => {
         // End the call automatically
         setShowVideoCall(false);
         
-        // Show notification that Mariam Hassan left the call
+        // Show notification that Dr. Hassan left the call
         setNotification({
-          message: `Mariam Hassan has left the call`,
+          message: `Dr. Ahmed Hassan has left the call`,
           type: 'info'
         });
         
@@ -416,11 +504,19 @@ export default function AppointmentsPage() {
       message: `Call declined`,
       type: 'info'
     });
-  };
-  // Simulate notification to the other user (in a real app, this would use websockets or other real-time tech)
+  };  // Simulate notification to the other user (in a real app, this would use websockets or other real-time tech)
   const simulateNotificationToOtherUser = (appointmentId: string, status: string) => {
     console.log(`Notification sent to other user about appointment ${appointmentId} being ${status}`);
     // In a real app, this would send a notification through your backend
+    
+    // Update the appointment status in our local state
+    setAppointments(prevAppointments => 
+      prevAppointments.map(app => 
+        app.id === appointmentId
+          ? { ...app, status: status as 'pending' | 'accepted' | 'rejected' | 'completed' }
+          : app
+      )
+    );
     
     // For demonstration purposes, show a mockup of the notification the other party would receive
     setTimeout(() => {
@@ -428,13 +524,16 @@ export default function AppointmentsPage() {
       if (app) {
         let notificationMessage = '';
         let notificationType: 'success' | 'info' | 'warning' = 'info';
-          if (status === 'accepted') {
+          
+        if (status === 'accepted') {
           notificationMessage = `${app.participantName} has accepted your appointment request for "${app.title}"`;
           notificationType = 'success';
         } else if (status === 'rejected') {
           notificationMessage = `${app.participantName} has declined your appointment request for "${app.title}"`;
           notificationType = 'warning';
-        }        setNotification({
+        }        
+        
+        setNotification({
           message: notificationMessage,
           type: notificationType
         });
@@ -443,70 +542,184 @@ export default function AppointmentsPage() {
         playNotificationSound('notification');
       }
     }, 2000); // Delayed to simulate network latency
+  };// Handle creating a new appointment
+  const handleCreateAppointment = async (appointmentData: any) => {    // Check if this is a navigation request from the "Back to list" link
+    if (appointmentData.navigateBack) {
+      // Return back to the previous tab - my-appointments
+      setActiveTab('my-appointments');
+      return;
+    }
+      // This would typically be an API call
+    const newAppointment: Appointment = {
+      id: `${appointments.length + 1}`,
+      title: appointmentData.title,
+      date: formatDate(appointmentData.date),
+      time: appointmentData.time,
+      status: 'waiting-approval', // New appointments in My Appointments use waiting-approval
+      participantName: appointmentData.participantName,
+      participantType: appointmentData.participantType,
+      participantEmail: `${appointmentData.participantName.toLowerCase().replace(' ', '.')}@guc.edu`,
+      isOnline: false, // Since we removed the online checkbox
+      description: appointmentData.description
+    };
+    
+    // Add the new appointment to the list
+    setAppointments(prev => [...prev, newAppointment]);
+      // Show success notification
+    setNotification({
+      message: `Appointment request sent to ${newAppointment.participantName}`,
+      type: 'success'
+    });
+    
+    // Switch to the My Appointments tab
+    setActiveTab('my-appointments');
+    
+    // Play notification sound
+    playNotificationSound('notification');
+    
+    return Promise.resolve();
+  };
+  
+  // Helper function to format date for display
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      month: 'long', day: 'numeric', year: 'numeric'
+    });
   };
 
   return (
     <div className={styles.pageContainer}>
       {/* Header/Navigation */}
-      <Navigation 
-        title="Appointments" 
-        notificationCount={(incomingCall ? 1 : 0) + (notification ? 1 : 0)} 
+      <NavigationMenu
+        items={[
+          { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard') },
+          { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=students') },
+          { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=reports') },
+          { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=evaluations') },
+          { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=internships') },
+          {
+            id: 'appointments',
+            label: 'Appointments',
+            icon: <Calendar size={18} />,
+            dropdownItems: [
+              { 
+                id: 'my-appointments', 
+                label: 'My Appointments', 
+                count: appointments.filter(app => 
+                  app.status === 'waiting-approval' || 
+                  app.status === 'accepted' || 
+                  app.status === 'rejected' || 
+                  app.status === 'completed'
+                ).length,
+                onClick: () => {
+                  setActiveTab('my-appointments');
+                }
+              },
+              { 
+                id: 'requests', 
+                label: 'Requests', 
+                count: appointments.filter(app => app.status === 'pending').length,
+                onClick: () => {
+                  setActiveTab('requests');
+                }
+              },
+              { 
+                id: 'new-appointment', 
+                label: 'New Appointment',
+                onClick: () => {
+                  setActiveTab('new-appointment');
+                }
+              }
+            ]
+          },
+          { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=settings') }
+        ]}
+        activeItemId={activeItem}
+        logo={{
+          src: '/logos/GUCInternshipSystemLogo.png',
+          alt: 'GUC Internship System'
+        }}
+        variant="navigation"
+        notificationCount={(incomingCall ? 1 : 0) + (notification ? 1 : 0)}
       />
 
       <div className={styles.contentWrapper}>
-        {/* Left Sidebar with Filters */}
-        <FilterSidebar 
-          filters={formattedFilters}
-          onFilterChange={handleFilterChange}
-        />
+        {/* Left Sidebar with Filters - Only show in appointment listing tabs */}
+        {activeTab !== 'new-appointment' && (
+          <FilterSidebar 
+            filters={formattedFilters}
+            onFilterChange={handleFilterChange}
+          />
+        )}
 
         {/* Main Content */}
         <main className={styles.mainContent}>
-          {/* Search Bar */}
-          <SearchBar 
-            searchTerm={searchTerm} 
-            setSearchTerm={setSearchTerm} 
-            placeholder="Search appointments by title or participant name..."
-          />          {/* Appointment Listings */}
-          <div className={styles.appointmentListings}>            <div className={styles.listingHeader}>
-              <h2 className={styles.listingTitle}>Your Appointments</h2>
-              <span className={styles.appointmentCount}>
-                {filteredAppointments.length} appointment{filteredAppointments.length !== 1 ? 's' : ''}
-              </span>
-            </div>
-
-            <div className={styles.cards}>
-              {filteredAppointments.length > 0 ? (
-                filteredAppointments.map(appointment => (
-                  <AppointmentCard
-                    key={appointment.id}
-                    id={appointment.id}
-                    title={appointment.title}
-                    date={appointment.date}
-                    time={appointment.time}
-                    status={appointment.status}
-                    participantName={appointment.participantName}
-                    participantType={appointment.participantType}
-                    participantEmail={appointment.participantEmail}
-                    isOnline={appointment.isOnline}
-                    onViewDetails={() => handleViewDetails(appointment)}
-                    onAccept={() => handleAcceptAppointment(appointment.id)}
-                    onReject={() => handleRejectAppointment(appointment.id)}
-                  />
-                ))
-              ) : (
-                <div className={styles.noResults}>
-                  <img 
-                    src="assets/images/icons/search.png" 
-                    alt="Search Icon" 
-                    className={styles.searchIcon} 
-                  /> 
-                  <h3>No appointments found</h3>
-                  <p>Try adjusting your search criteria or filters</p>
+          
+          {/* Tab content based on which tab is active */}
+          {(activeTab === 'my-appointments' || activeTab === 'requests') && (
+            <>
+              {/* Search Bar */}
+              <SearchBar 
+                searchTerm={searchTerm} 
+                setSearchTerm={setSearchTerm} 
+                placeholder="Search appointments by title or participant name..."
+              />
+              
+              {/* Appointment Listings */}
+              <div className={styles.appointmentListings}>
+                <div className={styles.listingHeader}>
+                  <h2 className={styles.listingTitle}>
+                    {activeTab === 'my-appointments' ? 'Your Appointments' : 'Appointment Requests'}
+                  </h2>
+                  <span className={styles.appointmentCount}>
+                    {filteredAppointments.length} appointment{filteredAppointments.length !== 1 ? 's' : ''}
+                  </span>
                 </div>
-              )}
-            </div>
-          </div>
+
+                <div className={styles.cards}>                  
+                  {filteredAppointments.length > 0 ? (
+                    filteredAppointments.map(appointment => (
+                      <div 
+                        key={appointment.id} 
+                        data-appointment-id={appointment.id} 
+                        className={styles.appointmentCardWrapper}
+                      >
+                        <AppointmentCard
+                          id={appointment.id}
+                          title={appointment.title}
+                          date={appointment.date}
+                          time={appointment.time}
+                          status={appointment.status}
+                          participantName={appointment.participantName}
+                          participantType={appointment.participantType}
+                          participantEmail={appointment.participantEmail}
+                          isOnline={appointment.isOnline}
+                          onViewDetails={() => handleViewDetails(appointment)}                          onAccept={() => handleAcceptAppointment(appointment.id)}
+                          onReject={() => handleRejectAppointment(appointment.id)}
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <div className={styles.noResults}>
+                      <img 
+                        src="/assets/images/icons/search.png" 
+                        alt="Search Icon" 
+                        className={styles.searchIcon} 
+                      /> 
+                      <h3>No appointments found</h3>
+                      <p>Try adjusting your search criteria or filters</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* New Appointment Form */}
+          {activeTab === 'new-appointment' && (
+            <NewAppointmentForm onSubmit={handleCreateAppointment} />
+          )}
         </main>
       </div>
 
@@ -531,14 +744,15 @@ export default function AppointmentsPage() {
           participantName={selectedAppointment.participantName}
           participantType={selectedAppointment.participantType}
         />
-      )}      {/* Notification Component - Using useEffect for auto-dismiss */}
+      )}
+      
+      {/* Notification Component */}
       {notification && (
         <NotificationSystem
           message={notification.message}
           type={notification.type}
           visible={true}
           onClose={() => {
-            // This creates a smooth fade-out animation before removing notification
             setTimeout(() => {
               setNotification(null);
             }, NOTIFICATION_CONSTANTS.HIDE_ANIMATION_TIME);
@@ -554,7 +768,8 @@ export default function AppointmentsPage() {
           onReject={handleRejectIncomingCall}
         />
       )}
-        {/* Audio elements for sounds (hidden) */}
+      
+      {/* Audio elements for sounds (hidden) */}
       <audio 
         ref={notificationSoundRef} 
         src="/sounds/notification.mp3" 

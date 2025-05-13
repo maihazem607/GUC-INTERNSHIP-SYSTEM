@@ -155,9 +155,31 @@
     transform: translateY(100%);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+/* Highlight animation for newly updated appointments */
+.highlightCard {
+  animation: highlightFade 2s ease-in-out;
+}
+
+@keyframes highlightFade {
+  0% {
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: translateY(-5px);
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px rgba(76, 175, 80, 0.5);
+  }
+
+  100% {
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0);
+    transform: translateY(0);
   }
 }
 
@@ -166,12 +188,13 @@
   .cards {
     grid-template-columns: 1fr;
   }
-  
+
   .incomingCallContainer {
     left: 24px;
     right: 24px;
   }
-    .incomingCallCard {
+
+  .incomingCallCard {
     width: auto;
   }
 }
@@ -184,4 +207,46 @@
   border-radius: 8px;
   margin-bottom: 15px;
   font-weight: 500;
+}
+
+.tabNavigation {
+  display: flex;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tabButton {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #6b7280;
+  position: relative;
+}
+
+.activeTab {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  color: #4c51bf;
+  position: relative;
+}
+
+.activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #4c51bf;
+}
+
+.tabButton:hover {
+  color: #4c51bf;
 }
