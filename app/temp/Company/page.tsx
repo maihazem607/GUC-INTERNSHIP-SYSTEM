@@ -3,26 +3,26 @@ import { useState, useEffect } from 'react';
 import styles from './page.module.css';
 
 // Import global components
-import Navigation from "../../src/components/global/Navigation";
-import NotificationSystem from "../../src/components/global/NotificationSystem";
-import NotificationsPanel from "../../src/components/global/NotificationsPanel";
-import FilterSidebar from "../../src/components/global/FilterSidebar";
-import SearchBar from "../../src/components/global/SearchBar";
-import Modal from "../../src/components/global/Modal";
-import DashboardTab from "../../src/components/global/DashboardTab";
-import { NotificationProvider, useNotification } from "../../src/context/NotificationContext";
+import Navigation from "../../../src/components/global/Navigation";
+import NotificationSystem from "../../../src/components/global/NotificationSystem";
+import NotificationsPanel from "../../../src/components/global/NotificationsPanel";
+import FilterSidebar from "../../../src/components/global/FilterSidebar";
+import SearchBar from "../../../src/components/global/SearchBar";
+import Modal from "../../../src/components/global/Modal";
+import DashboardTab from "../../../src/components/global/DashboardTab";
+import { NotificationProvider, useNotification } from "../../../src/context/NotificationContext";
 
 // Import components
-import ApplicationsList from "../../src/components/Companyy/ApplicationsList";
-import InternsList from "../../src/components/Companyy/InternsList";
-import ApplicationDetailsModal from "../../src/components/Companyy/ApplicationDetailsModal";
-import InternshipPostModal from "../../src/components/Companyy/InternshipPostModal";
-import InternshipCard from "../../src/components/internships/InternshipCard";
-import InternshipDetailsModal from "../../src/components/internships/InternshipDetailsModal";
-import CompanyInternshipDetailsModal from "../../src/components/Companyy/CompanyInternshipDetailsModal";
-import EvaluationModal from "../../src/components/Companyy/EvaluationModal";
-import EvaluationDetailsModal from "../../src/components/Companyy/EvaluationDetailsModal";
-import { Evaluation as SCADEvaluation } from "../../src/components/SCAD/EvaluationList";
+import ApplicationsList from "../../../src/components/Companyy/ApplicationsList";
+import InternsList from "../../../src/components/Companyy/InternsList";
+import ApplicationDetailsModal from "../../../src/components/Companyy/ApplicationDetailsModal";
+import InternshipPostModal from "../../../src/components/Companyy/InternshipPostModal";
+import InternshipCard from "../../../src/components/internships/InternshipCard";
+import InternshipDetailsModal from "../../../src/components/internships/InternshipDetailsModal";
+import CompanyInternshipDetailsModal from "../../../src/components/Companyy/CompanyInternshipDetailsModal";
+import EvaluationModal from "../../../src/components/Companyy/EvaluationModal";
+import EvaluationDetailsModal from "../../../src/components/Companyy/EvaluationDetailsModal";
+import { Evaluation as SCADEvaluation } from "../../../src/components/SCAD/EvaluationList";
 
 // Import types
 import { 

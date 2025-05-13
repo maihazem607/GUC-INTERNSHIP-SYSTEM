@@ -27,6 +27,17 @@ const getCardBackground = (title: string): string => {
   return colors[hash % colors.length];
 };
 
+// Helper function to get row background color based on row index
+const getRowBackground = (id: number): string => {
+  const pastelColors = [
+    'rgba(230, 230, 250, 0.3)', // Pastel Purple
+    'rgba(255, 255, 224, 0.3)', // Pastel Yellow
+    'rgba(240, 255, 240, 0.3)', // Pastel Green
+    'rgba(230, 240, 255, 0.3)', // Pastel Blue
+  ];
+  return pastelColors[id % pastelColors.length];
+};
+
 // Helper function to create status chip with appropriate styling
 const getStatusChip = (status: Report['status']) => {
   let chipClass = styles.statusBadge;
@@ -39,13 +50,15 @@ const getStatusChip = (status: Report['status']) => {
 };
 
 // List view for reports using the original report data
-const ReportTable: React.FC<ReportTableProps> = ({ reports, onViewReport }) => (
-  <div className={styles.reportCardContainer}>
+const ReportTable: React.FC<ReportTableProps> = ({ reports, onViewReport }) => (  <div className={styles.reportCardContainer}>
     {reports && reports.length > 0 ? (
-      <table className={styles.studentsTable}> 
-          <tbody>{reports.map((report) => {
-            return (
-              <tr key={report.id} className={styles.studentRow} onClick={() => onViewReport(report)}>
+      <table className={styles.studentsTable}>
+          <tbody>{reports.map((report) => (
+              <tr
+                key={report.id}
+                className={styles.studentRow}
+                onClick={() => onViewReport(report)}
+                style={{ backgroundColor: getRowBackground(report.id) }}>
                 {/* Name and Title Column */}
                 <td>
                   <div className={styles.studentProfile}>
@@ -58,50 +71,35 @@ const ReportTable: React.FC<ReportTableProps> = ({ reports, onViewReport }) => (
                     </div>
                   </div>
                 </td>
-                
                 {/* Company Name as "Accessibility Tags" */}
                 <td>
                   <div className={styles.tagContainer}>
                     <span className={styles.tag}>{report.companyName}</span>
                   </div>
                 </td>
-                
                 {/* Major - Just simple text with no progress bar */}
                 <td>
-                  <div style={{ color: '#555', fontSize: '14px' }}>
+                  <div className={styles.majorCell}>
                     {report.major}
                   </div>
                 </td>
-                
                 {/* Submission Date as "Social Skills" */}
                 <td>
-                  <div style={{ color: '#555', fontSize: '14px' }}>
+                  <div className={styles.dateCell}>
                     {report.submissionDate}
-                    <div className={styles.lifeSkills}>{report.status}</div>
+                    <div className={styles.submissionTag}>Submitted</div>
                   </div>
                 </td>
-                
                 {/* Last column - just a status tag instead of progress */}
                 <td>
                   <div className={styles.tagContainer}>
-                    <span 
-                      className={styles.tag} 
-                      style={{
-                        backgroundColor: report.status === 'accepted' ? '#e6fff2' : 
-                                        report.status === 'rejected' ? '#ffeaea' :
-                                        report.status === 'flagged' ? '#e6f7ff' : '#fffbe6',
-                        color: report.status === 'accepted' ? '#1aaf5d' :
-                              report.status === 'rejected' ? '#d32f2f' :
-                              report.status === 'flagged' ? '#217dbb' : '#bfa100'
-                      }}
-                    >
+                    <span className={`${styles.statusBadge} ${styles[report.status]}`}>
                       {report.status.toUpperCase()}
                     </span>
                   </div>
                 </td>
               </tr>
-            );
-          })}
+            ))}
         </tbody>
       </table>
     ) : (

@@ -175,17 +175,47 @@
 
 .studentRow {
   cursor: pointer;
-  transition: box-shadow 0.2s;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .studentRow:hover {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.studentRow:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: linear-gradient(to bottom, #4c51bf, #6366f1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.studentRow:hover:before {
+  opacity: 1;
 }
 
 .studentRow td {
-  padding: 12px 16px;
+  padding: 16px;
   vertical-align: middle;
   background-color: white;
+  border-top: 1px solid rgba(0, 0, 0, 0.02);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.02);
+  transition: background-color 0.3s ease;
+}
+
+.studentRow:nth-child(odd) td {
+  background-color: rgba(249, 250, 251, 0.7);
+}
+
+.studentRow:hover td {
+  background-color: #f9fafb;
 }
 
 .studentRow td:first-child {
@@ -204,16 +234,21 @@
 }
 
 .studentAvatar {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background-color: #f0f0f0;
+  background: linear-gradient(135deg, #e8f3ff, #d1dfff);
   overflow: hidden;
   margin-right: 12px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #4c51bf;
+  font-weight: 700;
+  font-size: 18px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  border: 2px solid #fff;
 }
 
 .studentInfo {
@@ -269,6 +304,39 @@
   font-size: 12px;
   font-weight: 500;
   margin-top: 4px;
+}
+
+/* Major cell styles */
+.majorCell {
+  color: #555; 
+  font-size: 14px;
+  font-weight: 500;
+  background-color: #f8f9fa;
+  padding: 6px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* Date cell styles */
+.dateCell {
+  color: #555; 
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Submission tag styles */
+.submissionTag {
+  display: inline-block;
+  background: linear-gradient(to right, #e8f3ff, #d1e4ff);
+  color: #217dbb;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .progressContainer {
@@ -421,33 +489,41 @@
   background-color: #1765cc;
 }
 
-/* Status Badge Styles */
+/* Status Badge Styles with enhanced styling */
 .statusBadge {
   display: inline-block;
-  padding: 4px 12px;
-  border-radius: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
   font-size: 13px;
   font-weight: 600;
   background: #f4f6fa;
   color: #555;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+}
+
+.statusBadge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
 .pending {
-  background: #fffbe6;
+  background: linear-gradient(to right, #fffbe6, #fff7cc);
   color: #bfa100;
 }
 
 .accepted {
-  background: #e6fff2;
+  background: linear-gradient(to right, #e6fff2, #ccffeb);
   color: #1aaf5d;
 }
 
 .flagged {
-  background: #e6f7ff;
+  background: linear-gradient(to right, #e6f7ff, #cce7ff);
   color: #217dbb;
 }
 
 .rejected {
-  background: #ffeaea;
+  background: linear-gradient(to right, #ffeaea, #ffcccc);
   color: #d32f2f;
 }

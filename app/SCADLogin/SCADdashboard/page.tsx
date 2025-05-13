@@ -32,6 +32,7 @@ import {
   AlertCircle,
   Calendar
 } from 'lucide-react';
+import EvaluationTable from '../../../src/components/SCAD/EvaluationList';
 
 // Mock data for companies
 const industryOptions = ['Technology', 'Finance', 'Healthcare', 'Education', 'Manufacturing', 'Other'];
@@ -382,6 +383,32 @@ const mockEvaluations: Evaluation[] = [
     internshipEndDate: '2023-08-15',
     evaluationDate: '2023-08-20',
     evaluationScore: 7.8,
+    status: 'completed'
+  },
+  {
+    id: 4,
+    studentName: 'Michael Chen',
+    studentId: 6,
+    companyName: 'Data Innovations',
+    major: 'Computer Engineering',
+    supervisorName: 'Amelia Patel',
+    internshipStartDate: '2023-06-01',
+    internshipEndDate: '2023-09-01',
+    evaluationDate: '2023-09-10',
+    evaluationScore: 3.8,
+    status: 'completed'
+  },
+  {
+    id: 5,
+    studentName: 'Layla Ibrahim',
+    studentId: 8,
+    companyName: 'Marketing Excellence',
+    major: 'Marketing',
+    supervisorName: 'David Wilson',
+    internshipStartDate: '2023-05-15',
+    internshipEndDate: '2023-08-15',
+    evaluationDate: '2023-08-25',
+    evaluationScore: 6.2,
     status: 'completed'
   }
 ];
@@ -1099,23 +1126,17 @@ export default function SCADDashboardPage() {
                 placeholder="Search evaluations by student or company..."
               />
               {/* Evaluation Listings */}
-              <div className={styles.listings}>
-                <div className={styles.listingHeader}>
+              <div className={styles.listings}>                <div className={styles.listingHeader}>
                   <h1 className={styles.listingTitle}>Internship Evaluations</h1>
                   <span className={styles.evaluationCount}>
                     {completedEvaluationsCount} completed evaluations
                   </span>
                 </div>
                 {filteredEvaluations.length > 0 ? (
-                  <div className={styles.cards}>
-                    {filteredEvaluations.map((evaluation: Evaluation) => (
-                      <EvaluationCard
-                        key={evaluation.id}
-                        evaluation={evaluation}
-                        onViewDetails={() => handleViewEvaluationDetails(evaluation)}
-                      />
-                    ))}
-                  </div>
+                  <EvaluationTable
+                    evaluations={filteredEvaluations}
+                    onViewDetails={(evaluation) => handleViewEvaluationDetails(evaluation)}
+                  />
                 ) : (
                   <div className={styles.noResults}>
                     <Search size={48} className={styles.noResultsIcon} />
@@ -1124,7 +1145,8 @@ export default function SCADDashboardPage() {
                 )}
               </div>
             </>
-          )}        {/* INTERNSHIPS TAB */}
+          )}
+                  {/* INTERNSHIPS TAB */}
           {activeItem === 'internships' && (
             <>
               {/* Search Bar */}
@@ -1208,8 +1230,7 @@ export default function SCADDashboardPage() {
           }))}
           onClose={handleCloseStudentDetails}
         />
-      )}
-      {showReportDetails && selectedReport && (
+      )}      {showReportDetails && selectedReport && (
         <ReportDetailsModal
           title={selectedReport.title}
           studentName={selectedReport.studentName}
@@ -1224,9 +1245,7 @@ export default function SCADDashboardPage() {
           evaluationScore={selectedReport.evaluationScore}
           evaluationComments={selectedReport.evaluationComments}
           onClose={handleCloseReportDetails}
-          onAccept={() => handleUpdateReportStatus(selectedReport.id, 'accepted')}
-          onFlag={() => handleUpdateReportStatus(selectedReport.id, 'flagged')}
-          onReject={() => handleUpdateReportStatus(selectedReport.id, 'rejected')}
+          // In SCADDashboard we're not using the action buttons
         />
       )}
       {showEvaluationDetails && selectedEvaluation && (

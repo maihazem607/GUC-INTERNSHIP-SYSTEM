@@ -22,6 +22,7 @@ const EvaluationDetails: React.FC<EvaluationDetailsProps> = ({
   const [skillsRating, setSkillsRating] = useState(evaluation.skillsRating || Math.floor(evaluation.evaluationScore / 2));
   const [attitudeRating, setAttitudeRating] = useState(evaluation.attitudeRating || Math.floor(evaluation.evaluationScore / 2));
   const [comments, setComments] = useState(evaluation.comments || "");
+  const [overallScore, setOverallScore] = useState(evaluation.evaluationScore);
   
   // Update state if props change
   useEffect(() => {
@@ -29,15 +30,21 @@ const EvaluationDetails: React.FC<EvaluationDetailsProps> = ({
     setSkillsRating(evaluation.skillsRating || Math.floor(evaluation.evaluationScore / 2));
     setAttitudeRating(evaluation.attitudeRating || Math.floor(evaluation.evaluationScore / 2));
     setComments(evaluation.comments || "");
-  }, [evaluation]);
-  
-  const handleUpdate = () => {
+    setOverallScore(evaluation.evaluationScore);
+  }, [evaluation]);    const handleUpdate = () => {
     if (onUpdate) {
+      // Calculate new overall score based on the three ratings
+      const newScore = Math.round(
+        (performanceRating + skillsRating + attitudeRating) / 3 * 2
+      );
+      // Update the overall score to maintain consistency with the list view
+      setOverallScore(newScore);
+      
       onUpdate(
         evaluation.id, 
         performanceRating, 
         skillsRating, 
-        attitudeRating, 
+        attitudeRating,
         comments
       );
       setIsEditing(false);
@@ -50,10 +57,6 @@ const EvaluationDetails: React.FC<EvaluationDetailsProps> = ({
       onClose();
     }
   };
-  // Calculate overall score (average of three ratings * 2 for 10-point scale)
-  const overallScore = Math.round(
-    (performanceRating + skillsRating + attitudeRating) / 3 * 2
-  );
   
   return (
     <div className={styles.modalBackdrop}>

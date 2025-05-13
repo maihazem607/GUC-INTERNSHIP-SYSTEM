@@ -136,11 +136,11 @@
   background-color: #34399b}
 
 .flagButton {
-  background-color: #f39c12;
+  background-color: #217dbb;
 }
 
 .flagButton:hover {
-  background-color: #e67e22;
+  background-color: #1a6099;
 }
 
 .rejectButton {
@@ -149,4 +149,78 @@
 
 .rejectButton:hover {
   background-color: #c0392b;
+}
+
+/* Comment section styles */
+.commentSection {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+  margin-bottom: 25px;
+}
+
+.commentSection h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.commentTextarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 100px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.commentTextarea:focus {
+  border-color: #4c51bf;
+  box-shadow: 0 0 0 2px rgba(76, 81, 191, 0.2);
+  outline: none;
+}
+
+.commentTextarea::placeholder {
+  color: #999;
+}
+
+.submitCommentButton {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #4c51bf;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: block;
+  margin-left: auto;
+}
+
+.submitCommentButton:hover {
+  background-color: #34399b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.submitCommentButton:disabled {
+  background-color: #a0a0a0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.clarificationText {
+  background-color: rgba(33, 125, 187, 0.05);
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 3px solid #217dbb;
+  margin-top: 5px;
+  color: #333;
+  line-height: 1.6;
 }

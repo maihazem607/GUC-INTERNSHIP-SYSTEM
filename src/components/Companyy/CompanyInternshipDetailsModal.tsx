@@ -7,7 +7,6 @@ interface CompanyInternshipDetailsModalProps {
   onClose: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
-  onAddTestApplication?: () => void;
 }
 
 /**
@@ -18,8 +17,7 @@ const CompanyInternshipDetailsModal: React.FC<CompanyInternshipDetailsModalProps
   internship,
   onClose,
   onEdit,
-  onDelete,
-  onAddTestApplication
+  onDelete
 }) => {
   return (
     <InternshipDetailsModal
@@ -32,22 +30,6 @@ const CompanyInternshipDetailsModal: React.FC<CompanyInternshipDetailsModalProps
       onClose={onClose}
       onEdit={onEdit}
       onDelete={onDelete}
-      additionalActions={onAddTestApplication && (
-        <button 
-          style={{ 
-            background: '#4caf50', 
-            color: 'white', 
-            border: 'none', 
-            padding: '8px 12px', 
-            borderRadius: '4px', 
-            cursor: 'pointer',
-            marginRight: '8px' 
-          }} 
-          onClick={onAddTestApplication}
-        >
-          Add Test Application
-        </button>
-      )}
     />
   );
 };
