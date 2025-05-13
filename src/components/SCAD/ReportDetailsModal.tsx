@@ -129,11 +129,10 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
         </div>
       </div>
       
-      <div className={styles.modalDescription}>
+    <div className={styles.modalDescription}>
         <h3>Report Content</h3>
         <p>{content}</p>
-      </div>
-        {(evaluationScore !== undefined || evaluationComments) && status !== 'accepted' && (
+      </div>        {(evaluationScore !== undefined || evaluationComments) && status !== 'accepted' && (
         <div className={styles.modalDescription}>
           <h3>Evaluation</h3>
           {evaluationScore !== undefined && (
@@ -143,68 +142,11 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
             <p><strong>Comments:</strong> {evaluationComments}</p>
           )}
         </div>
-      )}
-      
-      {status === 'pending' && (
-        <div className={styles.modalActions}>
-          {onAccept && (
-            <button 
-              className={styles.applyButton}
-              onClick={onAccept}
-            >
-              Accept
-            </button>
-          )}          {onFlag && (
-            <button 
-              className={`${styles.applyButton} ${styles.flagButton}`}
-              onClick={() => onFlag(comment)}
-              style={{backgroundColor: '#217dbb', marginLeft: '10px'}}
-              disabled={!comment.trim()}
-              title={!comment.trim() ? "Please provide a clarification comment before flagging" : ""}
-            >
-              Flag
-            </button>
-          )}
-          {onReject && (
-            <button 
-              className={`${styles.applyButton} ${styles.rejectButton}`}
-              onClick={() => onReject(comment)}
-              style={{backgroundColor: '#e74c3c', marginLeft: '10px'}}
-              disabled={!comment.trim()}
-              title={!comment.trim() ? "Please provide a clarification comment before rejecting" : ""}
-            >
-              Reject
-            </button>
-          )}
-        </div>
-      )}
-        {/* Show existing clarification comment for flagged or rejected reports */}
-      {(status === 'flagged' || status === 'rejected') && clarificationComment && (
-        <div className={styles.modalDescription}>
-          <h3>Clarification</h3>
-          <p className={styles.clarificationText}>{clarificationComment}</p>
-        </div>
-      )}
-      
-      {/* Show comment textarea for pending reports before flagging/rejecting */}
-      {status === 'pending' && (onFlag || onReject) && (
-        <div className={styles.commentSection}>
-          <h3>Clarification Comment</h3>
-          <textarea
-            className={styles.commentTextarea}
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="Enter your comment explaining why the report is being flagged or rejected..."
-            rows={4}
-          />
-        </div>
-      )}
-      
-      {/* Show comment section for flagged or rejected reports to add additional comments */}
+      )}{/* Show comment section only for flagged and rejected reports */}
       {(status === 'flagged' || status === 'rejected') && (
         <div className={styles.commentSection}>
           <div className={styles.sectionHeader}>
-            <h3>SCAD Comments</h3>
+            <h3>Comments</h3>
           </div>
           
           {/* Display all submitted comments */}
@@ -232,8 +174,7 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
               </div>
             </div>
           )}
-          
-          {/* Add comment form */}
+            {/* Add comment form */}
           <div className={styles.addCommentForm}>
             <textarea
               className={styles.commentTextarea}

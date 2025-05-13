@@ -198,6 +198,17 @@
   border-radius: 6px 6px 0 0;
   transition: all 0.3s ease;
   min-height: 20px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.barValue {
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  padding-top: 4px;
 }
 
 .barLabel {
@@ -230,6 +241,7 @@
   height: 180px;
   border-radius: 50%;
   position: relative;
+  overflow: hidden;
   background-color: #f1f5f9;
   margin: 0 auto;
 }
