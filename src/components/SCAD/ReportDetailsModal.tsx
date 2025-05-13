@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./ReportDetailsModal.module.css";
 
 export interface ReportDetailsModalProps {
@@ -15,10 +15,13 @@ export interface ReportDetailsModalProps {
   evaluationScore?: number;
   evaluationComments?: string;
   clarificationComment?: string;
+  comments?: string[];
   onClose: () => void;
   onAccept?: () => void;
   onFlag?: (comment: string) => void;
   onReject?: (comment: string) => void;
+  onAddComment?: (comment: string) => void;
+  onDeleteComment?: (index: number) => void;
 }
 
 const getStatusColor = (status: string) => {
@@ -50,12 +53,28 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
   evaluationScore,
   evaluationComments,
   clarificationComment,
+  comments = [], // Default to empty array if not provided
   onClose,
   onAccept,
   onFlag,
-  onReject
+  onReject,
+  onAddComment,
+  onDeleteComment
 }) => {
   const [comment, setComment] = React.useState(clarificationComment || '');
+  const [allComments, setAllComments] = React.useState<string[]>(comments);
+  
+  const handleDeleteComment = (index: number) => {
+    // Create a new array without the deleted comment
+    const updatedComments = [...allComments];
+    updatedComments.splice(index, 1);
+    setAllComments(updatedComments);
+    
+    // If parent component provided a delete handler, call it
+    if (onDeleteComment) {
+      onDeleteComment(index);
+    }
+  };
 
   return (
   <div className={styles.modalBackdrop}>
@@ -184,26 +203,64 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
       {/* Show comment section for flagged or rejected reports to add additional comments */}
       {(status === 'flagged' || status === 'rejected') && (
         <div className={styles.commentSection}>
-          <h3>Add Comment</h3>
-          <textarea
-            className={styles.commentTextarea}
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder={`Add additional comments to this ${status} report...`}
-            rows={4}
-          />
-          <button 
-            className={styles.submitCommentButton}
-            onClick={() => {
-              // Here you would add functionality to submit the comment
-              // For example, call an API to update the report with the new comment
-              alert(`Comment added to ${status} report: "${comment}"`);
-              setComment('');
-            }}
-            disabled={!comment.trim()}
-          >
-            Submit Comment
-          </button>
+          <div className={styles.sectionHeader}>
+            <h3>SCAD Comments</h3>
+          </div>
+          
+          {/* Display all submitted comments */}
+          {(allComments.length > 0) && (
+            <div className={styles.commentThreadContainer}>
+              <div className={styles.commentsContainer}>
+                {allComments.map((commentText, index) => (
+                  <div key={index} className={styles.commentItem}>
+                    <div className={styles.commentHeader}>
+                      <span className={styles.commentAuthor}>SCAD</span>
+                      <button 
+                        className={styles.deleteCommentButton}
+                        onClick={() => handleDeleteComment(index)}
+                        aria-label="Delete comment"
+                      >
+                        &times;
+                      </button>
+                    </div>
+                    <p className={styles.commentText}>{commentText}</p>
+                    <span className={styles.commentDate}>
+                      {new Date().toLocaleString()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Add comment form */}
+          <div className={styles.addCommentForm}>
+            <textarea
+              className={styles.commentTextarea}
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder={`Add additional comments to this ${status} report...`}
+              rows={4}
+            />
+            <button 
+              className={styles.submitCommentButton}
+              onClick={() => {
+                console.log("Submit button clicked, comment:", comment);
+                if (comment.trim() && onAddComment) {
+                  console.log("Calling onAddComment with:", comment);
+                  // Call the parent component's onAddComment function
+                  onAddComment(comment);
+                  
+                  // Add comment to local state as well
+                  setAllComments([...allComments, comment]);
+                  setComment('');
+                }
+              }}
+              disabled={!comment.trim()}
+            >
+              Submit Comment
+            </button>
+          </div>
         </div>
       )}
     </div>

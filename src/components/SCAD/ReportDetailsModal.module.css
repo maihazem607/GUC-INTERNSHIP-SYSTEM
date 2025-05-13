@@ -159,10 +159,71 @@
   margin-bottom: 25px;
 }
 
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
 .commentSection h3 {
   font-size: 18px;
   margin-bottom: 10px;
   color: #333;
+  position: relative;
+  display: inline-block;
+}
+
+.commentSection h3:after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background-color: #4c51bf;
+  border-radius: 2px;
+}
+
+.commentThreadContainer {
+  margin-bottom: 20px;
+}
+
+.commentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.commentAuthor {
+  font-weight: 600;
+  color: #4c51bf;
+  font-size: 14px;
+}
+
+.deleteCommentButton {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.deleteCommentButton:hover {
+  background-color: rgba(231, 76, 60, 0.1);
+}
+
+.addCommentForm {
+  margin-top: 10px;
 }
 
 .commentTextarea {
@@ -223,4 +284,55 @@
   margin-top: 5px;
   color: #333;
   line-height: 1.6;
+}
+
+/* Comment Thread Styles */
+.commentsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.commentItem {
+  background-color: #f9f9f9;
+  padding: 14px;
+  border-radius: 8px;
+  border-left: 4px solid #217dbb;
+  position: relative;
+  animation: fadeInComment 0.3s ease-out;
+  transition: transform 0.2s ease;
+}
+
+@keyframes fadeInComment {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.commentItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+}
+
+.commentText {
+  margin: 0 0 10px 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.commentDate {
+  font-size: 12px;
+  color: #777;
+  display: block;
+  text-align: right;
+  font-style: italic;
 }

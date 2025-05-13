@@ -1,10 +1,10 @@
 /* Base Styles and Variables */
 :root {
-  --primary-color: #7B2CBF; /* Changed from blue to violet */
-  --primary-light: #F3E5F9; /* Lighter violet shade */
-  --primary-dark: #5A189A; /* Darker violet shade */
-  --accent-color: #ff9800; /* Keeping orange accent for contrast */
-  --accent-dark: #f57c00;
+  --primary-color: #803cff; /* Changed to bluish-purple */
+  --primary-light: #EAE6FE; /* Lighter bluish-purple shade */
+  --primary-dark: #4732C4; /* Darker bluish-purple shade */
+  --accent-color: #1976D2; /* Changed to blue */
+  --accent-dark: #1565C0; /* Darker blue */
   --text-primary: #333;
   --text-secondary: #666;
   --text-tertiary: #999;
@@ -315,7 +315,7 @@
 .editButton {
   background-color: var(--accent-color);
   color: white;
-  border: none;
+  border: 2px solid var(--primary-color);
   border-radius: var(--border-radius-sm);
   padding: 8px 16px;
   font-size: 14px;
@@ -330,7 +330,7 @@
 .editButton:hover {
   background-color: var(--accent-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(255, 152, 0, 0.3);
+  box-shadow: 0 4px 8px rgba(25, 118, 210, 0.3);
 }
 
 .editButton::after {
@@ -508,7 +508,7 @@
 .saveButton:hover {
   background-color: var(--accent-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(255, 152, 0, 0.3);
+  box-shadow: 0 4px 8px rgba(25, 118, 210, 0.3);
 }
 
 .saveButton:before {

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import styles from './page.module.css';
-import Navigation from '../../src/components/global/Navigation';
+import Navigation from '../../../src/components/global/Navigation';
 import { 
   initialStudentProfile, 
   StudentProfile as StudentProfileType, 
@@ -10,7 +10,7 @@ import {
   Major,
   Experience,
   Activity
-} from '../../src/components/StudentInfo/types';
+} from '../../../src/components/StudentInfo/types';
 import Image from 'next/image';
 
 export default function StudentProfilePage() {

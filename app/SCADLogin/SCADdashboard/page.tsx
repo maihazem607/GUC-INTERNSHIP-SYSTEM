@@ -313,8 +313,7 @@ const mockReports = [
     internshipEndDate: '2023-04-15',
     evaluationScore: 9.2,
     evaluationComments: 'Emily was an exceptional intern who demonstrated great analytical skills and creativity.'
-  },
-  {
+  },  {
     id: 3,
     title: 'Mid-term Progress Report',
     studentId: 4,
@@ -326,7 +325,12 @@ const mockReports = [
     content: 'I have been working on developing a patient management system for Health Partners. I\'m learning a lot about healthcare data management and security requirements.',
     supervisorName: 'Robert Johnson',
     internshipStartDate: '2023-05-15',
-    internshipEndDate: '2023-08-15'
+    internshipEndDate: '2023-08-15',
+    clarificationComment: 'Please provide more details about the specific security measures you are implementing.',
+    comments: [
+      'Have you considered HIPAA compliance requirements?',
+      'What encryption methods are you using for patient data?'
+    ]
   },
   {
     id: 4,
@@ -340,7 +344,12 @@ const mockReports = [
     content: 'First two weeks at Tech Solutions Inc. were focused on onboarding and getting familiar with their codebase.',
     supervisorName: 'John Doe',
     internshipStartDate: '2023-06-01',
-    internshipEndDate: '2023-08-31'
+    internshipEndDate: '2023-08-31',
+    clarificationComment: 'The report lacks sufficient detail about your specific contributions and learning experiences.',
+    comments: [
+      'Please include specific technologies you worked with during onboarding.',
+      'What were the main challenges you encountered during this period?'
+    ]
   }
 ];
 
@@ -1244,8 +1253,93 @@ export default function SCADDashboardPage() {
           content={selectedReport.content}
           evaluationScore={selectedReport.evaluationScore}
           evaluationComments={selectedReport.evaluationComments}
-          onClose={handleCloseReportDetails}
-          // In SCADDashboard we're not using the action buttons
+          clarificationComment={selectedReport.clarificationComment}
+          comments={selectedReport.comments || []}
+          onClose={handleCloseReportDetails}          onAddComment={(comment) => {
+            console.log("Adding comment:", comment);
+            
+            // Add comment to the report
+            const updatedReport = { 
+              ...selectedReport, 
+              comments: [...(selectedReport.comments || []), comment] 
+            };
+            setSelectedReport(updatedReport);
+            
+            // Update the report in the reports array
+            setReports(reports.map((report: any) => 
+              report.id === selectedReport.id ? updatedReport : report
+            ));
+            
+            // Show confirmation notification
+            showNotification({
+              message: `Comment added to "${selectedReport.title}"`,
+              type: 'info'
+            });
+          }}
+          onDeleteComment={(index) => {
+            // Remove comment from the report
+            const currentComments = [...(selectedReport.comments || [])];
+            currentComments.splice(index, 1);
+            
+            const updatedReport = {
+              ...selectedReport,
+              comments: currentComments
+            };
+            setSelectedReport(updatedReport);
+            
+            // Update the report in the reports array
+            setReports(reports.map((report: any) => 
+              report.id === selectedReport.id ? updatedReport : report
+            ));
+            
+            // Show notification
+            showNotification({
+              message: `Comment deleted from "${selectedReport.title}"`,
+              type: 'info'
+            });
+          }}
+          onAccept={() => {
+            handleUpdateReportStatus(selectedReport.id, 'accepted');
+            handleCloseReportDetails();
+          }}
+          onFlag={(comment) => {
+            const updatedReport = { 
+              ...selectedReport,
+              status: 'flagged',
+              clarificationComment: comment,
+            };
+            setSelectedReport(updatedReport);
+            
+            // Update the report in the reports array
+            setReports(reports.map((report: any) => 
+              report.id === selectedReport.id ? updatedReport : report
+            ));
+            
+            // Show notification
+            showNotification({
+              message: `Report "${selectedReport.title}" has been flagged for review.`,
+              type: 'warning'
+            });
+          }}
+          onReject={(comment) => {
+            const updatedReport = { 
+              ...selectedReport,
+              status: 'rejected',
+              clarificationComment: comment,
+            };
+            setSelectedReport(updatedReport);
+            
+            // Update the report in the reports array
+            setReports(reports.map((report: any) => 
+              report.id === selectedReport.id ? updatedReport : report
+            ));
+            
+            // Show notification
+            showNotification({
+              message: `Report "${selectedReport.title}" has been rejected.`,
+              type: 'error'
+            });
+          }}
         />
       )}
       {showEvaluationDetails && selectedEvaluation && (
