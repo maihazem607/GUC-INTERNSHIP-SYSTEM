@@ -1,16 +1,16 @@
-// page.tsx - Modified to handle notifications at the page level
 "use client";
 import styles from "./page.module.css";
 import React, { useState, useEffect } from 'react';
 
 // Import modular components
-import Navigation from "../../src/components/global/Navigation";
-import FilterSidebar from "../../src/components/global/FilterSidebar";
-import SearchBar from "../../src/components/global/SearchBar";
-import InternshipCard from "../../src/components/internships/InternshipCard";
-import InternshipDetailsModal from "../../src/components/internships/InternshipDetailsModal";
-import NotificationSystem, { useNotification } from "../../src/components/global/NotificationSystem";
-import { Internship, FilterOptions } from "../../src/components/internships/types";
+import Navigation from "../../../src/components/global/Navigation";
+import FilterSidebar from "../../../src/components/global/FilterSidebar";
+import SearchBar from "../../../src/components/global/SearchBar";
+import InternshipCard from "../../../src/components/internships/InternshipCard";
+import InternshipDetailsModal from "../../../src/components/internships/InternshipDetailsModal";
+import InternshipHelpPopup from "../../../src/components/internships/InternshipHelpPopup";
+import NotificationSystem, { useNotification } from "../../../src/components/global/NotificationSystem";
+import { Internship, FilterOptions } from "../../../src/components/internships/types";
 
 // Internship data (would typically come from an API)
 const internships: Internship[] = [
@@ -224,8 +224,7 @@ const internships: Internship[] = [
   }
 ];
 
-export default function InternshipListPage() {
-  const [searchTerm, setSearchTerm] = useState('');
+export default function InternshipListPage() {  const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState<FilterOptions>({
     industry: 'All',
     duration: 'All',
@@ -234,6 +233,7 @@ export default function InternshipListPage() {
   const [filteredInternships, setFilteredInternships] = useState<Internship[]>(internships);
   const [starredInternships, setStarredInternships] = useState<number[]>([]);
   const [selectedInternship, setSelectedInternship] = useState<Internship | null>(null);
+  const [showHelpPopup, setShowHelpPopup] = useState(true);
   
   // Add notification system at page level
   const { notification, visible, showNotification, hideNotification } = useNotification();
@@ -433,8 +433,7 @@ export default function InternshipListPage() {
           onApply={handleApply}
         />
       )}
-      
-      {/* Global notification system - Moved to page level */}
+        {/* Global notification system - Moved to page level */}
       {notification && (
         <NotificationSystem
           message={notification.message}
@@ -442,6 +441,11 @@ export default function InternshipListPage() {
           visible={visible}
           onClose={hideNotification}
         />
+      )}
+      
+      {/* Help popup for internship requirements */}
+      {showHelpPopup && (
+        <InternshipHelpPopup onClose={() => setShowHelpPopup(false)} />
       )}
     </div>
   );
