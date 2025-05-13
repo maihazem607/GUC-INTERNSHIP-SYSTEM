@@ -374,6 +374,190 @@
   padding: 0.5rem;
 }
 
+/* Student list view styling */
+.studentList {
+  width: 100%;
+  padding: 10px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 1.5rem;
+}
+
+.studentsTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.studentRow {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.studentRow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.studentRow:hover {
+  border-left: 4px solid #2563eb;
+  background-color: #f8fafc;
+}
+
+.studentRow td {
+  padding: 16px;
+  vertical-align: middle;
+  background-color: white;
+  border-top: 1px solid rgba(0, 0, 0, 0.02);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.02);
+  transition: background-color 0.3s ease;
+}
+
+.studentRow:nth-child(odd) td {
+  background-color: rgba(249, 250, 251, 0.7);
+}
+
+.studentRow:hover td {
+  background-color: #f9fafb;
+}
+
+.studentRow td:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.studentRow td:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.studentProfile {
+  display: flex;
+  align-items: center;
+}
+
+.studentInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.studentAvatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e0eaff, #c7d7ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 18px;
+  flex-shrink: 0;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.15);
+  border: 3px solid #fff;
+  overflow: hidden;
+}
+
+.studentAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.studentDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.studentName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.studentAge {
+  font-size: 14px;
+  color: #666;
+}
+
+.tagContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.studentMajor {
+  background-color: #f8f9fa;
+  color: #555;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.studentGPA {
+  font-weight: 700;
+  color: #217dbb;
+  background-color: #e8f3ff;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.studentStatus {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.active {
+  background-color: rgba(46, 204, 113, 0.15);
+  color: #27ae60;
+}
+
+.pending {
+  background-color: rgba(241, 196, 15, 0.15);
+  color: #f39c12;
+}
+
+.none {
+  background-color: rgba(189, 195, 199, 0.15);
+  color: #7f8c8d;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+}
+
+.detailsButton {
+  padding: 10px 18px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(37, 99, 235, 0.25);
+  letter-spacing: 0.3px;
+}
+
+.detailsButton:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+}
+
 /* Responsive adjustments */
 @media (max-width: 900px) {
   .mainContent {

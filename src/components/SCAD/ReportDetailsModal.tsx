@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import styles from "./ReportDetailsModal.module.css";
+import Modal from '../global/Modal';
+import { CheckCircle, AlertCircle, XCircle, Download } from 'lucide-react';
 
 export interface ReportDetailsModalProps {
   title: string;
@@ -22,6 +24,7 @@ export interface ReportDetailsModalProps {
   onReject?: (comment: string) => void;
   onAddComment?: (comment: string) => void;
   onDeleteComment?: (index: number) => void;
+  logo?: string;
 }
 
 const getStatusColor = (status: string) => {
@@ -36,6 +39,49 @@ const getStatusColor = (status: string) => {
       return '#f5b400';  // Changed from default blue to yellow
     default:
       return '#6c757d';  // Changed default to a neutral gray
+  }
+};
+
+const getStatusIcon = (status: string) => {
+  switch(status) {
+    case 'accepted':
+      return <CheckCircle size={16} color="#1aaf5d" />;
+    case 'rejected':
+      return <XCircle size={16} color="#e74c3c" />;
+    case 'flagged':
+      return <AlertCircle size={16} color="#217dbb" />;
+    case 'pending':
+      return <AlertCircle size={16} color="#f5b400" />;
+    default:
+      return null;
+  }
+};
+
+// Get status badge class similar to ReportResultsModal
+const getStatusBadgeClass = (status: string) => {
+  switch (status) {
+    case 'accepted':
+      return styles.acceptedBadge;
+    case 'flagged': 
+      return styles.flaggedBadge;
+    case 'rejected':
+      return styles.rejectedBadge;
+    default:
+      return styles.pendingBadge;
+  }
+};
+
+// Get status text similar to ReportResultsModal
+const getStatusText = (status: string) => {
+  switch (status) {
+    case 'accepted':
+      return 'Accepted by SCAD';
+    case 'flagged':
+      return 'Flagged by SCAD - Needs Revision';
+    case 'rejected': 
+      return 'Rejected by SCAD';
+    default:
+      return 'Pending SCAD Review';
   }
 };
 
@@ -59,10 +105,19 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
   onFlag,
   onReject,
   onAddComment,
-  onDeleteComment
+  onDeleteComment,
+  logo = '/logos/GUCInternshipSystemLogo.png' // Default logo
 }) => {
   const [comment, setComment] = React.useState(clarificationComment || '');
   const [allComments, setAllComments] = React.useState<string[]>(comments);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  // Update active tab state to only include 'details' and 'feedback'
+  const [activeTab, setActiveTab] = useState<'details' | 'feedback'>('details');
+
+  // Split content into introduction and main content sections for better organization
+  const contentParts = content.split('\n\n');
+  const introduction = contentParts[0] || '';
+  const mainContent = contentParts.slice(1).join('\n\n') || '';
   
   const handleDeleteComment = (index: number) => {
     // Create a new array without the deleted comment
@@ -76,136 +131,292 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
     }
   };
 
+  const handleDownloadPDF = () => {
+    setIsGeneratingPDF(true);
+    
+    // Simulate PDF generation
+    setTimeout(() => {
+      setIsGeneratingPDF(false);
+      // In a real application, here you would generate and download the PDF
+      console.log('PDF download simulated');
+    }, 2000);
+  };
+    // Removed action buttons as requested
+  const actions = null;
+
   return (
-  <div className={styles.modalBackdrop}>
-    <div className={styles.modalContent}>
-      <button className={styles.closeButton} onClick={onClose}>&times;</button>
-      
-      <div className={styles.modalHeader}>
-        <h2 className={styles.modalTitle}>{title}</h2>
-        <div className={styles.modalCompany}>
-          <span className={styles.modalCompanyName}>{companyName}</span>
-          <span 
-            className={styles.statusChip} 
-            style={{
-              backgroundColor: `${getStatusColor(status)}20`,
-              color: getStatusColor(status),
-              marginLeft: '10px',
-              padding: '4px 10px',
-              borderRadius: '12px',
-              fontSize: '12px',
-              fontWeight: 700
-            }}
-          >
-            {status.charAt(0).toUpperCase() + status.slice(1)}
-          </span>
-        </div>
-      </div>
-      
-      <div className={styles.modalInfo}>
-        <div className={styles.modalInfoItem}>
-          <div className={styles.modalInfoLabel}>Student</div>
-          <div className={styles.modalInfoValue}>{studentName}</div>
-        </div>
-        <div className={styles.modalInfoItem}>
-          <div className={styles.modalInfoLabel}>Major</div>
-          <div className={styles.modalInfoValue}>{major}</div>
-        </div>
-        <div className={styles.modalInfoItem}>
-          <div className={styles.modalInfoLabel}>Supervisor</div>
-          <div className={styles.modalInfoValue}>{supervisorName}</div>
-        </div>
-        <div className={styles.modalInfoItem}>
-          <div className={styles.modalInfoLabel}>Start Date</div>
-          <div className={styles.modalInfoValue}>{internshipStartDate}</div>
-        </div>
-        <div className={styles.modalInfoItem}>
-          <div className={styles.modalInfoLabel}>End Date</div>
-          <div className={styles.modalInfoValue}>{internshipEndDate}</div>
-        </div>
-        <div className={styles.modalInfoItem}>
-          <div className={styles.modalInfoLabel}>Submission Date</div>
-          <div className={styles.modalInfoValue}>{submissionDate}</div>
-        </div>
-      </div>
-      
-    <div className={styles.modalDescription}>
-        <h3>Report Content</h3>
-        <p>{content}</p>
-      </div>        {(evaluationScore !== undefined || evaluationComments) && status !== 'accepted' && (
-        <div className={styles.modalDescription}>
-          <h3>Evaluation</h3>
-          {evaluationScore !== undefined && (
-            <p><strong>Score:</strong> {evaluationScore}/10</p>
-          )}
-          {evaluationComments && (
-            <p><strong>Comments:</strong> {evaluationComments}</p>
-          )}
-        </div>
-      )}{/* Show comment section only for flagged and rejected reports */}
-      {(status === 'flagged' || status === 'rejected') && (
-        <div className={styles.commentSection}>
-          <div className={styles.sectionHeader}>
-            <h3>Comments</h3>
+    <Modal
+      title="Student Internship Report"
+      onClose={onClose}
+      width="800px"
+      actions={actions}
+    >
+      <div className={styles.reportContainer}>
+        {/* Add tabbed interface header similar to ReportResultsModal */}
+        <div className={styles.modalHeader}>
+          <div className={styles.headerTop}>
+            <h2 className={styles.reportTitle}>{title || 'Untitled Report'}</h2>
+            <div className={styles.statusContainer}>
+              <span className={`${styles.statusBadge} ${getStatusBadgeClass(status)}`}>
+                {getStatusText(status)}
+              </span>
+            </div>
           </div>
-          
-          {/* Display all submitted comments */}
-          {(allComments.length > 0) && (
-            <div className={styles.commentThreadContainer}>
-              <div className={styles.commentsContainer}>
-                {allComments.map((commentText, index) => (
-                  <div key={index} className={styles.commentItem}>
-                    <div className={styles.commentHeader}>
-                      <span className={styles.commentAuthor}>SCAD</span>
-                      <button 
-                        className={styles.deleteCommentButton}
-                        onClick={() => handleDeleteComment(index)}
-                        aria-label="Delete comment"
-                      >
-                        &times;
-                      </button>
-                    </div>
-                    <p className={styles.commentText}>{commentText}</p>
-                    <span className={styles.commentDate}>
-                      {new Date().toLocaleString()}
-                    </span>
+
+          <div className={styles.tabsContainer}>
+            <button 
+              className={`${styles.tabButton} ${activeTab === 'details' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('details')}
+            >
+              Report Details
+            </button>
+            <button 
+              className={`${styles.tabButton} ${activeTab === 'feedback' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('feedback')}
+            >
+              Feedback
+            </button>
+            {/* Removed the third tab (Student Appeal) */}
+          </div>
+        </div>
+
+        {/* Report Details Tab Content */}
+        {activeTab === 'details' && (
+          <div className={styles.reportDetails}>
+            {/* Report metadata */}
+            <div className={styles.reportSection}>
+              <h3 className={styles.sectionTitle}>Internship Information</h3>
+              <div className={styles.internshipInfo}>
+                <div className={styles.companyHeader}>
+                  {logo && (
+                    <img src={logo} alt={`${companyName} logo`} className={styles.companyLogo} />
+                  )}
+                  <h4 className={styles.companyName}>{companyName}</h4>
+                </div>
+                
+                <div className={styles.infoGrid}>
+                  <div className={styles.infoItem}>
+                    <span className={styles.label}>Position:</span>
+                    <span className={styles.value}>UI/UX Design Intern</span>
                   </div>
-                ))}
+                  <div className={styles.infoItem}>
+                    <span className={styles.label}>Student:</span>
+                    <span className={styles.value}>{studentName}</span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.label}>Major:</span>
+                    <span className={styles.value}>{major}</span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.label}>Supervisor:</span>
+                    <span className={styles.value}>{supervisorName}</span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.label}>Start Date:</span>
+                    <span className={styles.value}>{internshipStartDate}</span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.label}>End Date:</span>
+                    <span className={styles.value}>{internshipEndDate}</span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.label}>Submission Date:</span>
+                    <span className={styles.value}>{submissionDate}</span>
+                  </div>
+                </div>
               </div>
             </div>
-          )}
-            {/* Add comment form */}
-          <div className={styles.addCommentForm}>
-            <textarea
-              className={styles.commentTextarea}
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder={`Add additional comments to this ${status} report...`}
-              rows={4}
-            />
-            <button 
-              className={styles.submitCommentButton}
-              onClick={() => {
-                console.log("Submit button clicked, comment:", comment);
-                if (comment.trim() && onAddComment) {
-                  console.log("Calling onAddComment with:", comment);
-                  // Call the parent component's onAddComment function
-                  onAddComment(comment);
-                  
-                  // Add comment to local state as well
-                  setAllComments([...allComments, comment]);
-                  setComment('');
-                }
-              }}
-              disabled={!comment.trim()}
-            >
-              Submit Comment
-            </button>
+
+            <div className={styles.reportSection}>
+              <h3 className={styles.sectionTitle}>Report Content</h3>
+              <div className={styles.reportSummary}>
+                <div className={styles.summaryItem}>
+                  <h4 className={styles.summaryTitle}>Introduction</h4>
+                  <p className={styles.summaryText}>{introduction || 'No introduction provided.'}</p>
+                </div>
+                
+                <div className={styles.summaryItem}>
+                  <h4 className={styles.summaryTitle}>Main Content</h4>
+                  <div className={styles.reportContent}>
+                    <p className={styles.reportParagraph}>{mainContent || 'No content provided.'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Download button section */}
+            <div className={styles.downloadButtonContainer}>
+              <button 
+                className={styles.downloadButton}
+                onClick={handleDownloadPDF}
+                disabled={isGeneratingPDF}
+              >
+                {isGeneratingPDF ? 'Generating...' : (
+                  <>
+                    <Download size={16} />
+                    Download as PDF
+                  </>
+                )}
+              </button>
+              
+              {/* PDF generation progress bar */}
+              {isGeneratingPDF && (
+                <div className={styles.pdfProgressBar}>
+                  <div className={styles.pdfProgressFill} />
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      )}
-    </div>
-  </div>
+        )}
+
+        {/* SCAD Feedback Tab Content */}
+        {activeTab === 'feedback' && (
+          <div className={styles.feedbackTab}>
+            <div className={styles.feedbackHeader}>
+              <div 
+                className={`${styles.statusIndicator} ${
+                  status === 'accepted' ? styles.acceptedIndicator :
+                  status === 'flagged' ? styles.flaggedIndicator :
+                  status === 'rejected' ? styles.rejectedIndicator :
+                  styles.pendingIndicator
+                }`}
+              ></div>
+              <div className={styles.feedbackTitle}>
+                {getStatusText(status)}
+                {status !== 'pending' && (
+                  <span className={styles.feedbackDate}>
+                    Reviewed on {submissionDate}
+                  </span>
+                )}
+              </div>
+            </div>            {status === 'pending' ? (
+              <div className={styles.feedbackContent}>
+                <div className={styles.commentBlock}>
+                  <h4 className={styles.commentTitle}>Pending Review</h4>
+                  <div className={styles.commentText}>
+                    <p>This report is currently under review. Please provide feedback below before making a decision.</p>
+                  </div>
+                </div>
+                
+                {/* Comments section */}
+                {allComments.length > 0 && (
+                  <div className={styles.commentBlock}>
+                    <h4 className={styles.commentTitle}>Previous Comments</h4>
+                    <div className={styles.existingComments}>
+                      {allComments.map((commentText, index) => (
+                        <div key={index} className={styles.commentItem}>
+                          <div className={styles.commentHeader}>
+                            <span className={styles.commentAuthor}>SCAD</span>
+                            <button 
+                              className={styles.deleteCommentButton}
+                              onClick={() => handleDeleteComment(index)}
+                              aria-label="Delete comment"
+                            >
+                              &times;
+                            </button>
+                          </div>
+                          <p className={styles.commentText}>{commentText}</p>
+                          <span className={styles.commentDate}>
+                            {new Date().toLocaleString()}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Add new comment form for SCAD staff */}
+                <div className={styles.addCommentForm}>
+                  <textarea
+                    className={styles.commentTextarea}
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Add your feedback or review comments..."
+                    rows={4}
+                  />
+                    <button 
+                    className={styles.submitCommentButton}
+                    onClick={() => {
+                      if (comment.trim() && onAddComment) {
+                        onAddComment(comment);
+                        setAllComments([...allComments, comment]);
+                        setComment('');
+                      }
+                    }}
+                    disabled={!comment.trim()}
+                  >
+                    Add Feedback
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className={styles.feedbackContent}>                {/* Decision Feedback Section */}
+                {evaluationComments && (
+                  <div className={styles.commentBlock}>
+                    <h4 className={styles.commentTitle}>Review Decision</h4>
+                    <div className={styles.commentText}>
+                      <p>{evaluationComments}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Comments section - merged from the removed Student Appeal tab */}
+                {allComments.length > 0 && (
+                  <div className={styles.commentBlock}>
+                    <h4 className={styles.commentTitle}>Previous Comments</h4>
+                    <div className={styles.existingComments}>
+                      {allComments.map((commentText, index) => (
+                        <div key={index} className={styles.commentItem}>
+                          <div className={styles.commentHeader}>
+                            <span className={styles.commentAuthor}>SCAD</span>
+                            <button 
+                              className={styles.deleteCommentButton}
+                              onClick={() => handleDeleteComment(index)}
+                              aria-label="Delete comment"
+                            >
+                              &times;
+                            </button>
+                          </div>
+                          <p className={styles.commentText}>{commentText}</p>
+                          <span className={styles.commentDate}>
+                            {new Date().toLocaleString()}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Add new comment form for SCAD staff */}
+                <div className={styles.addCommentForm}>
+                  <textarea
+                    className={styles.commentTextarea}
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Add your feedback or review comments..."
+                    rows={4}
+                  />
+                  <button 
+                    className={styles.submitCommentButton}
+                    onClick={() => {
+                      if (comment.trim() && onAddComment) {
+                        onAddComment(comment);
+                        setAllComments([...allComments, comment]);
+                        setComment('');
+                      }
+                    }}
+                    disabled={!comment.trim()}
+                  >
+                    Add Feedback
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+        {/* Removed the Student Response tab content entirely */}
+      </div>
+    </Modal>
   );
 };
 

@@ -24,20 +24,9 @@
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
-.studentRow:before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 4px;
-  background: linear-gradient(to bottom, #4c51bf, #6366f1);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.studentRow:hover:before {
-  opacity: 1;
+.studentRow:hover {
+  border-left: 4px solid #2563eb;
+  background-color: #f8fafc;
 }
 
 .studentRow td {
@@ -78,18 +67,18 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #e8f3ff, #d1dfff);
+  background: linear-gradient(135deg, #e0eaff, #c7d7ff);
   overflow: hidden;
   margin-right: 12px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #4c51bf;
+  color: #2563eb;
   font-weight: 700;
   font-size: 18px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  border: 2px solid #fff;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.15);
+  border: 3px solid #fff;
 }
 
 .studentInfo {
@@ -120,30 +109,31 @@
 }
 
 .tag {
-  background-color: #f5f5f5;
-  color: #555;
+  background-color: #f0f5ff;
+  color: #2563eb;
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 13px;
-  font-weight: 500;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.08);
   transition: all 0.2s ease;
 }
 
 .tag:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 6px rgba(37, 99, 235, 0.12);
 }
 
 /* Major cell styles */
 .majorCell {
-  color: #555; 
+  color: #444; 
   font-size: 14px;
   font-weight: 500;
-  background-color: #f8f9fa;
-  padding: 6px 10px;
-  border-radius: 6px;
+  background-color: #f0f7ff;
+  padding: 6px 12px;
+  border-radius: 8px;
   display: inline-block;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.1);
 }
 
 /* Date cell styles */
@@ -166,24 +156,31 @@
 }
 
 .score-low {
-  background: linear-gradient(to right, #ffefef, #ffe0e0);
-  color: #ab0000;
+  background: linear-gradient(to right, #ffeeee, #ffd6d6);
+  color: #dc2626;
   font-weight: 700;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.1);
 }
 
 .score-medium {
-  background: linear-gradient(to right, #fff2e6, #ffe0b3);
-  color: #ed6c02;
+  background: linear-gradient(to right, #fff7e6, #ffecc2);
+  color: #d97706;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(217, 119, 6, 0.1);
 }
 
 .score-high {
-  background: linear-gradient(to right, #e6fff2, #c2f5dc);
-  color: #1aaf5d;
+  background: linear-gradient(to right, #e6fff2, #b3f0d4);
+  color: #059669;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(5, 150, 105, 0.1);
 }
 
 .score-excellent {
-  background: linear-gradient(to right, #e6f7ff, #91d5ff);
-  color: #0066cc;
+  background: linear-gradient(to right, #e6f7ff, #bae3ff);
+  color: #0369a1;
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(3, 105, 161, 0.1);
 }
 
 /* Replacing the old lifeSkills class */
@@ -249,14 +246,17 @@
   background-color: white;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.06);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
   margin-bottom: 20px;
+  cursor: pointer;
+  border: 1px solid #f0f5ff;
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.1);
+  border-color: #d1e0ff;
 }
 
 .cardInner {

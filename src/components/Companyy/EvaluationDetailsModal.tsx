@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./EvaluationDetailsModal.module.css";
-import EvaluationDetails from "../SCAD/EvaluationDetails";
+import EvaluationModalAdapter from "../SCAD/EvaluationModalAdapter";
 import { Evaluation } from "../SCAD/EvaluationList";
 
 interface EvaluationDetailsModalProps {
@@ -15,9 +15,8 @@ const EvaluationDetailsModal: React.FC<EvaluationDetailsModalProps> = ({
   onClose,
   onUpdate,
   onDelete
-}) => {
-  return (
-    <EvaluationDetails
+}) => {  return (
+    <EvaluationModalAdapter
       evaluation={evaluation}
       onClose={onClose}
       onUpdate={onUpdate}

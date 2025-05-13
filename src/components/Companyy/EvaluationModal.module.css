@@ -19,7 +19,6 @@
   width: 90%;
   max-width: 700px;
   max-height: 90vh;
-  overflow-y: auto;
   position: relative;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
@@ -168,6 +167,36 @@
   max-width: 600px;
   margin: 0 auto;
   position: relative;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  max-height: 70vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.evaluationSummary {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.evaluationSummary h3 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.evaluationSummary h3 span {
+  color: #3498db;
+  font-weight: 600;
+}
+
+.evaluationDescription {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 .modeIndicator {
@@ -183,83 +212,155 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+.ratingCategories {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .formGroup {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+}
+
+.formGroup:last-child {
+  margin-bottom: 0;
 }
 
 .formGroup label {
   display: block;
-  margin-bottom: 8px;
-  font-size: 14px;
-  color: #666;
-  font-weight: 500;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
 }
 
-.formGroup input[type="range"] {
-  width: 100%;
-  height: 4px;
-  background-color: #ddd;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-  margin-bottom: 8px;
-  transition: opacity 0.3s;
-}
-
-.formGroup input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  background: #3498db;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.formGroup input[type="range"]::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  background: #3498db;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.formGroup input[type="range"]:disabled {
-  opacity: 0.7;
-}
-
-.formGroup span {
-  font-size: 14px;
-  color: #666;
-  font-weight: 500;
-}
-
-/* Range Input Container */
-.rangeInputContainer {
+/* Star Rating styles */
+.starRatingContainer {
   display: flex;
   align-items: center;
+  margin-bottom: 8px;
+  position: relative;
 }
 
-.rangeInput {
-  flex: 1;
+.star {
+  display: inline-block;
   margin-right: 10px;
+  color: #ddd;
+  font-size: 28px;
+  line-height: 1;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+}
+
+.clickableStar {
+  cursor: pointer;
+}
+
+.clickableStar:hover {
+  transform: scale(1.25);
+  text-shadow: 0 0 5px rgba(241, 196, 15, 0.7);
+  color: #f1c40f;
+}
+
+.starActive {
+  color: #f1c40f;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  animation: starPulse 0.3s ease-out;
+}
+
+@keyframes starPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.starInactive {
+  color: #ddd;
+}
+
+.ratingValue {
+  margin-left: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #555;
+  background-color: #f1f1f1;
+  padding: 4px 10px;
+  border-radius: 20px;
+  min-width: 40px;
+  text-align: center;
+}
+
+.ratingDescription {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #777;
+  line-height: 1.5;
+  padding: 8px 0;
+  position: relative;
+  border-left: 3px solid #e1e1e1;
+  padding-left: 12px;
+  margin-left: 5px;
+  background-color: #fcfcfc;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Comments Section */
+.commentsSection {
+  padding-top: 15px;
+  margin-bottom: 20px;
+}
+
+.commentsSection label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+  display: block;
 }
 
 .formGroup textarea {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
   resize: vertical;
   font-family: inherit;
   font-size: 16px;
-  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+  line-height: 1.6;
+  min-height: 120px;
+  max-height: 200px;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .formGroup textarea:focus {
   outline: none;
   border-color: #3498db;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.formGroup textarea::placeholder {
+  color: #aaa;
 }
 
 .readOnlyTextarea {
@@ -285,19 +386,21 @@
 }
 
 .evaluationDate {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
+  margin-top: 25px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-left: 4px solid #3498db;
+  border-radius: 4px;
   font-size: 14px;
   color: #555;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  line-height: 1.5;
 }
 
 .helpText {
-  margin-top: 8px;
+  margin-top: 10px;
   font-size: 13px;
-  color: #666;
+  color: #7a7a7a;
   font-style: italic;
 }
 
@@ -315,4 +418,90 @@
 .modalDescription p {
   line-height: 1.6;
   color: #444;
+}
+
+/* Evaluation Badges */
+.evaluationMeta {
+  display: flex;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.evaluationBadge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.evaluationBadge:first-child {
+  background-color: #3498db;
+  color: white;
+}
+
+/* Custom Scrollbar Styles */
+.evaluationForm::-webkit-scrollbar {
+  width: 6px;
+}
+
+.evaluationForm::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.evaluationForm::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border-radius: 10px;
+}
+
+.evaluationForm::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}
+
+/* Ensure padding at the bottom for better scrolling experience */
+.evaluationForm::after {
+  content: "";
+  display: block;
+  height: 10px;
+}
+
+/* Scroll Indicator Styles */
+.scrollIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 12px;
+  color: #888;
+  margin-top: 10px;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.scrollIndicator:hover {
+  opacity: 1;
+}
+
+.scrollArrow {
+  margin-left: 5px;
+  animation: bounceDown 1.5s infinite;
+  font-size: 14px;
+}
+
+@keyframes bounceDown {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(3px);
+  }
+  60% {
+    transform: translateY(1px);
+  }
 }
