@@ -14,7 +14,7 @@ import IncomingCallNotification from "../../../src/components/Appointments/Incom
 import { Appointment } from "../../../src/components/Appointments/types";
 import NewAppointmentForm from "../../../src/components/Appointments/NewAppointmentForm";
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Building, Users, FileText, Settings, ClipboardCheck, Briefcase, Calendar } from 'lucide-react';
+import { Building, Users, FileText, Settings, ClipboardCheck, Briefcase, Calendar, BookOpen, BarChart2 } from 'lucide-react';
 
 // Mock appointment data (would typically come from an API)
 const mockAppointments: Appointment[] = [
@@ -79,7 +79,7 @@ const mockAppointments: Appointment[] = [
     description: "Practice technical interview skills with feedback from SCAD career counselor.",
   }
 ];
-type ActiveMenuItem = 'companies' | 'students' | 'reports' | 'settings' | 'evaluations' | 'internships' | 'appointments';
+type ActiveMenuItem = 'companies' | 'students' | 'reports' | 'settings' | 'evaluations' | 'internships' | 'appointments'| 'workshops' | 'internship-requests' | 'internship-reports' | 'internship-evaluations' | 'internship-settings'| 'internship-statistics';
 
 export default function AppointmentsPage() {
   // Router and search params for handling URL query parameters
@@ -598,6 +598,8 @@ export default function AppointmentsPage() {
           { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=reports') },
           { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=evaluations') },
           { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=internships') },
+          { id: 'statistics', label: 'Statistics', icon: <BarChart2 size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=statistics') },
+          { id:'Workshops', label: 'Workshops', icon: <BookOpen size={18} />, onClick:  () => { router.push('/SCADLogin/workshops?activeItem=workshops'); } },
           {
             id: 'appointments',
             label: 'Appointments',

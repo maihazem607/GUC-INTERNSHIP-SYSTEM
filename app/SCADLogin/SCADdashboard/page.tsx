@@ -29,7 +29,8 @@ import {
   Search,
   AlertCircle,
   Calendar,
-  BarChart2
+  BarChart2,
+  BookOpen
 } from 'lucide-react';
 import StatisticsSection, { StatisticsData } from "../../../src/components/SCAD/StatisticsSection";
 import EvaluationTable from '../../../src/components/SCAD/EvaluationList';
@@ -519,7 +520,7 @@ const mockInternships: Internship[] = [
 ];
 
 // Dashboard tabs type
-type ActiveMenuItem = 'companies' | 'students' | 'reports' | 'settings' | 'evaluations' | 'internships' | 'appointments' | 'statistics';
+type ActiveMenuItem = 'companies' | 'students' | 'reports' | 'settings' | 'evaluations' | 'internships' | 'appointments' | 'statistics'|'workshops';
 
 // Mock statistics data
 const mockStatisticsData: StatisticsData = {
@@ -1060,6 +1061,7 @@ export default function SCADDashboardPage() {
           { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => setActiveItem('evaluations') },
           { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => setActiveItem('internships') },
           { id: 'statistics', label: 'Statistics', icon: <BarChart2 size={18} />, onClick: () => setActiveItem('statistics') },
+          { id:'Workshops', label: 'Workshops', icon: <BookOpen size={18} />, onClick:  () => { router.push('/SCADLogin/workshops?activeItem=workshops'); } },
           {
             id: 'appointments',
             label: 'Appointments',
