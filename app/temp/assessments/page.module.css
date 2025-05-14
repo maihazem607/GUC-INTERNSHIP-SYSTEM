@@ -1,0 +1,382 @@
+/* Base Styles */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Arial', sans-serif;
+  background-color: #f9fafb;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* Content Layout */
+.contentWrapper {
+  display: flex;
+  flex: 1;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* Main Content */
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Assessment Listings */
+.assessmentListings {
+  background-color: white;
+  border-radius: 16px;
+  padding: 28px 32px 70px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+}
+
+.listingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.listingTitle {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.assessmentCount {
+  background-color: #e8f5e9;
+  color: #166534;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  letter-spacing: 0.02em;
+  border: 1px solid #dcfce7;
+  height: fit-content;
+  white-space: nowrap;
+  min-width: 110px;
+  text-align: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 75px 28px;
+  margin-top: 24px;
+  width: 100%;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* Grid animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Apply staggered animation to grid children */
+.grid > div {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.grid > div:nth-child(1) { animation-delay: 0.05s; }
+.grid > div:nth-child(2) { animation-delay: 0.1s; }
+.grid > div:nth-child(3) { animation-delay: 0.15s; }
+.grid > div:nth-child(4) { animation-delay: 0.2s; }
+.grid > div:nth-child(5) { animation-delay: 0.25s; }
+.grid > div:nth-child(6) { animation-delay: 0.3s; }
+.grid > div:nth-child(7) { animation-delay: 0.35s; }
+.grid > div:nth-child(8) { animation-delay: 0.4s; }
+.grid > div:nth-child(9) { animation-delay: 0.45s; }
+.grid > div:nth-child(n+10) { animation-delay: 0.5s; }
+
+.noResults {
+  text-align: center;
+  padding: 60px 30px;
+  color: #4b5563;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+  background-color: #f9fafb;
+  border-radius: 16px;
+  border: 1px dashed #d1d5db;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.03);
+}
+
+.noResultsIcon {
+  margin-bottom: 20px;
+  color: #6b7280;
+  opacity: 0.7;
+  background-color: #e5e7eb;
+  padding: 16px;
+  border-radius: 50%;
+}
+
+.filterControls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.sortSelect {
+  padding: 10px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background-color: white;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #374151;
+  min-width: 200px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234c51bf' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding-right: 36px;
+  height: 43px;
+}
+
+.sortSelect:hover {
+  border-color: #9ca3af;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.sortSelect:focus {
+  border-color: #4c51bf;
+  box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.15);
+}
+
+/* Assessment Card Highlight for Completed Assessments */
+.completedBadge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: #4c51bf;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  z-index: 1;
+}
+
+/* Modal content for assessment */
+.modalContent {
+  padding: 20px;
+}
+
+.assessmentHeader {
+  margin-bottom: 20px;
+}
+
+.assessmentTitle {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.assessmentInfo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.assessmentInfoItem {
+  display: flex;
+  align-items: center;
+}
+
+.assessmentInfoIcon {
+  margin-right: 8px;
+  color: #4c51bf;
+}
+
+.questionsContainer {
+  margin-top: 30px;
+}
+
+.question {
+  margin-bottom: 30px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.questionText {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.option:hover {
+  background-color: #f3f4f6;
+}
+
+.option.selected {
+  background-color: #4c51bf15;
+  border-color: #4c51bf;
+}
+
+.optionText {
+  margin-left: 10px;
+}
+
+.resultContainer {
+  text-align: center;
+  padding: 30px;
+}
+
+.scoreDisplay {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #4c51bf;
+}
+
+.scoreText {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.actionButtons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.shareProfileButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #4c51bf;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.shareProfileButton:hover {
+  background-color: #3c4199;
+}
+
+.shareProfileButton:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Custom Toggle Switch */
+.toggleWrapper {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 16px;
+  background-color: #f9fafb;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.toggleWrapper:hover {
+  background-color: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.toggleLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b5563;
+  cursor: pointer;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e5e7eb;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+input:checked + .slider {
+  background-color: #4c51bf;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #4c51bf;
+}
+
+input:checked + .slider:before {
+  transform: translateX(24px);
+}
+
+.headerControls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: flex-end;
+}
