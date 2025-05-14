@@ -11,6 +11,7 @@ import {
   Experience,
   Activity
 } from '../../../src/components/StudentInfo/types';
+import { Assessment } from '../../../src/components/Assessments/types';
 import Image from 'next/image';
 
 export default function StudentProfilePage() {
@@ -26,6 +27,42 @@ export default function StudentProfilePage() {
     academic: false,
     jobInterests: false
   });
+  
+  // Mock assessment data for shared assessments
+  const [sharedAssessments, setSharedAssessments] = useState<Assessment[]>([
+    {
+      id: 1,
+      title: "JavaScript Essentials",
+      description: "Test your understanding of JavaScript fundamentals including variables, functions, closures, and ES6+ features.",
+      category: "Programming",
+      difficulty: "Intermediate",
+      duration: "45",
+      questionCount: 20,
+      skillsCovered: ["JavaScript", "ES6", "Functions", "Closures", "Asynchronous Programming"],
+      company: "Google",
+      companyLogo: "/logos/google.png",
+      isCompleted: true,
+      score: 17,
+      totalPossibleScore: 20,
+      isSharedOnProfile: true
+    },
+    {
+      id: 3,
+      title: "Data Structures & Algorithms",
+      description: "Test your knowledge of common data structures and algorithms including arrays, linked lists, trees, and algorithmic complexity.",
+      category: "Computer Science",
+      difficulty: "Advanced",
+      duration: "75",
+      questionCount: 30,
+      skillsCovered: ["Data Structures", "Algorithms", "Time Complexity", "Space Complexity", "Problem Solving"],
+      company: "Microsoft",
+      companyLogo: "/logos/microsoft.png",
+      isCompleted: true,
+      score: 22,
+      totalPossibleScore: 30,
+      isSharedOnProfile: true
+    }
+  ]);
   
   // Modal states for adding/editing experiences and activities
   const [showExperienceModal, setShowExperienceModal] = useState(false);
@@ -696,6 +733,80 @@ export default function StudentProfilePage() {
                 ))
               ) : (
                 <p className={styles.emptyState}>No college activities added yet</p>
+              )}
+            </div>
+              {/* Shared Assessments Section */}
+            <div className={styles.infoSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>Shared Assessments</h2>
+                <div className={styles.sectionHeaderInfo}>
+                  <span className={styles.infoCaption}>
+                    Assessments shared from your profile
+                  </span>
+                </div>
+              </div>
+              
+              {sharedAssessments.length > 0 ? (
+                <div className={styles.assessmentList}>
+                  {sharedAssessments.map((assessment) => (
+                    <div key={assessment.id} className={styles.assessmentItem}>
+                      <div className={styles.assessmentHeader}>
+                        <h3>{assessment.title}</h3>                        <div className={styles.scoreDisplay}>
+                          <span className={styles.scoreValue}>
+                            {assessment.score}/{assessment.totalPossibleScore}
+                          </span>
+                          <div className={styles.scoreProgressWrapper}>
+                            <div 
+                              className={styles.scoreProgress}
+                              style={{
+                                width: `${assessment.score && assessment.totalPossibleScore ? 
+                                  Math.round((assessment.score / assessment.totalPossibleScore) * 100) : 0}%`
+                              }}
+                            ></div>
+                          </div>
+                          <span className={styles.scorePercentage}>
+                            {assessment.score && assessment.totalPossibleScore ? 
+                              Math.round((assessment.score / assessment.totalPossibleScore) * 100) : 0}%
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className={styles.assessmentDetails}>
+                        <div className={styles.assessmentCompany}>
+                          {assessment.companyLogo && (
+                            <div className={styles.companyLogoContainer}>
+                              <Image 
+                                src={assessment.companyLogo} 
+                                alt={assessment.company || 'Company logo'} 
+                                width={24} 
+                                height={24} 
+                              />
+                            </div>
+                          )}
+                          <span>{assessment.company}</span>
+                        </div>
+                        
+                        <div className={styles.assessmentInfo}>
+                          <span 
+                            className={styles.assessmentBadge}
+                            data-difficulty={assessment.difficulty}
+                          >
+                            {assessment.difficulty}
+                          </span>
+                          <span className={styles.assessmentCategory}>{assessment.category}</span>
+                        </div>
+                      </div>
+                      
+                      <div className={styles.skillsList}>
+                        {assessment.skillsCovered.map((skill, idx) => (
+                          <span key={idx} className={styles.skillBadge}>{skill}</span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className={styles.emptyState}>No assessments have been shared on profile yet</p>
               )}
             </div>
           </section>

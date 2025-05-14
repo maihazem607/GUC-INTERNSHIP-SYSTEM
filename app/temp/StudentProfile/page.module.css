@@ -1044,3 +1044,148 @@
     gap: 15px;
   }
 }
+
+/* Shared Assessments Section */
+.assessmentList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.assessmentItem {
+  background-color: var(--background-white);
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-sm);
+  padding: 16px;
+  transition: all var(--transition-fast);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.assessmentItem:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.assessmentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.assessmentHeader h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.scoreDisplay {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.scoreValue {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.scorePercentage {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.scoreProgressWrapper {
+  height: 6px;
+  width: 80px;
+  background-color: #f0f0f0;
+  border-radius: 3px;
+  margin: 0 8px;
+  overflow: hidden;
+}
+
+.scoreProgress {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.assessmentDetails {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.assessmentCompany {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.companyLogoContainer {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: white;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.assessmentInfo {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.assessmentBadge {
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background-color: #FFE0B2;
+  color: #E65100;
+  font-weight: 500;
+}
+
+.assessmentBadge[data-difficulty="Beginner"] {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+}
+
+.assessmentBadge[data-difficulty="Intermediate"] {
+  background-color: #E3F2FD;
+  color: #1565C0;
+}
+
+.assessmentBadge[data-difficulty="Advanced"] {
+  background-color: #FFEBEE;
+  color: #C62828;
+}
+
+.assessmentCategory {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.skillsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skillBadge {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
+  font-weight: 500;
+}
