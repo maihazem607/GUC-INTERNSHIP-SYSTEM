@@ -361,8 +361,12 @@
 
 .commentsSection {
   margin-bottom: 28px;
+  padding: 20px;
   padding-bottom: 24px;
   border-bottom: 1px solid #eaeaea;
+  background-color: #fafbfc;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 .commentsTitle {
@@ -372,12 +376,25 @@
   color: #2d3748;
   display: flex;
   align-items: center;
+  position: relative;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.commentsTitle:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 2px;
+  width: 60px;
+  background: #6a3aeb;
 }
 
 .commentsTitle:before {
   content: '💬';
-  margin-right: 10px;
-  font-size: 20px;
+  margin-right: 12px;
+  font-size: 22px;
 }
 
 .commentsText {
@@ -392,11 +409,12 @@
   margin-top: 14px;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.03);
   position: relative;
+  letter-spacing: 0.2px;
 }
 
 .commentTextarea {
   width: 100%;
-  padding: 15px;
+  padding: 18px 20px;
   font-size: 16px;
   color: #4a5568;
   line-height: 1.8;
@@ -410,12 +428,21 @@
   font-family: inherit;
   min-height: 150px;
   transition: all 0.3s ease;
+  letter-spacing: 0.2px;
 }
 
 .commentTextarea:focus {
   outline: none;
   border-color: #6a3aeb;
-  box-shadow: 0 0 0 3px rgba(106, 58, 235, 0.15);
+  box-shadow: 0 0 0 3px rgba(106, 58, 235, 0.15), 0 2px 6px rgba(0, 0, 0, 0.05) inset;
+  transform: translateY(-1px);
+  background-color: #ffffff;
+}
+
+.commentTextarea::placeholder {
+  color: #94a3b8;
+  font-style: italic;
+  opacity: 0.7;
 }
 
 .commentsText:before {
@@ -424,14 +451,23 @@
   left: 15px;
   top: 10px;
   font-size: 60px;
-  color: rgba(106, 58, 235, 0.1);
+  color: rgba(106, 58, 235, 0.15);
   font-family: Georgia, serif;
   line-height: 1;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .noComments {
-  color: #999;
+  color: #94a3b8;
   font-style: italic;
+  background-color: #f8fafc;
+  padding: 18px 24px;
+  border-radius: 12px;
+  border-left: 4px solid #e2e8f0;
+  margin-top: 14px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.03);
+  text-align: center;
+  letter-spacing: 0.2px;
 }
 
 .recommendationSection {
@@ -695,7 +731,7 @@
   .infoGrid {
     grid-template-columns: 1fr;
   }
-
+}
 
 .starClickable {
   cursor: pointer;
@@ -708,28 +744,31 @@
 
 .commentsTextarea {
   width: 100%;
-  min-height: 100px;
-  padding: 16px;
-  border-radius: 8px;
+  min-height: 150px;
+  padding: 18px 20px;
+  border-radius: 12px;
   border: 1px solid #e2e8f0;
   background-color: #ffffff;
   color: #334155;
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 1.7;
   font-family: inherit;
   resize: vertical;
-  transition: all 0.2s ease;
-  margin-top: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) inset;
+  transition: all 0.3s ease;
+  margin-top: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) inset;
+  letter-spacing: 0.2px;
 }
 
 .commentsTextarea:focus {
   outline: none;
   border-color: #7c4dff;
-  box-shadow: 0 0 0 3px rgba(124, 77, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(124, 77, 255, 0.15), 0 2px 6px rgba(0, 0, 0, 0.05) inset;
+  transform: translateY(-1px);
 }
 
 .commentsTextarea::placeholder {
   color: #94a3b8;
-}
+  font-style: italic;
+  opacity: 0.7;
 }

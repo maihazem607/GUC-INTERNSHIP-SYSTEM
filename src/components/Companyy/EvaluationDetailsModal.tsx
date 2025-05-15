@@ -185,14 +185,13 @@ const EvaluationDetailsModal: React.FC<EvaluationDetailsModalProps> = ({
         <div className={styles.commentsSection}>
           <div className={styles.commentsTitle}>
             Supervisor's Comments
-          </div>
-          {isEditingEvaluation ? (
+          </div>          {isEditingEvaluation ? (
             <textarea
               className={styles.commentsTextarea}
               value={editedComments}
               onChange={(e) => setEditedComments(e.target.value)}
-              placeholder="Add your comments here..."
-              rows={4}
+              placeholder="Add detailed feedback about the intern's performance, strengths, and areas for improvement..."
+              rows={6}
             />
           ) : (
             evaluation.comments ? (

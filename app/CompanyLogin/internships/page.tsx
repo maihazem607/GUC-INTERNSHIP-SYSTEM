@@ -355,42 +355,6 @@ export default function InternshipListPage() {
     setSelectedInternship(null);
   };
   
-  // Handle applying for an internship
-  const handleApply = async (application: {
-    internshipId: number;
-    documents: File[];
-    additionalNotes?: string;
-  }) => {
-    // This would typically be an API call
-    const appliedInternship = internships.find(intern => intern.id === application.internshipId);
-    if (appliedInternship) {
-      console.log(`Applied for internship: ${appliedInternship.title} at ${appliedInternship.company}`);
-      console.log(`Submitted ${application.documents.length} documents`);
-      if (application.additionalNotes) {
-        console.log(`Additional notes: ${application.additionalNotes}`);
-      }
-        // Use setTimeout for notification and closing the modal
-      setTimeout(() => {
-        // Show success notification at the page level
-        showNotification({
-          message: 'Application submitted successfully!',
-          type: 'success'
-        });
-        
-        // Add to bell notifications
-        addNotification({
-          title: "Application Submitted",
-          message: `Your application for ${appliedInternship.title} at ${appliedInternship.company} has been submitted.`,
-          type: 'application'
-        });
-
-        // Close the modal after successful submission
-        setSelectedInternship(null);
-      }, 800);
-    }
-    
-    return new Promise<void>(resolve => setTimeout(resolve, 1000));
-  };
 
   return (
     <div className={styles.pageContainer}>     
@@ -488,7 +452,7 @@ export default function InternshipListPage() {
         <InternshipDetailsModal
           internship={selectedInternship}
           onClose={handleCloseModal}
-          onApply={handleApply}
+         
         />
       )}
       {/* Help popup for internship requirements */}

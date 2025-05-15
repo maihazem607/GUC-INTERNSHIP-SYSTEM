@@ -98,12 +98,11 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({
       </div>
     );
   };
-  
-  return (
+    return (
     <Modal
       title={title}
       onClose={onClose}
-      width="600px"
+      width="750px"
       actions={
         <div className={styles.modalActions}>
           {isViewMode ? (
@@ -196,17 +195,16 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({
             </p>
           </div>
         </div>
-        
-        <div className={`${styles.formGroup} ${styles.commentsSection}`}>
-          <label>Comments</label>
+          <div className={`${styles.formGroup} ${styles.commentsSection}`}>
+          <label>Detailed Evaluation Comments</label>
           <textarea
             value={evaluation.comments}
             onChange={(e) => setEvaluation({
               ...evaluation,
               comments: e.target.value
             })}
-            rows={5}
-            placeholder="Provide detailed feedback about the intern's performance..."
+            rows={6}
+            placeholder="Provide detailed feedback about the intern's performance, strengths, areas for improvement, and any specific recommendations..."
             readOnly={isViewMode}
             className={isViewMode ? styles.readOnlyTextarea : ''}
           />
