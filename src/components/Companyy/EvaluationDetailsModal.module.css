@@ -695,7 +695,7 @@
   .infoGrid {
     grid-template-columns: 1fr;
   }
-}
+
 
 .starClickable {
   cursor: pointer;
@@ -731,4 +731,5 @@
 
 .commentsTextarea::placeholder {
   color: #94a3b8;
+}
 }

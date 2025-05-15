@@ -96,92 +96,101 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
       title={isEditing ? 'Edit Internship Post' : 'Create Internship Post'}
       onClose={onClose}
       width="600px"
-    >
-    <div className={styles.postForm}>
+    >    <div className={`${styles.postForm} ${styles.fadeInAnimation}`}>
         <div className={styles.formContent}>
-          <p style={{ marginBottom: '15px', fontSize: '14px', color: '#666' }}>
+          <div className={styles.helperText} style={{ marginBottom: '20px', fontSize: '14px', color: '#666', backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '8px', borderLeft: '4px solid #e74c3c' }}>
             Fields marked with <span style={{ color: '#e74c3c', fontWeight: 'bold' }}>*</span> are required
-          </p><div className={styles.formField}>
-          <label className={`${styles.label} ${styles.requiredField}`}>Title</label>
-          <input
-            type="text"
-            className={styles.input}
-            value={post.title}
-            onChange={(e) => onChange({...post, title: e.target.value})}
-            placeholder="e.g. Frontend Developer Intern"
-            required
-          />
-        </div>        <div className={styles.formField}>
-          <label className={`${styles.label} ${styles.requiredField}`}>Description</label>
-          <textarea
-            className={styles.textarea}
-            rows={4}
-            maxLength={500}
-            value={post.description}
-            onChange={(e) => onChange({...post, description: e.target.value})}
-            placeholder="Describe the internship role and responsibilities"
-            required
-            style={{ maxHeight: '200px' }}
-          />
-          <div style={{ fontSize: '12px', color: '#666', textAlign: 'right' }}>
-            {post.description?.length || 0}/500
           </div>
-        </div>        <div className={styles.formRow}>
+
+          <div className={styles.sectionHeading}>Basic Information</div>
+          
           <div className={styles.formField}>
-            <label className={styles.label}>Department</label>
-            <select
-              className={styles.select}
-              value={isCustomDepartment ? "Other" : post.department}
-              onChange={handleDepartmentChange}
-            >
-              <option value="Engineering">Engineering</option>
-              <option value="Marketing">Marketing</option>
-              <option value="Design">Design</option>
-              <option value="Business">Business</option>
-              <option value="HR">HR</option>
-              <option value="Other">Other</option>
-            </select>
-            {isCustomDepartment && (
-              <input
-                type="text"
-                className={styles.input}
-                value={post.department}
-                onChange={handleCustomDepartmentChange}
-                placeholder="Specify department"
-                style={{ marginTop: '8px' }}
-              />
-            )}
-          </div>          
-          <div className={styles.formField}>
-            <label className={`${styles.label} ${styles.requiredField}`}>Duration</label>
-            <select
-              className={styles.select}
-              value={isCustomDuration ? "Other" : post.duration}
-              onChange={handleDurationChange}
+            <label className={`${styles.label} ${styles.requiredField}`}>Title</label>
+            <input
+              type="text"
+              className={styles.input}
+              value={post.title}
+              onChange={(e) => onChange({...post, title: e.target.value})}
+              placeholder="e.g. Frontend Developer Intern"
               required
-            >
-              <option value="">Select duration</option>
-              <option value="1 month">1 month</option>
-              <option value="2 months">2 months</option>
-              <option value="3 months">3 months</option>
-              <option value="6 months">6 months</option>
-              <option value="Other">Other</option>
-            </select>
-            {isCustomDuration && (
-              <input
-                type="text"
-                className={styles.input}
-                value={post.duration}
-                onChange={handleCustomDurationChange}
-                placeholder="Specify duration"
-                style={{ marginTop: '8px' }}
-              />
-            )}
+              autoFocus
+            />
+            <div className={styles.helperText}>This will be displayed as the main title of your internship post</div>
           </div>
-        </div>
-        
-        <div className={styles.formRow}>
+          
           <div className={styles.formField}>
+            <label className={`${styles.label} ${styles.requiredField}`}>Description</label>
+            <textarea
+              className={styles.textarea}
+              rows={4}
+              maxLength={500}
+              value={post.description}
+              onChange={(e) => onChange({...post, description: e.target.value})}
+              placeholder="Describe the internship role, responsibilities, and what candidates can expect to learn"
+              required
+            />
+            <div className={styles.helperText} style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span>Be clear and concise about expectations and responsibilities</span>
+              <span>{post.description?.length || 0}/500</span>
+            </div>
+          </div>
+          
+          <div className={styles.sectionHeading}>Details</div>
+          
+          <div className={styles.formRow}>
+            <div className={styles.formField}>
+              <label className={styles.label}>Department</label>
+              <select
+                className={styles.select}
+                value={isCustomDepartment ? "Other" : post.department}
+                onChange={handleDepartmentChange}
+              >
+                <option value="Engineering">Engineering</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Design">Design</option>
+                <option value="Business">Business</option>
+                <option value="HR">HR</option>
+                <option value="Other">Other</option>
+              </select>
+              {isCustomDepartment && (
+                <input
+                  type="text"
+                  className={styles.input}
+                  value={post.department}
+                  onChange={handleCustomDepartmentChange}
+                  placeholder="Specify department"
+                  style={{ marginTop: '8px' }}
+              />              )}
+            </div>          
+            <div className={styles.formField}>
+              <label className={`${styles.label} ${styles.requiredField}`}>Duration</label>
+              <select
+                className={styles.select}
+                value={isCustomDuration ? "Other" : post.duration}
+                onChange={handleDurationChange}
+                required
+              >
+                <option value="">Select duration</option>
+                <option value="1 month">1 month</option>
+                <option value="2 months">2 months</option>
+                <option value="3 months">3 months</option>
+                <option value="6 months">6 months</option>
+                <option value="Other">Other</option>
+              </select>
+              {isCustomDuration && (
+                <input
+                  type="text"
+                  className={styles.input}
+                  value={post.duration}
+                  onChange={handleCustomDurationChange}
+                  placeholder="Specify duration (e.g. 4 months)"
+                  style={{ marginTop: '8px' }}
+                />
+              )}
+              <div className={styles.helperText}>How long will this internship position last?</div>
+            </div>
+          </div>
+            <div className={styles.formField}>
             <label className={styles.label}>Application Deadline</label>
             <input
               type="date"
@@ -189,10 +198,11 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
               value={post.deadline.toISOString().substr(0, 10)}
               onChange={(e) => onChange({...post, deadline: new Date(e.target.value)})}
             />
+            <div className={styles.helperText}>Last day students can apply for this position</div>
           </div>
           
           <div className={styles.formField}>
-            <div className={styles.checkboxGroup}>
+            <div className={styles.checkboxGroup} style={{ marginTop: '5px' }}>
               <input
                 type="checkbox"
                 id="isPaid"
@@ -203,8 +213,8 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
             </div>
             
             {post.isPaid && (
-              <div className={styles.formField}>
-                <label className={styles.label}>Salary $</label>
+              <div className={styles.formField} style={{ marginTop: '12px' }}>
+                <label className={styles.label}>Salary (USD)</label>
                 <input
                   type="number"
                   className={styles.input}
@@ -212,25 +222,41 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
                   onChange={(e) => onChange({...post, expectedSalary: Number(e.target.value) || undefined})}
                   placeholder="e.g. 1500"
                 />
+                <div className={styles.helperText}>Monthly compensation in USD</div>
               </div>
             )}
-          </div>
-        </div>
+          </div><div className={styles.sectionHeading}>Skills & Qualifications</div>
+          
           <div className={styles.formField}>
-          <label className={styles.label}>Required Skills</label>          <div className={styles.skillsContainer}>
-            {post.skillsRequired.map((skill, index) => (
-              <div key={index} className={styles.skillTag}>
-                {skill}
-                <button 
-                  className={styles.removeSkill}
-                  onClick={() => handleRemoveSkill(index)}
-                  type="button"
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-            <div className={styles.skillsSelectionContainer}>
+            <label className={styles.label}>Skills needed for this position</label>
+            <div className={styles.helperText} style={{ marginBottom: '10px' }}>
+              Select relevant skills that applicants should possess
+            </div>
+            
+            <div className={styles.skillsContainer}>
+              {post.skillsRequired.length === 0 && (
+                <div style={{ color: '#888', padding: '10px 0', fontStyle: 'italic' }}>
+                  No skills selected yet. Choose from the dropdown below.
+                </div>
+              )}
+              
+              {post.skillsRequired.map((skill, index) => (
+                <div key={index} className={styles.skillTag}>
+                  {skill}
+                  <button 
+                    className={styles.removeSkill}
+                    onClick={() => handleRemoveSkill(index)}
+                    type="button"
+                    title="Remove skill"
+                    aria-label={`Remove ${skill} skill`}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+            
+            <div className={styles.skillsSelectionContainer} style={{ marginTop: '12px' }}>
               <select 
                 className={styles.skillSelect}
                 onChange={(e) => {
@@ -244,7 +270,7 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
                 }}
                 value=""
               >
-                <option value="">Select a skill...</option>
+                <option value="">+ Add a required skill...</option>
                 
                 <optgroup label="Programming Languages">
                   <option value="JavaScript">JavaScript</option>
@@ -287,8 +313,7 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
                   <option value="GraphQL">GraphQL</option>
                   <option value="REST API">REST API</option>
                 </optgroup>
-                
-                <optgroup label="Database">
+                  <optgroup label="Database">
                   <option value="MySQL">MySQL</option>
                   <option value="PostgreSQL">PostgreSQL</option>
                   <option value="MongoDB">MongoDB</option>
@@ -377,20 +402,19 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
                   <option value="Content Creation">Content Creation</option>
                   <option value="SEO">SEO</option>
                   <option value="Business Analysis">Business Analysis</option>
-                </optgroup>
-              </select>
+                </optgroup>              </select>
             </div>
           </div>
-        </div>{/* Form actions are rendered outside the main form to prevent disappearing */}
         </div>
-          {/* Fixed button bar at the bottom that won't disappear */}
+        {/* Form actions are rendered outside the main form to prevent disappearing */}
         <div className={styles.fixedActionBar}>
           <button 
             className={styles.cancelButton} 
             onClick={onClose}
           >
             Cancel
-          </button>          <button 
+          </button>
+            <button 
             id="createPostButton"
             className={`${styles.submitButton} ${!post.title || !post.description || !post.duration ? styles.disabledButton : ''}`}
             onClick={() => {
@@ -406,12 +430,7 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
             disabled={!post.title || !post.description || !post.duration}
             type="button"
           >
-            {canSubmit ? (isEditing ? 'Update Post' : 'Create Post') : (
-              <>
-                <span>{isEditing ? 'Update Post' : 'Create Post'}</span>
-                <span style={{ fontSize: '10px', display: 'block', opacity: 0.7 }}></span>
-              </>
-            )}
+            {isEditing ? 'Update Internship' : 'Post Internship'}
           </button>
         </div>
       </div>
