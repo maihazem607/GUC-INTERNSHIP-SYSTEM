@@ -1,16 +1,16 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import NavigationMenu, { MenuItem } from "../../../src/components/global/NavigationMenu";
+import NavigationMenu, { MenuItem } from "@/components/global/NavigationMenu";
 import { Clipboard, ClipboardCheck, FileText, Search } from 'lucide-react';
-import SearchBar from "../../../src/components/global/SearchBar";
-import FilterSidebar from "../../../src/components/global/FilterSidebar";
-import MyInternshipCard from "../../../src/components/MyInternships/MyInternshipCard";
-import EvaluationModal from "../../../src/components/MyInternships/EvaluationModal";
-import ReportModal from "../../../src/components/MyInternships/ReportModal";
-import ReportsList from "../../../src/components/MyInternships/ReportsList";
-import ReportResultsModal from "../../../src/components/MyInternships/ReportResultsModal";
-import { Internship, FilterOptions } from "../../../src/components/internships/types";
-import { useNotification } from "../../../src/components/global/NotificationSystemAdapter";
+import SearchBar from "@/components/global/SearchBar";
+import FilterSidebar from "@/components/global/FilterSidebar";
+import MyInternshipCard from "@/components/MyInternships/MyInternshipCard";
+import EvaluationModal from "@/components/MyInternships/EvaluationModal";
+import ReportModal from "@/components/MyInternships/ReportModal";
+import ReportsList from "@/components/MyInternships/ReportsList";
+import ReportResultsModal from "@/components/MyInternships/ReportResultsModal";
+import { Internship, FilterOptions } from "@/components/internships/types";
+import { useNotification } from "@/components/global/NotificationSystemAdapter";
 import styles from "./page.module.css";
 
 // Extended Internship type to include application status and evaluation
@@ -989,7 +989,7 @@ const MyInternshipsPage: React.FC = () => {
       
       try {
         // Import the PDF utility dynamically to avoid SSR issues
-        const pdfUtils = await import('../../../src/utils/pdfUtils');
+        const pdfUtils = await import('@/utils/pdfUtils');
         const generateReportPDF = pdfUtils.default;
         
         // Get course names for the report

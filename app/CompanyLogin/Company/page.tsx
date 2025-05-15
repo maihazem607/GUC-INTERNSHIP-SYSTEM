@@ -4,22 +4,22 @@ import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 
 // Import global components
-import NavigationMenu, { MenuItem } from "../../../src/components/global/NavigationMenu";
+import NavigationMenu, { MenuItem } from "@/components/global/NavigationMenu";
 import { Briefcase, FileText, Users } from 'lucide-react';
-import NotificationSystem, { useNotification } from "../../../src/components/global/NotificationSystemAdapter";
-import FilterSidebar from "../../../src/components/global/FilterSidebar";
-import SearchBar from "../../../src/components/global/SearchBar";
+import NotificationSystem, { useNotification } from "@/components/global/NotificationSystemAdapter";
+import FilterSidebar from "@/components/global/FilterSidebar";
+import SearchBar from "@/components/global/SearchBar";
 
 // Import components
-import ApplicationsList from "../../../src/components/Companyy/ApplicationsList";
-import InternsList from "../../../src/components/Companyy/InternsList";
-import ApplicationDetailsModal from "../../../src/components/Companyy/ApplicationDetailsModal";
-import InternshipPostModal from "../../../src/components/Companyy/InternshipPostModal";
-import InternshipCard from "../../../src/components/internships/InternshipCard";
-import CompanyInternshipDetailsModal from "../../../src/components/Companyy/CompanyInternshipDetailsModal";
-import EvaluationModal from "../../../src/components/Companyy/EvaluationModal";
-import EvaluationDetailsModal from "../../../src/components/Companyy/EvaluationDetailsModal";
-import { Evaluation as SCADEvaluation } from "../../../src/components/SCAD/EvaluationList";
+import ApplicationsList from "@/components/Companyy/ApplicationsList";
+import InternsList from "@/components/Companyy/InternsList";
+import ApplicationDetailsModal from "@/components/Companyy/ApplicationDetailsModal";
+import InternshipPostModal from "@/components/Companyy/InternshipPostModal";
+import InternshipCard from "@/components/internships/InternshipCard";
+import CompanyInternshipDetailsModal from "@/components/Companyy/CompanyInternshipDetailsModal";
+import EvaluationModal from "@/components/Companyy/EvaluationModal";
+import EvaluationDetailsModal from "@/components/Companyy/EvaluationDetailsModal";
+import { Evaluation as SCADEvaluation } from "@/components/SCAD/EvaluationList";
 
 // Import types
 import { 

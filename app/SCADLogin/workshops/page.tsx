@@ -6,13 +6,15 @@ import React, { useState, useEffect } from 'react';
 import NavigationMenu from "../../../src/components/global/NavigationMenu";
 import FilterSidebar from "@/components/global/FilterSidebar";
 import SearchBar from "@/components/global/SearchBar";
-import NotificationSystem, { NOTIFICATION_CONSTANTS } from "@/components/global/NotificationSystem";
+import WorkshopCard from "@/components/workshops/WorkshopCard";
+import WorkshopDetailsModal from "@/components/workshops/WorkshopDetailsModal";
+import LiveSessionModal from "@/components/workshops/LiveSessionModal";
+import RecordedSessionModal from "@/components/workshops/RecordedSessionModal";
+import NotificationSystem, { useNotification } from "@/components/global/NotificationSystemAdapter";
 import { Workshop } from "@/components/workshops/types";
-// import SCADWorkshopCard from "@/components/workshops/SCADWorkshopCard";
 import SCADWorkshopCard from "../../../src/components/workshops/SCADWorkshopCard";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Building, Users, FileText, Settings, ClipboardCheck, Briefcase, Calendar, BookOpen, BarChart2 } from 'lucide-react';
-
 
 // Workshop data (would typically come from an API)
 const workshops: Workshop[] = [
@@ -124,7 +126,10 @@ const workshops: Workshop[] = [
 
 type ActiveMenuItem = 'companies' | 'students' | 'reports' | 'settings' | 'evaluations' | 'internships' | 'appointments'| 'workshops' | 'internship-requests' | 'internship-reports' | 'internship-evaluations' | 'internship-settings'| 'internship-statistics' ;
 
+
+
 // Mock data for appointments dropdown counts
+
 const appointments = [
   {
     id: "1",
@@ -164,6 +169,7 @@ const appointments = [
   }
 ];
 
+
 export default function WorkshopListPage() {
   const router = useRouter();
   const searchParams = useSearchParams(); 
@@ -173,25 +179,18 @@ export default function WorkshopListPage() {
     type: 'All'
   });
   const [filteredWorkshops, setFilteredWorkshops] = useState<Workshop[]>(workshops);
-  const [notification, setNotification] = useState<{message: string, type: 'success' | 'error' | 'warning' | 'info'} | null>(null);
+  const [selectedWorkshop, setSelectedWorkshop] = useState<Workshop | null>(null);
+  const [liveSession, setLiveSession] = useState<Workshop | null>(null);
+  const [recordedSession, setRecordedSession] = useState<Workshop | null>(null);  // Get notification handling from the unified system
+  const { notification, visible, showNotification, hideNotification, addNotification } = useNotification();
 
   // Get active item from URL parameter or default to 'workshops'
   const [activeItem, setActiveItem] = useState<ActiveMenuItem>(
     (searchParams.get('activeItem') as ActiveMenuItem) || 'workshops'
   );
-  
+
   // For handling appointments dropdown
   const [activeTab, setActiveTab] = useState<string>('my-appointments');
-  // Auto-dismiss notifications after the specified time
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => {
-        setNotification(null);
-      }, NOTIFICATION_CONSTANTS.AUTO_DISMISS_TIME);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [notification]);
 
   // Filter options
   const statusOptions = ['All', 'Upcoming', 'Ongoing', 'Completed'];
@@ -241,13 +240,15 @@ export default function WorkshopListPage() {
     
     setFilteredWorkshops(results);
   }, [searchTerm, activeFilters]);
-    // Handle filter changes
+  
+  // Handle filter changes
   const handleFilterChange = (filterType: string, value: string) => {
     setActiveFilters(prev => ({
       ...prev,
       [filterType]: value
     }));
   };
+
   // Update URL when tab changes
   useEffect(() => {
     if (activeTab) {
@@ -256,7 +257,99 @@ export default function WorkshopListPage() {
       const newSearch = current.toString();
       router.push(`/SCADLogin/workshops?${newSearch}`);
     }
+
   }, [activeTab, router]);
+
+  // Workshop action handlers
+  const handleViewDetails = (workshop: Workshop) => {
+    setSelectedWorkshop(workshop);
+  };
+  
+  const handleCloseModal = () => {
+    setSelectedWorkshop(null);
+  };
+
+  const handleRegister = async (workshop: Workshop) => {
+    // This would typically be an API call
+    console.log(`Registered for workshop: ${workshop.title}`);
+    
+    // Use setTimeout for notification and closing windows
+    setTimeout(() => {
+      // Close modal if it was open
+      if (selectedWorkshop && selectedWorkshop.id === workshop.id) {
+        setSelectedWorkshop(null);
+      }
+      
+      // Show success notification
+      showNotification({
+        message: `Successfully registered for "${workshop.title}"`,
+        type: 'success'
+      });
+      
+      // Add persistent notification to bell icon
+      addNotification({
+        title: "Workshop Registration",
+        message: `You've successfully registered for "${workshop.title}" on ${workshop.date}`,
+        type: 'application'
+      });
+    }, 800); // Simulate network delay
+    
+    return new Promise<void>(resolve => setTimeout(resolve, 1000));
+  };
+    
+  const handleJoinLive = async (workshop: Workshop) => {
+    // This would typically connect to a live session
+    setTimeout(() => {
+      setLiveSession(workshop);
+      
+      // Show success notification
+      showNotification({
+        message: `Joining live session for "${workshop.title}"`,
+        type: 'info'
+      });
+      
+      // Add to bell notifications
+      addNotification({
+        title: "Joining Workshop",
+        message: `You've joined the live session for "${workshop.title}"`,
+        type: 'application'
+      });
+      
+      // Close the details modal if it was open
+      if (selectedWorkshop && selectedWorkshop.id === workshop.id) {
+        setSelectedWorkshop(null);
+      }
+    }, 800);
+    
+    return new Promise<void>(resolve => setTimeout(resolve, 1000));
+  };
+    
+  const handleWatchRecording = async (workshop: Workshop) => {
+    // This would typically fetch a recording
+    setTimeout(() => {
+      setRecordedSession(workshop);
+      
+      // Show success notification
+      showNotification({
+        message: `Loading recording for "${workshop.title}"`,
+        type: 'info'
+      });
+      
+      // Add to bell notifications
+      addNotification({
+        title: "Workshop Recording",
+        message: `You've started watching the recording for "${workshop.title}"`,
+        type: 'application'
+      });
+      
+      // Close the details modal if it was open
+      if (selectedWorkshop && selectedWorkshop.id === workshop.id) {
+        setSelectedWorkshop(null);
+      }
+    }, 800);
+    
+    return new Promise<void>(resolve => setTimeout(resolve, 1000));
+  };
 
   return (
     <div className={styles.pageContainer}>
@@ -334,16 +427,18 @@ export default function WorkshopListPage() {
           {/* Workshop Listings */}
           <div className={styles.workshopListings}>
             <div className={styles.listingHeader}>
-              <h2 className={styles.listingTitle}>Career Workshops Management</h2>
-              <span className={styles.workshopCount}>
+                <h2 className={styles.listingTitle}>Career Workshops Management</h2>              <span className={styles.workshopCount}>
                 {filteredWorkshops.length} workshop{filteredWorkshops.length !== 1 ? 's' : ''}
               </span>
-            </div>            <div className={styles.cards}>
+            </div>
+
+            <div className={styles.cards}>
               {filteredWorkshops.length > 0 ? (
                 filteredWorkshops.map(workshop => (
                   <SCADWorkshopCard
                     key={workshop.id}
                     workshop={workshop}
+                    onViewDetails={handleViewDetails}
                   />
                 ))
               ) : (
@@ -356,23 +451,35 @@ export default function WorkshopListPage() {
                   <h3>No workshops found</h3>
                   <p>Try adjusting your search criteria or filters</p>
                 </div>
-              )}            </div>
+              )}
+            </div>
           </div>
         </main>
-      </div>
+      </div> 
+      {/* Details Modal */}
+      {selectedWorkshop && (
+        <WorkshopDetailsModal
+          workshop={selectedWorkshop}
+          onClose={handleCloseModal}
+          onRegister={handleRegister}
+          onJoinLive={handleJoinLive}
+          onWatch={handleWatchRecording}
+        />
+      )}
 
-      {/* Notification Component - With auto-dismiss */}
-      {notification && (
-        <NotificationSystem
-          message={notification.message}
-          type={notification.type}
-          visible={true}
-          onClose={() => {
-            // This creates a smooth fade-out animation before removing notification
-            setTimeout(() => {
-              setNotification(null);
-            }, NOTIFICATION_CONSTANTS.HIDE_ANIMATION_TIME);
-          }}
+      {/* Live Session Modal */}
+      {liveSession && (
+        <LiveSessionModal
+          workshop={liveSession}
+          onClose={() => setLiveSession(null)}
+        />
+      )}
+
+      {/* Recorded Session Modal */}
+      {recordedSession && (
+        <RecordedSessionModal
+          workshop={recordedSession}
+          onClose={() => setRecordedSession(null)}
         />
       )}
     </div>

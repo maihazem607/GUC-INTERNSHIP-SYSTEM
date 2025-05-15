@@ -3,16 +3,17 @@ import styles from "./page.module.css";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-// Import global components
-import NavigationMenu from "../../../src/components/global/NavigationMenu";
+// Import modular components
 import { Briefcase, FileText, Users } from 'lucide-react';
-import FilterSidebar from "../../../src/components/global/FilterSidebar";
-import SearchBar from "../../../src/components/global/SearchBar";
-import InternshipCard from "../../../src/components/internships/InternshipCard";
-import InternshipDetailsModal from "../../../src/components/internships/InternshipDetailsModal";
-import InternshipHelpPopup from "../../../src/components/internships/InternshipHelpPopup";
-import NotificationSystem, { useNotification } from "../../../src/components/global/NotificationSystem";
-import { Internship, FilterOptions } from "../../../src/components/internships/types";
+import NavigationMenu from "@/components/global/NavigationMenu";
+import Navigation from "@/components/global/Navigation";
+import NotificationSystem, { useNotification } from "@/components/global/NotificationSystemAdapter";
+import FilterSidebar from "@/components/global/FilterSidebar";
+import SearchBar from "@/components/global/SearchBar";
+import InternshipCard from "@/components/internships/InternshipCard";
+import InternshipDetailsModal from "@/components/internships/InternshipDetailsModal";
+import InternshipHelpPopup from "@/components/internships/InternshipHelpPopup";
+import { Internship, FilterOptions } from "@/components/internships/types";
 
 // Internship data (would typically come from an API)
 const internships: Internship[] = [
@@ -226,30 +227,31 @@ const internships: Internship[] = [
   }
 ];
 
-export default function InternshipListPage() {
+export default function InternshipListPage() {  
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState<FilterOptions>({
     industry: 'All',
     duration: 'All',
     isPaid: 'All'
-  });  const [filteredInternships, setFilteredInternships] = useState<Internship[]>(internships);
+  });
+  const [filteredInternships, setFilteredInternships] = useState<Internship[]>(internships);
   const [starredInternships, setStarredInternships] = useState<number[]>([]);
   const [selectedInternship, setSelectedInternship] = useState<Internship | null>(null);
   const [showHelpPopup, setShowHelpPopup] = useState(false);
-  
+
   // Dashboard navigation state
   const [activeTab, setActiveTab] = useState('scad-internships');
-  
+
   // Handle navigation to company dashboard pages
   const handleNavigate = (tab: string) => {
     if (tab !== 'scad-internships') {
       router.push(`/CompanyLogin/Company?activeItem=${tab}`);
     }
   };
-  
+
   // Add notification system at page level
-  const { notification, visible, showNotification, hideNotification } = useNotification();
+  const { notification, visible, showNotification, hideNotification, addNotification } = useNotification();
 
   // Filter options
   const industries = ['All', 'Technology', 'Finance', 'Marketing', 'Design', 'Healthcare'];
@@ -367,49 +369,51 @@ export default function InternshipListPage() {
       if (application.additionalNotes) {
         console.log(`Additional notes: ${application.additionalNotes}`);
       }
-      
-      // Show success notification at the page level
-      showNotification({
-        message: 'Application submitted successfully!',
-        type: 'success'
-      });
+        // Use setTimeout for notification and closing the modal
+      setTimeout(() => {
+        // Show success notification at the page level
+        showNotification({
+          message: 'Application submitted successfully!',
+          type: 'success'
+        });
+        
+        // Add to bell notifications
+        addNotification({
+          title: "Application Submitted",
+          message: `Your application for ${appliedInternship.title} at ${appliedInternship.company} has been submitted.`,
+          type: 'application'
+        });
+
+        // Close the modal after successful submission
+        setSelectedInternship(null);
+      }, 800);
     }
-    
-    // Close the modal after successful submission
-    setSelectedInternship(null);
     
     return new Promise<void>(resolve => setTimeout(resolve, 1000));
   };
-  // Calculate counts for the navigation menu
-  const pendingApplicationsCount = 0; // Would come from API in a real app
-  const currentInternsCount = 0; // Would come from API in a real app
-  const internshipPostsCount = 0; // Would come from API in a real app
-  
+
   return (
-    <div className={styles.pageContainer}>
-      {/* Company Dashboard Navigation Menu */}
+    <div className={styles.pageContainer}>     
+     {/* Company Dashboard Navigation Menu */}
       <NavigationMenu
         items={[
           { 
             id: 'internships', 
             label: 'Internship Posts', 
             icon: <Briefcase size={18} />,
-            onClick: () => handleNavigate('internships'),
-            count: internshipPostsCount 
+            onClick: () => handleNavigate('internships')
           },
           { 
             id: 'applications', 
             label: 'Applications', 
             icon: <FileText size={18} />,
-            onClick: () => handleNavigate('applications'),
-            count: pendingApplicationsCount 
+            onClick: () => handleNavigate('applications')
           },
           { 
             id: 'interns', 
             label: 'Current Interns', 
             icon: <Users size={18} />,
-            onClick: () => handleNavigate('interns'),
-            count: currentInternsCount 
+            onClick: () => handleNavigate('interns')
           },
           { 
             id: 'scad-internships', 
@@ -418,6 +422,7 @@ export default function InternshipListPage() {
             onClick: () => {} // Already on this page
           }
         ]}
+
         activeItemId={activeTab}
         logo={{
           src: '/logos/GUCInternshipSystemLogo.png',
@@ -445,6 +450,7 @@ export default function InternshipListPage() {
           {/* Internship Listings */}
           <div className={styles.internshipListings}>
             <div className={styles.listingHeader}>
+              <h2 className={styles.listingTitle}>Recommended jobs</h2>
               <span className={styles.internshipCount}>
                 {filteredInternships.length} Internship{filteredInternships.length !== 1 ? 's' : ''}
               </span>
@@ -472,29 +478,19 @@ export default function InternshipListPage() {
                   <p>Try adjusting your search criteria or filters</p>
                 </div>
               )}
-            </div>          </div>
+            </div>
+          </div>
         </main>
       </div>
-      
+
       {/* Details Modal */}
       {selectedInternship && (
         <InternshipDetailsModal
           internship={selectedInternship}
           onClose={handleCloseModal}
-          onApply={undefined}
+          onApply={handleApply}
         />
       )}
-      
-      {/* Global notification system - Moved to page level */}
-      {notification && (
-        <NotificationSystem
-          message={notification.message}
-          type={notification.type}
-          visible={visible}
-          onClose={hideNotification}
-        />
-      )}
-      
       {/* Help popup for internship requirements */}
       {showHelpPopup && (
         <InternshipHelpPopup onClose={() => setShowHelpPopup(false)} />
