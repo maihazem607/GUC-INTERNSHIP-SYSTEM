@@ -1515,15 +1515,7 @@ export default function SCADDashboardPage() {
           internship={selectedInternship}
           onClose={handleCloseInternshipDetails}
         />
-      )}      {/* Global notification system */}
-      {notification && (
-        <NotificationSystem
-          message={notification.message}
-          type={notification.type}
-          visible={visible}
-          onClose={hideNotification}
-        />
-      )}
+      )}  
     </div>
   );
 }

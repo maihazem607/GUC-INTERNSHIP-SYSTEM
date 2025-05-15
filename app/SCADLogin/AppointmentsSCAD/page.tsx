@@ -10,11 +10,11 @@ import AppointmentCard from "../../../src/components/Appointments/AppointmentCar
 import AppointmentDetailsModal from "../../../src/components/Appointments/AppointmentDetailsModal";
 import VideoCall from "../../../src/components/Appointments/VideoCall";
 import NotificationSystem, { useNotification, NOTIFICATION_CONSTANTS } from "../../../src/components/global/NotificationSystemAdapter";
-import IncomingCallNotification from "../../../src/components/Appointments/IncomingCallNotification";
 import { Appointment } from "../../../src/components/Appointments/types";
 import NewAppointmentForm from "../../../src/components/Appointments/NewAppointmentForm";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Building, Users, FileText, Settings, ClipboardCheck, Briefcase, Calendar, BookOpen, BarChart2 } from 'lucide-react';
+import IncomingCallNotification from "@/components/Appointments/IncomingCallNotification";
 
 // Mock appointment data (would typically come from an API)
 const mockAppointments: Appointment[] = [
@@ -187,20 +187,23 @@ export default function AppointmentsPage() {
               ? { ...app, status: 'accepted' }
               : app
           )
-        );
-
+        );        
         if (activeTab === 'my-appointments') {
-          showNotification({
-            message: "Dr. Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
-            type: 'success'
-          });
-          
-          // Add to bell notifications
-          addNotification({
-            title: "Appointment Accepted",
-            message: "Dr. Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
-            type: 'appointment'
-          });
+          // Use setTimeout for notification consistency
+          setTimeout(() => {
+            // Show toast notification
+            showNotification({
+              message: "Dr. Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
+              type: 'success'
+            });
+            
+            // Add to bell notifications
+            addNotification({
+              title: "Appointment Accepted",
+              message: "Dr. Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
+              type: 'appointment'
+            });
+          }, 800); // Simulate network delay
         }
         
         // Try to play notification sound
@@ -384,23 +387,27 @@ export default function AppointmentsPage() {
     );
       const app = appointments.find(a => a.id === appointmentId);
     
-    if (activeTab === 'my-appointments') {
-      showNotification({
-        message: app ? `You have accepted the appointment request from ${app.participantName}` : `Appointment accepted successfully`,
-        type: 'success'
-      });
-      
-      // Add to bell notifications
-      addNotification({
-        title: "Appointment Accepted",
-        message: app ? `You have accepted the appointment request from ${app.participantName}` : `Appointment accepted successfully`,
-        type: 'appointment'
-      });
-    }
-    
     // If accepting from modal, close it
     if (showAppointmentDetails) {
       setShowAppointmentDetails(false);
+    }
+    
+    if (activeTab === 'my-appointments') {
+      // Use setTimeout for notification consistency
+      setTimeout(() => {
+        // Show toast notification
+        showNotification({
+          message: app ? `You have accepted the appointment request from ${app.participantName}` : `Appointment accepted successfully`,
+          type: 'success'
+        });
+        
+        // Add to bell notifications
+        addNotification({
+          title: "Appointment Accepted",
+          message: app ? `You have accepted the appointment request from ${app.participantName}` : `Appointment accepted successfully`,
+          type: 'appointment'
+        });
+      }, 800); // Simulate network delay
     }
     
     // Simulate notification to the other user
@@ -414,26 +421,29 @@ export default function AppointmentsPage() {
       prev.map(app => 
         app.id === appointmentId ? {...app, status: 'rejected'} : app
       )
-    );
-      const app = appointments.find(a => a.id === appointmentId);
-    
-    if (activeTab === 'my-appointments') {
-      showNotification({
-        message: app ? `You have declined the appointment request from ${app.participantName}` : `Appointment rejected`,
-        type: 'warning'
-      });
-      
-      // Add to bell notifications
-      addNotification({
-        title: "Appointment Declined",
-        message: app ? `You have declined the appointment request from ${app.participantName}` : `Appointment rejected`,
-        type: 'appointment'
-      });
-    }
+    );    const app = appointments.find(a => a.id === appointmentId);
     
     // If rejecting from modal, close it
     if (showAppointmentDetails) {
       setShowAppointmentDetails(false);
+    }
+    
+    if (activeTab === 'my-appointments') {
+      // Use setTimeout for notification consistency
+      setTimeout(() => {
+        // Show toast notification
+        showNotification({
+          message: app ? `You have declined the appointment request from ${app.participantName}` : `Appointment rejected`,
+          type: 'warning'
+        });
+        
+        // Add to bell notifications
+        addNotification({
+          title: "Appointment Declined",
+          message: app ? `You have declined the appointment request from ${app.participantName}` : `Appointment rejected`,
+          type: 'appointment'
+        });
+      }, 800); // Simulate network delay
     }
     
     // Simulate notification to the other user
@@ -448,22 +458,27 @@ export default function AppointmentsPage() {
     setShowAppointmentDetails(false);
   };  const handleEndCall = () => {
     setShowVideoCall(false);
-      // Notify that call has ended
+    
+    // Notify that call has ended
     if (selectedAppointment) {
-      showNotification({
-        message: `Call with ${selectedAppointment.participantName} has ended`,
-        type: 'info'
-      });
-      
-      // Add to bell notifications
-      addNotification({
-        title: "Call Ended",
-        message: `Call with ${selectedAppointment.participantName} has ended`,
-        type: 'appointment'
-      });
-      
-      // Play sound with fallback handling
-      playNotificationSound('notification');
+      // Use setTimeout for notification consistency
+      setTimeout(() => {
+        // Show temporary toast notification
+        showNotification({
+          message: `Call with ${selectedAppointment.participantName} has ended`,
+          type: 'info'
+        });
+        
+        // Add to bell notifications
+        addNotification({
+          title: "Call Ended",
+          message: `Call with ${selectedAppointment.participantName} has ended`,
+          type: 'appointment'
+        });
+        
+        // Play sound with fallback handling
+        playNotificationSound('notification');
+      }, 800); // Simulate network delay
     }
     
     // No demo notification needed since we'll simulate Dr. Hassan ending the call
@@ -485,64 +500,77 @@ export default function AppointmentsPage() {
   }, []); // Empty dependency array ensures it only runs once
   // Simulate Dr. Hassan ending the call after 1 minute of being in the call
   useEffect(() => {
-    if (showVideoCall && selectedAppointment?.participantName === "Dr. Ahmed Hassan") {
+    if (showVideoCall && selectedAppointment?.participantName === "Dr. Ahmed Hassan") {      
       const simulateCallEnding = setTimeout(() => {
         // End the call automatically
         setShowVideoCall(false);
+        
+        // Use setTimeout for notification consistency
+        setTimeout(() => {
           // Show notification that Dr. Hassan left the call
-        showNotification({
-          message: `Dr. Ahmed Hassan has left the call`,
-          type: 'info'
-        });
-        
-        // Add to bell notifications
-        addNotification({
-          title: "Call Ended",
-          message: `Dr. Ahmed Hassan has left the call`,
-          type: 'appointment'
-        });
-        
-        // Play notification sound with fallback handling
-        playNotificationSound('notification');
+          showNotification({
+            message: `Dr. Ahmed Hassan has left the call`,
+            type: 'info'
+          });
+          
+          // Add to bell notifications
+          addNotification({
+            title: "Call Ended",
+            message: `Dr. Ahmed Hassan has left the call`,
+            type: 'appointment'
+          });
+          
+          // Play notification sound with fallback handling
+          playNotificationSound('notification');
+        }, 800); // Simulate network delay
       }, 60000); // 1 minute (60 seconds)
       
       return () => clearTimeout(simulateCallEnding);
     }
   }, [showVideoCall, selectedAppointment]);
   
-  // Handle incoming call actions
+  // Handle incoming call actions  
   const handleAcceptIncomingCall = () => {
     if (incomingCall) {
+      const participantName = incomingCall.participantName;
       setSelectedAppointment(incomingCall);
       setIncomingCall(null);
       setShowVideoCall(true);
+      
+      // Use setTimeout for notification consistency
+      setTimeout(() => {
         // Show notification that we joined the call
+        showNotification({
+          message: `You joined a call with ${participantName}`,
+          type: 'info'
+        });
+        
+        // Add to bell notifications
+        addNotification({
+          title: "Call Joined",
+          message: `You joined a call with ${participantName}`,
+          type: 'appointment'
+        });
+      }, 800); // Simulate network delay
+    }
+  };    const handleRejectIncomingCall = () => {
+    setIncomingCall(null);
+    
+    // Use setTimeout for notification consistency
+    setTimeout(() => {
+      // Show temporary toast notification
       showNotification({
-        message: `You joined a call with ${incomingCall.participantName}`,
+        message: `Call declined`,
         type: 'info'
       });
       
       // Add to bell notifications
       addNotification({
-        title: "Call Joined",
-        message: `You joined a call with ${incomingCall.participantName}`,
+        title: "Call Declined",
+        message: `Call declined`,
         type: 'appointment'
       });
-    }
-  };
-    const handleRejectIncomingCall = () => {
-    setIncomingCall(null);
-    showNotification({
-      message: `Call declined`,
-      type: 'info'
-    });
-    
-    // Add to bell notifications
-    addNotification({
-      title: "Call Declined",
-      message: `Call declined`,
-      type: 'appointment'
-    });
+    }, 800); // Simulate network delay
   };// Simulate notification to the other user (in a real app, this would use websockets or other real-time tech)
   const simulateNotificationToOtherUser = (appointmentId: string, status: string) => {
     console.log(`Notification sent to other user about appointment ${appointmentId} being ${status}`);
@@ -560,8 +588,7 @@ export default function AppointmentsPage() {
     // For demonstration purposes, show a mockup of the notification the other party would receive
     setTimeout(() => {
       const app = appointments.find(a => a.id === appointmentId);
-      if (app) {
-        let notificationMessage = '';
+      if (app) {        let notificationMessage = '';
         let notificationType: 'success' | 'info' | 'warning' = 'info';
           
         if (status === 'accepted') {
@@ -570,21 +597,26 @@ export default function AppointmentsPage() {
         } else if (status === 'rejected') {
           notificationMessage = `${app.participantName} has declined your appointment request for "${app.title}"`;
           notificationType = 'warning';
-        }        
+        }
+        
+        // Use setTimeout for notification consistency
+        setTimeout(() => {
+          // Show toast notification
           showNotification({
-          message: notificationMessage,
-          type: notificationType
-        });
-        
-        // Add to bell notifications
-        addNotification({
-          title: status === 'accepted' ? "Appointment Accepted" : "Appointment Declined",
-          message: notificationMessage,
-          type: 'appointment'
-        });
-        
-        // Play notification sound with fallback handling
-        playNotificationSound('notification');
+            message: notificationMessage,
+            type: notificationType
+          });
+          
+          // Add to bell notifications
+          addNotification({
+            title: status === 'accepted' ? "Appointment Accepted" : "Appointment Declined",
+            message: notificationMessage,
+            type: 'appointment'
+          });
+          
+          // Play notification sound with fallback handling
+          playNotificationSound('notification');
+        }, 800); // Simulate network delay
       }
     }, 2000); // Delayed to simulate network latency
   };// Handle creating a new appointment
@@ -607,20 +639,24 @@ export default function AppointmentsPage() {
       isOnline: false, // Since we removed the online checkbox
       description: appointmentData.description
     };
+      // Add the new appointment to the list
+    setAppointments(prev => [...prev, newAppointment]);
     
-    // Add the new appointment to the list
-    setAppointments(prev => [...prev, newAppointment]);    // Show success notification
-    showNotification({
-      message: `Appointment request sent to ${newAppointment.participantName}`,
-      type: 'success'
-    });
-    
-    // Add to bell notifications
-    addNotification({
-      title: "Appointment Request Sent",
-      message: `Appointment request sent to ${newAppointment.participantName}`,
-      type: 'appointment'
-    });
+    // Use setTimeout for notification consistency
+    setTimeout(() => {
+      // Show success notification
+      showNotification({
+        message: `Appointment request sent to ${newAppointment.participantName}`,
+        type: 'success'
+      });
+      
+      // Add to bell notifications
+      addNotification({
+        title: "Appointment Request Sent",
+        message: `Appointment request sent to ${newAppointment.participantName}`,
+        type: 'appointment'
+      });
+    }, 800); // Simulate network delay
     
     // Switch to the My Appointments tab
     setActiveTab('my-appointments');
