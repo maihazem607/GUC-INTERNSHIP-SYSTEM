@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { GraduationCap, Video, X } from 'lucide-react';
 import styles from './page.module.css';   
-import Navigation from '../../../src/components/global/Navigation';
+import ProStudentNavigationMenu from '../Navigation/ProStudentNavigationMenu';
 
 interface MajorInfo {
   id: string;
@@ -90,9 +90,8 @@ export default function InternshipRequirements() {
   }
   
   return (
-    <div className={styles.pageContainer}>
-      {/* Header/Navigation */}
-      <Navigation title="GUC Internship Portal" />
+    <div className={styles.pageContainer}>      {/* Global Navigation for Pro Student */}
+      <ProStudentNavigationMenu />
 
       <main className={styles.mainContent}>
 

@@ -3,7 +3,7 @@ import styles from "./page.module.css";
 import React, { useState, useEffect } from 'react';
 
 // Import modular components
-import Navigation from "@/components/global/Navigation";
+import ProStudentNavigationMenu from '../Navigation/ProStudentNavigationMenu';
 import FilterSidebar from "@/components/global/FilterSidebar";
 import SearchBar from "@/components/global/SearchBar";
 import WorkshopCard from "@/components/workshops/WorkshopCard";
@@ -233,9 +233,8 @@ export default function WorkshopListPage() {
   };
 
   return (
-    <div className={styles.pageContainer}>
-      {/* Header/Navigation */}
-      <Navigation title="GUC Workshop Hub" />
+    <div className={styles.pageContainer}>      {/* Global Navigation for Pro Student */}
+      <ProStudentNavigationMenu />
 
       <div className={styles.contentWrapper}>
         {/* Left Sidebar with Filters */}

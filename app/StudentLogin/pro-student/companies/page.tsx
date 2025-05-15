@@ -1,10 +1,10 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import styles from "./page.module.css";
 
 // Import modular components
-import Navigation from "@/components/global/Navigation";
-import NavigationMenu, { MenuItem } from "@/components/global/NavigationMenu";
+import ProStudentNavigationMenu from '../Navigation/ProStudentNavigationMenu';
 import FilterSidebar from "@/components/global/FilterSidebar";
 import SearchBar from "@/components/global/SearchBar";
 import CompanyCard from "@/components/Companies/CompanyCard";
@@ -29,8 +29,23 @@ interface ProfileView {
 }
 
 export default function CompaniesPage() {
-  // Tab state
-  const [activeTab, setActiveTab] = useState<'companies' | 'profileViews'>('companies');
+  const searchParams = useSearchParams();
+  
+  // Get initial tab from URL parameters
+  const initialTab = searchParams.get('tab') === 'profileViews' ? 'profileViews' : 'companies';
+  
+  // Tab state - set the initial state based on URL
+  const [activeTab, setActiveTab] = useState<'companies' | 'profileViews'>(initialTab);
+  
+  // Check URL parameters for tab selection updates
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'profileViews') {
+      setActiveTab('profileViews');
+    } else if (tab === null || tab === '') {
+      setActiveTab('companies');
+    }
+  }, [searchParams]);
   
   // Companies tab states
   const [searchTerm, setSearchTerm] = useState('');
@@ -557,33 +572,12 @@ export default function CompaniesPage() {
     setSelectedProfileView(null);
   };
   
-  // Navigation menu items for tabs
-  const navItems: MenuItem[] = [
-    {
-      id: 'companies',
-      label: 'Companies',
-      icon: <Building size={18} />,
-      onClick: () => setActiveTab('companies')
-    },
-    {
-      id: 'profileViews',
-      label: 'Profile Views',
-      icon: <Eye size={18} />,
-      count: profileViews.length,
-      onClick: () => setActiveTab('profileViews')
-    }
-  ];
-  
-  return (
-    <div className={styles.pageContainer}>      
-      {/* Tab Navigation */}
-      <NavigationMenu 
-        items={navItems} 
-        activeItemId={activeTab}
-        onItemChange={(tabId) => setActiveTab(tabId as 'companies' | 'profileViews')}
-        variant="tabs"
-        className={styles.tabNavigation}
-      />
+    return (
+    <div className={styles.pageContainer}>
+      {/* Global Navigation for Pro Student */}
+      <ProStudentNavigationMenu />
+      
+
 
       <div className={styles.contentWrapper}>
         {activeTab === 'companies' ? (

@@ -3,14 +3,14 @@ import styles from "./page.module.css";
 import React, { useState, useEffect } from 'react';
 
 // Import modular components
-import Navigation from "../../../src/components/global/Navigation";
-import FilterSidebar from "../../../src/components/global/FilterSidebar";
-import SearchBar from "../../../src/components/global/SearchBar";
-import InternshipCard from "../../../src/components/internships/InternshipCard";
-import InternshipDetailsModal from "../../../src/components/internships/InternshipDetailsModal";
-import InternshipHelpPopup from "../../../src/components/internships/InternshipHelpPopup";
-import NotificationSystem, { useNotification } from "../../../src/components/global/NotificationSystem";
-import { Internship, FilterOptions } from "../../../src/components/internships/types";
+import ProStudentNavigationMenu from '../Navigation/ProStudentNavigationMenu';
+import FilterSidebar from "@/components/global/FilterSidebar";
+import SearchBar from "@/components/global/SearchBar";
+import InternshipCard from "@/components/internships/InternshipCard";
+import InternshipDetailsModal from "@/components/internships/InternshipDetailsModal";
+import InternshipHelpPopup from "@/components/internships/InternshipHelpPopup";
+import NotificationSystem, { useNotification } from "@/components/global/NotificationSystem";
+import { Internship, FilterOptions } from "@/components/internships/types";
 
 // Internship data (would typically come from an API)
 const internships: Internship[] = [
@@ -369,9 +369,8 @@ export default function InternshipListPage() {  const [searchTerm, setSearchTerm
   };
 
   return (
-    <div className={styles.pageContainer}>
-      {/* Header/Navigation */}
-      <Navigation title="GUC Internship Portal" />
+    <div className={styles.pageContainer}>      {/* Global Navigation for Pro Student */}
+      <ProStudentNavigationMenu />
 
       <div className={styles.contentWrapper}>
         {/* Left Sidebar with Filters */}

@@ -1,16 +1,17 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import NavigationMenu, { MenuItem } from "../../../src/components/global/NavigationMenu";
+import { useSearchParams } from 'next/navigation';
+import ProStudentNavigationMenu from '../Navigation/ProStudentNavigationMenu';
 import { Clipboard, ClipboardCheck, FileText, Search } from 'lucide-react';
-import SearchBar from "../../../src/components/global/SearchBar";
-import FilterSidebar from "../../../src/components/global/FilterSidebar";
-import MyInternshipCard from "../../../src/components/MyInternships/MyInternshipCard";
-import EvaluationModal from "../../../src/components/MyInternships/EvaluationModal";
-import ReportModal from "../../../src/components/MyInternships/ReportModal";
-import ReportsList from "../../../src/components/MyInternships/ReportsList";
-import ReportResultsModal from "../../../src/components/MyInternships/ReportResultsModal";
-import { Internship, FilterOptions } from "../../../src/components/internships/types";
-import NotificationSystem, { useNotification } from "../../../src/components/global/NotificationSystem";
+import SearchBar from "@/components/global/SearchBar";
+import FilterSidebar from "@/components/global/FilterSidebar";
+import MyInternshipCard from "@/components/MyInternships/MyInternshipCard";
+import EvaluationModal from "@/components/MyInternships/EvaluationModal";
+import ReportModal from "@/components/MyInternships/ReportModal";
+import ReportsList from "@/components/MyInternships/ReportsList";
+import ReportResultsModal from "@/components/MyInternships/ReportResultsModal";
+import { Internship, FilterOptions } from "@/components/internships/types";
+import NotificationSystem, { useNotification } from "@/components/global/NotificationSystem";
 import styles from "./page.module.css";
 
 // Extended Internship type to include application status and evaluation
@@ -72,7 +73,17 @@ const getMajorCourses = (major: string) => {
 };
 
 const MyInternshipsPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'applications' | 'internships' | 'reports'>('applications');
+  const searchParams = useSearchParams();
+  const initialTab = (searchParams.get('tab') as 'applications' | 'internships' | 'reports') || 'applications';
+  const [activeTab, setActiveTab] = useState<'applications' | 'internships' | 'reports'>(initialTab);
+  
+  // Update active tab when URL parameters change
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['applications', 'internships', 'reports'].includes(tabParam)) {
+      setActiveTab(tabParam as 'applications' | 'internships' | 'reports');
+    }
+  }, [searchParams]);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState<FilterOptions>({
     status: 'All',
@@ -527,7 +538,17 @@ const MyInternshipsPage: React.FC = () => {
     
     setMyInternships(mockInternships);
     setFilteredInternships(mockInternships);
-  }, []);  // Filter internships based on active tab, search term, and filters
+  }, []);
+  
+  // Update active tab when URL parameters change
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['applications', 'internships', 'reports'].includes(tabParam)) {
+      setActiveTab(tabParam as 'applications' | 'internships' | 'reports');
+    }
+  }, [searchParams]);
+
+  // Filter internships based on active tab, search term, and filters
   useEffect(() => {
     let results = [...myInternships];
     
@@ -972,7 +993,7 @@ const MyInternshipsPage: React.FC = () => {
       
       try {
         // Import the PDF utility dynamically to avoid SSR issues
-        const pdfUtils = await import('../../../src/utils/pdfUtils');
+        const pdfUtils = await import('../../../../src/utils/pdfUtils');
         const generateReportPDF = pdfUtils.default;
         
         // Get course names for the report
@@ -1084,43 +1105,12 @@ const MyInternshipsPage: React.FC = () => {
       ...prev,
       [filterType]: value
     }));
-  };  return (
+  };  
+  
+  return (
     <div className={styles.pageContainer}>
-      {/* Header/Navigation */}
-      <NavigationMenu
-        items={[
-          { 
-            id: 'applications', 
-            label: 'My Applications',
-            icon: <Clipboard size={18} />,
-            onClick: () => setActiveTab('applications'),
-            count: myInternships.filter(app => ['pending', 'rejected', 'finalized', 'accepted'].includes(app.applicationStatus)).length
-          },
-          { 
-            id: 'internships', 
-            label: 'My Internships',
-            icon: <ClipboardCheck size={18} />,
-            onClick: () => setActiveTab('internships'),
-            count: myInternships.filter(app => app.applicationStatus === 'accepted').length
-          },
-          {
-            id: 'reports',
-            label: 'Report Results',
-            icon: <FileText size={18} />,
-            onClick: () => setActiveTab('reports'),
-            count: myInternships.filter(app => 
-              app.report?.finalized && 
-              app.report?.status && 
-              ['pending', 'accepted', 'flagged', 'rejected'].includes(app.report.status)
-            ).length
-          }
-        ]}
-        activeItemId={activeTab}
-        logo={{
-          src: '/logos/GUCInternshipSystemLogo.png',
-          alt: 'GUC Internship System'
-        }}
-      />
+      {/* Global Navigation for Pro Student */}
+      <ProStudentNavigationMenu />
       
       <div className={styles.contentWrapper}>
         {/* Filter Sidebar - Show for both tabs */}
@@ -1242,8 +1232,7 @@ const MyInternshipsPage: React.FC = () => {
       )}
     </div>
   );
-};
+}
 
 export default MyInternshipsPage;
 
- 

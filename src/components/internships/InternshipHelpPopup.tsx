@@ -20,7 +20,7 @@ const InternshipHelpPopup: React.FC<InternshipHelpPopupProps> = ({ onClose }) =>
   }, []);
 
   const handleNavigate = () => {
-    router.push('/temp/InternshipRequirements');
+    router.push('/StudentLogin/pro-student/InternshipRequirements');
     onClose();
   };
 
