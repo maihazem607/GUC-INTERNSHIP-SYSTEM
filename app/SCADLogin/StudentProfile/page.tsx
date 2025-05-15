@@ -1,11 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import styles from '../page.module.css';
-import NavigationMenu from "@/components/global/NavigationMenu";
-import { Building, Users, FileText, ClipboardCheck, Briefcase, BarChart2, Calendar, Settings, BookOpen, ArrowLeft, Calendar as CalendarIcon, Award, User } from 'lucide-react';
-import Image from 'next/image';
+import { useSearchParams, useRouter } from 'next/navigation';
+import styles from './page.module.css';
+import Navigation from '@/components/global/Navigation';
 import { 
   initialStudentProfile, 
   StudentProfile as StudentProfileType, 
@@ -13,9 +11,10 @@ import {
   Major,
   Experience,
   Activity
-} from '@/components/StudentInfo/types';
+} from '@/components/StudentInfo/types'; // Adjusted to use an alias for the correct path.
+import Image from 'next/image';
 
-// Student data type
+// Student data type from SCAD dashboard
 interface Student {
   id: number;
   name: string;
@@ -29,261 +28,309 @@ interface Student {
   internshipEndDate?: string;
 }
 
-// Mock report type
-interface Report {
-  id: number;
-  title: string;
-  studentId: number;
-  submissionDate: string;
-  status: 'pending' | 'accepted' | 'rejected' | 'flagged';
-}
-
-// Mock evaluation type
-interface Evaluation {
-  id: number;
-  studentId: number;
-  companyName: string;
-  evaluationDate: string;
-  evaluationScore: number;
-  status: string;
-}
-
-// Address data type
-interface Address {
-  country: string;
-  city: string;
-  postalCode: string;
-}
-
 export default function StudentProfilePage() {
-  const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const studentId = typeof params.id === 'string' ? parseInt(params.id) : null;
+  const studentId = searchParams.get('id') ? parseInt(searchParams.get('id')!, 10) : null;
   
-  const [student, setStudent] = useState<Student | null>(null);
-  const [reports, setReports] = useState<Report[]>([]);
-  const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
+  const [studentProfile, setStudentProfile] = useState<StudentProfileType>(initialStudentProfile);
+  const [studentData, setStudentData] = useState<Student | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('info');
-  
-  // Mock data for demonstration - in a real app, fetch this from your API
+
+  // Fetch student data based on ID
   useEffect(() => {
-    // Simulate API request
+    if (studentId === null) {
+      setLoading(false);
+      return;
+    }
+    
+    // Simulate fetching student data - in a real app this would be an API call
     setTimeout(() => {
-      if (studentId) {
-        // This is mock data - in a real app, you would fetch the student with the matching ID
-        const mockStudents = [
-          {
-            id: 1,
-            name: 'Sarah Johnson',
-            email: 'sarah.j@student.guc.edu',
-            major: 'Computer Science',
-            gpa: 3.8,
-            internshipStatus: 'in progress',
-            academicYear: 'Senior',
-            companyName: 'Tech Solutions Inc.',
-            internshipStartDate: '2023-06-01',
-            internshipEndDate: '2023-08-31'
-          },
-          {
-            id: 2,
-            name: 'Mohammed Ali',
-            email: 'mohammed.a@student.guc.edu',
-            major: 'Electrical Engineering',
-            gpa: 3.5,
-            internshipStatus: 'not started',
-            academicYear: 'Junior'
-          },
-          {
-            id: 3,
-            name: 'Emily Rodriguez',
-            email: 'emily.r@student.guc.edu',
-            major: 'Business Administration',
-            gpa: 3.7,
-            internshipStatus: 'completed',
-            academicYear: 'Senior',
-            companyName: 'Global Finance',
-            internshipStartDate: '2023-01-15',
-            internshipEndDate: '2023-04-15'
-          },
-          {
-            id: 4,
-            name: 'Ahmed Hassan',
-            email: 'ahmed.h@student.guc.edu',
-            major: 'Computer Science',
-            gpa: 3.9,
-            internshipStatus: 'in progress',
-            academicYear: 'Senior',
-            companyName: 'Health Partners',
-            internshipStartDate: '2023-05-15',
-            internshipEndDate: '2023-08-15'
-          },
-          {
-            id: 5,
-            name: 'Fatima Zahra',
-            email: 'fatima.z@student.guc.edu',
-            major: 'Mechanical Engineering',
-            gpa: 3.6,
-            internshipStatus: 'not started',
-            academicYear: 'Junior'
-          }
-        ] as Student[];
-
-        // Find the student with the matching ID
-        const foundStudent = mockStudents.find(s => s.id === studentId) || null;
-        setStudent(foundStudent);
-
-        // Mock reports for this student
-        if (foundStudent) {
-          setReports([
-            {
-              id: 1,
-              title: 'First Month Progress Report',
-              studentId: foundStudent.id,
-              submissionDate: '2023-07-01',
-              status: 'accepted'
-            },
-            {
-              id: 2,
-              title: 'Mid-term Progress Report',
-              studentId: foundStudent.id,
-              submissionDate: '2023-07-15',
-              status: 'pending'
-            }
-          ]);
-
-          // Mock evaluations for this student
-          setEvaluations([
-            {
-              id: 1,
-              studentId: foundStudent.id,
-              companyName: foundStudent.companyName || 'Unknown Company',
-              evaluationDate: '2023-07-20',
-              evaluationScore: 4.5,
-              status: 'completed'
-            }
-          ]);
+      const mockStudents = [
+        {
+          id: 1,
+          name: 'Sarah Johnson',
+          email: 'sarah.j@student.guc.edu',
+          major: 'Computer Science',
+          gpa: 3.8,
+          internshipStatus: 'in progress',
+          academicYear: 'Senior',
+          companyName: 'Tech Solutions Inc.',
+          internshipStartDate: '2023-06-01',
+          internshipEndDate: '2023-08-31'
+        },
+        {
+          id: 2,
+          name: 'Mohammed Ali',
+          email: 'mohammed.a@student.guc.edu',
+          major: 'Electrical Engineering',
+          gpa: 3.5,
+          internshipStatus: 'not started',
+          academicYear: 'Junior'
+        },
+        {
+          id: 3,
+          name: 'Emily Rodriguez',
+          email: 'emily.r@student.guc.edu',
+          major: 'Business Administration',
+          gpa: 3.7,
+          internshipStatus: 'completed',
+          academicYear: 'Senior',
+          companyName: 'Global Finance',
+          internshipStartDate: '2023-01-15',
+          internshipEndDate: '2023-04-15'
+        },
+        {
+          id: 4,
+          name: 'Ahmed Hassan',
+          email: 'ahmed.h@student.guc.edu',
+          major: 'Computer Science',
+          gpa: 3.9,
+          internshipStatus: 'in progress',
+          academicYear: 'Senior',
+          companyName: 'Health Partners',
+          internshipStartDate: '2023-05-15',
+          internshipEndDate: '2023-08-15'
+        },
+        {
+          id: 5,
+          name: 'Fatima Zahra',
+          email: 'fatima.z@student.guc.edu',
+          major: 'Mechanical Engineering',
+          gpa: 3.6,
+          internshipStatus: 'not started',
+          academicYear: 'Junior'
         }
-        
-        setLoading(false);
+      ];
+      
+      const foundStudent = mockStudents.find(s => s.id === studentId) || null;
+      setStudentData(foundStudent);
+      
+      if (foundStudent) {
+        // Update the studentProfile with the found student's data
+        setStudentProfile({
+          ...initialStudentProfile,
+          name: foundStudent.name,
+          email: foundStudent.email,
+          gpa: foundStudent.gpa,
+          major: majors.find(m => m.name === foundStudent.major) || undefined
+        });
       }
-    }, 500); // Simulating a network delay
+      
+      setLoading(false);
+    }, 500);
   }, [studentId]);
-  // Handler for going back to the dashboard
-  const handleBackToDashboard = () => {
-    router.push('/SCADLogin/SCADdashboard?activeItem=students');
+  const [isEditing, setIsEditing] = useState<{
+    personal: boolean;
+    address: boolean;
+    academic: boolean;
+    jobInterests: boolean;
+  }>({
+    personal: false,
+    address: false,
+    academic: false,
+    jobInterests: false
+  });
+  
+  // Modal states for adding/editing experiences and activities
+  const [showExperienceModal, setShowExperienceModal] = useState(false);
+  const [showActivityModal, setShowActivityModal] = useState(false);
+  const [currentExperience, setCurrentExperience] = useState<Experience | null>(null);
+  const [currentActivity, setCurrentActivity] = useState<Activity | null>(null);
+  
+  // Form states
+  const [newJobInterest, setNewJobInterest] = useState('');
+  const [experienceForm, setExperienceForm] = useState<Omit<Experience, 'id'>>({
+    companyName: '',
+    position: '',
+    responsibilities: '',
+    startDate: '',
+    endDate: '',
+    isCurrentlyWorking: false,
+    isInternship: true
+  });
+  const [activityForm, setActivityForm] = useState<Omit<Activity, 'id'>>({
+    name: '',
+    description: '',
+    role: '',
+    startDate: '',
+    endDate: '',
+    isCurrentlyActive: false
+  });
+  
+  // Mock address data - we'll add this to our profile
+  const [address, setAddress] = useState({
+    country: 'United Kingdom',
+    city: 'Leeds, East London',
+    postalCode: 'ER1 1254'
+  });
+
+  const handleEditToggle = (section: keyof typeof isEditing) => {
+    setIsEditing({
+      ...isEditing,
+      [section]: !isEditing[section]
+    });
   };
 
-  // Common navigation menu items
-  const navigationMenuItems = [
-    { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=companies') },
-    { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=students') },
-    { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=reports') },
-    { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=evaluations') },
-    { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=internships') },
-    { id: 'statistics', label: 'Statistics', icon: <BarChart2 size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=statistics') },
-    { id:'Workshops', label: 'Workshops', icon: <BookOpen size={18} />, onClick: () => router.push('/SCADLogin/workshops?activeItem=workshops') },
-    {
-      id: 'appointments',
-      label: 'Appointments',
-      icon: <Calendar size={18} />,
-      dropdownItems: [
-        { id: 'my-appointments', label: 'My Appointments', onClick: () => router.push('/SCADLogin/AppointmentsSCAD') },
-        { id: 'requests', label: 'Requests', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=requests') },
-        { id: 'new-appointment', label: 'New Appointment', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=new-appointment') }
-      ]
-    },
-    { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=settings') }
-  ];
+  const handleProfileUpdate = (updatedProfile: Partial<StudentProfileType>) => {
+    setStudentProfile({
+      ...studentProfile,
+      ...updatedProfile
+    });
+    setIsEditing({ personal: false, address: false, academic: false, jobInterests: false });
+    // In a real application, you would save this to a database
+    console.log('Profile updated:', updatedProfile);
+  };
 
-  // If student ID is invalid or not provided
-  if (!studentId) {
+  const handleAddressUpdate = (updatedAddress: typeof address) => {
+    setAddress(updatedAddress);
+    setIsEditing({ ...isEditing, address: false });
+  };
+  
+  const handleAddJobInterest = () => {
+    if (newJobInterest.trim()) {
+      handleProfileUpdate({
+        jobInterests: [...studentProfile.jobInterests, newJobInterest.trim()]
+      });
+      setNewJobInterest('');
+    }
+  };
+  
+  const handleRemoveJobInterest = (index: number) => {
+    const updatedInterests = [...studentProfile.jobInterests];
+    updatedInterests.splice(index, 1);
+    handleProfileUpdate({ jobInterests: updatedInterests });
+  };
+  
+  const openExperienceModal = (experience?: Experience) => {
+    if (experience) {
+      setCurrentExperience(experience);
+      setExperienceForm({
+        companyName: experience.companyName,
+        position: experience.position,
+        responsibilities: experience.responsibilities,
+        startDate: experience.startDate,
+        endDate: experience.endDate,
+        isCurrentlyWorking: experience.isCurrentlyWorking || false,
+        isInternship: experience.isInternship
+      });
+    } else {
+      setCurrentExperience(null);
+      setExperienceForm({
+        companyName: '',
+        position: '',
+        responsibilities: '',
+        startDate: '',
+        endDate: '',
+        isCurrentlyWorking: false,
+        isInternship: true
+      });
+    }
+    setShowExperienceModal(true);
+  };
+  
+  const openActivityModal = (activity?: Activity) => {
+    if (activity) {
+      setCurrentActivity(activity);
+      setActivityForm({
+        name: activity.name,
+        description: activity.description,
+        role: activity.role,
+        startDate: activity.startDate,
+        endDate: activity.endDate,
+        isCurrentlyActive: activity.isCurrentlyActive || false
+      });
+    } else {
+      setCurrentActivity(null);
+      setActivityForm({
+        name: '',
+        description: '',
+        role: '',
+        startDate: '',
+        endDate: '',
+        isCurrentlyActive: false
+      });
+    }
+    setShowActivityModal(true);
+  };
+  
+  const handleExperienceSave = () => {
+    const newExperience = {
+      ...experienceForm,
+      id: currentExperience?.id || `exp-${Date.now()}`
+    };
+    
+    const updatedExperiences = currentExperience
+      ? studentProfile.previousExperiences.map(exp => 
+          exp.id === currentExperience.id ? newExperience : exp
+        )
+      : [...studentProfile.previousExperiences, newExperience];
+    
+    handleProfileUpdate({ previousExperiences: updatedExperiences });
+    setShowExperienceModal(false);
+  };
+  
+  const handleActivitySave = () => {
+    const newActivity = {
+      ...activityForm,
+      id: currentActivity?.id || `act-${Date.now()}`
+    };
+    
+    const updatedActivities = currentActivity
+      ? studentProfile.collegeActivities.map(act => 
+          act.id === currentActivity.id ? newActivity : act
+        )
+      : [...studentProfile.collegeActivities, newActivity];
+    
+    handleProfileUpdate({ collegeActivities: updatedActivities });
+    setShowActivityModal(false);
+  };
+  
+  const handleRemoveExperience = (id: string) => {
+    const updatedExperiences = studentProfile.previousExperiences.filter(exp => exp.id !== id);
+    handleProfileUpdate({ previousExperiences: updatedExperiences });
+  };
+  
+  const handleRemoveActivity = (id: string) => {
+    const updatedActivities = studentProfile.collegeActivities.filter(act => act.id !== id);
+    handleProfileUpdate({ collegeActivities: updatedActivities });
+  };
+  
+  // Display loading state
+  if (loading) {
     return (
       <div className={styles.pageContainer}>
-        <NavigationMenu
-          items={[
-            { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=companies') },
-            { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=students') },
-            { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=reports') },
-            { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=evaluations') },
-            { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=internships') },
-            { id: 'statistics', label: 'Statistics', icon: <BarChart2 size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=statistics') },
-            { id:'Workshops', label: 'Workshops', icon: <BookOpen size={18} />, onClick: () => router.push('/SCADLogin/workshops?activeItem=workshops') },
-            {
-              id: 'appointments',
-              label: 'Appointments',
-              icon: <Calendar size={18} />,
-              dropdownItems: [
-                { id: 'my-appointments', label: 'My Appointments', onClick: () => router.push('/SCADLogin/AppointmentsSCAD') },
-                { id: 'requests', label: 'Requests', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=requests') },
-                { id: 'new-appointment', label: 'New Appointment', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=new-appointment') }
-              ]
-            },
-            { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=settings') }
-          ]}
-          activeItemId='students'
-          logo={{
-            src: '/logos/GUCInternshipSystemLogo.png',
-            alt: 'GUC Internship System'
-          }}
-          variant="navigation"
-        />
-
+        <Navigation />
         <div className={styles.contentWrapper}>
-          <main className={styles.mainContent}>
-            <div className={styles.errorContainer}>
-              <h2>Invalid Student ID</h2>
-              <p>We couldn't find the student you're looking for. The ID may be invalid.</p>
-              <button className={styles.backButton} onClick={handleBackToDashboard}>
-                Back to Student List
-              </button>
+          <div className={styles.mainContent}>
+            <div className={styles.loadingContainer}>
+              <div className={styles.loadingSpinner}></div>
+              <p>Loading student profile...</p>
             </div>
-          </main>
+          </div>
         </div>
       </div>
     );
   }
 
-  // Loading state
-  if (loading || !student) {
+  // Display error if student not found
+  if (!studentData && studentId !== null) {
     return (
       <div className={styles.pageContainer}>
-        <NavigationMenu
-          items={[
-            { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=companies') },
-            { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=students') },
-            { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=reports') },
-            { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=evaluations') },
-            { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=internships') },
-            { id: 'statistics', label: 'Statistics', icon: <BarChart2 size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=statistics') },
-            { id:'Workshops', label: 'Workshops', icon: <BookOpen size={18} />, onClick: () => router.push('/SCADLogin/workshops?activeItem=workshops') },
-            {
-              id: 'appointments',
-              label: 'Appointments',
-              icon: <Calendar size={18} />,
-              dropdownItems: [
-                { id: 'my-appointments', label: 'My Appointments', onClick: () => router.push('/SCADLogin/AppointmentsSCAD') },
-                { id: 'requests', label: 'Requests', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=requests') },
-                { id: 'new-appointment', label: 'New Appointment', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=new-appointment') }
-              ]
-            },
-            { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=settings') }
-          ]}
-          activeItemId='students'
-          logo={{
-            src: '/logos/GUCInternshipSystemLogo.png',
-            alt: 'GUC Internship System'
-          }}
-          variant="navigation"
-        />
-
+        <Navigation />
         <div className={styles.contentWrapper}>
-          <main className={styles.mainContent}>
-            <div className={styles.loadingContainer}>
-              <div className={styles.loadingSpinner}></div>
-              <p>Loading student profile...</p>
+          <div className={styles.mainContent}>
+            <div className={styles.errorContainer}>
+              <h2>Student Not Found</h2>
+              <p>We couldn't find the student you're looking for. The ID may be invalid.</p>
+              <button 
+                className={styles.backButton}
+                onClick={() => router.push('/SCADLogin/SCADdashboard?activeItem=students')}
+              >
+                Back to Student List
+              </button>
             </div>
-          </main>
+          </div>
         </div>
       </div>
     );
@@ -291,201 +338,720 @@ export default function StudentProfilePage() {
 
   return (
     <div className={styles.pageContainer}>
-      <NavigationMenu
-        items={[
-          { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=companies') },
-          { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=students') },
-          { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=reports') },
-          { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=evaluations') },
-          { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=internships') },
-          { id: 'statistics', label: 'Statistics', icon: <BarChart2 size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=statistics') },
-          { id:'Workshops', label: 'Workshops', icon: <BookOpen size={18} />, onClick: () => router.push('/SCADLogin/workshops?activeItem=workshops') },
-          {
-            id: 'appointments',
-            label: 'Appointments',
-            icon: <Calendar size={18} />,
-            dropdownItems: [
-              { id: 'my-appointments', label: 'My Appointments', onClick: () => router.push('/SCADLogin/AppointmentsSCAD') },
-              { id: 'requests', label: 'Requests', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=requests') },
-              { id: 'new-appointment', label: 'New Appointment', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=new-appointment') }
-            ]
-          },
-          { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=settings') }
-        ]}
-        activeItemId='students'
-        logo={{
-          src: '/logos/GUCInternshipSystemLogo.png',
-          alt: 'GUC Internship System'
-        }}
-        variant="navigation"
-      />
-
+      <Navigation />
+      
       <div className={styles.contentWrapper}>
-        <main className={styles.mainContent}>
-          <div className={styles.backNavigation}>
-            <button className={styles.backButton} onClick={handleBackToDashboard}>
-              <ArrowLeft size={18} className={styles.backIcon} /> Back to Student List
-            </button>
-          </div>
-          
-          {/* Student Profile Header */}
-          <div className={styles.profileHeader}>
-            <div className={styles.studentAvatarLarge}>
-              {student.name.charAt(0)}
-            </div>
-            <div className={styles.profileInfo}>
-              <h1>{student.name}</h1>
-              <div className={styles.profileMeta}>
-                <span className={styles.studentMajorTag}>{student.major}</span>
-                <span className={styles.studentGpaTag}>{student.gpa} GPA</span>
-                <span className={`${styles.statusBadge} ${styles[student.internshipStatus.replace(' ', '')]}`}>
-                  {student.internshipStatus.toUpperCase()}
-                </span>
+        <div className={styles.mainContent}>
+          <section className={styles.myProfileSection}>
+            <h1 className={styles.pageTitle}>Student Profile</h1>
+            
+            {/* Profile Header Card */}
+            <div className={styles.profileCard}>
+              <div className={styles.profileHeader}>
+                <div className={styles.profileImageContainer}>
+                  {studentProfile.profilePicture ? (
+                    <img 
+                      className={styles.profileImage} 
+                      src={studentProfile.profilePicture} 
+                      alt={studentProfile.name} 
+                    />
+                  ) : (
+                    <div className={styles.profileImagePlaceholder}>
+                      {studentProfile.name.charAt(0)}
+                    </div>
+                  )}
+                </div>
+                <div className={styles.profileHeaderInfo}>
+                  <h2>{studentProfile.name}</h2>
+                  <p className={styles.roleLabel}>
+                    {studentProfile.major ? studentProfile.major.name : 'Student'}
+                  </p>
+                  <p className={styles.locationLabel}>
+                    {address.city}, {address.country}
+                  </p>
+                </div>
               </div>
-              <p className={styles.studentEmail}>{student.email}</p>
             </div>
-          </div>
+            
+            {/* Personal Information Section */}
+            <div className={styles.infoSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>Personal Information</h2>
+                
+              </div>
+              
+              {isEditing.personal ? (
+                <div className={styles.editForm}>
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>First Name</label>
+                      <input 
+                        type="text" 
+                        value={studentProfile.name.split(' ')[0]}
+                        onChange={(e) => {
+                          const lastName = studentProfile.name.includes(' ') ? 
+                            studentProfile.name.split(' ').slice(1).join(' ') : '';
+                          handleProfileUpdate({ name: `${e.target.value} ${lastName}` });
+                        }}
+                      />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label>Last Name</label>
+                      <input 
+                        type="text" 
+                        value={studentProfile.name.includes(' ') ? 
+                          studentProfile.name.split(' ').slice(1).join(' ') : ''}
+                        onChange={(e) => {
+                          const firstName = studentProfile.name.split(' ')[0];
+                          handleProfileUpdate({ name: `${firstName} ${e.target.value}` });
+                        }}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>Date of Birth</label>
+                      <input type="date" placeholder="Date of Birth" />
+                    </div>
+                  </div>
+                  
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>Email Address</label>
+                      <input 
+                        type="email" 
+                        value={studentProfile.email}
+                        onChange={(e) => setStudentProfile({...studentProfile, email: e.target.value})}
+                      />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label>Phone Number</label>
+                      <input 
+                        type="tel" 
+                        value={studentProfile.phone}
+                        onChange={(e) => setStudentProfile({...studentProfile, phone: e.target.value})}
+                      />
+                    </div>
+                  </div>
 
-          {/* Tab Navigation */}
-          <div className={styles.tabNavigation}>
-            {/* <button 
-              className={`${styles.tabButton} ${activeTab === 'info' ? styles.activeTab : ''}`} 
-              onClick={() => setActiveTab('info')}
-            >
-              Student Information
-            </button> */}
-            {/* <button 
-              className={`${styles.tabButton} ${activeTab === 'reports' ? styles.activeTab : ''}`} 
-              onClick={() => setActiveTab('reports')}
-            >
-              Reports ({reports.length})
-            </button> */}
-            {/* <button 
-              className={`${styles.tabButton} ${activeTab === 'evaluations' ? styles.activeTab : ''}`} 
-              onClick={() => setActiveTab('evaluations')}
-            >
-              Evaluations ({evaluations.length})
-            </button> */}
-          </div>
-
-          {/* Tab Content */}
-          <div className={styles.tabContent}>
-            {/* Student Information Tab */}
-            {activeTab === 'info' && (
-              <div className={styles.infoTab}>
-                <div className={styles.infoSection}>
-                  <h2>Academic Information</h2>
-                  <div className={styles.infoGrid}>
-                    <div className={styles.infoItem}>
-                      <h3>Academic Year</h3>
-                      <p>{student.academicYear}</p>
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>User Role</label>
+                      <input type="text" value="Student" disabled />
                     </div>
-                    <div className={styles.infoItem}>
-                      <h3>Major</h3>
-                      <p>{student.major}</p>
+                    <div className={styles.formGroup}>
+                      <label>GPA</label>
+                      <input 
+                        type="number" 
+                        min="0" 
+                        max="4" 
+                        step="0.01"
+                        value={studentProfile.gpa}
+                        onChange={(e) => setStudentProfile({...studentProfile, gpa: parseFloat(e.target.value)})}
+                      />
                     </div>
-                    <div className={styles.infoItem}>
-                      <h3>GPA</h3>
-                      <p>{student.gpa}</p>
-                    </div>
+                  </div>
+                  
+                  <div className={styles.formActions}>
+                    <button 
+                      onClick={() => handleEditToggle('personal')}
+                      className={styles.cancelButton}
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      onClick={() => handleProfileUpdate(studentProfile)}
+                      className={styles.saveButton}
+                    >
+                      Save Changes
+                    </button>
                   </div>
                 </div>
-
-                <div className={styles.infoSection}>
-                  <h2>Internship Status</h2>
-                  <div className={styles.infoGrid}>
-                    <div className={styles.infoItem}>
-                      <h3>Status</h3>
-                      <p className={`${styles.statusText} ${styles[student.internshipStatus.replace(' ', '')]}`}>
-                        {student.internshipStatus.toUpperCase()}
-                      </p>
-                    </div>
-                    {student.companyName && (
-                      <>
-                        <div className={styles.infoItem}>
-                          <h3>Company</h3>
-                          <p>{student.companyName}</p>
-                        </div>
-                        <div className={styles.infoItem}>
-                          <h3>Start Date</h3>
-                          <p>{student.internshipStartDate}</p>
-                        </div>
-                        <div className={styles.infoItem}>
-                          <h3>End Date</h3>
-                          <p>{student.internshipEndDate}</p>
-                        </div>
-                      </>
-                    )}
+              ) : (
+                <div className={styles.infoGrid}>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>First Name</span>
+                    <span className={styles.infoValue}>
+                      {studentProfile.name.split(' ')[0]}
+                    </span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>Last Name</span>
+                    <span className={styles.infoValue}>
+                      {studentProfile.name.includes(' ') ? 
+                        studentProfile.name.split(' ').slice(1).join(' ') : ''}
+                    </span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>Date of Birth</span>
+                    <span className={styles.infoValue}>12-10-1990</span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>Email Address</span>
+                    <span className={styles.infoValue}>{studentProfile.email}</span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>Phone Number</span>
+                    <span className={styles.infoValue}>{studentProfile.phone}</span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>User Role</span>
+                    <span className={styles.infoValue}>Student</span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>GPA</span>
+                    <span className={styles.infoValue}>{studentProfile.gpa}</span>
                   </div>
                 </div>
-
-                {/* Additional info sections can be added here */}
+              )}
+            </div>
+            
+            {/* Address Section */}
+            <div className={styles.infoSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>Address</h2>
+                {/* <button 
+                  onClick={() => handleEditToggle('address')} 
+                  className={styles.editButton}
+                >
+                  Edit
+                </button> */}
               </div>
-            )}
-
-            {/* Reports Tab */}
-            {activeTab === 'reports' && (
-              <div className={styles.reportsTab}>
-                <h2>Submitted Reports</h2>
-                {reports.length > 0 ? (
-                  <div className={styles.reportsList}>
-                    {reports.map(report => (
-                      <div key={report.id} className={styles.reportCard}>
-                        <div className={styles.reportHeader}>
-                          <h3>{report.title}</h3>
-                          <span className={`${styles.reportStatus} ${styles[report.status]}`}>
-                            {report.status.toUpperCase()}
-                          </span>
-                        </div>
-                        <p className={styles.reportMeta}>Submitted on: {report.submissionDate}</p>
+              
+              {isEditing.address ? (
+                <div className={styles.editForm}>
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>Country</label>
+                      <input 
+                        type="text" 
+                        value={address.country}
+                        onChange={(e) => setAddress({...address, country: e.target.value})}
+                      />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label>City</label>
+                      <input 
+                        type="text" 
+                        value={address.city}
+                        onChange={(e) => setAddress({...address, city: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>Postal Code</label>
+                      <input 
+                        type="text" 
+                        value={address.postalCode}
+                        onChange={(e) => setAddress({...address, postalCode: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className={styles.formActions}>
+                    <button 
+                      onClick={() => handleEditToggle('address')}
+                      className={styles.cancelButton}
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      onClick={() => handleAddressUpdate(address)}
+                      className={styles.saveButton}
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.infoGrid}>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>Country</span>
+                    <span className={styles.infoValue}>{address.country}</span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>City</span>
+                    <span className={styles.infoValue}>{address.city}</span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>Postal Code</span>
+                    <span className={styles.infoValue}>{address.postalCode}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Academic Information Section */}
+            <div className={styles.infoSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>Academic Information</h2>
+                <button 
+                  onClick={() => handleEditToggle('academic')} 
+                  className={styles.editButton}
+                >
+                  Edit
+                </button>
+              </div>
+              
+              {isEditing.academic ? (
+                <div className={styles.editForm}>
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>Major</label>
+                      <select 
+                        value={studentProfile.major?.id || ''}
+                        onChange={(e) => {
+                          const selectedMajor = majors.find(m => m.id === e.target.value);
+                          setStudentProfile({...studentProfile, major: selectedMajor});
+                        }}
+                      >
+                        <option value="">Select a major</option>
+                        {majors.map(major => (
+                          <option key={major.id} value={major.id}>
+                            {major.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label>Semester</label>
+                      <select 
+                        value={studentProfile.semester || ''}
+                        onChange={(e) => {
+                          setStudentProfile({
+                            ...studentProfile, 
+                            semester: e.target.value ? parseInt(e.target.value, 10) : undefined
+                          });
+                        }}
+                        disabled={!studentProfile.major}
+                      >
+                        <option value="">Select a semester</option>
+                        {studentProfile.major?.availableSemesters.map(sem => (
+                          <option key={sem} value={sem}>
+                            {sem}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div className={styles.formActions}>
+                    <button 
+                      onClick={() => handleEditToggle('academic')}
+                      className={styles.cancelButton}
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      onClick={() => handleProfileUpdate(studentProfile)}
+                      className={styles.saveButton}
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.infoGrid}>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>Major</span>
+                    <span className={styles.infoValue}>
+                      {studentProfile.major ? studentProfile.major.name : 'Not selected'}
+                    </span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>Semester</span>
+                    <span className={styles.infoValue}>
+                      {studentProfile.semester || 'Not selected'}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Job Interests Section */}
+            <div className={styles.infoSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>Job Interests</h2>
+                <button 
+                  onClick={() => handleEditToggle('jobInterests')} 
+                  className={styles.editButton}
+                >
+                  Edit
+                </button>
+              </div>
+              
+              {isEditing.jobInterests ? (
+                <div className={styles.editForm}>
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>Add New Job Interest</label>
+                      <div className={styles.interestInputGroup}>
+                        <input 
+                          type="text" 
+                          value={newJobInterest}
+                          onChange={(e) => setNewJobInterest(e.target.value)}
+                          placeholder="E.g., Web Development"
+                        />
                         <button 
-                          className={styles.viewReportButton}
-                          onClick={() => router.push(`/SCADLogin/SCADdashboard?activeItem=reports&report=${report.id}`)}
+                          onClick={handleAddJobInterest}
+                          className={styles.addInterestButton}
                         >
-                          View Report
+                          Add
                         </button>
                       </div>
-                    ))}
+                    </div>
                   </div>
-                ) : (
-                  <p className={styles.noDataMessage}>No reports submitted yet.</p>
-                )}
-              </div>
-            )}
-
-            {/* Evaluations Tab */}
-            {activeTab === 'evaluations' && (
-              <div className={styles.evaluationsTab}>
-                <h2>Performance Evaluations</h2>
-                {evaluations.length > 0 ? (
-                  <div className={styles.evaluationsList}>
-                    {evaluations.map(evaluation => (
-                      <div key={evaluation.id} className={styles.evaluationCard}>
-                        <div className={styles.evaluationHeader}>
-                          <h3>{evaluation.companyName} Evaluation</h3>
-                          <div className={styles.evaluationScore}>
-                            <span className={styles.scoreValue}>{evaluation.evaluationScore}</span>
-                            <span className={styles.scoreMax}>/5</span>
-                          </div>
+                  
+                  <div className={styles.currentInterests}>
+                    <label>Current Interests:</label>
+                    <div className={styles.tagContainer}>
+                      {studentProfile.jobInterests.map((interest, index) => (
+                        <div key={index} className={styles.interestTagWithRemove}>
+                          <span>{interest}</span>
+                          <button 
+                            onClick={() => handleRemoveJobInterest(index)}
+                            className={styles.removeButton}
+                          >
+                            ×
+                          </button>
                         </div>
-                        <p className={styles.evaluationMeta}>Evaluated on: {evaluation.evaluationDate}</p>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className={styles.formActions}>
+                    <button 
+                      onClick={() => handleEditToggle('jobInterests')}
+                      className={styles.cancelButton}
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      onClick={() => handleEditToggle('jobInterests')}
+                      className={styles.saveButton}
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.tagContainer}>
+                  {studentProfile.jobInterests.length > 0 ? (
+                    studentProfile.jobInterests.map((interest, index) => (
+                      <span key={index} className={styles.interestTag}>{interest}</span>
+                    ))
+                  ) : (
+                    <p className={styles.emptyState}>No job interests added yet</p>
+                  )}
+                </div>
+              )}
+            </div>
+            
+            {/* Work Experience Section */}
+            <div className={styles.infoSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>Work Experience</h2>
+                <button 
+                  onClick={() => openExperienceModal()}
+                  className={styles.editButton}
+                >
+                  Add Experience
+                </button>
+              </div>
+              
+              {studentProfile.previousExperiences.length > 0 ? (
+                studentProfile.previousExperiences.map((exp) => (
+                  <div key={exp.id} className={styles.experienceItem}>
+                    <div className={styles.experienceHeader}>
+                      <h3>{exp.position} at {exp.companyName}</h3>
+                      <div className={styles.experienceActions}>
                         <button 
-                          className={styles.viewEvaluationButton}
-                          onClick={() => router.push(`/SCADLogin/SCADdashboard?activeItem=evaluations&evaluation=${evaluation.id}`)}
+                          onClick={() => openExperienceModal(exp)}
+                          className={styles.actionButton}
                         >
-                          View Full Evaluation
+                          Edit
+                        </button>
+                        <button 
+                          onClick={() => handleRemoveExperience(exp.id)}
+                          className={styles.actionButton}
+                        >
+                          Remove
                         </button>
                       </div>
-                    ))}
+                    </div>
+                    <p className={styles.experienceDates}>
+                      {exp.startDate} - {exp.isCurrentlyWorking ? 'Present' : exp.endDate}
+                    </p>
+                    <p className={styles.experienceType}>
+                      {exp.isInternship ? 'Internship' : 'Part-time Job'}
+                    </p>
+                    <p className={styles.experienceDesc}>{exp.responsibilities}</p>
                   </div>
-                ) : (
-                  <p className={styles.noDataMessage}>No evaluations available yet.</p>
-                )}
+                ))
+              ) : (
+                <p className={styles.emptyState}>No work experience added yet</p>
+              )}
+            </div>
+            
+            {/* College Activities Section */}
+            <div className={styles.infoSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>College Activities</h2>
+                <button 
+                  onClick={() => openActivityModal()}
+                  className={styles.editButton}
+                >
+                  Add Activity
+                </button>
               </div>
-            )}
-          </div>
-        </main>
+              
+              {studentProfile.collegeActivities.length > 0 ? (
+                studentProfile.collegeActivities.map((activity) => (
+                  <div key={activity.id} className={styles.activityItem}>
+                    <div className={styles.activityHeader}>
+                      <h3>{activity.name} - {activity.role}</h3>
+                      <div className={styles.activityActions}>
+                        <button 
+                          onClick={() => openActivityModal(activity)}
+                          className={styles.actionButton}
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          onClick={() => handleRemoveActivity(activity.id)}
+                          className={styles.actionButton}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                    <p className={styles.activityDates}>
+                      {activity.startDate} - {activity.isCurrentlyActive ? 'Present' : activity.endDate}
+                    </p>
+                    <p className={styles.activityDesc}>{activity.description}</p>
+                  </div>
+                ))
+              ) : (
+                <p className={styles.emptyState}>No college activities added yet</p>
+              )}
+            </div>
+          </section>
+        </div>
       </div>
+      
+      {/* Experience Modal */}
+      {showExperienceModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h2>{currentExperience ? 'Edit Experience' : 'Add New Experience'}</h2>
+              <button 
+                onClick={() => setShowExperienceModal(false)}
+                className={styles.modalCloseButton}
+              >
+                ×
+              </button>
+            </div>
+            <div className={styles.modalContent}>
+              <div className={styles.formGroup}>
+                <label>Company Name</label>
+                <input 
+                  type="text" 
+                  value={experienceForm.companyName}
+                  onChange={(e) => setExperienceForm({...experienceForm, companyName: e.target.value})}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Position</label>
+                <input 
+                  type="text" 
+                  value={experienceForm.position}
+                  onChange={(e) => setExperienceForm({...experienceForm, position: e.target.value})}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Type</label>
+                <div className={styles.radioGroup}>
+                  <label>
+                    <input 
+                      type="radio" 
+                      checked={experienceForm.isInternship}
+                      onChange={() => setExperienceForm({...experienceForm, isInternship: true})}
+                    /> 
+                    Internship
+                  </label>
+                  <label>
+                    <input 
+                      type="radio" 
+                      checked={!experienceForm.isInternship}
+                      onChange={() => setExperienceForm({...experienceForm, isInternship: false})}
+                    /> 
+                    Part-time Job
+                  </label>
+                </div>
+              </div>
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label>Start Date</label>
+                  <input 
+                    type="date" 
+                    value={experienceForm.startDate}
+                    onChange={(e) => setExperienceForm({...experienceForm, startDate: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>End Date</label>
+                  <input 
+                    type="date" 
+                    value={experienceForm.endDate}
+                    onChange={(e) => setExperienceForm({...experienceForm, endDate: e.target.value})}
+                    disabled={experienceForm.isCurrentlyWorking}
+                    required={!experienceForm.isCurrentlyWorking}
+                  />
+                </div>
+              </div>
+              <div className={styles.formGroup}>
+                <label className={styles.checkboxLabel}>
+                  <input 
+                    type="checkbox" 
+                    checked={experienceForm.isCurrentlyWorking}
+                    onChange={(e) => setExperienceForm({
+                      ...experienceForm, 
+                      isCurrentlyWorking: e.target.checked
+                    })}
+                  /> 
+                  I currently work here
+                </label>
+              </div>
+              <div className={styles.formGroup}>
+                <label>Responsibilities</label>
+                <textarea 
+                  value={experienceForm.responsibilities}
+                  onChange={(e) => setExperienceForm({...experienceForm, responsibilities: e.target.value})}
+                  rows={4}
+                  required
+                />
+              </div>
+            </div>
+            <div className={styles.modalFooter}>
+              <button 
+                onClick={() => setShowExperienceModal(false)}
+                className={styles.cancelButton}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleExperienceSave}
+                className={styles.saveButton}
+                disabled={!experienceForm.companyName || !experienceForm.position || !experienceForm.startDate || (!experienceForm.endDate && !experienceForm.isCurrentlyWorking)}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Activity Modal */}
+      {showActivityModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h2>{currentActivity ? 'Edit Activity' : 'Add New Activity'}</h2>
+              <button 
+                onClick={() => setShowActivityModal(false)}
+                className={styles.modalCloseButton}
+              >
+                ×
+              </button>
+            </div>
+            <div className={styles.modalContent}>
+              <div className={styles.formGroup}>
+                <label>Activity Name</label>
+                <input 
+                  type="text" 
+                  value={activityForm.name}
+                  onChange={(e) => setActivityForm({...activityForm, name: e.target.value})}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Role</label>
+                <input 
+                  type="text" 
+                  value={activityForm.role}
+                  onChange={(e) => setActivityForm({...activityForm, role: e.target.value})}
+                  required
+                />
+              </div>
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label>Start Date</label>
+                  <input 
+                    type="date" 
+                    value={activityForm.startDate}
+                    onChange={(e) => setActivityForm({...activityForm, startDate: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>End Date</label>
+                  <input 
+                    type="date" 
+                    value={activityForm.endDate}
+                    onChange={(e) => setActivityForm({...activityForm, endDate: e.target.value})}
+                    disabled={activityForm.isCurrentlyActive}
+                    required={!activityForm.isCurrentlyActive}
+                  />
+                </div>
+              </div>
+              <div className={styles.formGroup}>
+                <label className={styles.checkboxLabel}>
+                  <input 
+                    type="checkbox" 
+                    checked={activityForm.isCurrentlyActive}
+                    onChange={(e) => setActivityForm({
+                      ...activityForm, 
+                      isCurrentlyActive: e.target.checked
+                    })}
+                  /> 
+                  I am currently involved in this activity
+                </label>
+              </div>
+              <div className={styles.formGroup}>
+                <label>Description</label>
+                <textarea 
+                  value={activityForm.description}
+                  onChange={(e) => setActivityForm({...activityForm, description: e.target.value})}
+                  rows={4}
+                  required
+                />
+              </div>
+            </div>
+            <div className={styles.modalFooter}>
+              <button 
+                onClick={() => setShowActivityModal(false)}
+                className={styles.cancelButton}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleActivitySave}
+                className={styles.saveButton}
+                disabled={!activityForm.name || !activityForm.role || !activityForm.startDate || (!activityForm.endDate && !activityForm.isCurrentlyActive)}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

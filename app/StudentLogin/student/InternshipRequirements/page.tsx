@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { GraduationCap, Video, X } from 'lucide-react';
 import styles from './page.module.css';   
-import Navigation from '../../../src/components/global/Navigation';
+import Navigation from '@/components/global/Navigation';
 
 interface MajorInfo {
   id: string;

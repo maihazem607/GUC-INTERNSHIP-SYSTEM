@@ -3,14 +3,14 @@ import styles from "./page.module.css";
 import React, { useState, useEffect } from 'react';
 
 // Import modular components
-import Navigation from "../../../src/components/global/Navigation";
-import FilterSidebar from "../../../src/components/global/FilterSidebar";
-import SearchBar from "../../../src/components/global/SearchBar";
-import InternshipCard from "../../../src/components/internships/InternshipCard";
-import InternshipDetailsModal from "../../../src/components/internships/InternshipDetailsModal";
-import InternshipHelpPopup from "../../../src/components/internships/InternshipHelpPopup";
-import NotificationSystem, { useNotification } from "../../../src/components/global/NotificationSystem";
-import { Internship, FilterOptions } from "../../../src/components/internships/types";
+import Navigation from "../../../../src/components/global/Navigation";
+import FilterSidebar from "../../../../src/components/global/FilterSidebar";
+import SearchBar from "../../../../src/components/global/SearchBar";
+import InternshipCard from "../../../../src/components/internships/InternshipCard";
+import InternshipDetailsModal from "../../../../src/components/internships/InternshipDetailsModal";
+import InternshipHelpPopup from "../../../../src/components/internships/InternshipHelpPopup";
+import NotificationSystem, { useNotification } from "../../../../src/components/global/NotificationSystem";
+import { Internship, FilterOptions } from "../../../../src/components/internships/types";
 
 // Internship data (would typically come from an API)
 const internships: Internship[] = [

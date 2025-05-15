@@ -719,8 +719,8 @@ export default function SCADDashboardPage() {
     }
   };
   const handleViewStudentDetails = (student: Student) => {
-    // Navigate to the StudentProfile page with the student ID
-    router.push(`/SCADLogin/StudentProfile/${student.id}`);
+    // Navigate to the StudentProfile page with the student ID as a query parameter
+    router.push(`/SCADLogin/StudentProfile?id=${student.id}`);
   };
 
   const handleCloseStudentDetails = () => {
