@@ -1,750 +1,917 @@
-"use client";
-import styles from "./page.module.css";
-import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+'use client';
 
-// Import modular components
-import NavigationMenu, { MenuItem } from "@/components/global/NavigationMenu";
-import { Calendar, Clock, PlusCircle } from 'lucide-react';
-import FilterSidebar from "@/components/global/FilterSidebar";
-import SearchBar from "@/components/global/SearchBar";
-import AppointmentCard from "@/components/Appointments/AppointmentCard";
-import AppointmentDetailsModal from "@/components/Appointments/AppointmentDetailsModal";
-import VideoCall from "@/components/Appointments/VideoCall";
-import NotificationSystem, { NOTIFICATION_CONSTANTS } from "@/components/global/NotificationSystem";
-import IncomingCallNotification from "@/components/Appointments/IncomingCallNotification";
-import { Appointment } from "@/components/Appointments/types";
-import NewAppointmentForm from "@/components/Appointments/NewAppointmentForm";
+import React, { useState } from 'react';
+import styles from './page.module.css';
+import ProStudentNavigationMenu from './Navigation/ProStudentNavigationMenu';
+import { 
+  initialStudentProfile, 
+  StudentProfile as StudentProfileType, 
+  majors,
+  Major,
+  Experience,
+  Activity
+} from '@/components/StudentInfo/types';
+import Image from 'next/image';
 
-// Mock appointment data (would typically come from an API)
-const mockAppointments: Appointment[] = [
-  {
-    id: "1",
-    title: "Career Guidance Meeting",
-    date: "May 15, 2025",
-    time: "10:00 AM - 11:00 AM",
-    status: 'pending',
-    participantName: "Dr. Sarah Johnson",
-    participantType: "scad",
-    participantEmail: "sarah.johnson@guc.edu",
-    isOnline: true,
-    description: "Discuss career options in software engineering and potential internship opportunities.",
-  },
-  {
-    id: "2",
-    title: "Course Selection Advice",
-    date: "May 17, 2025",
-    time: "2:00 PM - 3:00 PM",
-    status: 'accepted',
-    participantName: "Dr. Ahmed Hassan",
-    participantType: "scad",
-    participantEmail: "ahmed.hassan@guc.edu",
-    isOnline: true,
-    description: "Review course options for next semester and discuss prerequisites needed for specialization tracks.",
-  },
-  {
-    id: "3",
-    title: "Academic Progress Review",
-    date: "May 20, 2025",
-    time: "11:30 AM - 12:30 PM",
-    status: 'waiting-approval',
-    participantName: "Dr. Emily Rodriguez",
-    participantType: "scad",
-    participantEmail: "emily.rodriguez@guc.edu",
-    isOnline: false,
-    description: "Review academic performance from previous semester and discuss areas for improvement.",
-  },
-  {
-    id: "4",
-    title: "Research Opportunities Discussion",
-    date: "May 22, 2025",
-    time: "3:30 PM - 4:30 PM",
-    status: 'rejected',
-    participantName: "Dr. Michael Chen",
-    participantType: "scad",
-    participantEmail: "michael.chen@guc.edu",
-    isOnline: true,
-    description: "Explore undergraduate research opportunities and faculty-led projects.",
-  },
-  {
-    id: "5",
-    title: "Mock Interview Practice",
-    date: "May 25, 2025",
-    time: "1:00 PM - 2:00 PM",
-    status: 'pending',
-    participantName: "Dr. Layla Mahmoud",
-    participantType: "scad",
-    participantEmail: "layla.mahmoud@guc.edu",
-    isOnline: true,
-    description: "Practice technical interview skills with feedback from SCAD career counselor.",
-  }
-];
-
-export default function AppointmentsPage() {
-  // Current user type - in a real app, this would be from authentication
-  const currentUserType = 'pro-student'; // or 'scad', depending on who is logged in
-  
-  // Tab navigation state
-  const [activeTab, setActiveTab] = useState<string>('my-appointments');
-    
-  // State for notifications
-  const [notification, setNotification] = useState<{message: string, type: 'success' | 'error' | 'info' | 'warning'} | null>(null);
-  
-  // Audio references for notification sounds
-  const notificationSoundRef = useRef<HTMLAudioElement | null>(null);
-  const callNotificationSoundRef = useRef<HTMLAudioElement | null>(null);
-  
-  // Track user interaction to enable sound playback
-  useEffect(() => {
-    const markUserInteraction = () => {
-      document.documentElement.dataset.hasUserInteracted = 'true';
-      // Remove event listeners once interaction is detected
-      document.removeEventListener('click', markUserInteraction);
-      document.removeEventListener('keydown', markUserInteraction);
-      document.removeEventListener('touchstart', markUserInteraction);
-    };
-    
-    // Add event listeners to detect user interaction
-    document.addEventListener('click', markUserInteraction);
-    document.addEventListener('keydown', markUserInteraction);
-    document.addEventListener('touchstart', markUserInteraction);
-    
-    return () => {
-      // Clean up event listeners
-      document.removeEventListener('click', markUserInteraction);
-      document.removeEventListener('keydown', markUserInteraction);
-      document.removeEventListener('touchstart', markUserInteraction);
-    };
-  }, []);
-  
-  // Listen for custom tab change events from the appointment form
-  useEffect(() => {
-    const handleTabChange = (event: Event) => {
-      const customEvent = event as CustomEvent<{ tab: string }>;
-      if (customEvent.detail && customEvent.detail.tab) {
-        setActiveTab(customEvent.detail.tab);
-      }
-    };
-    
-    window.addEventListener('changeTab', handleTabChange);
-    
-    return () => {
-      window.removeEventListener('changeTab', handleTabChange);
-    };
-  }, []);
-  
-  const [searchTerm, setSearchTerm] = useState('');
-  const [activeFilters, setActiveFilters] = useState({
-    status: 'All',
-    date: 'All'
+export default function StudentProfilePage() {
+  const [studentProfile, setStudentProfile] = useState<StudentProfileType>(initialStudentProfile);
+  const [isEditing, setIsEditing] = useState<{
+    personal: boolean;
+    address: boolean;
+    academic: boolean;
+    jobInterests: boolean;
+  }>({
+    personal: false,
+    address: false,
+    academic: false,
+    jobInterests: false
   });
-    const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments);
-  const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>(
-    mockAppointments.filter(app => 
-      app.status === 'waiting-approval' || 
-      app.status === 'accepted' || 
-      app.status === 'rejected' || 
-      app.status === 'completed'
-    )
-  );  
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
-  const [showAppointmentDetails, setShowAppointmentDetails] = useState(false);
-  const [showVideoCall, setShowVideoCall] = useState(false);
-  const [incomingCall, setIncomingCall] = useState<Appointment | null>(null);
-  const [activeCall, setActiveCall] = useState<Appointment | null>(null);  // Show notification on initial load that someone accepted your appointment
-  useEffect(() => {
-    // Display an initial notification that someone accepted your appointment
-    setTimeout(() => {
-      // Find Dr. Emily Rodriguez's appointment and update its status
-      const appointmentId = appointments.find(app => 
-        app.participantName === "Dr. Emily Rodriguez" && 
-        app.title === "Academic Progress Review"
-      )?.id;
-      
-      if (appointmentId) {
-        // Update the appointment status with a visual notification
-        setAppointments(prevAppointments => 
-          prevAppointments.map(app => 
-            app.participantName === "Dr. Emily Rodriguez" && app.title === "Academic Progress Review"
-              ? { ...app, status: 'accepted' }
-              : app
-          )
-        );
-        
-        setNotification({
-          message: "Dr. Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
-          type: 'success'
-        });
-        
-        // Try to play notification sound
-        playNotificationSound('notification');
-        
-        // Add a temporary highlight class to the accepted appointment card
-        const appointmentCard = document.querySelector(`[data-appointment-id="${appointmentId}"]`);
-        if (appointmentCard) {
-          appointmentCard.classList.add(styles.highlightCard);
-          setTimeout(() => {
-            appointmentCard.classList.remove(styles.highlightCard);
-          }, 1100);
-        }
-      }
-    }, 2000); // Show 2 seconds after page load
-  }, []);
   
-  // Auto-dismiss notifications after the specified time
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => {
-        setNotification(null);
-      }, NOTIFICATION_CONSTANTS.AUTO_DISMISS_TIME);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [notification]);
+  // Modal states for adding/editing experiences and activities
+  const [showExperienceModal, setShowExperienceModal] = useState(false);
+  const [showActivityModal, setShowActivityModal] = useState(false);
+  const [currentExperience, setCurrentExperience] = useState<Experience | null>(null);
+  const [currentActivity, setCurrentActivity] = useState<Activity | null>(null);
+  
+  // Form states
+  const [newJobInterest, setNewJobInterest] = useState('');
+  const [experienceForm, setExperienceForm] = useState<Omit<Experience, 'id'>>({
+    companyName: '',
+    position: '',
+    responsibilities: '',
+    startDate: '',
+    endDate: '',
+    isCurrentlyWorking: false,
+    isInternship: true
+  });
+  const [activityForm, setActivityForm] = useState<Omit<Activity, 'id'>>({
+    name: '',
+    description: '',
+    role: '',
+    startDate: '',
+    endDate: '',
+    isCurrentlyActive: false
+  });
+  
+  // Mock address data - we'll add this to our profile
+  const [address, setAddress] = useState({
+    country: 'United Kingdom',
+    city: 'Leeds, East London',
+    postalCode: 'ER1 1254'
+  });
 
-  // Filter options
-  const statusOptions = ['All', 'Pending', 'Accepted', 'Rejected', 'Completed'];
-  const dateOptions = ['All', 'Today', 'This Week', 'This Month', 'Future'];
-  
-  // Format filters for the global FilterSidebar component
-  const formattedFilters = [
-    {
-      title: "Status",
-      options: statusOptions,
-      type: "status",
-      value: activeFilters.status
-    },
-    {
-      title: "Date",
-      options: dateOptions,
-      type: "date",
-      value: activeFilters.date
-    }
-  ];  // Apply filters and search - using useLayoutEffect to run before browser paint
-  useLayoutEffect(() => {
-    let results = [...appointments];
-    
-    // First apply tab-specific filters
-    if (activeTab === 'my-appointments') {
-      // Show only appointments with waiting-approval, accepted, rejected, or completed status
-      results = results.filter(appointment => 
-        appointment.status === 'waiting-approval' || 
-        appointment.status === 'accepted' || 
-        appointment.status === 'rejected' || 
-        appointment.status === 'completed'
-      );
-    } else if (activeTab === 'requests') {
-      // Show only appointments with pending status
-      results = results.filter(appointment => appointment.status === 'pending');
-    }
-    
-    // Then apply user-selected status filter
-    if (activeFilters.status !== 'All') {
-      const statusLower = activeFilters.status.toLowerCase();
-      results = results.filter(appointment => appointment.status === statusLower);
-    }
-    
-    // Apply date filter
-    if (activeFilters.date !== 'All') {
-      const today = new Date();
-      const thisWeekStart = new Date(today.setDate(today.getDate() - today.getDay()));
-      const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-      
-      results = results.filter(appointment => {
-        const appointmentDate = new Date(appointment.date);
-        
-        switch(activeFilters.date) {
-          case 'Today':
-            return appointmentDate.toDateString() === new Date().toDateString();
-          case 'This Week':
-            return appointmentDate >= thisWeekStart;
-          case 'This Month':
-            return appointmentDate >= thisMonthStart;
-          case 'Future':
-            return appointmentDate > new Date();
-          default:
-            return true;
-        }
-      });
-    }
-    
-    // Apply search term
-    if (searchTerm.trim() !== '') {
-      const term = searchTerm.toLowerCase();
-      results = results.filter(
-        appointment => 
-          appointment.title.toLowerCase().includes(term) || 
-          appointment.participantName.toLowerCase().includes(term)
-      );
-    }
-    
-    setFilteredAppointments(results);
-  }, [searchTerm, activeFilters, appointments, activeTab]);
-  
-  // Handle filter changes
-  const handleFilterChange = (filterType: string, value: string) => {
-    setActiveFilters(prev => ({
-      ...prev,
-      [filterType.toLowerCase()]: value
-    }));
-  };    // Function to play notification sounds with autoplay fallback
-  const playNotificationSound = (type: 'notification' | 'call') => {
-    const hasUserInteracted = document.documentElement.dataset.hasUserInteracted === 'true';
-    
-    const attemptPlaySound = () => {
-      try {
-        if (type === 'call' && callNotificationSoundRef.current) {
-          const playPromise = callNotificationSoundRef.current.play();
-          
-          if (playPromise !== undefined) {
-            playPromise.catch(error => {
-              console.log("Notification sound error:", error);
-              setupPlayOnFirstInteraction();
-            });
-          }
-        } else if (type === 'notification' && notificationSoundRef.current) {
-          const playPromise = notificationSoundRef.current.play();
-          
-          if (playPromise !== undefined) {
-            playPromise.catch(error => {
-              console.log("Notification sound error:", error);
-              setupPlayOnFirstInteraction();
-            });
-          }
-        }
-      } catch (error) {
-        console.log("Error playing notification sound:", error);
-        setupPlayOnFirstInteraction();
-      }
-    };
-    
-    // Setup event listeners to play sound on first interaction if autoplay fails
-    const setupPlayOnFirstInteraction = () => {
-      if (!document.documentElement.dataset.soundPendingPlay) {
-        document.documentElement.dataset.soundPendingPlay = type;
-        
-        const playOnFirstInteraction = () => {
-          const pendingSound = document.documentElement.dataset.soundPendingPlay;
-          if (pendingSound) {
-            document.documentElement.dataset.hasUserInteracted = 'true';
-            document.documentElement.dataset.soundPendingPlay = '';
-            playNotificationSound(pendingSound as 'notification' | 'call');
-            
-            // Remove event listeners
-            document.removeEventListener('click', playOnFirstInteraction);
-            document.removeEventListener('keydown', playOnFirstInteraction);
-            document.removeEventListener('touchstart', playOnFirstInteraction);
-          }
-        };
-        
-        // Add event listeners for first interaction
-        document.addEventListener('click', playOnFirstInteraction, { once: true });
-        document.addEventListener('keydown', playOnFirstInteraction, { once: true });
-        document.addEventListener('touchstart', playOnFirstInteraction, { once: true });
-      }
-    };
-    
-    // Try to play immediately, with fallback to play on first interaction
-    attemptPlaySound();
-  };
-  
-  // Appointment action handlers
-  const handleViewDetails = (appointment: Appointment) => {
-    setSelectedAppointment(appointment);
-    setShowAppointmentDetails(true);
-  };
-  
-  const handleCloseModal = () => {
-    setSelectedAppointment(null);
-    setShowAppointmentDetails(false);
-  };
-  
-  const handleAcceptAppointment = async (appointmentId: string) => {
-    // This would typically be an API call
-    setAppointments(prev => 
-      prev.map(app => 
-        app.id === appointmentId ? {...app, status: 'accepted'} : app
-      )
-    );
-      const app = appointments.find(a => a.id === appointmentId);
-    setNotification({
-      message: app ? `You have accepted the appointment request from ${app.participantName}` : `Appointment accepted successfully`,
-      type: 'success'
-    });
-    
-    // If accepting from modal, close it
-    if (showAppointmentDetails) {
-      setShowAppointmentDetails(false);
-    }
-    
-    // Simulate notification to the other user
-    simulateNotificationToOtherUser(appointmentId, 'accepted');
-    
-    return new Promise<void>(resolve => setTimeout(resolve, 500));
-  };
-  
-  const handleRejectAppointment = async (appointmentId: string) => {
-    // This would typically be an API call
-    setAppointments(prev => 
-      prev.map(app => 
-        app.id === appointmentId ? {...app, status: 'rejected'} : app
-      )
-    );
-      const app = appointments.find(a => a.id === appointmentId);
-    setNotification({
-      message: app ? `You have declined the appointment request from ${app.participantName}` : `Appointment rejected`,
-      type: 'warning'
-    });
-    
-    // If rejecting from modal, close it
-    if (showAppointmentDetails) {
-      setShowAppointmentDetails(false);
-    }
-    
-    // Simulate notification to the other user
-    simulateNotificationToOtherUser(appointmentId, 'rejected');
-    
-    return new Promise<void>(resolve => setTimeout(resolve, 500));
-  };
-  
-  const handleStartCall = (appointment: Appointment) => {
-    setSelectedAppointment(appointment);
-    setShowVideoCall(true);
-    setShowAppointmentDetails(false);
-  };  const handleEndCall = () => {
-    setShowVideoCall(false);
-    
-    // Notify that call has ended
-    if (selectedAppointment) {
-      setNotification({
-        message: `Call with ${selectedAppointment.participantName} has ended`,
-        type: 'info'
-      });
-      
-      // Play sound with fallback handling
-      playNotificationSound('notification');
-    }
-    
-    // No demo notification needed since we'll simulate Dr. Hassan ending the call
-  };// Simulate an incoming call from Dr. Ahmed Hassan specifically (for demonstration purposes)
-  useEffect(() => {
-    // Only run once, find Dr. Hassan's appointment
-    const drHassanAppointment = appointments.find(
-      app => app.participantName === "Dr. Ahmed Hassan" && app.isOnline
-    );
-      if (drHassanAppointment) {
-      const simulateIncomingCall = setTimeout(() => {
-        setIncomingCall(drHassanAppointment);
-        setActiveCall(drHassanAppointment);
-        playNotificationSound('call');
-      }, 10000); // Simulate after 10 seconds
-      
-      return () => clearTimeout(simulateIncomingCall);
-    }
-  }, []); // Empty dependency array ensures it only runs once
-  // Simulate Dr. Hassan ending the call after 1 minute of being in the call
-  useEffect(() => {
-    if (showVideoCall && selectedAppointment?.participantName === "Dr. Ahmed Hassan") {
-      const simulateCallEnding = setTimeout(() => {
-        // End the call automatically
-        setShowVideoCall(false);
-        
-        // Show notification that Dr. Hassan left the call
-        setNotification({
-          message: `Dr. Ahmed Hassan has left the call`,
-          type: 'info'
-        });
-        
-        // Play notification sound with fallback handling
-        playNotificationSound('notification');
-      }, 60000); // 1 minute (60 seconds)
-      
-      return () => clearTimeout(simulateCallEnding);
-    }
-  }, [showVideoCall, selectedAppointment]);
-  
-  // Handle incoming call actions
-  const handleAcceptIncomingCall = () => {
-    if (incomingCall) {
-      setSelectedAppointment(incomingCall);
-      setIncomingCall(null);
-      setShowVideoCall(true);
-      
-      // Show notification that we joined the call
-      setNotification({
-        message: `You joined a call with ${incomingCall.participantName}`,
-        type: 'info'
-      });
-    }
-  };
-  
-  const handleRejectIncomingCall = () => {
-    setIncomingCall(null);
-    setNotification({
-      message: `Call declined`,
-      type: 'info'
-    });
-  };  // Simulate notification to the other user (in a real app, this would use websockets or other real-time tech)
-  const simulateNotificationToOtherUser = (appointmentId: string, status: string) => {
-    console.log(`Notification sent to other user about appointment ${appointmentId} being ${status}`);
-    // In a real app, this would send a notification through your backend
-    
-    // Update the appointment status in our local state
-    setAppointments(prevAppointments => 
-      prevAppointments.map(app => 
-        app.id === appointmentId
-          ? { ...app, status: status as 'pending' | 'accepted' | 'rejected' | 'completed' }
-          : app
-      )
-    );
-    
-    // For demonstration purposes, show a mockup of the notification the other party would receive
-    setTimeout(() => {
-      const app = appointments.find(a => a.id === appointmentId);
-      if (app) {
-        let notificationMessage = '';
-        let notificationType: 'success' | 'info' | 'warning' = 'info';
-          
-        if (status === 'accepted') {
-          notificationMessage = `${app.participantName} has accepted your appointment request for "${app.title}"`;
-          notificationType = 'success';
-        } else if (status === 'rejected') {
-          notificationMessage = `${app.participantName} has declined your appointment request for "${app.title}"`;
-          notificationType = 'warning';
-        }        
-        
-        setNotification({
-          message: notificationMessage,
-          type: notificationType
-        });
-        
-        // Play notification sound with fallback handling
-        playNotificationSound('notification');
-      }
-    }, 2000); // Delayed to simulate network latency
-  };// Handle creating a new appointment
-  const handleCreateAppointment = async (appointmentData: any) => {    // Check if this is a navigation request from the "Back to list" link
-    if (appointmentData.navigateBack) {
-      // Return back to the previous tab - my-appointments
-      setActiveTab('my-appointments');
-      return;
-    }
-      // This would typically be an API call
-    const newAppointment: Appointment = {
-      id: `${appointments.length + 1}`,
-      title: appointmentData.title,
-      date: formatDate(appointmentData.date),
-      time: appointmentData.time,
-      status: 'waiting-approval', // New appointments in My Appointments use waiting-approval
-      participantName: appointmentData.participantName,
-      participantType: appointmentData.participantType,
-      participantEmail: `${appointmentData.participantName.toLowerCase().replace(' ', '.')}@guc.edu`,
-      isOnline: false, // Since we removed the online checkbox
-      description: appointmentData.description
-    };
-    
-    // Add the new appointment to the list
-    setAppointments(prev => [...prev, newAppointment]);
-      // Show success notification
-    setNotification({
-      message: `Appointment request sent to ${newAppointment.participantName}`,
-      type: 'success'
-    });
-    
-    // Switch to the My Appointments tab
-    setActiveTab('my-appointments');
-    
-    // Play notification sound
-    playNotificationSound('notification');
-    
-    return Promise.resolve();
-  };
-  
-  // Helper function to format date for display
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      month: 'long', day: 'numeric', year: 'numeric'
+  const handleEditToggle = (section: keyof typeof isEditing) => {
+    setIsEditing({
+      ...isEditing,
+      [section]: !isEditing[section]
     });
   };
 
+  const handleProfileUpdate = (updatedProfile: Partial<StudentProfileType>) => {
+    setStudentProfile({
+      ...studentProfile,
+      ...updatedProfile
+    });
+    setIsEditing({ personal: false, address: false, academic: false, jobInterests: false });
+    // In a real application, you would save this to a database
+    console.log('Profile updated:', updatedProfile);
+  };
+
+  const handleAddressUpdate = (updatedAddress: typeof address) => {
+    setAddress(updatedAddress);
+    setIsEditing({ ...isEditing, address: false });
+  };
+  
+  const handleAddJobInterest = () => {
+    if (newJobInterest.trim()) {
+      handleProfileUpdate({
+        jobInterests: [...studentProfile.jobInterests, newJobInterest.trim()]
+      });
+      setNewJobInterest('');
+    }
+  };
+  
+  const handleRemoveJobInterest = (index: number) => {
+    const updatedInterests = [...studentProfile.jobInterests];
+    updatedInterests.splice(index, 1);
+    handleProfileUpdate({ jobInterests: updatedInterests });
+  };
+  
+  const openExperienceModal = (experience?: Experience) => {
+    if (experience) {
+      setCurrentExperience(experience);
+      setExperienceForm({
+        companyName: experience.companyName,
+        position: experience.position,
+        responsibilities: experience.responsibilities,
+        startDate: experience.startDate,
+        endDate: experience.endDate,
+        isCurrentlyWorking: experience.isCurrentlyWorking || false,
+        isInternship: experience.isInternship
+      });
+    } else {
+      setCurrentExperience(null);
+      setExperienceForm({
+        companyName: '',
+        position: '',
+        responsibilities: '',
+        startDate: '',
+        endDate: '',
+        isCurrentlyWorking: false,
+        isInternship: true
+      });
+    }
+    setShowExperienceModal(true);
+  };
+  
+  const openActivityModal = (activity?: Activity) => {
+    if (activity) {
+      setCurrentActivity(activity);
+      setActivityForm({
+        name: activity.name,
+        description: activity.description,
+        role: activity.role,
+        startDate: activity.startDate,
+        endDate: activity.endDate,
+        isCurrentlyActive: activity.isCurrentlyActive || false
+      });
+    } else {
+      setCurrentActivity(null);
+      setActivityForm({
+        name: '',
+        description: '',
+        role: '',
+        startDate: '',
+        endDate: '',
+        isCurrentlyActive: false
+      });
+    }
+    setShowActivityModal(true);
+  };
+  
+  const handleExperienceSave = () => {
+    const newExperience = {
+      ...experienceForm,
+      id: currentExperience?.id || `exp-${Date.now()}`
+    };
+    
+    const updatedExperiences = currentExperience
+      ? studentProfile.previousExperiences.map(exp => 
+          exp.id === currentExperience.id ? newExperience : exp
+        )
+      : [...studentProfile.previousExperiences, newExperience];
+    
+    handleProfileUpdate({ previousExperiences: updatedExperiences });
+    setShowExperienceModal(false);
+  };
+  
+  const handleActivitySave = () => {
+    const newActivity = {
+      ...activityForm,
+      id: currentActivity?.id || `act-${Date.now()}`
+    };
+    
+    const updatedActivities = currentActivity
+      ? studentProfile.collegeActivities.map(act => 
+          act.id === currentActivity.id ? newActivity : act
+        )
+      : [...studentProfile.collegeActivities, newActivity];
+    
+    handleProfileUpdate({ collegeActivities: updatedActivities });
+    setShowActivityModal(false);
+  };
+  
+  const handleRemoveExperience = (id: string) => {
+    const updatedExperiences = studentProfile.previousExperiences.filter(exp => exp.id !== id);
+    handleProfileUpdate({ previousExperiences: updatedExperiences });
+  };
+  
+  const handleRemoveActivity = (id: string) => {
+    const updatedActivities = studentProfile.collegeActivities.filter(act => act.id !== id);
+    handleProfileUpdate({ collegeActivities: updatedActivities });
+  };
+  
   return (
     <div className={styles.pageContainer}>
-      {/* Navigation */}      
-      <NavigationMenu
-        items={[
-          {
-            id: 'my-appointments',
-            label: 'My Appointments',
-            icon: <Calendar size={18} />,
-            onClick: () => setActiveTab('my-appointments'),
-            count: appointments.filter(app => 
-              app.status === 'waiting-approval' || 
-              app.status === 'accepted' || 
-              app.status === 'rejected' || 
-              app.status === 'completed'
-            ).length 
-          },
-          {
-            id: 'requests',
-            label: 'Requests',
-            icon: <Clock size={18} />,
-            onClick: () => setActiveTab('requests'),
-            count: appointments.filter(app => app.status === 'pending').length
-          },
-          {
-            id: 'new-appointment',
-            label: 'New Appointment',
-            icon: <PlusCircle size={18} />,
-            onClick: () => setActiveTab('new-appointment')
-          }
-        ]}
-        activeItemId={activeTab}
-        logo={{
-          src: '/logos/GUCInternshipSystemLogo.png',
-          alt: 'GUC Internship System'
-        }}
-        variant="tabs"
-        notificationCount={(incomingCall ? 1 : 0) + (notification ? 1 : 0)}
-      />
-
+      <ProStudentNavigationMenu />
+      
       <div className={styles.contentWrapper}>
-        {/* Left Sidebar with Filters - Only show in appointment listing tabs */}
-        {activeTab !== 'new-appointment' && (
-          <FilterSidebar 
-            filters={formattedFilters}
-            onFilterChange={handleFilterChange}
-          />
-        )}
-
-        {/* Main Content */}
-        <main className={styles.mainContent}>          {/* Tab Navigation is now handled by NavigationMenu */}
-          
-          {/* Tab content based on which tab is active */}
-          {(activeTab === 'my-appointments' || activeTab === 'requests') && (
-            <>
-              {/* Search Bar */}
-              <SearchBar 
-                searchTerm={searchTerm} 
-                setSearchTerm={setSearchTerm} 
-                placeholder="Search appointments by title or participant name..."
-              />
-              
-              {/* Appointment Listings */}
-              <div className={styles.appointmentListings}>
-                <div className={styles.listingHeader}>
-                  <h2 className={styles.listingTitle}>
-                    {activeTab === 'my-appointments' ? 'Your Appointments' : 'Appointment Requests'}
-                  </h2>
-                  <span className={styles.appointmentCount}>
-                    {filteredAppointments.length} appointment{filteredAppointments.length !== 1 ? 's' : ''}
-                  </span>
-                </div>
-
-                <div className={styles.cards}>                  
-                  {filteredAppointments.length > 0 ? (
-                    filteredAppointments.map(appointment => (
-                      <div 
-                        key={appointment.id} 
-                        data-appointment-id={appointment.id} 
-                        className={styles.appointmentCardWrapper}
-                      >
-                        <AppointmentCard
-                          id={appointment.id}
-                          title={appointment.title}
-                          date={appointment.date}
-                          time={appointment.time}
-                          status={appointment.status}
-                          participantName={appointment.participantName}
-                          participantType={appointment.participantType}
-                          participantEmail={appointment.participantEmail}
-                          isOnline={appointment.isOnline}
-                          onViewDetails={() => handleViewDetails(appointment)}                          onAccept={() => handleAcceptAppointment(appointment.id)}
-                          onReject={() => handleRejectAppointment(appointment.id)}
-                        />
-                      </div>
-                    ))
+        <div className={styles.mainContent}>
+          <section className={styles.myProfileSection}>
+            <h1 className={styles.pageTitle}>My Profile</h1>
+            
+            {/* Profile Header Card */}
+            <div className={styles.profileCard}>
+              <div className={styles.profileHeader}>
+                <div className={styles.profileImageContainer}>
+                  {studentProfile.profilePicture ? (
+                    <img 
+                      className={styles.profileImage} 
+                      src={studentProfile.profilePicture} 
+                      alt={studentProfile.name} 
+                    />
                   ) : (
-                    <div className={styles.noResults}>
-                      <img 
-                        src="/assets/images/icons/search.png" 
-                        alt="Search Icon" 
-                        className={styles.searchIcon} 
-                      /> 
-                      <h3>No appointments found</h3>
-                      <p>Try adjusting your search criteria or filters</p>
+                    <div className={styles.profileImagePlaceholder}>
+                      {studentProfile.name.charAt(0)}
                     </div>
                   )}
                 </div>
+                <div className={styles.profileHeaderInfo}>
+                  <h2>{studentProfile.name}</h2>
+                  <p className={styles.roleLabel}>
+                    {studentProfile.major ? studentProfile.major.name : 'Student'}
+                  </p>
+                  <p className={styles.locationLabel}>
+                    {address.city}, {address.country}
+                  </p>
+                </div>
               </div>
-            </>
-          )}
+            </div>
+            
+            {/* Personal Information Section */}
+            <div className={styles.infoSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>Personal Information</h2>
+                <button 
+                  onClick={() => handleEditToggle('personal')} 
+                  className={styles.editButton}
+                >
+                  Edit
+                </button>
+              </div>
+              
+              {isEditing.personal ? (
+                <div className={styles.editForm}>
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>First Name</label>
+                      <input 
+                        type="text" 
+                        value={studentProfile.name.split(' ')[0]}
+                        onChange={(e) => {
+                          const lastName = studentProfile.name.includes(' ') ? 
+                            studentProfile.name.split(' ').slice(1).join(' ') : '';
+                          handleProfileUpdate({ name: `${e.target.value} ${lastName}` });
+                        }}
+                      />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label>Last Name</label>
+                      <input 
+                        type="text" 
+                        value={studentProfile.name.includes(' ') ? 
+                          studentProfile.name.split(' ').slice(1).join(' ') : ''}
+                        onChange={(e) => {
+                          const firstName = studentProfile.name.split(' ')[0];
+                          handleProfileUpdate({ name: `${firstName} ${e.target.value}` });
+                        }}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>Date of Birth</label>
+                      <input type="date" placeholder="Date of Birth" />
+                    </div>
+                  </div>
+                  
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>Email Address</label>
+                      <input 
+                        type="email" 
+                        value={studentProfile.email}
+                        onChange={(e) => setStudentProfile({...studentProfile, email: e.target.value})}
+                      />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label>Phone Number</label>
+                      <input 
+                        type="tel" 
+                        value={studentProfile.phone}
+                        onChange={(e) => setStudentProfile({...studentProfile, phone: e.target.value})}
+                      />
+                    </div>
+                  </div>
 
-          {/* New Appointment Form */}
-          {activeTab === 'new-appointment' && (
-            <NewAppointmentForm onSubmit={handleCreateAppointment} />
-          )}
-        </main>
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>User Role</label>
+                      <input type="text" value="Student" disabled />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label>GPA</label>
+                      <input 
+                        type="number" 
+                        min="0" 
+                        max="4" 
+                        step="0.01"
+                        value={studentProfile.gpa}
+                        onChange={(e) => setStudentProfile({...studentProfile, gpa: parseFloat(e.target.value)})}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className={styles.formActions}>
+                    <button 
+                      onClick={() => handleEditToggle('personal')}
+                      className={styles.cancelButton}
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      onClick={() => handleProfileUpdate(studentProfile)}
+                      className={styles.saveButton}
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.infoGrid}>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>First Name</span>
+                    <span className={styles.infoValue}>
+                      {studentProfile.name.split(' ')[0]}
+                    </span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>Last Name</span>
+                    <span className={styles.infoValue}>
+                      {studentProfile.name.includes(' ') ? 
+                        studentProfile.name.split(' ').slice(1).join(' ') : ''}
+                    </span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>Date of Birth</span>
+                    <span className={styles.infoValue}>12-10-1990</span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>Email Address</span>
+                    <span className={styles.infoValue}>{studentProfile.email}</span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>Phone Number</span>
+                    <span className={styles.infoValue}>{studentProfile.phone}</span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>User Role</span>
+                    <span className={styles.infoValue}>Student</span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>GPA</span>
+                    <span className={styles.infoValue}>{studentProfile.gpa}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Address Section */}
+            <div className={styles.infoSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>Address</h2>
+                <button 
+                  onClick={() => handleEditToggle('address')} 
+                  className={styles.editButton}
+                >
+                  Edit
+                </button>
+              </div>
+              
+              {isEditing.address ? (
+                <div className={styles.editForm}>
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>Country</label>
+                      <input 
+                        type="text" 
+                        value={address.country}
+                        onChange={(e) => setAddress({...address, country: e.target.value})}
+                      />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label>City</label>
+                      <input 
+                        type="text" 
+                        value={address.city}
+                        onChange={(e) => setAddress({...address, city: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>Postal Code</label>
+                      <input 
+                        type="text" 
+                        value={address.postalCode}
+                        onChange={(e) => setAddress({...address, postalCode: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className={styles.formActions}>
+                    <button 
+                      onClick={() => handleEditToggle('address')}
+                      className={styles.cancelButton}
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      onClick={() => handleAddressUpdate(address)}
+                      className={styles.saveButton}
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.infoGrid}>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>Country</span>
+                    <span className={styles.infoValue}>{address.country}</span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>City</span>
+                    <span className={styles.infoValue}>{address.city}</span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>Postal Code</span>
+                    <span className={styles.infoValue}>{address.postalCode}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Academic Information Section */}
+            <div className={styles.infoSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>Academic Information</h2>
+                <button 
+                  onClick={() => handleEditToggle('academic')} 
+                  className={styles.editButton}
+                >
+                  Edit
+                </button>
+              </div>
+              
+              {isEditing.academic ? (
+                <div className={styles.editForm}>
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>Major</label>
+                      <select 
+                        value={studentProfile.major?.id || ''}
+                        onChange={(e) => {
+                          const selectedMajor = majors.find(m => m.id === e.target.value);
+                          setStudentProfile({...studentProfile, major: selectedMajor});
+                        }}
+                      >
+                        <option value="">Select a major</option>
+                        {majors.map(major => (
+                          <option key={major.id} value={major.id}>
+                            {major.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label>Semester</label>
+                      <select 
+                        value={studentProfile.semester || ''}
+                        onChange={(e) => {
+                          setStudentProfile({
+                            ...studentProfile, 
+                            semester: e.target.value ? parseInt(e.target.value, 10) : undefined
+                          });
+                        }}
+                        disabled={!studentProfile.major}
+                      >
+                        <option value="">Select a semester</option>
+                        {studentProfile.major?.availableSemesters.map(sem => (
+                          <option key={sem} value={sem}>
+                            {sem}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div className={styles.formActions}>
+                    <button 
+                      onClick={() => handleEditToggle('academic')}
+                      className={styles.cancelButton}
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      onClick={() => handleProfileUpdate(studentProfile)}
+                      className={styles.saveButton}
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.infoGrid}>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>Major</span>
+                    <span className={styles.infoValue}>
+                      {studentProfile.major ? studentProfile.major.name : 'Not selected'}
+                    </span>
+                  </div>
+                  <div className={styles.infoItem}>
+                    <span className={styles.infoLabel}>Semester</span>
+                    <span className={styles.infoValue}>
+                      {studentProfile.semester || 'Not selected'}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Job Interests Section */}
+            <div className={styles.infoSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>Job Interests</h2>
+                <button 
+                  onClick={() => handleEditToggle('jobInterests')} 
+                  className={styles.editButton}
+                >
+                  Edit
+                </button>
+              </div>
+              
+              {isEditing.jobInterests ? (
+                <div className={styles.editForm}>
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>Add New Job Interest</label>
+                      <div className={styles.interestInputGroup}>
+                        <input 
+                          type="text" 
+                          value={newJobInterest}
+                          onChange={(e) => setNewJobInterest(e.target.value)}
+                          placeholder="E.g., Web Development"
+                        />
+                        <button 
+                          onClick={handleAddJobInterest}
+                          className={styles.addInterestButton}
+                        >
+                          Add
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className={styles.currentInterests}>
+                    <label>Current Interests:</label>
+                    <div className={styles.tagContainer}>
+                      {studentProfile.jobInterests.map((interest, index) => (
+                        <div key={index} className={styles.interestTagWithRemove}>
+                          <span>{interest}</span>
+                          <button 
+                            onClick={() => handleRemoveJobInterest(index)}
+                            className={styles.removeButton}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className={styles.formActions}>
+                    <button 
+                      onClick={() => handleEditToggle('jobInterests')}
+                      className={styles.cancelButton}
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      onClick={() => handleEditToggle('jobInterests')}
+                      className={styles.saveButton}
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.tagContainer}>
+                  {studentProfile.jobInterests.length > 0 ? (
+                    studentProfile.jobInterests.map((interest, index) => (
+                      <span key={index} className={styles.interestTag}>{interest}</span>
+                    ))
+                  ) : (
+                    <p className={styles.emptyState}>No job interests added yet</p>
+                  )}
+                </div>
+              )}
+            </div>
+            
+            {/* Work Experience Section */}
+            <div className={styles.infoSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>Work Experience</h2>
+                <button 
+                  onClick={() => openExperienceModal()}
+                  className={styles.editButton}
+                >
+                  Add Experience
+                </button>
+              </div>
+              
+              {studentProfile.previousExperiences.length > 0 ? (
+                studentProfile.previousExperiences.map((exp) => (
+                  <div key={exp.id} className={styles.experienceItem}>
+                    <div className={styles.experienceHeader}>
+                      <h3>{exp.position} at {exp.companyName}</h3>
+                      <div className={styles.experienceActions}>
+                        <button 
+                          onClick={() => openExperienceModal(exp)}
+                          className={styles.actionButton}
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          onClick={() => handleRemoveExperience(exp.id)}
+                          className={styles.actionButton}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                    <p className={styles.experienceDates}>
+                      {exp.startDate} - {exp.isCurrentlyWorking ? 'Present' : exp.endDate}
+                    </p>
+                    <p className={styles.experienceType}>
+                      {exp.isInternship ? 'Internship' : 'Part-time Job'}
+                    </p>
+                    <p className={styles.experienceDesc}>{exp.responsibilities}</p>
+                  </div>
+                ))
+              ) : (
+                <p className={styles.emptyState}>No work experience added yet</p>
+              )}
+            </div>
+            
+            {/* College Activities Section */}
+            <div className={styles.infoSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>College Activities</h2>
+                <button 
+                  onClick={() => openActivityModal()}
+                  className={styles.editButton}
+                >
+                  Add Activity
+                </button>
+              </div>
+              
+              {studentProfile.collegeActivities.length > 0 ? (
+                studentProfile.collegeActivities.map((activity) => (
+                  <div key={activity.id} className={styles.activityItem}>
+                    <div className={styles.activityHeader}>
+                      <h3>{activity.name} - {activity.role}</h3>
+                      <div className={styles.activityActions}>
+                        <button 
+                          onClick={() => openActivityModal(activity)}
+                          className={styles.actionButton}
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          onClick={() => handleRemoveActivity(activity.id)}
+                          className={styles.actionButton}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                    <p className={styles.activityDates}>
+                      {activity.startDate} - {activity.isCurrentlyActive ? 'Present' : activity.endDate}
+                    </p>
+                    <p className={styles.activityDesc}>{activity.description}</p>
+                  </div>
+                ))
+              ) : (
+                <p className={styles.emptyState}>No college activities added yet</p>
+              )}
+            </div>
+          </section>
+        </div>
       </div>
-
-      {/* Appointment Details Modal */}
-      {selectedAppointment && showAppointmentDetails && (
-        <AppointmentDetailsModal
-          isOpen={showAppointmentDetails}
-          onClose={handleCloseModal}
-          appointment={selectedAppointment}
-          onAccept={() => handleAcceptAppointment(selectedAppointment.id)}
-          onReject={() => handleRejectAppointment(selectedAppointment.id)}
-          onStartCall={() => handleStartCall(selectedAppointment)}
-          currentUserType={currentUserType}
-        />
-      )}
-
-      {/* Video Call Modal */}
-      {selectedAppointment && showVideoCall && (
-        <VideoCall
-          isOpen={showVideoCall}
-          onClose={handleEndCall}
-          participantName={selectedAppointment.participantName}
-          participantType={selectedAppointment.participantType}
-        />
+      
+      {/* Experience Modal */}
+      {showExperienceModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h2>{currentExperience ? 'Edit Experience' : 'Add New Experience'}</h2>
+              <button 
+                onClick={() => setShowExperienceModal(false)}
+                className={styles.modalCloseButton}
+              >
+                ×
+              </button>
+            </div>
+            <div className={styles.modalContent}>
+              <div className={styles.formGroup}>
+                <label>Company Name</label>
+                <input 
+                  type="text" 
+                  value={experienceForm.companyName}
+                  onChange={(e) => setExperienceForm({...experienceForm, companyName: e.target.value})}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Position</label>
+                <input 
+                  type="text" 
+                  value={experienceForm.position}
+                  onChange={(e) => setExperienceForm({...experienceForm, position: e.target.value})}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Type</label>
+                <div className={styles.radioGroup}>
+                  <label>
+                    <input 
+                      type="radio" 
+                      checked={experienceForm.isInternship}
+                      onChange={() => setExperienceForm({...experienceForm, isInternship: true})}
+                    /> 
+                    Internship
+                  </label>
+                  <label>
+                    <input 
+                      type="radio" 
+                      checked={!experienceForm.isInternship}
+                      onChange={() => setExperienceForm({...experienceForm, isInternship: false})}
+                    /> 
+                    Part-time Job
+                  </label>
+                </div>
+              </div>
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label>Start Date</label>
+                  <input 
+                    type="date" 
+                    value={experienceForm.startDate}
+                    onChange={(e) => setExperienceForm({...experienceForm, startDate: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>End Date</label>
+                  <input 
+                    type="date" 
+                    value={experienceForm.endDate}
+                    onChange={(e) => setExperienceForm({...experienceForm, endDate: e.target.value})}
+                    disabled={experienceForm.isCurrentlyWorking}
+                    required={!experienceForm.isCurrentlyWorking}
+                  />
+                </div>
+              </div>
+              <div className={styles.formGroup}>
+                <label className={styles.checkboxLabel}>
+                  <input 
+                    type="checkbox" 
+                    checked={experienceForm.isCurrentlyWorking}
+                    onChange={(e) => setExperienceForm({
+                      ...experienceForm, 
+                      isCurrentlyWorking: e.target.checked
+                    })}
+                  /> 
+                  I currently work here
+                </label>
+              </div>
+              <div className={styles.formGroup}>
+                <label>Responsibilities</label>
+                <textarea 
+                  value={experienceForm.responsibilities}
+                  onChange={(e) => setExperienceForm({...experienceForm, responsibilities: e.target.value})}
+                  rows={4}
+                  required
+                />
+              </div>
+            </div>
+            <div className={styles.modalFooter}>
+              <button 
+                onClick={() => setShowExperienceModal(false)}
+                className={styles.cancelButton}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleExperienceSave}
+                className={styles.saveButton}
+                disabled={!experienceForm.companyName || !experienceForm.position || !experienceForm.startDate || (!experienceForm.endDate && !experienceForm.isCurrentlyWorking)}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
       )}
       
-      {/* Notification Component */}
-      {notification && (
-        <NotificationSystem
-          message={notification.message}
-          type={notification.type}
-          visible={true}
-          onClose={() => {
-            setTimeout(() => {
-              setNotification(null);
-            }, NOTIFICATION_CONSTANTS.HIDE_ANIMATION_TIME);
-          }}
-        />
+      {/* Activity Modal */}
+      {showActivityModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h2>{currentActivity ? 'Edit Activity' : 'Add New Activity'}</h2>
+              <button 
+                onClick={() => setShowActivityModal(false)}
+                className={styles.modalCloseButton}
+              >
+                ×
+              </button>
+            </div>
+            <div className={styles.modalContent}>
+              <div className={styles.formGroup}>
+                <label>Activity Name</label>
+                <input 
+                  type="text" 
+                  value={activityForm.name}
+                  onChange={(e) => setActivityForm({...activityForm, name: e.target.value})}
+                  required
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Role</label>
+                <input 
+                  type="text" 
+                  value={activityForm.role}
+                  onChange={(e) => setActivityForm({...activityForm, role: e.target.value})}
+                  required
+                />
+              </div>
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label>Start Date</label>
+                  <input 
+                    type="date" 
+                    value={activityForm.startDate}
+                    onChange={(e) => setActivityForm({...activityForm, startDate: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>End Date</label>
+                  <input 
+                    type="date" 
+                    value={activityForm.endDate}
+                    onChange={(e) => setActivityForm({...activityForm, endDate: e.target.value})}
+                    disabled={activityForm.isCurrentlyActive}
+                    required={!activityForm.isCurrentlyActive}
+                  />
+                </div>
+              </div>
+              <div className={styles.formGroup}>
+                <label className={styles.checkboxLabel}>
+                  <input 
+                    type="checkbox" 
+                    checked={activityForm.isCurrentlyActive}
+                    onChange={(e) => setActivityForm({
+                      ...activityForm, 
+                      isCurrentlyActive: e.target.checked
+                    })}
+                  /> 
+                  I am currently involved in this activity
+                </label>
+              </div>
+              <div className={styles.formGroup}>
+                <label>Description</label>
+                <textarea 
+                  value={activityForm.description}
+                  onChange={(e) => setActivityForm({...activityForm, description: e.target.value})}
+                  rows={4}
+                  required
+                />
+              </div>
+            </div>
+            <div className={styles.modalFooter}>
+              <button 
+                onClick={() => setShowActivityModal(false)}
+                className={styles.cancelButton}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleActivitySave}
+                className={styles.saveButton}
+                disabled={!activityForm.name || !activityForm.role || !activityForm.startDate || (!activityForm.endDate && !activityForm.isCurrentlyActive)}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
       )}
-
-      {/* Incoming Call Notification */}
-      {incomingCall && (
-        <IncomingCallNotification
-          callerName={incomingCall.participantName}
-          onAccept={handleAcceptIncomingCall}
-          onReject={handleRejectIncomingCall}
-        />
-      )}
-      
-      {/* Audio elements for sounds (hidden) */}
-      <audio 
-        ref={notificationSoundRef} 
-        src="/sounds/notification.mp3" 
-        preload="auto"
-        style={{ display: 'none' }}
-      />
-      <audio 
-        ref={callNotificationSoundRef} 
-        src="/sounds/notification.mp3" 
-        preload="auto"
-        style={{ display: 'none' }}
-      />
     </div>
   );
 }
