@@ -26,14 +26,16 @@
   background-color: white;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
   cursor: pointer;
+  border: 1px solid #f0f5ff;
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.1);
+  border-color: #d1e0ff;
 }
 
 .cardInner {
@@ -126,44 +128,57 @@
 }
 
 .detailsButton {
-  padding: 8px 16px;
-  background-color: #4c51bf;
+  padding: 10px 18px;
+  background-color: #2563eb;
   color: white;
   border: none;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(37, 99, 235, 0.25);
+  letter-spacing: 0.3px;
 }
 
 .detailsButton:hover {
-  background-color: #34399b}
+  background-color: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+}
 
 /* Status Badge Styles - preserved from original */
 .statusBadge {
   display: inline-block;
-  padding: 4px 12px;
-  border-radius: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
   font-size: 13px;
   font-weight: 600;
   background: #f4f6fa;
   color: #555;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
 }
 .statusBadge.pending {
-  background: #fffbe6;
-  color: #bfa100;
+  background: linear-gradient(to right, #fffbe6, #fff7cc);
+  color: #d97706;
+  box-shadow: 0 2px 4px rgba(217, 119, 6, 0.1);
 }
 .statusBadge.accepted {
-  background: #e6fff2;
-  color: #1aaf5d;
+  background: linear-gradient(to right, #e6fff2, #b3f0d4);
+  color: #059669;
+  box-shadow: 0 2px 4px rgba(5, 150, 105, 0.1);
 }
 .statusBadge.flagged {
-  background: #e6f7ff;
-  color: #217dbb;
+  background: linear-gradient(to right, #e6f7ff, #bae3ff);
+  color: #0369a1;
+  box-shadow: 0 2px 4px rgba(3, 105, 161, 0.1);
 }
 .statusBadge.rejected {
-  background: #ffeaea;
-  color: #d32f2f;
+  background: linear-gradient(to right, #ffeeee, #ffd6d6);
+  color: #dc2626;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.1);
 }
 
 /* List-based Styles */
@@ -185,20 +200,9 @@
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
-.studentRow:before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 4px;
-  background: linear-gradient(to bottom, #4c51bf, #6366f1);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.studentRow:hover:before {
-  opacity: 1;
+.studentRow:hover {
+  border-left: 4px solid #2563eb;
+  background-color: #f8fafc;
 }
 
 .studentRow td {
@@ -237,18 +241,18 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #e8f3ff, #d1dfff);
+  background: linear-gradient(135deg, #e0eaff, #c7d7ff);
   overflow: hidden;
   margin-right: 12px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #4c51bf;
+  color: #2563eb;
   font-weight: 700;
   font-size: 18px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  border: 2px solid #fff;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.15);
+  border: 3px solid #fff;
 }
 
 .studentInfo {
@@ -275,12 +279,19 @@
 }
 
 .tag {
-  background-color: #f5f5f5;
-  color: #555;
-  padding: 4px 10px;
+  background-color: #f0f5ff;
+  color: #2563eb;
+  padding: 6px 12px;
   border-radius: 12px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.08);
+  transition: all 0.2s ease;
+}
+
+.tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(37, 99, 235, 0.12);
 }
 
 .communicationCell {

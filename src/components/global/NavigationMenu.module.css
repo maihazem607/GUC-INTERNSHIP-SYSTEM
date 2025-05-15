@@ -8,7 +8,7 @@
     position: sticky;
     top: 0;
     z-index: 100;
-    padding: 0 20px;
+    padding: 0 0px;
     height: 70px;
 }
 
@@ -22,12 +22,12 @@
     display: flex;
     align-items: center;
     height: 100%;
-    padding-left: 10px;
+    padding-left: 0;
 }
 
 /* Logo container */
 .logoContainer {
-    margin-right: 10px;
+    margin-right:0;
     width: auto;
     height: 50px;
     display: flex;
@@ -38,7 +38,7 @@
 /* Menu items container */
 .menuItems {
     display: flex;
-    gap: 15px;
+    gap: 10px;
     height: 100%;
     align-items: center;
 }
@@ -52,8 +52,8 @@
 .navItem {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
+    gap: 6px;
+    padding: 5px 5px;
     color: #333;
     font-weight: 500;
     text-decoration: none;

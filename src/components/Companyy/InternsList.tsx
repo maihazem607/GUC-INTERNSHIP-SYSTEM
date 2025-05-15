@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './InternsList.module.css';
 import { Intern } from "./types";
-import { CheckCircle, User } from "lucide-react";
+import { CheckCircle, User, Clock, CalendarClock } from "lucide-react";
 
 // Interface for component props
 interface InternsListProps {
@@ -35,15 +35,36 @@ const InternsList: React.FC<InternsListProps> = ({
   const handleEvaluate = (intern: Intern) => {
     onEvaluate(intern);
   };
+  
+  // Calculate days remaining for each intern
+  const calculateDaysRemaining = (startDate: Date, endDate: Date | null) => {
+    if (!endDate) return 'Ongoing';
+    const today = new Date();
+    const end = new Date(endDate);
+    const diffTime = end.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays > 0 ? `${diffDays} days remaining` : 'Completed';
+  };
+  
   return (
     <div className={styles.section}>
-      <h2 className={styles.sectionTitle}>Current Interns</h2>
+      
       {interns.length > 0 ? (
         <>
           {/* Table view for interns */}
-          <div className={styles.applicationCardContainer}>            <table className={styles.applicationsTable}>
-            <tbody>{interns.map((intern) => (
-              <tr key={intern.id} className={styles.applicationRow}>
+          <div className={styles.applicationCardContainer}>
+            <table className={styles.applicationsTable}>
+              <thead>
+                <tr className={styles.tableHeader}>
+                  <th>Intern</th>
+                  <th>Position</th>
+                  <th>Education</th>
+                  <th>Internship Period</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>{interns.map((intern) => (              <tr key={intern.id} className={styles.applicationRow}>
                 <td>
                   <div className={styles.applicantProfile}>
                     <div className={styles.applicantAvatar}>
@@ -73,19 +94,26 @@ const InternsList: React.FC<InternsListProps> = ({
                 {/* University & Major */}
                 <td>
                   <div>
-                    <div>{intern.university}</div>
+                    <div className={styles.universityName}>{intern.university}</div>
                     <div className={styles.universityTag}>{intern.major}</div>
                   </div>
                 </td>
 
-                {/* Date Range */}
+                {/* Date Range with Duration Indicator */}
                 <td>
-                  <div>
-                    {new Date(intern.startDate).toLocaleDateString()} - {
-                      intern.endDate
-                        ? new Date(intern.endDate).toLocaleDateString()
-                        : 'Present'
-                    }
+                  <div className={styles.dateRangeContainer}>
+                    <div className={styles.dateRange}>
+                      {new Date(intern.startDate).toLocaleDateString()} - {
+                        intern.endDate
+                          ? new Date(intern.endDate).toLocaleDateString()
+                          : 'Present'
+                      }
+                    </div>
+                    {intern.endDate && (
+                      <div className={styles.durationIndicator}>
+                        {calculateDaysRemaining(intern.startDate, intern.endDate)}
+                      </div>
+                    )}
                   </div>
                 </td>
 

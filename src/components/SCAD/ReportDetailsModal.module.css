@@ -1,139 +1,736 @@
-/* Modal Styles */
-.modalBackdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+/* ReportDetailsModal Styles - Updated to match ReportPreview */
+.reportContainer {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modalContent {
-  background-color: white;
-  border-radius: 16px;
-  padding: 30px;
-  width: 90%;
-  max-width: 700px;
-  max-height: 90vh;
+  flex-direction: column;
+  gap: 24px;
+  max-height: calc(80vh - 120px); /* Account for header and footer of the modal */
   overflow-y: auto;
-  position: relative;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
+  padding-right: 4px; /* Prevent content shift when scrollbar appears */
 }
 
-.closeButton {
-  position: absolute;
-  top: 15px;
-  right: 20px;
+/* Custom scrollbar for the entire report container */
+.reportContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.reportContainer::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+
+.reportContainer::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 4px;
+  border: 2px solid #f3f4f6;
+}
+
+.reportContainer::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+}
+
+/* Tabbed interface styling from ReportResultsModal */
+.modalHeader {
+  padding: 16px 16px 0;
+  background: white;
+  z-index: 5;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.tabsContainer {
+  display: flex;
+  margin: 0 -16px;
+  border-bottom: 1px solid #eaeaea;
+  padding: 0 16px;
+}
+
+.tabButton {
+  padding: 12px 16px;
   background: none;
   border: none;
-  font-size: 28px;
-  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
   color: #666;
-  transition: color 0.2s;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
 }
 
-.closeButton:hover {
+.tabButton:hover {
   color: #333;
 }
 
-.modalHeader {
-  margin-bottom: 25px;
+.tabButton:focus {
+  outline: none;
 }
 
-.modalTitle {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 10px;
-  color: #333;
+.activeTab {
+  color: #2196f3;
+  font-weight: 600;
 }
 
-.modalCompany {
+.activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: #2196f3;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+/* Status badges */
+.statusContainer {
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
-.modalCompanyLogo {
+.statusBadge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+}
+
+.statusBadge::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.pendingBadge {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+.pendingBadge::before {
+  background-color: #888;
+  box-shadow: 0 0 0 2px rgba(136, 136, 136, 0.2);
+}
+
+.acceptedBadge {
+  background-color: #e0f7e6;
+  color: #1d8841;
+}
+
+.acceptedBadge::before {
+  background-color: #1d8841;
+  box-shadow: 0 0 0 2px rgba(29, 136, 65, 0.2);
+}
+
+.flaggedBadge {
+  background-color: #fff2e0;
+  color: #e67e22;
+}
+
+.flaggedBadge::before {
+  background-color: #e67e22;
+  box-shadow: 0 0 0 2px rgba(230, 126, 34, 0.2);
+}
+
+.rejectedBadge {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.rejectedBadge::before {
+  background-color: #d32f2f;
+  box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.2);
+}
+
+/* Status indicators for feedback tab */
+.statusIndicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.pendingIndicator {
+  background-color: #888;
+  box-shadow: 0 0 0 4px rgba(136, 136, 136, 0.2);
+}
+
+.acceptedIndicator {
+  background-color: #1d8841;
+  box-shadow: 0 0 0 4px rgba(29, 136, 65, 0.2);
+}
+
+.flaggedIndicator {
+  background-color: #e67e22;
+  box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.2);
+}
+
+.rejectedIndicator {
+  background-color: #d32f2f;
+  box-shadow: 0 0 0 4px rgba(211, 47, 47, 0.2);
+}
+
+/* Report title styling */
+.reportTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+/* Company/Host Header */
+.modalHost {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #eee;
+  position: relative;
+}
+
+.modalHostLogo {
+  width: 40px;
+  height: 40px;
   border-radius: 8px;
   object-fit: contain;
 }
 
-.modalCompanyName {
-  font-size: 16px;
-  color: #666;
-  font-weight: 500;
-}
-
-.statusChip {
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-}
-
-.modalInfo {
+.hostInfo {
+  flex: 1;
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-bottom: 25px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
+  flex-direction: column;
 }
 
-.modalInfoItem {
-  min-width: 110px;
-}
-
-.modalInfoLabel {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 5px;
-}
-
-.modalInfoValue {
+.modalHostName {
   font-size: 16px;
-  font-weight: 500;
-}
-
-.modalDescription {
-  margin-bottom: 25px;
-}
-
-.modalDescription h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-weight: 600;
   color: #333;
 }
 
-.modalDescription p {
-  line-height: 1.6;
+/* ReportPreview styling from MyInternships */
+.reportForm {
+  padding: 20px 0;
+}
+
+.reportPreviewContainer {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 30px;
+  margin-top: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.reportPreviewTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.reportPreviewSection {
+  margin-bottom: 25px;
+}
+
+.reportPreviewSection h3 {
+  font-size: 18px;
+  color: #1976d2;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px dashed #e0e0e0;
+}
+
+.reportPreviewSection p {
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.reportPreviewCourses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.reportPreviewCourse {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.reportDetailsSection {
+  background-color: #f9fafb;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+/* Details Section - updated to match ReportPreview */
+.detailsSection {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+/* Internship info styling from ReportResultsModal */
+.internshipInfo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 20px;
+  padding: 16px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+}
+
+.companyHeader {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.companyLogo {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.companyName {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 30px;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.value {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Report section styling */
+.reportSection {
+  padding: 16px;
+  background-color: #f9fafc;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: #333;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background-color: #2196f3;
+  border-radius: 3px;
+}
+
+/* Report content styling */
+.reportSummary {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.summaryItem {
+  margin-bottom: 16px;
+}
+
+.summaryTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1976d2;
+  margin-bottom: 8px;
+}
+
+.summaryText {
+  line-height: 1.7;
+  color: #333;
+  margin: 0;
+}
+
+.reportContent {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
+}
+
+.reportParagraph {
+  line-height: 1.7;
+  margin: 0 0 12px;
+  white-space: pre-wrap;
+}
+
+/* Feedback tab styling */
+.feedbackTab {
+  padding: 16px;
+}
+
+.feedbackHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.feedbackTitle {
+  font-weight: 600;
+  font-size: 18px;
+  color: #333;
+}
+
+.feedbackDate {
+  display: block;
+  font-size: 12px;
+  font-weight: normal;
+  color: #666;
+  margin-top: 4px;
+}
+
+.feedbackContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.commentBlock {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 4px solid #2196f3;
+}
+
+.commentTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px;
+}
+
+.commentText {
+  line-height: 1.7;
   color: #444;
 }
 
-.modalActions {
+.noFeedback {
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  text-align: center;
 }
 
-.applyButton {
+.noFeedback h3 {
+  margin: 16px 0 8px;
+  color: #333;
+  font-weight: 600;
+}
+
+.noFeedback p {
+  color: #666;
+  max-width: 400px;
+}
+
+/* Response tab styling */
+.responseTab {
+  padding: 16px;
+}
+
+.responseHeader {
+  margin-bottom: 20px;
+}
+
+.responseHeader h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px;
+}
+
+.responseHeader p {
+  color: #666;
+  margin: 0;
+}
+
+.noResponses {
+  padding: 40px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  text-align: center;
+  color: #666;
+}
+
+/* Download button styling */
+.downloadButtonContainer {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  margin: 0 auto;
+}
+
+.downloadButton {
+  background-color: #ff9800;
+  color: white;
   padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.downloadButton:hover {
+  background-color: #f57c00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.pdfProgressBar {
+  height: 6px;
+  background-color: #ebebeb;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 10px;
+  position: relative;
+}
+
+.pdfProgressFill {
+  height: 100%;
+  background-color: #ff9800;
+  border-radius: 3px;
+  animation: progressAnimation 2s infinite ease-in-out;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 30%;
+}
+
+@keyframes progressAnimation {
+  0% {
+    left: -30%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Comments Section */
+.existingComments {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
+}
+
+/* Custom scrollbar for comments */
+.existingComments::-webkit-scrollbar {
+  width: 8px;
+}
+
+.existingComments::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+
+.existingComments::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 4px;
+  border: 2px solid #f3f4f6;
+}
+
+.existingComments::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+}
+
+.commentItem {
+  background-color: #f9fafb;
+  border-radius: 8px;
+  padding: 14px;
+  position: relative;
+}
+
+.commentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.commentAuthor {
+  font-weight: 600;
+  color: #1976d2; /* Updated to match ReportPreview blue */
+}
+
+.commentText {
+  line-height: 1.6;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.commentDate {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.deleteCommentButton {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 16px;
+  transition: color 0.2s;
+  padding: 4px;
+}
+
+.deleteCommentButton:hover {
+  color: #ef4444;
+}
+
+.addCommentForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.commentTextarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  resize: vertical;
+  min-height: 120px;
+  font-family: inherit;
+}
+
+.commentTextarea:focus {
+  outline: none;
+  border-color: #4c51bf;
+  box-shadow: 0 0 0 2px rgba(76, 81, 191, 0.2);
+}
+
+.submitCommentButton {
+  align-self: flex-end;
   background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
+  padding: 10px 16px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
-.applyButton:hover {
-  background-color: #34399b}
+.submitCommentButton:hover {
+  background-color: #3c4099;
+}
+
+.submitCommentButton:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Action Buttons */
+.actionButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.acceptButton, .flagButton, .rejectButton {
+  padding: 10px 18px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.acceptButton {
+  background-color: #10b981;
+}
+
+.acceptButton:hover {
+  background-color: #059669;
+}
 
 .flagButton {
   background-color: #217dbb;
@@ -144,195 +741,15 @@
 }
 
 .rejectButton {
-  background-color: #e74c3c;
+  background-color: #ef4444;
 }
 
 .rejectButton:hover {
-  background-color: #c0392b;
+  background-color: #dc2626;
 }
 
-/* Comment section styles */
-.commentSection {
-  margin-top: 25px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
-  margin-bottom: 25px;
-}
-
-.sectionHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.commentSection h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
-  color: #333;
-  position: relative;
-  display: inline-block;
-}
-
-.commentSection h3:after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 40px;
-  height: 3px;
-  background-color: #4c51bf;
-  border-radius: 2px;
-}
-
-.commentThreadContainer {
-  margin-bottom: 20px;
-}
-
-.commentHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
-}
-
-.commentAuthor {
-  font-weight: 600;
-  color: #4c51bf;
-  font-size: 14px;
-}
-
-.deleteCommentButton {
-  background: none;
-  border: none;
-  color: #e74c3c;
-  font-size: 18px;
-  cursor: pointer;
-  padding: 0;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: all 0.2s ease;
-}
-
-.deleteCommentButton:hover {
-  background-color: rgba(231, 76, 60, 0.1);
-}
-
-.addCommentForm {
-  margin-top: 10px;
-}
-
-.commentTextarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-family: inherit;
-  font-size: 14px;
-  resize: vertical;
-  min-height: 100px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.commentTextarea:focus {
-  border-color: #4c51bf;
-  box-shadow: 0 0 0 2px rgba(76, 81, 191, 0.2);
-  outline: none;
-}
-
-.commentTextarea::placeholder {
-  color: #999;
-}
-
-.submitCommentButton {
-  margin-top: 15px;
-  padding: 10px 20px;
-  background-color: #4c51bf;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: block;
-  margin-left: auto;
-}
-
-.submitCommentButton:hover {
-  background-color: #34399b;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.submitCommentButton:disabled {
-  background-color: #a0a0a0;
+/* Disability for action buttons */
+.acceptButton:disabled, .flagButton:disabled, .rejectButton:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.clarificationText {
-  background-color: rgba(33, 125, 187, 0.05);
-  padding: 12px;
-  border-radius: 8px;
-  border-left: 3px solid #217dbb;
-  margin-top: 5px;
-  color: #333;
-  line-height: 1.6;
-}
-
-/* Comment Thread Styles */
-.commentsContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 16px;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.commentItem {
-  background-color: #f9f9f9;
-  padding: 14px;
-  border-radius: 8px;
-  border-left: 4px solid #217dbb;
-  position: relative;
-  animation: fadeInComment 0.3s ease-out;
-  transition: transform 0.2s ease;
-}
-
-@keyframes fadeInComment {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.commentItem:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
-}
-
-.commentText {
-  margin: 0 0 10px 0;
-  font-size: 15px;
-  line-height: 1.5;
-  color: #333;
-}
-
-.commentDate {
-  font-size: 12px;
-  color: #777;
-  display: block;
-  text-align: right;
-  font-style: italic;
 }

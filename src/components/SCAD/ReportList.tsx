@@ -51,9 +51,9 @@ const getStatusChip = (status: Report['status']) => {
 
 // List view for reports using the original report data
 const ReportTable: React.FC<ReportTableProps> = ({ reports, onViewReport }) => (  <div className={styles.reportCardContainer}>
-    {reports && reports.length > 0 ? (
-      <table className={styles.studentsTable}>
-          <tbody>{reports.map((report) => (
+    {reports && reports.length > 0 ? (      <table className={styles.studentsTable}>
+        <tbody>
+          {reports.map((report) => (
               <tr
                 key={report.id}
                 className={styles.studentRow}

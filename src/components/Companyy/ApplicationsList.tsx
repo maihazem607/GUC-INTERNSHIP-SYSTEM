@@ -17,6 +17,27 @@ const getStatusBadge = (status: Application['status']) => {
   );
 };
 
+// Helper function to get relative time
+const getRelativeTime = (date: Date): string => {
+  const now = new Date();
+  const diffTime = Math.abs(now.getTime() - date.getTime());
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  
+  if (diffDays === 0) {
+    return 'Today';
+  } else if (diffDays === 1) {
+    return 'Yesterday';
+  } else if (diffDays < 7) {
+    return `${diffDays} days ago`;
+  } else if (diffDays < 30) {
+    const weeks = Math.floor(diffDays / 7);
+    return `${weeks} ${weeks === 1 ? 'week' : 'weeks'} ago`;
+  } else {
+    const months = Math.floor(diffDays / 30);
+    return `${months} ${months === 1 ? 'month' : 'months'} ago`;
+  }
+};
+
 // Helper function to generate background colors based on internship title
 const getCardBackground = (title: string): string => {
   const colors = [
@@ -37,9 +58,17 @@ const ApplicationsList: React.FC<ApplicationsListProps> = ({
     <div className={styles.section}>
       {applications.length > 0 ? (
         <>
-          {/* Table view (like ReportList) */}
-          <div className={styles.applicationCardContainer}>
+          {/* Table view (like ReportList) */}          <div className={styles.applicationCardContainer}>
             <table className={styles.applicationsTable}>
+              <thead>
+                <tr className={styles.tableHeader}>
+                  <th>Applicant</th>
+                  <th>Position</th>
+                  <th>Education</th>
+                  <th>Applied</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
               <tbody>{applications.map((app) => {
                   return (
                     <tr key={app.id} className={styles.applicationRow} onClick={() => onViewDetails(app)}>
@@ -66,15 +95,20 @@ const ApplicationsList: React.FC<ApplicationsListProps> = ({
                       {/* University & Major */}
                       <td>
                         <div>
-                          <div>{app.applicantUniversity}</div>
+                          <div className={styles.universityName}>{app.applicantUniversity}</div>
                           <div className={styles.universityTag}>{app.applicantMajor}</div>
                         </div>
                       </td>
                       
-                      {/* Date */}
+                      {/* Date with Relative Time */}
                       <td>
-                        <div>
-                          {app.applicationDate.toLocaleDateString()}
+                        <div className={styles.dateContainer}>
+                          <div className={styles.dateValue}>
+                            {app.applicationDate.toLocaleDateString()}
+                          </div>
+                          <div className={styles.relativeTime}>
+                            {getRelativeTime(app.applicationDate)}
+                          </div>
                         </div>
                       </td>
                       

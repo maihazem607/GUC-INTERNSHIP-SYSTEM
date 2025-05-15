@@ -44,23 +44,23 @@ const getRowBackground = (id: number): string => {
   return pastelColors[id % pastelColors.length];
 };
 
-// Helper function to get score color based on the score value
+// Helper function to get score color based on the score value (now for scores out of 5)
 const getScoreColor = (score: number): string => {
-  if (score <= 4) {
-    return 'score-low'; // Red for low scores (0-4)
-  } else if (score <= 7) {
-    return 'score-medium'; // Orange for medium scores (5-7)
-  } else if (score < 9) {
-    return 'score-high'; // Green for high scores (8-8.9)
+  if (score < 2.5) {
+    return 'score-low'; // Red for low scores (0-2.4)
+  } else if (score < 3.5) {
+    return 'score-medium'; // Orange for medium scores (2.5-3.4)
+  } else if (score < 4.5) {
+    return 'score-high'; // Green for high scores (3.5-4.4)
   } else {
-    return 'score-excellent'; // Blue for excellent scores (9-10)
+    return 'score-excellent'; // Blue for excellent scores (4.5-5)
   }
 };
 
 // List view for evaluations using a table layout similar to ReportTable
 const EvaluationTable: React.FC<EvaluationTableProps> = ({ evaluations, onViewDetails }) => (
-  <div className={styles.evaluationCardContainer}>
-    {evaluations && evaluations.length > 0 ? (      <table className={styles.studentsTable}> 
+  <div className={styles.evaluationCardContainer}>    {evaluations && evaluations.length > 0 ? (
+      <table className={styles.studentsTable}>
         <tbody>
           {evaluations.map((evaluation) => {
             return (
@@ -98,11 +98,10 @@ const EvaluationTable: React.FC<EvaluationTableProps> = ({ evaluations, onViewDe
                 </td>
                 
                 {/* Evaluation Date and Score */}
-                <td>
-                  <div className={styles.dateCell}>
+                <td>                  <div className={styles.dateCell}>
                     {evaluation.evaluationDate}
                     <div className={`${styles.scoreTag} ${styles[getScoreColor(evaluation.evaluationScore)]}`}>
-                      Score: {evaluation.evaluationScore}/10
+                      Score: {evaluation.evaluationScore}/5
                     </div>
                   </div>
                 </td>
@@ -145,7 +144,7 @@ const EvaluationCard: React.FC<{evaluation: Evaluation, onViewDetails: (evaluati
       <div className={styles.cardInner} style={{ backgroundColor: getCardBackground(evaluation.id) }}>
         <div className={styles.cardDate}>
           <span>{evaluation.evaluationDate}</span>
-          <span className={`${styles.score} ${styles[getScoreColor(evaluation.evaluationScore)]}`}>{evaluation.evaluationScore}/10</span>
+          <span className={`${styles.score} ${styles[getScoreColor(evaluation.evaluationScore)]}`}>{evaluation.evaluationScore}/5</span>
         </div>
         
         <div className={styles.companyInfo}>

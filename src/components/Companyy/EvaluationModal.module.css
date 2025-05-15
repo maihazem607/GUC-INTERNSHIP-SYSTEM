@@ -10,18 +10,48 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  backdrop-filter: blur(3px);
 }
 
 .modalContent {
   background-color: white;
-  border-radius: 16px;
-  padding: 30px;
+  border-radius: 12px;
+  padding: 25px;
   width: 90%;
   max-width: 700px;
   max-height: 90vh;
-  overflow-y: auto;
   position: relative;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  overflow-y: auto;
+}
+
+/* Adding new class for view evaluation container with scrollbar */
+.viewEvaluationContainer {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 10px;
+  margin-right: -10px;
+  scrollbar-width: thin;
+}
+
+/* Custom scrollbar for view evaluation */
+.viewEvaluationContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.viewEvaluationContainer::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.viewEvaluationContainer::-webkit-scrollbar-thumb {
+  background: #7c4dff;
+  border-radius: 10px;
+}
+
+.viewEvaluationContainer::-webkit-scrollbar-thumb:hover {
+  background: #6a3aeb;
 }
 
 .closeButton {
@@ -33,11 +63,18 @@
   font-size: 28px;
   cursor: pointer;
   color: #666;
-  transition: color 0.2s;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
 }
 
 .closeButton:hover {
   color: #333;
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 /* Modal Header Styles */
@@ -75,91 +112,109 @@
 
 .modalInfoItem {
   min-width: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .modalInfoLabel {
   font-size: 14px;
   color: #666;
   margin-bottom: 5px;
+  font-weight: 500;
 }
 
 .modalInfoValue {
   font-size: 16px;
   font-weight: 500;
+  color: #333;
 }
 
 /* Modal Actions Styles */
 .modalActions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 12px;
   margin-top: 24px;
 }
 
 .actionButton {
   padding: 12px 24px;
-  background-color: #3498db;
+  background-color: #6a3aeb; /* Changed to violet/bluish-purple */
   color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
   font-weight: 600;
+  border-radius: 8px;
+  border: none;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(106, 58, 235, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
 }
 
 .actionButton:hover {
-  background-color: #2980b9;
+  background-color: #5a2ae0; /* Darker shade for hover */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(106, 58, 235, 0.25);
 }
 
 /* Styling for the edit button */
 .editButton {
   padding: 12px 24px;
-  background-color: #f39c12;
+  background-color: #7c4dff; /* Changed to violet/bluish-purple */
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(124, 77, 255, 0.2);
 }
 
 .editButton:hover {
-  background-color: #e67e22;
+  background-color: #6a3aeb; /* Darker shade for hover */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(124, 77, 255, 0.25);
 }
 
 /* Styling for the delete button */
 .deleteButton {
   padding: 12px 24px;
-  background-color: #e74c3c;
+  background-color: #9575cd; /* Changed to a lighter violet/bluish-purple */
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(149, 117, 205, 0.2);
 }
 
 .deleteButton:hover {
-  background-color: #c0392b;
+  background-color: #7e57c2; /* Darker shade for hover */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(149, 117, 205, 0.25);
 }
 
 .actionButtonOutline {
   padding: 12px 24px;
   background-color: transparent;
-  color: #3498db;
-  border: 1px solid #3498db;
+  color: #6a3aeb; /* Changed to match violet/bluish-purple theme */
+  border: 1px solid #b39ddb; /* Matching border color */
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .actionButtonOutline:hover {
-  background-color: rgba(52, 152, 219, 0.1);
+  background-color: rgba(106, 58, 235, 0.05); /* Light violet background on hover */
+  border-color: #6a3aeb;
 }
 
 /* Evaluation Form Styles */
@@ -168,6 +223,39 @@
   max-width: 600px;
   margin: 0 auto;
   position: relative;
+  padding: 16px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  max-height: 70vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.evaluationSummary {
+  margin-bottom: 24px;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+}
+
+.evaluationSummary h3 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.evaluationSummary h3 span {
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.evaluationDescription {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 .modeIndicator {
@@ -183,89 +271,180 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+.ratingCategories {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  animation: fadeInUp 0.4s ease-out;
+  border: 1px solid #ddd;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .formGroup {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  background-color: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid #ddd;
+}
+
+.formGroup:last-child {
+  margin-bottom: 0;
 }
 
 .formGroup label {
   display: block;
-  margin-bottom: 8px;
-  font-size: 14px;
-  color: #666;
-  font-weight: 500;
+  margin-bottom: 12px;
+  font-size: 18px;
+  color: #333;
+  font-weight: 600;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-.formGroup input[type="range"] {
-  width: 100%;
-  height: 4px;
-  background-color: #ddd;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-  margin-bottom: 8px;
-  transition: opacity 0.3s;
-}
-
-.formGroup input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  background: #3498db;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.formGroup input[type="range"]::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  background: #3498db;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.formGroup input[type="range"]:disabled {
-  opacity: 0.7;
-}
-
-.formGroup span {
-  font-size: 14px;
-  color: #666;
-  font-weight: 500;
-}
-
-/* Range Input Container */
-.rangeInputContainer {
+/* Star Rating styles */
+.starRatingContainer {
   display: flex;
   align-items: center;
+  margin-bottom: 8px;
+  position: relative;
 }
 
-.rangeInput {
-  flex: 1;
+.star {
+  display: inline-block;
   margin-right: 10px;
+  color: #ddd;
+  font-size: 28px;
+  line-height: 1;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+}
+
+.clickableStar {
+  cursor: pointer;
+}
+
+.clickableStar:hover {
+  transform: scale(1.25);
+  text-shadow: 0 0 5px rgba(245, 180, 0, 0.7);
+  color: #f5b400;
+}
+
+.starActive {
+  color: #f5b400;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+  animation: starPulse 0.3s ease-out;
+  transform: scale(1.1);
+}
+
+@keyframes starPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+.starInactive {
+  color: #d0d0d0;
+}
+
+.ratingValue {
+  margin-left: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #6a3aeb; /* Changed to match violet/bluish-purple theme */
+  background-color: #f3efff; /* Lighter background that matches the theme */
+  padding: 6px 12px;
+  border-radius: 20px;
+  min-width: 56px;
+  text-align: center;
+  border: 1px solid #d4caff; /* Border color that matches the theme */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.ratingDescription {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+  padding: 12px;
+  position: relative;
+  border-left: 3px solid #6a3aeb; /* Changed to match violet/bluish-purple theme */
+  padding-left: 16px;
+  margin-left: 5px;
+  background-color: #f8fafc;
+  border-radius: 0 8px 8px 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Comments Section */
+.commentsSection {
+  padding-top: 15px;
+  margin-bottom: 20px;
+  background-color: white;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+}
+
+.commentsSection label {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+  display: block;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .formGroup textarea {
   width: 100%;
-  padding: 12px;
+  padding: 16px;
   border: 1px solid #ddd;
-  border-radius: 6px;
+  border-radius: 8px;
   resize: vertical;
   font-family: inherit;
-  font-size: 16px;
-  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 150px;
+  max-height: 250px;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  color: #333;
 }
 
 .formGroup textarea:focus {
   outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2), inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.formGroup textarea::placeholder {
+  color: #aaa;
 }
 
 .readOnlyTextarea {
   background-color: #f9f9f9;
   cursor: not-allowed;
-  border-color: #eee;
+  border-color: #ddd;
+  color: #666;
 }
 
 /* Evaluation Metrics */
@@ -285,19 +464,22 @@
 }
 
 .evaluationDate {
-  margin-top: 20px;
-  padding: 15px;
+  margin-top: 25px;
+  padding: 16px;
   background-color: #f9f9f9;
+  border-left: 4px solid #6a3aeb; /* Changed to match violet/bluish-purple theme */
   border-radius: 8px;
   font-size: 14px;
-  color: #555;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+  color: #333;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  line-height: 1.5;
+  border: 1px solid #ddd;
 }
 
 .helpText {
-  margin-top: 8px;
+  margin-top: 10px;
   font-size: 13px;
-  color: #666;
+  color: #7a7a7a;
   font-style: italic;
 }
 
@@ -315,4 +497,100 @@
 .modalDescription p {
   line-height: 1.6;
   color: #444;
+}
+
+/* Evaluation Badges */
+.evaluationMeta {
+  display: flex;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.evaluationBadge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.evaluationBadge:first-child {
+  background-color: #6a3aeb; /* Updated to match our new color theme */
+  color: white;
+}
+
+/* Custom Scrollbar Styles */
+.evaluationForm::-webkit-scrollbar {
+  width: 6px;
+}
+
+.evaluationForm::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.evaluationForm::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border-radius: 10px;
+}
+
+.evaluationForm::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}
+
+/* Ensure padding at the bottom for better scrolling experience */
+.evaluationForm::after {
+  content: "";
+  display: block;
+  height: 10px;
+}
+
+/* Scroll Indicator Styles */
+.scrollIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 16px;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+  background-color: #f1f5f9;
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.scrollIndicator:hover {
+  opacity: 1;
+  background-color: #e2e8f0;
+}
+
+.scrollArrow {
+  margin-left: 8px;
+  animation: bounceDown 1.5s infinite;
+  font-size: 14px;
+  color: #6a3aeb; /* Updated to match our new color theme */
+}
+
+@keyframes bounceDown {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(3px);
+  }
+  60% {
+    transform: translateY(1px);
+  }
 }
