@@ -1,0 +1,95 @@
+.coverLetterContainer {
+  background-color: white;
+  padding: 20px;
+  max-height: 70vh;
+  overflow-y: auto;
+  font-family: 'Arial', 'Helvetica', sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+.letterHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.applicantInfo {
+  margin-bottom: 16px;
+}
+
+.applicantName {
+  font-size: 20px;
+  margin: 0 0 8px;
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.applicantEmail, .applicantPhone, .applicantAddress {
+  margin: 4px 0;
+  color: #444;
+}
+
+.dateSection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.recipientInfo {
+  margin-bottom: 24px;
+}
+
+.recipientName, .companyName, .companyAddress {
+  margin: 4px 0;
+}
+
+.recipientName {
+  font-weight: 600;
+}
+
+.greeting {
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.content {
+  margin-bottom: 32px;
+}
+
+.paragraph {
+  margin-bottom: 16px;
+  text-align: justify;
+}
+
+.closing {
+  margin-bottom: 32px;
+}
+
+.signature {
+  margin-top: 16px;
+  font-style: italic;
+  font-weight: 600;
+  color: #1976d2;
+}
+
+/* Add custom scrollbar for the cover letter container */
+.coverLetterContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.coverLetterContainer::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+
+.coverLetterContainer::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 4px;
+  border: 2px solid #f3f4f6;
+}
+
+.coverLetterContainer::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+}
