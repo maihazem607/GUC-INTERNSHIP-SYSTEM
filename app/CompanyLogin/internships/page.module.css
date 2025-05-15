@@ -1,0 +1,108 @@
+/* Base Styles */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Arial', sans-serif;
+  background-color: #f9fafb;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* Content Layout */
+.contentWrapper {
+  display: flex;
+  flex: 1;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* Main Content */
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Internship Listings */
+.internshipListings {
+  background-color: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.listingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.listingTitle {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.internshipCount {
+  background-color: #f3e5f9; /* Changed from #e3f2fd (light blue) to light violet */
+  color: #7b2cbf; /* Changed from #1976d2 (blue) to violet */
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* No results */
+.noResults {
+  text-align: center;
+  padding: 40px 0;
+  color: #666;
+}
+
+.noResultsIcon {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+/* Error message */
+.errorMessage {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loadingIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #f8f9fa;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(128, 0, 255, 0.3);
+  border-top-color: #8000FF;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}

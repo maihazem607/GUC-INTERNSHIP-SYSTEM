@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 
 // Import global components
@@ -34,7 +35,8 @@ import { Internship } from "@/components/internships/types";
 
 // Dashboard tabs type
 // Define the active tab types
-type ActiveTab = 'internships' | 'applications' | 'interns';
+//type Active = 'internships' | 'applications' | 'interns' | 'scad-internships';
+type ActiveMenuItem = 'internships' | 'applications' | 'interns' | 'scad-internships'; 
 
 // Helper function to convert InternshipPost to Internship format
 const convertToInternshipFormat = (post: InternshipPost): Internship => {
@@ -57,8 +59,25 @@ const convertToInternshipFormat = (post: InternshipPost): Internship => {
 
 // Dashboard Component Wrapper
 const DashboardContent = () => {
+    // Router for navigation
+    const router = useRouter();
+    
     // State for navigation and content
-    const [activeTab, setActiveTab] = useState<ActiveTab>('internships');
+    const [activeItem, setActiveItem] = useState<ActiveMenuItem>('internships');    // Check for activeItem parameter in URL on component mount
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const searchParams = new URLSearchParams(window.location.search);
+            const activeItemParam = searchParams.get('activeItem');
+            if (activeItemParam && ['internships', 'applications', 'interns'].includes(activeItemParam)) {
+                setActiveItem(activeItemParam as ActiveMenuItem);
+            }
+        }
+    }, []);// Navigate to SCAD internships page when that tab is selected
+    useEffect(() => {
+        if (activeItem === 'scad-internships') {
+            router.push('/CompanyLogin/internships?activeItem=scad-internships');
+        }
+    }, [activeItem, router]);
     
     // Search states for different tabs
     const [internshipSearchTerm, setInternshipSearchTerm] = useState('');
@@ -155,7 +174,7 @@ const DashboardContent = () => {
                 internshipTitle: 'Frontend Developer Intern',
                 applicantName: 'John Doe',
                 applicantEmail: 'john@university.edu',
-                applicantUniversity: 'SCAD',
+                applicantUniversity: 'GUC',
                 applicantMajor: 'Computer Science',
                 applicationDate: new Date('2023-05-10'),
                 status: 'pending',
@@ -168,7 +187,7 @@ const DashboardContent = () => {
                 internshipTitle: 'Frontend Developer Intern',
                 applicantName: 'Jane Smith',
                 applicantEmail: 'jane@university.edu',
-                applicantUniversity: 'SCAD',
+                applicantUniversity: 'GUC',
                 applicantMajor: 'Interactive Design',
                 applicationDate: new Date('2023-05-12'),
                 status: 'accepted',
@@ -182,7 +201,7 @@ const DashboardContent = () => {
                 id: '2',
                 name: 'Jane Smith',
                 email: 'jane@university.edu',
-                university: 'SCAD',
+                university: 'GUC',
                 major: 'Interactive Design',
                 internshipTitle: 'Frontend Developer Intern',
                 startDate: new Date('2023-06-01'),
@@ -193,7 +212,7 @@ const DashboardContent = () => {
                 id: '3',
                 name: 'Grace Morgen',
                 email: 'grace@university.edu',
-                university: 'SCAD',
+                university: 'GUC',
                 major: 'Computer Science',
                 internshipTitle: 'Backend Developer Intern',
                 startDate: new Date('2025-06-01'),
@@ -430,7 +449,47 @@ const DashboardContent = () => {
                 type
             });
         }
-    };    const handleSubmitEvaluation = () => {
+    };    // This function handles evaluation submission with direct data
+    const handleSubmitEvaluationWithData = (evalData: Omit<Evaluation, 'id' | 'evaluationDate'>) => {
+        if (!selectedIntern) return;
+        
+        // Create a new evaluation or preserve the existing ID when editing
+        const evaluation: Evaluation = {
+            id: isEditingEvaluation && selectedIntern.evaluation 
+                ? selectedIntern.evaluation.id 
+                : Date.now().toString(),
+            evaluationDate: new Date(),
+            ...evalData,
+        };
+        
+        // Update interns array with the evaluation
+        const updatedInterns = interns.map(intern => 
+            intern.id === selectedIntern.id 
+                ? {...intern, evaluation} 
+                : intern
+        );
+        
+        setInterns(updatedInterns);
+        
+        // Close the form and reset form fields
+        setShowEvaluationForm(false);
+        setIsEditingEvaluation(false); // Reset edit mode
+        setNewEvaluation({
+            internId: '',
+            performanceRating: 0,
+            skillsRating: 0,
+            attitudeRating: 0,
+            comments: '',
+        });
+        
+        // Show success notification with appropriate message
+        showNotification({
+            message: `Evaluation for ${selectedIntern.name} has been updated successfully.`,
+            type: 'success'
+        });
+    };
+
+    const handleSubmitEvaluation = () => {
         if (!selectedIntern) return;
         
         // Create a new evaluation or preserve the existing ID when editing
@@ -543,7 +602,7 @@ const DashboardContent = () => {
     
     // Get current search term and setter based on active tab
     const getSearchProps = () => {
-        switch (activeTab) {
+        switch (activeItem) {
             case 'internships':
                 return {
                     searchTerm: internshipSearchTerm,
@@ -573,7 +632,7 @@ const DashboardContent = () => {
     
     // Get current filters based on active tab
     const getCurrentFilters = () => {
-        switch (activeTab) {
+        switch (activeItem) {
             case 'internships':
                 return {
                     filters: internshipFilters,
@@ -640,27 +699,30 @@ const DashboardContent = () => {
                     (isEditingEvaluation ? newEvaluation.attitudeRating : selectedIntern.evaluation.attitudeRating)
                 ) / 3 * 2), // Convert 5-point scale to 10-point
                 status: 'completed' as 'completed',
-            };
-
-            // Use EvaluationDetailsModal for both viewing and editing
+            };            // Use EvaluationDetailsModal for both viewing and editing
             return (
                 <EvaluationDetailsModal
                     evaluation={evaluation}
+                    isEditingEvaluation={isEditingEvaluation}
                     onClose={() => {
                         setShowEvaluationForm(false);
                         setIsEditingEvaluation(false);
-                    }}
-                    onUpdate={(id, performanceRating, skillsRating, attitudeRating, comments) => {
+                    }}                    onUpdate={(id, performanceRating, skillsRating, attitudeRating, comments) => {
                         if (isEditingEvaluation) {
-                            // When update button is clicked in edit mode, save the changes
-                            setNewEvaluation({
+                            // When update button is clicked in edit mode, save the changes directly
+                            const updatedEvaluation = {
                                 internId: selectedIntern.id,
                                 performanceRating,
                                 skillsRating,
                                 attitudeRating,
                                 comments,
-                            });
-                            handleSubmitEvaluation();
+                            };
+                            
+                            // Update the state first
+                            setNewEvaluation(updatedEvaluation);
+                            
+                            // Then call a modified version of handleSubmitEvaluation with the new values
+                            handleSubmitEvaluationWithData(updatedEvaluation);
                         } else {
                             // Switch to edit mode when edit button is clicked
                             setIsEditingEvaluation(true);
@@ -727,8 +789,8 @@ const DashboardContent = () => {
             internshipPostId: postId,
             internshipTitle: post.title,
             applicantName: `Applicant ${Math.floor(Math.random() * 1000)}`,
-            applicantEmail: `applicant${Math.floor(Math.random() * 1000)}@university.edu`,
-            applicantUniversity: 'SCAD',
+            applicantEmail: `applicant${Math.floor(Math.random() * 1000)}@guc.edu`,
+            applicantUniversity: 'GUC',
             applicantMajor: 'Computer Science',
             applicationDate: new Date(),
             status: 'pending',
@@ -794,25 +856,32 @@ const DashboardContent = () => {
                         id: 'internships', 
                         label: 'Internship Posts', 
                         icon: <Briefcase size={18} />,
-                        onClick: () => setActiveTab('internships'),
+                        onClick: () => setActiveItem('internships'),
                         count: internshipPostsCount 
                     },
                     { 
                         id: 'applications', 
                         label: 'Applications', 
                         icon: <FileText size={18} />,
-                        onClick: () => setActiveTab('applications'),
+                        onClick: () => setActiveItem('applications'),
                         count: pendingApplicationsCount 
                     },
                     { 
                         id: 'interns', 
                         label: 'Current Interns', 
                         icon: <Users size={18} />,
-                        onClick: () => setActiveTab('interns'),
+                        onClick: () => setActiveItem('interns'),
                         count: currentInternsCount 
+                    },                    { 
+                        id: 'scad-internships', 
+                        label: 'SCAD Internships', 
+                        icon: <Briefcase size={18} />,
+                        onClick: () => {
+                            setActiveItem('scad-internships');
+                        }
                     }
                 ]}
-                activeItemId={activeTab}
+                activeItemId={activeItem}
                 logo={{
                     src: '/logos/GUCInternshipSystemLogo.png',
                     alt: 'GUC Internship System'
@@ -837,7 +906,7 @@ const DashboardContent = () => {
                     </div>
 
                     {/* INTERNSHIPS TAB */}
-                    {activeTab === 'internships' && (
+                    {activeItem === 'internships' && (
                         <div className={styles.internshipListings}>                            <div className={styles.listingHeader}>
                                 <h1 className={styles.listingTitle}>Internship Postings</h1>
                                 <div className={styles.headerActions}>
@@ -893,7 +962,7 @@ const DashboardContent = () => {
                     )}
                     
                     {/* APPLICATIONS TAB */}
-                    {activeTab === 'applications' && (
+                    {activeItem === 'applications' && (
                         <div className={styles.applicationListings}>
                             <div className={styles.listingHeader}>
                                 <h1 className={styles.listingTitle}>Applications</h1>
@@ -914,10 +983,18 @@ const DashboardContent = () => {
                                 </div>
                             )}
                         </div>
-                    )}
-                    
-                    {/* INTERNS TAB */}
-                    {activeTab === 'interns' && (
+                    )}                    {/* SCAD INTERNSHIPS TAB */}
+                    {activeItem === 'scad-internships' && (
+                        <div className={styles.internshipListings}>
+                            <div className={styles.listingHeader}>
+                                <h1 className={styles.listingTitle}>SCAD Internships</h1>
+                            </div>
+                            <div className={styles.loadingContainer}>
+                                <p>Redirecting to SCAD Internships...</p>
+                            </div>
+                        </div>
+                    )}                    {/* INTERNS TAB */}
+                    {activeItem === 'interns' && (
                         <div className={styles.internListings}>
                             <div className={styles.listingHeader}>
                                 <h1 className={styles.listingTitle}>Current Interns</h1>
@@ -929,7 +1006,7 @@ const DashboardContent = () => {
                                // <div className={styles.cards}>  
                                <InternsList 
                                         interns={filteredInterns}
-                                        onStatusChange={handleInternStatusChange}                                        onEvaluate={(intern) => {
+                                        onStatusChange={handleInternStatusChange}onEvaluate={(intern) => {
                                             setSelectedIntern(intern);
                                             // Reset the editing state
                                             setIsEditingEvaluation(false);
