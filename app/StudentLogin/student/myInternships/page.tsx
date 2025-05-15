@@ -114,6 +114,7 @@ const MyInternshipsPage: React.FC = () => {
   const [activeReportTab, setActiveReportTab] = useState<'edit' | 'preview' | 'courses'>('edit');
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [highlightedReportId, setHighlightedReportId] = useState<number | undefined>(undefined);
+  const [hasShownReportNotification, setHasShownReportNotification] = useState(false);
   const { notification, visible, showNotification, hideNotification, addNotification } = useNotification();
   // Filter options  
   const statusOptions = ['All', 'Pending', 'Finalized', 'Accepted', 'Rejected'];
@@ -237,14 +238,13 @@ const MyInternshipsPage: React.FC = () => {
           comment: 'My internship at Microsoft was outstanding. I worked on critical backend services for Azure and gained valuable experience in building scalable cloud systems. The team was extremely supportive and I had the opportunity to learn from experienced engineers.',
           recommended: true,
           finalized: true
-        },
-        report: {
+        },        report: {
           title: 'Backend Development for Microsoft Azure',
           introduction: 'During my internship at Microsoft, I worked on developing and optimizing backend services for the Azure cloud platform using Java and Spring Boot.',
           body: 'My time at Microsoft was focused on developing microservices that power critical Azure functions. I implemented several REST APIs that handle resource provisioning and management within the Azure ecosystem.\n\nA major project I worked on was optimizing the database access layer to improve response times for high-traffic API endpoints. By implementing connection pooling and query optimizations, I helped reduce average response time by 35%.\n\nI also contributed to the internal monitoring tools that track service health and performance metrics. This involved implementing custom metrics collection and designing dashboards that help the team quickly identify and respond to potential issues.\n\nThe experience gave me practical insights into building enterprise-grade distributed systems and allowed me to apply database concepts from my coursework in a real-world setting.',
           coursesApplied: ['cs303', 'cs404'],
           finalized: true,
-          status: 'flagged',
+          status: 'pending',
           scadComments: 'The report provides good details about the technical work, but needs more specific examples of how database concepts from CS303 were applied. Please include more details about the database schema design, query optimization techniques, and how they relate to concepts covered in the course.'
         }
       },      {        id: 4,
@@ -1046,6 +1046,98 @@ const MyInternshipsPage: React.FC = () => {
       setShowReportResultsModal(true);
     }
   };
+
+  // Simulate a report status change
+  const simulateReportStatusChange = (reportId: number, newStatus: 'pending' | 'accepted' | 'flagged' | 'rejected') => {
+    // Find the internship with the matching report
+    const internshipIndex = myInternships.findIndex(i => i.id === reportId && i.report);
+    
+    if (internshipIndex === -1) return;
+    
+    const internship = myInternships[internshipIndex];
+    
+    if (!internship.report) return;
+
+    // Get the current status for comparison
+    const currentStatus = internship.report.status;
+    
+    // Update the internship report with new status
+    const updatedInternship = {
+      ...internship,
+      report: {
+        ...internship.report,
+        status: newStatus
+      }
+    };
+    
+    // Update the internships list
+    const updatedInternships = [...myInternships];
+    updatedInternships[internshipIndex] = updatedInternship;
+    
+    setMyInternships(updatedInternships);
+    setFilteredInternships(prev => 
+      prev.map(item => 
+        item.id === reportId ? updatedInternship : item
+      )
+    );
+    
+    // Highlight the row with the changed report
+    setHighlightedReportId(reportId);
+    setTimeout(() => {
+      setHighlightedReportId(undefined);
+    }, 3000); // Clear highlight after animation completes
+    
+    // Set the active tab to reports to show the change
+    setActiveTab('reports');
+    
+    // Show notification based on the status change
+    if (newStatus === 'pending') {
+      showNotification({
+        message: `Your report for ${internship.title} at ${internship.company} is now under review.`,
+        type: 'info'
+      });
+      
+      addNotification({
+        title: "Report Status Changed",
+        message: `Your report for "${internship.title}" at ${internship.company} is now being reviewed by SCAD.`,
+        type: 'status-change'
+      });
+    } else if (newStatus === 'rejected') {
+      showNotification({
+        message: `Your report for ${internship.title} at ${internship.company} has been rejected. Please check the feedback.`,
+        type: 'warning'
+      });
+      
+      addNotification({
+        title: "Report Rejected",
+        message: `Your report for "${internship.title}" at ${internship.company} has been rejected. Please review SCAD comments and consider submitting an appeal.`,
+        type: 'status-change'
+      });
+    } else if (newStatus === 'accepted') {
+      showNotification({
+        message: `Congratulations! Your report for ${internship.title} at ${internship.company} has been accepted.`,
+        type: 'success'
+      });
+      
+      addNotification({
+        title: "Report Accepted",
+        message: `Your report for "${internship.title}" at ${internship.company} has been approved by SCAD.`,
+        type: 'status-change'
+      });
+    } else if (newStatus === 'flagged') {
+      showNotification({
+        message: `Your report for ${internship.title} at ${internship.company} has been flagged for revision.`,
+        type: 'warning'
+      });
+      
+      addNotification({
+        title: "Report Flagged",
+        message: `Your report for "${internship.title}" at ${internship.company} has been flagged and requires revision. Please check SCAD comments.`,
+        type: 'status-change'
+      });
+    }
+  };
+  
   // Handle submitting an appeal for a flagged or rejected report
   const handleSubmitAppeal = (internshipId: number, appealMessage: string) => {
     setIsSubmittingAppeal(true);
@@ -1125,7 +1217,71 @@ const MyInternshipsPage: React.FC = () => {
       ...prev,
       [filterType]: value
     }));
-  };  return (
+  };  
+  
+  // Simulate a report status change when the reports tab is clicked (only once)
+  useEffect(() => {
+    // Only run when reports tab is active and notification hasn't been shown yet
+    if (activeTab === 'reports' && !hasShownReportNotification) {
+      // Find the Microsoft internship (id: 3) with pending status
+      const internshipIndex = myInternships.findIndex(i => i.id === 3);
+      
+      if (internshipIndex >= 0 && myInternships[internshipIndex].report) {
+        // Wait a moment after tab switch before showing the notification
+        const timer = setTimeout(() => {
+          const internship = myInternships[internshipIndex];
+          
+          // Create updated internship with rejected status
+          const updatedInternship: MyInternship = {
+            ...internship,
+            report: {
+              ...internship.report!,
+              status: 'rejected' as 'pending' | 'accepted' | 'flagged' | 'rejected'
+            }
+          };
+          
+          // Update the internships array
+          const updatedInternships = [...myInternships];
+          updatedInternships[internshipIndex] = updatedInternship;
+          
+          setMyInternships(updatedInternships);
+          setFilteredInternships(prev => 
+            prev.map(item => 
+              item.id === 3 ? updatedInternship : item
+            )
+          );
+          
+          // Highlight the changed report with pulse animation
+          setHighlightedReportId(3);
+          
+          // Clear highlight after animation completes
+          setTimeout(() => {
+            setHighlightedReportId(undefined);
+          }, 3000);
+          
+          // Show notification about the status change
+          showNotification({
+            message: `Your report for ${updatedInternship.title} at ${updatedInternship.company} has been rejected. Please check the feedback.`,
+            type: 'warning'
+          });
+          
+          // Add to persistent notifications
+          addNotification({
+            title: "Report Status Changed",
+            message: `Your report for "${updatedInternship.title}" at ${updatedInternship.company} has been rejected. Please review SCAD comments and consider submitting an appeal.`,
+            type: 'status-change'
+          });
+          
+          // Mark that we've shown the notification
+          setHasShownReportNotification(true);
+        }, 1000);
+        
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [activeTab, hasShownReportNotification, myInternships, showNotification, addNotification]);
+  
+  return (
     <div className={styles.pageContainer}>
       {/* Header/Navigation */}
       <NavigationMenu

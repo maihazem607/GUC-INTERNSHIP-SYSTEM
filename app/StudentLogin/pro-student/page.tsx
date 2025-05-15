@@ -1,8 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import styles from './page.module.css';
 import ProStudentNavigationMenu from './Navigation/ProStudentNavigationMenu';
+import NotificationSystem, { useNotification } from "@/components/global/NotificationSystemAdapter";
+
 import { 
   initialStudentProfile, 
   StudentProfile as StudentProfileType, 
@@ -91,6 +94,46 @@ export default function StudentProfilePage() {
     isCurrentlyActive: false
   });
   
+  // Get notification functions
+  const { showNotification, addNotification } = useNotification();
+  
+  // Show internship cycle notifications when the page loads
+  useEffect(() => {
+    // Set a timeout to simulate backend data fetch
+    setTimeout(() => {
+      // Current date is May 15, 2025
+      const today = new Date();
+      
+      // Notification about current internship cycle
+      showNotification({
+        message: "The Summer 2025 Internship Cycle has officially begun! Browse and apply for opportunities now.",
+        type: 'success'
+      });
+      
+      // Add to the bell notifications panel for persistent access
+      addNotification({
+        title: "Internship Cycle Started",
+        message: "The Summer 2025 Internship Cycle is now open for applications. Don't miss out on these opportunities!",
+        type: 'system'
+      });
+      
+      // Simulate a notification about the upcoming Fall cycle (future notification)
+      setTimeout(() => {
+        showNotification({
+          message: "Fall 2025 Internship Cycle begins in 45 days. Update your profile to be ready!",
+          type: 'info'
+        });
+        
+        addNotification({
+          title: "Upcoming Internship Cycle",
+          message: "The Fall 2025 Internship Cycle will begin on July 1st, 2025. Make sure your profile is up to date.",
+          type: 'system'
+        });
+      }, 5000); // Show this notification 5 seconds after the first one
+    }, 1000);
+  }, []);
+  
+
   // Mock address data - we'll add this to our profile
   const [address, setAddress] = useState({
     country: 'United Kingdom',
