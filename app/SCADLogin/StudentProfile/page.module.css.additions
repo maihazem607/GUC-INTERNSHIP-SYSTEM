@@ -1,0 +1,139 @@
+/* Tag container styles */
+.tagContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.interestTag {
+  background-color: var(--tag-color);
+  color: var(--tag-text);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+}
+
+.interestTag span {
+  margin-right: 5px;
+}
+
+/* Experience and Activity cards */
+.experienceList,
+.activityList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 15px;
+}
+
+.experienceCard,
+.activityCard {
+  background-color: var(--background-white);
+  border-radius: var(--border-radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  border-left: 4px solid var(--primary-color);
+}
+
+.experienceCard:hover,
+.activityCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.experienceHeader,
+.activityHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.experienceHeader h3,
+.activityHeader h3 {
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.experienceType,
+.activityRole {
+  font-size: 13px;
+  color: var(--text-white);
+  background-color: var(--primary-color);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.experiencePosition {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin: 5px 0;
+  font-weight: 500;
+}
+
+.experienceDuration,
+.activityDuration {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+}
+
+.experienceDuration::before,
+.activityDuration::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 5px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>');
+  background-repeat: no-repeat;
+  opacity: 0.6;
+}
+
+.experienceDescription,
+.activityDescription {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 10px 0 0;
+}
+
+.emptyState {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Custom badge colors for internship status */
+.statusBadge {
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.statusCompleted {
+  background-color: rgba(40, 167, 69, 0.1);
+  color: var(--badge-status-completed);
+}
+
+.statusInProgress {
+  background-color: rgba(255, 152, 0, 0.1);
+  color: var(--badge-status-in-progress);
+}
+
+.statusNotStarted {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: var(--badge-status-not-started);
+}

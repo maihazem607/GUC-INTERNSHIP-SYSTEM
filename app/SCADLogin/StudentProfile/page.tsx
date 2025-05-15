@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import styles from './page.module.css';
-import Navigation from '@/components/global/Navigation';
+import NavigationMenu from '@/components/global/NavigationMenu';
 import { 
   initialStudentProfile, 
   StudentProfile as StudentProfileType, 
@@ -13,6 +13,17 @@ import {
   Activity
 } from '@/components/StudentInfo/types'; // Adjusted to use an alias for the correct path.
 import Image from 'next/image';
+import {
+  Building,
+  Users,
+  FileText,
+  Settings,
+  ClipboardCheck,
+  Briefcase,
+  Calendar,
+  BarChart2,
+  BookOpen
+} from 'lucide-react';
 
 // Student data type from SCAD dashboard
 interface Student {
@@ -26,6 +37,13 @@ interface Student {
   companyName?: string;
   internshipStartDate?: string;
   internshipEndDate?: string;
+  address?: {
+    country: string;
+    city: string;
+    postalCode: string;
+  };
+  jobInterests?: string[];
+  collegeActivities?: Activity[];
 }
 
 export default function StudentProfilePage() {
@@ -36,7 +54,6 @@ export default function StudentProfilePage() {
   const [studentProfile, setStudentProfile] = useState<StudentProfileType>(initialStudentProfile);
   const [studentData, setStudentData] = useState<Student | null>(null);
   const [loading, setLoading] = useState(true);
-
   // Fetch student data based on ID
   useEffect(() => {
     if (studentId === null) {
@@ -57,7 +74,33 @@ export default function StudentProfilePage() {
           academicYear: 'Senior',
           companyName: 'Tech Solutions Inc.',
           internshipStartDate: '2023-06-01',
-          internshipEndDate: '2023-08-31'
+          internshipEndDate: '2023-08-31',
+          address: {
+            country: 'Egypt',
+            city: 'Cairo, Maadi',
+            postalCode: '11728'
+          },
+          jobInterests: ['Software Development', 'Mobile Applications', 'Artificial Intelligence', 'Cloud Computing', 'UI/UX Design'],
+          collegeActivities: [
+            {
+              id: 'act-1-1',
+              name: 'Google Developer Students Club (GDC)',
+              role: 'Technical Team Leader',
+              startDate: '2022-09-01',
+              endDate: '',
+              isCurrentlyActive: true,
+              description: 'Leading a team of 5 developers in creating web and mobile applications for university events. Organizing technical workshops and hackathons.'
+            },
+            {
+              id: 'act-1-2',
+              name: 'Competitive Programming Team',
+              role: 'Team Captain',
+              startDate: '2022-03-15',
+              endDate: '2023-05-20',
+              isCurrentlyActive: false,
+              description: 'Led a team that participated in ACM-ICPC and Google Code Jam competitions. Conducted training sessions for new members.'
+            }
+          ]
         },
         {
           id: 2,
@@ -66,7 +109,33 @@ export default function StudentProfilePage() {
           major: 'Electrical Engineering',
           gpa: 3.5,
           internshipStatus: 'not started',
-          academicYear: 'Junior'
+          academicYear: 'Junior',
+          address: {
+            country: 'Egypt',
+            city: 'Alexandria, Smouha',
+            postalCode: '21615'
+          },
+          jobInterests: ['Electrical Circuit Design', 'Power Systems', 'Renewable Energy', 'Embedded Systems', 'Robotics'],
+          collegeActivities: [
+            {
+              id: 'act-2-1',
+              name: 'IEEE Student Branch',
+              role: 'Vice President',
+              startDate: '2023-01-10',
+              endDate: '',
+              isCurrentlyActive: true,
+              description: 'Organizing technical workshops, seminars, and competitions for engineering students. Managing a team of 8 committee members.'
+            },
+            {
+              id: 'act-2-2',
+              name: 'Robotics Team',
+              role: 'Technical Lead',
+              startDate: '2021-09-15',
+              endDate: '',
+              isCurrentlyActive: true,
+              description: 'Designing and programming robots for university competitions. Teaching new members about Arduino programming and sensor integration.'
+            }
+          ]
         },
         {
           id: 3,
@@ -78,7 +147,42 @@ export default function StudentProfilePage() {
           academicYear: 'Senior',
           companyName: 'Global Finance',
           internshipStartDate: '2023-01-15',
-          internshipEndDate: '2023-04-15'
+          internshipEndDate: '2023-04-15',
+          address: {
+            country: 'Egypt',
+            city: 'New Cairo, 5th Settlement',
+            postalCode: '11835'
+          },
+          jobInterests: ['Marketing', 'Finance', 'Investment Banking', 'Project Management', 'Business Analytics'],
+          collegeActivities: [
+            {
+              id: 'act-3-1',
+              name: 'Business Leaders Association',
+              role: 'President',
+              startDate: '2022-09-01',
+              endDate: '',
+              isCurrentlyActive: true,
+              description: 'Leading university business club with over 100 members. Organizing networking events with industry professionals and career fairs.'
+            },
+            {
+              id: 'act-3-2',
+              name: 'MUN (Model United Nations)',
+              role: 'Committee Chair',
+              startDate: '2021-08-15',
+              endDate: '2022-12-20',
+              isCurrentlyActive: false,
+              description: 'Chaired the Economic and Finance Committee. Organized international conferences with over 500 participants.'
+            },
+            {
+              id: 'act-3-3',
+              name: 'Student Entrepreneurship Society',
+              role: 'Founding Member',
+              startDate: '2021-02-10',
+              endDate: '2023-06-01',
+              isCurrentlyActive: false,
+              description: 'Helped create a platform for student entrepreneurs to pitch ideas and receive mentorship from industry professionals.'
+            }
+          ]
         },
         {
           id: 4,
@@ -90,7 +194,33 @@ export default function StudentProfilePage() {
           academicYear: 'Senior',
           companyName: 'Health Partners',
           internshipStartDate: '2023-05-15',
-          internshipEndDate: '2023-08-15'
+          internshipEndDate: '2023-08-15',
+          address: {
+            country: 'Egypt',
+            city: 'Giza, Dokki',
+            postalCode: '12611'
+          },
+          jobInterests: ['Health Informatics', 'Data Science', 'Machine Learning', 'Bioinformatics', 'Web Development'],
+          collegeActivities: [
+            {
+              id: 'act-4-1',
+              name: 'AI Research Club',
+              role: 'Research Lead',
+              startDate: '2022-10-01',
+              endDate: '',
+              isCurrentlyActive: true,
+              description: 'Leading research projects in machine learning for healthcare. Published two papers in student conferences on medical image processing.'
+            },
+            {
+              id: 'act-4-2',
+              name: 'Scientific Computing Society',
+              role: 'Workshop Coordinator',
+              startDate: '2021-11-15',
+              endDate: '2023-03-20',
+              isCurrentlyActive: false,
+              description: 'Organized workshops on Python, R, and MATLAB for scientific computing applications. Created educational content for club members.'
+            }
+          ]
         },
         {
           id: 5,
@@ -99,22 +229,73 @@ export default function StudentProfilePage() {
           major: 'Mechanical Engineering',
           gpa: 3.6,
           internshipStatus: 'not started',
-          academicYear: 'Junior'
+          academicYear: 'Junior',
+          address: {
+            country: 'Egypt',
+            city: '6th of October, Al Motamayez District',
+            postalCode: '12573'
+          },
+          jobInterests: ['Automotive Engineering', 'Aerospace Design', 'Thermodynamics', 'HVAC Systems', 'Manufacturing'],
+          collegeActivities: [
+            {
+              id: 'act-5-1',
+              name: 'Formula GUC Racing Team',
+              role: 'Aerodynamics Team Member',
+              startDate: '2022-08-01',
+              endDate: '',
+              isCurrentlyActive: true,
+              description: 'Designing and testing aerodynamic components for the university\'s Formula-style race car. Conducting wind tunnel simulations.'
+            },
+            {
+              id: 'act-5-2',
+              name: 'Women in Engineering',
+              role: 'Outreach Coordinator',
+              startDate: '2021-09-15',
+              endDate: '',
+              isCurrentlyActive: true,
+              description: 'Organizing workshops and mentoring programs to encourage high school girls to pursue engineering careers. Partnering with local schools.'
+            },
+            {
+              id: 'act-5-3',
+              name: 'Sustainability Initiative',
+              role: 'Project Manager',
+              startDate: '2021-03-10',
+              endDate: '2022-12-15',
+              isCurrentlyActive: false,
+              description: 'Led projects to improve campus sustainability, including a solar-powered charging station and water conservation systems.'
+            }
+          ]
         }
       ];
       
       const foundStudent = mockStudents.find(s => s.id === studentId) || null;
       setStudentData(foundStudent);
-      
-      if (foundStudent) {
+        if (foundStudent) {
         // Update the studentProfile with the found student's data
-        setStudentProfile({
+        const updatedProfile: StudentProfileType = {
           ...initialStudentProfile,
           name: foundStudent.name,
           email: foundStudent.email,
           gpa: foundStudent.gpa,
           major: majors.find(m => m.name === foundStudent.major) || undefined
-        });
+        };
+        
+        // Add job interests if available
+        if (foundStudent.jobInterests && foundStudent.jobInterests.length > 0) {
+          updatedProfile.jobInterests = foundStudent.jobInterests;
+        }
+        
+        // Add college activities if available
+        if (foundStudent.collegeActivities && foundStudent.collegeActivities.length > 0) {
+          updatedProfile.collegeActivities = foundStudent.collegeActivities;
+        }
+        
+        setStudentProfile(updatedProfile);
+        
+        // Set address if available
+        if (foundStudent.address) {
+          setAddress(foundStudent.address);
+        }
       }
       
       setLoading(false);
@@ -157,12 +338,11 @@ export default function StudentProfilePage() {
     endDate: '',
     isCurrentlyActive: false
   });
-  
-  // Mock address data - we'll add this to our profile
+    // Address data - initially set default then update based on student data
   const [address, setAddress] = useState({
-    country: 'United Kingdom',
-    city: 'Leeds, East London',
-    postalCode: 'ER1 1254'
+    country: 'Egypt',
+    city: 'Cairo',
+    postalCode: '11111'
   });
 
   const handleEditToggle = (section: keyof typeof isEditing) => {
@@ -299,8 +479,34 @@ export default function StudentProfilePage() {
   // Display loading state
   if (loading) {
     return (
-      <div className={styles.pageContainer}>
-        <Navigation />
+      <div className={styles.pageContainer}>        <NavigationMenu
+          items={[
+            { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard') },
+            { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=students') },
+            { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=reports') },
+            { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=evaluations') },
+            { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=internships') },
+            { id: 'statistics', label: 'Statistics', icon: <BarChart2 size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=statistics') },
+            { id:'Workshops', label: 'Workshops', icon: <BookOpen size={18} />, onClick:  () => router.push('/SCADLogin/workshops?activeItem=workshops') },
+            {
+              id: 'appointments',
+              label: 'Appointments',
+              icon: <Calendar size={18} />,
+              dropdownItems: [
+                { id: 'my-appointments', label: 'My Appointments', onClick: () => router.push('/SCADLogin/AppointmentsSCAD') },
+                { id: 'requests', label: 'Requests', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=requests') },
+                { id: 'new-appointment', label: 'New Appointment', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=new-appointment') }
+              ]
+            },
+            { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=settings') }
+          ]}
+          activeItemId="students"
+          logo={{
+            src: '/logos/GUCInternshipSystemLogo.png',
+            alt: 'GUC Internship System'
+          }}
+          variant="navigation"
+        />
         <div className={styles.contentWrapper}>
           <div className={styles.mainContent}>
             <div className={styles.loadingContainer}>
@@ -316,8 +522,34 @@ export default function StudentProfilePage() {
   // Display error if student not found
   if (!studentData && studentId !== null) {
     return (
-      <div className={styles.pageContainer}>
-        <Navigation />
+      <div className={styles.pageContainer}>        <NavigationMenu
+          items={[
+            { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard') },
+            { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=students') },
+            { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=reports') },
+            { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=evaluations') },
+            { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=internships') },
+            { id: 'statistics', label: 'Statistics', icon: <BarChart2 size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=statistics') },
+            { id:'Workshops', label: 'Workshops', icon: <BookOpen size={18} />, onClick:  () => router.push('/SCADLogin/workshops?activeItem=workshops') },
+            {
+              id: 'appointments',
+              label: 'Appointments',
+              icon: <Calendar size={18} />,
+              dropdownItems: [
+                { id: 'my-appointments', label: 'My Appointments', onClick: () => router.push('/SCADLogin/AppointmentsSCAD') },
+                { id: 'requests', label: 'Requests', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=requests') },
+                { id: 'new-appointment', label: 'New Appointment', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=new-appointment') }
+              ]
+            },
+            { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=settings') }
+          ]}
+          activeItemId="students"
+          logo={{
+            src: '/logos/GUCInternshipSystemLogo.png',
+            alt: 'GUC Internship System'
+          }}
+          variant="navigation"
+        />
         <div className={styles.contentWrapper}>
           <div className={styles.mainContent}>
             <div className={styles.errorContainer}>
@@ -337,8 +569,34 @@ export default function StudentProfilePage() {
   }
 
   return (
-    <div className={styles.pageContainer}>
-      <Navigation />
+    <div className={styles.pageContainer}>      <NavigationMenu
+        items={[
+          { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard') },
+          { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=students') },
+          { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=reports') },
+          { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=evaluations') },
+          { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=internships') },
+          { id: 'statistics', label: 'Statistics', icon: <BarChart2 size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=statistics') },
+          { id:'Workshops', label: 'Workshops', icon: <BookOpen size={18} />, onClick:  () => router.push('/SCADLogin/workshops?activeItem=workshops') },
+          {
+            id: 'appointments',
+            label: 'Appointments',
+            icon: <Calendar size={18} />,
+            dropdownItems: [
+              { id: 'my-appointments', label: 'My Appointments', onClick: () => router.push('/SCADLogin/AppointmentsSCAD') },
+              { id: 'requests', label: 'Requests', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=requests') },
+              { id: 'new-appointment', label: 'New Appointment', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=new-appointment') }
+            ]
+          },
+          { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=settings') }
+        ]}
+        activeItemId="students"
+        logo={{
+          src: '/logos/GUCInternshipSystemLogo.png',
+          alt: 'GUC Internship System'
+        }}
+        variant="navigation"
+      />
       
       <div className={styles.contentWrapper}>
         <div className={styles.mainContent}>
@@ -505,337 +763,156 @@ export default function StudentProfilePage() {
                   </div>
                 </div>
               )}
-            </div>
-            
-            {/* Address Section */}
+            </div>              {/* Address Section */}
             <div className={styles.infoSection}>
               <div className={styles.sectionHeader}>
                 <h2 className={styles.sectionTitle}>Address</h2>
+              </div>
+              <div className={styles.infoGrid}>
+                <div className={styles.infoItem}>
+                  <span className={styles.infoLabel}>Country</span>
+                  <span className={styles.infoValue}>{address.country}</span>
+                </div>
+                <div className={styles.infoItem}>
+                  <span className={styles.infoLabel}>City</span>
+                  <span className={styles.infoValue}>{address.city}</span>
+                </div>
+                <div className={styles.infoItem}>
+                  <span className={styles.infoLabel}>Postal Code</span>
+                  <span className={styles.infoValue}>{address.postalCode}</span>
+                </div>
+              </div>
+            </div>              {/* Academic Information Section */}
+            <div className={styles.infoSection}>
+              <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>Academic Information</h2>
                 {/* <button 
-                  onClick={() => handleEditToggle('address')} 
+                  onClick={() => handleEditToggle('academic')} 
                   className={styles.editButton}
                 >
                   Edit
                 </button> */}
               </div>
-              
-              {isEditing.address ? (
-                <div className={styles.editForm}>
-                  <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                      <label>Country</label>
-                      <input 
-                        type="text" 
-                        value={address.country}
-                        onChange={(e) => setAddress({...address, country: e.target.value})}
-                      />
-                    </div>
-                    <div className={styles.formGroup}>
-                      <label>City</label>
-                      <input 
-                        type="text" 
-                        value={address.city}
-                        onChange={(e) => setAddress({...address, city: e.target.value})}
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                      <label>Postal Code</label>
-                      <input 
-                        type="text" 
-                        value={address.postalCode}
-                        onChange={(e) => setAddress({...address, postalCode: e.target.value})}
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className={styles.formActions}>
-                    <button 
-                      onClick={() => handleEditToggle('address')}
-                      className={styles.cancelButton}
-                    >
-                      Cancel
-                    </button>
-                    <button 
-                      onClick={() => handleAddressUpdate(address)}
-                      className={styles.saveButton}
-                    >
-                      Save Changes
-                    </button>
-                  </div>
+              <div className={styles.infoGrid}>
+                <div className={styles.infoItem}>
+                  <span className={styles.infoLabel}>University</span>
+                  <span className={styles.infoValue}>German University in Cairo</span>
                 </div>
-              ) : (
-                <div className={styles.infoGrid}>
-                  <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>Country</span>
-                    <span className={styles.infoValue}>{address.country}</span>
-                  </div>
-                  <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>City</span>
-                    <span className={styles.infoValue}>{address.city}</span>
-                  </div>
-                  <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>Postal Code</span>
-                    <span className={styles.infoValue}>{address.postalCode}</span>
-                  </div>
+                <div className={styles.infoItem}>
+                  <span className={styles.infoLabel}>Faculty</span>
+                  <span className={styles.infoValue}>{studentData?.major === "Computer Science" ? "Media Engineering & Technology" : studentData?.major === "Business Administration" ? "Management Technology" : "Engineering & Materials Science"}</span>
                 </div>
-              )}
-            </div>
-            
-            {/* Academic Information Section */}
-            <div className={styles.infoSection}>
-              <div className={styles.sectionHeader}>
-                <h2 className={styles.sectionTitle}>Academic Information</h2>
-                <button 
-                  onClick={() => handleEditToggle('academic')} 
-                  className={styles.editButton}
-                >
-                  Edit
-                </button>
+                <div className={styles.infoItem}>
+                  <span className={styles.infoLabel}>Major</span>
+                  <span className={styles.infoValue}>{studentProfile.major?.name || studentData?.major || "Not specified"}</span>
+                </div>
+                <div className={styles.infoItem}>
+                  <span className={styles.infoLabel}>Academic Year</span>
+                  <span className={styles.infoValue}>{studentData?.academicYear || "Senior"}</span>
+                </div>
+                <div className={styles.infoItem}>
+                  <span className={styles.infoLabel}>Semester</span>
+                  <span className={styles.infoValue}>8</span>
+                </div>
+                <div className={styles.infoItem}>
+                  <span className={styles.infoLabel}>Expected Graduation</span>
+                  <span className={styles.infoValue}>Summer 2025</span>
+                </div>
               </div>
-              
-              {isEditing.academic ? (
-                <div className={styles.editForm}>
-                  <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                      <label>Major</label>
-                      <select 
-                        value={studentProfile.major?.id || ''}
-                        onChange={(e) => {
-                          const selectedMajor = majors.find(m => m.id === e.target.value);
-                          setStudentProfile({...studentProfile, major: selectedMajor});
-                        }}
-                      >
-                        <option value="">Select a major</option>
-                        {majors.map(major => (
-                          <option key={major.id} value={major.id}>
-                            {major.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className={styles.formGroup}>
-                      <label>Semester</label>
-                      <select 
-                        value={studentProfile.semester || ''}
-                        onChange={(e) => {
-                          setStudentProfile({
-                            ...studentProfile, 
-                            semester: e.target.value ? parseInt(e.target.value, 10) : undefined
-                          });
-                        }}
-                        disabled={!studentProfile.major}
-                      >
-                        <option value="">Select a semester</option>
-                        {studentProfile.major?.availableSemesters.map(sem => (
-                          <option key={sem} value={sem}>
-                            {sem}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                  
-                  <div className={styles.formActions}>
-                    <button 
-                      onClick={() => handleEditToggle('academic')}
-                      className={styles.cancelButton}
-                    >
-                      Cancel
-                    </button>
-                    <button 
-                      onClick={() => handleProfileUpdate(studentProfile)}
-                      className={styles.saveButton}
-                    >
-                      Save Changes
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className={styles.infoGrid}>
-                  <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>Major</span>
-                    <span className={styles.infoValue}>
-                      {studentProfile.major ? studentProfile.major.name : 'Not selected'}
-                    </span>
-                  </div>
-                  <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>Semester</span>
-                    <span className={styles.infoValue}>
-                      {studentProfile.semester || 'Not selected'}
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-            
-            {/* Job Interests Section */}
+            </div>              {/* Job Interests Section */}
             <div className={styles.infoSection}>
               <div className={styles.sectionHeader}>
                 <h2 className={styles.sectionTitle}>Job Interests</h2>
-                <button 
+                {/* <button 
                   onClick={() => handleEditToggle('jobInterests')} 
                   className={styles.editButton}
                 >
                   Edit
-                </button>
+                </button> */}
               </div>
-              
-              {isEditing.jobInterests ? (
-                <div className={styles.editForm}>
-                  <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                      <label>Add New Job Interest</label>
-                      <div className={styles.interestInputGroup}>
-                        <input 
-                          type="text" 
-                          value={newJobInterest}
-                          onChange={(e) => setNewJobInterest(e.target.value)}
-                          placeholder="E.g., Web Development"
-                        />
-                        <button 
-                          onClick={handleAddJobInterest}
-                          className={styles.addInterestButton}
-                        >
-                          Add
-                        </button>
-                      </div>
+              <div className={styles.tagContainer}>                {studentProfile.jobInterests.length > 0 ? (
+                  studentProfile.jobInterests.map((interest, index) => (
+                    <div key={index} className={styles.interestTag}>
+                      <span>{interest}</span>
                     </div>
+                  ))
+                ) : (
+                  <div className={styles.emptyState}>
+                    <div className={styles.interestTag}><span>No job interests listed</span></div>
                   </div>
-                  
-                  <div className={styles.currentInterests}>
-                    <label>Current Interests:</label>
-                    <div className={styles.tagContainer}>
-                      {studentProfile.jobInterests.map((interest, index) => (
-                        <div key={index} className={styles.interestTagWithRemove}>
-                          <span>{interest}</span>
-                          <button 
-                            onClick={() => handleRemoveJobInterest(index)}
-                            className={styles.removeButton}
-                          >
-                            ×
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className={styles.formActions}>
-                    <button 
-                      onClick={() => handleEditToggle('jobInterests')}
-                      className={styles.cancelButton}
-                    >
-                      Cancel
-                    </button>
-                    <button 
-                      onClick={() => handleEditToggle('jobInterests')}
-                      className={styles.saveButton}
-                    >
-                      Save Changes
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className={styles.tagContainer}>
-                  {studentProfile.jobInterests.length > 0 ? (
-                    studentProfile.jobInterests.map((interest, index) => (
-                      <span key={index} className={styles.interestTag}>{interest}</span>
-                    ))
-                  ) : (
-                    <p className={styles.emptyState}>No job interests added yet</p>
-                  )}
-                </div>
-              )}
-            </div>
-            
-            {/* Work Experience Section */}
+                )}
+              </div>
+            </div>              {/* Work Experience Section */}
             <div className={styles.infoSection}>
               <div className={styles.sectionHeader}>
                 <h2 className={styles.sectionTitle}>Work Experience</h2>
-                <button 
-                  onClick={() => openExperienceModal()}
-                  className={styles.editButton}
-                >
-                  Add Experience
-                </button>
-              </div>
-              
-              {studentProfile.previousExperiences.length > 0 ? (
-                studentProfile.previousExperiences.map((exp) => (
-                  <div key={exp.id} className={styles.experienceItem}>
-                    <div className={styles.experienceHeader}>
-                      <h3>{exp.position} at {exp.companyName}</h3>
-                      <div className={styles.experienceActions}>
-                        <button 
-                          onClick={() => openExperienceModal(exp)}
-                          className={styles.actionButton}
-                        >
-                          Edit
-                        </button>
-                        <button 
-                          onClick={() => handleRemoveExperience(exp.id)}
-                          className={styles.actionButton}
-                        >
-                          Remove
-                        </button>
+              </div>              {studentProfile.previousExperiences.length > 0 ? (
+                <div className={styles.experienceList}>
+                  {studentProfile.previousExperiences.map(exp => (
+                    <div key={exp.id} className={styles.experienceCard}>
+                      <div className={styles.experienceHeader}>
+                        <h3>{exp.companyName}</h3>
+                        <span className={styles.experienceType}>{exp.isInternship ? 'Internship' : 'Part-time'}</span>
                       </div>
+                      <p className={styles.experiencePosition}>{exp.position}</p>
+                      <p className={styles.experienceDuration}>
+                        {exp.startDate} - {exp.isCurrentlyWorking ? 'Present' : exp.endDate}
+                      </p>
+                      <p className={styles.experienceDescription}>{exp.responsibilities}</p>
                     </div>
-                    <p className={styles.experienceDates}>
-                      {exp.startDate} - {exp.isCurrentlyWorking ? 'Present' : exp.endDate}
-                    </p>
-                    <p className={styles.experienceType}>
-                      {exp.isInternship ? 'Internship' : 'Part-time Job'}
-                    </p>
-                    <p className={styles.experienceDesc}>{exp.responsibilities}</p>
-                  </div>
-                ))
+                  ))}
+                </div>
               ) : (
-                <p className={styles.emptyState}>No work experience added yet</p>
+                <div className={styles.experienceList}>
+                  {studentData?.internshipStatus ? (
+                    <div className={styles.experienceCard}>
+                      <div className={styles.experienceHeader}>
+                        <h3>{studentData?.companyName || "Tech Solutions Inc."}</h3>
+                        <span className={styles.experienceType}>Internship</span>
+                      </div>
+                      <p className={styles.experiencePosition}>{studentData?.major === "Computer Science" ? "Software Developer Intern" : 
+                                                             studentData?.major === "Business Administration" ? "Business Analyst Intern" :
+                                                             "Engineering Intern"}</p>
+                      <p className={styles.experienceDuration}>
+                        {studentData?.internshipStartDate || "June 2023"} - {studentData?.internshipStatus === "completed" ? 
+                                                                           (studentData?.internshipEndDate || "August 2023") : 
+                                                                           (studentData?.internshipStatus === "in progress" ? "Present" : "Not started")}
+                      </p>
+                      <p className={styles.experienceDescription}>
+                        {studentData?.major === "Computer Science" ? 
+                          "Contributed to the development of client-facing web applications using React, Node.js, and MongoDB. Worked in an agile team and participated in daily stand-ups and sprint planning." :
+                         studentData?.major === "Business Administration" ?
+                          "Analyzed financial data and created reports for stakeholders. Assisted in the development of business strategies and marketing campaigns." :
+                          "Participated in the design and implementation of engineering solutions. Worked with a team of engineers to solve complex technical problems."
+                        }
+                      </p>
+                    </div>
+                  ) : (
+                    <div className={styles.emptyState}>No work experience listed</div>
+                  )}
+                </div>
               )}
-            </div>
-            
-            {/* College Activities Section */}
+            </div>              {/* College Activities Section */}
             <div className={styles.infoSection}>
               <div className={styles.sectionHeader}>
                 <h2 className={styles.sectionTitle}>College Activities</h2>
-                <button 
-                  onClick={() => openActivityModal()}
-                  className={styles.editButton}
-                >
-                  Add Activity
-                </button>
-              </div>
-              
-              {studentProfile.collegeActivities.length > 0 ? (
-                studentProfile.collegeActivities.map((activity) => (
-                  <div key={activity.id} className={styles.activityItem}>
-                    <div className={styles.activityHeader}>
-                      <h3>{activity.name} - {activity.role}</h3>
-                      <div className={styles.activityActions}>
-                        <button 
-                          onClick={() => openActivityModal(activity)}
-                          className={styles.actionButton}
-                        >
-                          Edit
-                        </button>
-                        <button 
-                          onClick={() => handleRemoveActivity(activity.id)}
-                          className={styles.actionButton}
-                        >
-                          Remove
-                        </button>
+              </div>              {studentProfile.collegeActivities.length > 0 ? (
+                <div className={styles.activityList}>
+                  {studentProfile.collegeActivities.map(activity => (
+                    <div key={activity.id} className={styles.activityCard}>
+                      <div className={styles.activityHeader}>
+                        <h3>{activity.name}</h3>
+                        <span className={styles.activityRole}>{activity.role}</span>
                       </div>
+                      <p className={styles.activityDuration}>
+                        {activity.startDate} - {activity.isCurrentlyActive ? 'Present' : activity.endDate}
+                      </p>
+                      <p className={styles.activityDescription}>{activity.description}</p>
                     </div>
-                    <p className={styles.activityDates}>
-                      {activity.startDate} - {activity.isCurrentlyActive ? 'Present' : activity.endDate}
-                    </p>
-                    <p className={styles.activityDesc}>{activity.description}</p>
-                  </div>
-                ))
+                  ))}
+                </div>
               ) : (
-                <p className={styles.emptyState}>No college activities added yet</p>
+                <div className={styles.emptyState}>No college activities listed</div>
               )}
             </div>
           </section>
