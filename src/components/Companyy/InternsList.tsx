@@ -53,7 +53,8 @@ const InternsList: React.FC<InternsListProps> = ({
         <>
           {/* Table view for interns */}
           <div className={styles.applicationCardContainer}>
-            <table className={styles.applicationsTable}>              <thead>
+            <table className={styles.applicationsTable}>
+              <thead>
                 <tr className={styles.tableHeader}>
                   <th>Intern</th>
                   <th>Position</th>

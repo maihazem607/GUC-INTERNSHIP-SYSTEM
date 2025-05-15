@@ -718,10 +718,9 @@ export default function SCADDashboardPage() {
       console.log('Major filtering not implemented yet');
     }
   };
-
   const handleViewStudentDetails = (student: Student) => {
-    setSelectedStudent(student);
-    setShowStudentDetails(true);
+    // Navigate to the StudentProfile page with the student ID
+    router.push(`/SCADLogin/StudentProfile/${student.id}`);
   };
 
   const handleCloseStudentDetails = () => {
@@ -1374,6 +1373,7 @@ export default function SCADDashboardPage() {
       )}
       {showStudentDetails && selectedStudent && (
         <StudentDetailsModal
+         // studentId={selectedStudent.id}
           name={selectedStudent.name}
           email={selectedStudent.email}
           major={selectedStudent.major}

@@ -59,8 +59,8 @@ const getScoreColor = (score: number): string => {
 
 // List view for evaluations using a table layout similar to ReportTable
 const EvaluationTable: React.FC<EvaluationTableProps> = ({ evaluations, onViewDetails }) => (
-  <div className={styles.evaluationCardContainer}>
-    {evaluations && evaluations.length > 0 ? (      <table className={styles.studentsTable}> 
+  <div className={styles.evaluationCardContainer}>    {evaluations && evaluations.length > 0 ? (
+      <table className={styles.studentsTable}>
         <tbody>
           {evaluations.map((evaluation) => {
             return (
@@ -98,9 +98,9 @@ const EvaluationTable: React.FC<EvaluationTableProps> = ({ evaluations, onViewDe
                 </td>
                 
                 {/* Evaluation Date and Score */}
-                <td>
-                  <div className={styles.dateCell}>
-                    {evaluation.evaluationDate}                    <div className={`${styles.scoreTag} ${styles[getScoreColor(evaluation.evaluationScore)]}`}>
+                <td>                  <div className={styles.dateCell}>
+                    {evaluation.evaluationDate}
+                    <div className={`${styles.scoreTag} ${styles[getScoreColor(evaluation.evaluationScore)]}`}>
                       Score: {evaluation.evaluationScore}/5
                     </div>
                   </div>
