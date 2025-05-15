@@ -5,11 +5,9 @@ import styles from './page.module.css';
 // Import global components
 import NavigationMenu, { MenuItem } from "../../../src/components/global/NavigationMenu";
 import { Briefcase, FileText, Users } from 'lucide-react';
-import NotificationSystem from "../../../src/components/global/NotificationSystem";
-import NotificationsPanel from "../../../src/components/global/NotificationsPanel";
+import NotificationSystem, { useNotification } from "../../../src/components/global/NotificationSystemAdapter";
 import FilterSidebar from "../../../src/components/global/FilterSidebar";
 import SearchBar from "../../../src/components/global/SearchBar";
-import { NotificationProvider, useNotification } from "../../../src/context/NotificationContext";
 
 // Import components
 import ApplicationsList from "../../../src/components/Companyy/ApplicationsList";
@@ -87,7 +85,6 @@ const DashboardContent = () => {
     const [showEvaluationDetails, setShowEvaluationDetails] = useState(false);
     const [showPostForm, setShowPostForm] = useState(false);
     const [showInternshipDetails, setShowInternshipDetails] = useState(false);
-    const [showNotificationsPanel, setShowNotificationsPanel] = useState(false);
     
     // Star tracking
     const [starredInternships, setStarredInternships] = useState<number[]>([]);
@@ -110,12 +107,16 @@ const DashboardContent = () => {
         expectedSalary: undefined,
         skillsRequired: [],
     });
-    
-    // Notification states - import from context
-    const [notifications, setNotifications] = useState<Notification[]>([]);
-    
-    // Now we can safely use the hook inside the NotificationProvider
-    const { notification, visible, showNotification, hideNotification } = useNotification();
+      // Using the unified notification context
+    const { 
+        notification, 
+        visible, 
+        showNotification, 
+        hideNotification,
+        addNotification,
+        notifications,
+        unreadCount
+    } = useNotification();
 
     // Mock data initialization
     useEffect(() => {
@@ -266,24 +267,26 @@ const DashboardContent = () => {
         const matchesFilter = internFilter === 'all' || intern.status === internFilter;
         return matchesSearch && matchesFilter;
     });
-    
-    const unreadNotificationsCount = notifications.filter(n => !n.read).length;
+      // Use the unread count from the notification context
     
     // Calculate counters
     const pendingApplicationsCount = applications.filter(app => app.status === 'pending').length;
     const currentInternsCount = interns.filter(intern => intern.status === 'current').length;
-    const internshipPostsCount = internshipPosts.length;    // CRUD for Internship Posts
+    const internshipPostsCount = internshipPosts.length;// CRUD for Internship Posts
     const handleCreateOrUpdatePost = () => {
         console.log('handleCreateOrUpdatePost called');
         console.log('Current form data:', newPost);
-        
-        // Check if required fields are filled
+          // Check if required fields are filled
         if (!newPost.title || !newPost.description || !newPost.duration) {
             console.error("Cannot create/update post: missing required fields");
-            showNotification({
-                message: "Please fill in all required fields (Title, Description, Duration)",
-                type: 'error'
-            });
+            
+            // Use setTimeout for notification to ensure it's visible after form may be closed
+            setTimeout(() => {
+                showNotification({
+                    message: "Please fill in all required fields (Title, Description, Duration)",
+                    type: 'error'
+                });
+            }, 500);
             return;
         }
         
@@ -291,14 +294,29 @@ const DashboardContent = () => {
             // Update existing post
             setInternshipPosts(internshipPosts.map(post => 
                 post.id === selectedPost.id ? { ...post, ...newPost, postedDate: new Date(), applicationsCount: post.applicationsCount } : post
-            ));
-            setSelectedPost(null);
+            ));            setSelectedPost(null);
             
-            // Show success notification
-            showNotification({
-                message: `Internship post "${newPost.title}" has been updated successfully.`,
-                type: 'success'
-            });
+            // Use setTimeout for notification and closing windows
+            setTimeout(() => {
+                // Show success notification
+                showNotification({
+                    message: `Internship post "${newPost.title}" has been updated successfully.`,
+                    type: 'success'
+                });
+                
+                // Close the form and reset data
+                setShowPostForm(false);
+            }, 800); // Simulate network delay
+            setNewPost({
+            title: '',
+            description: '',
+            department: 'Technology',
+            deadline: new Date(),
+            duration: '', // Empty string to show "Select duration" option
+            isPaid: false,
+            expectedSalary: undefined,
+            skillsRequired: [],
+        });
         } else {
             // Create new post with a unique ID
             const post: InternshipPost = {
@@ -316,16 +334,26 @@ const DashboardContent = () => {
                 console.log("Updated internships list:", updated);
                 return updated;
             });
-            
-            // Show success notification
-            showNotification({
-                message: `New internship post "${post.title}" has been created successfully.`,
-                type: 'success'
-            });
-        }
-        
-        // Close the form and reset data
-        setShowPostForm(false);        setNewPost({
+              // Use setTimeout for notification and closing windows
+            setTimeout(() => {
+                // Show success notification
+                showNotification({
+                    message: `New internship post "${post.title}" has been created successfully.`,
+                    type: 'success'
+                });
+                
+                // Add persistent notification for bell icon
+                addNotification({
+                    title: "New Internship Posted",
+                    message: `You've successfully posted "${post.title}" internship.`,
+                    type: 'application'
+                });
+                
+                // Close the form and reset data
+            }, 800); // Simulate network delay
+            setShowPostForm(false);   
+
+                    setNewPost({
             title: '',
             description: '',
             department: 'Technology',
@@ -335,18 +363,30 @@ const DashboardContent = () => {
             expectedSalary: undefined,
             skillsRequired: [],
         });
+        }
+             
+
     };
 
     const handleDeletePost = (postId: string) => {
         const post = internshipPosts.find(post => post.id === postId);
         setInternshipPosts(internshipPosts.filter(post => post.id !== postId));
-        
-        // Show info notification
+          // Use setTimeout for notification
         if (post) {
-            showNotification({
-                message: `Internship post "${post.title}" has been deleted.`,
-                type: 'info'
-            });
+            setTimeout(() => {
+                // Show temporary toast notification
+                showNotification({
+                    message: `Internship post "${post.title}" has been deleted.`,
+                    type: 'info'
+                });
+                
+                // Add persistent notification to bell icon
+                addNotification({
+                    title: "Internship Deleted",
+                    message: `Your "${post.title}" internship post has been removed.`,
+                    type: 'application'
+                });
+            }, 800); // Simulate network delay
         }
     };    // Status change handlers
     const handleApplicationStatusChange = (applicationId: string, status: Application['status']) => {
@@ -392,15 +432,25 @@ const DashboardContent = () => {
                 type = 'info';
             } else if (status === 'pending') {
                 message = `Application from ${application.applicantName} has been marked as pending.`;
-                type = 'info';
-            } else {
+                type = 'info';            } else {
                 message = `Application status updated to ${status}.`;
             }
             
-            showNotification({
-                message,
-                type
-            });
+            // Use setTimeout for notification and add to bell icon
+            setTimeout(() => {
+                // Show temporary toast notification
+                showNotification({
+                    message,
+                    type
+                });
+                
+                // Add persistent notification to bell icon
+                addNotification({
+                    title: `Application ${status.charAt(0).toUpperCase() + status.slice(1)}`,
+                    message,
+                    type: 'application'
+                });
+            }, 800); // Simulate network delay
         }
     };
 
@@ -416,7 +466,6 @@ const DashboardContent = () => {
         if (intern) {
             let message = '';
             let type: 'success' | 'error' | 'warning' | 'info' = 'info';
-            
             if (status === 'current') {
                 message = `${intern.name} is now marked as a current intern.`;
                 type = 'success';
@@ -425,12 +474,23 @@ const DashboardContent = () => {
                 type = 'success';
             }
             
-            showNotification({
-                message,
-                type
-            });
+            // Use setTimeout for notification
+            setTimeout(() => {
+                showNotification({
+                    message,
+                    type
+                });
+                
+                // Also add to bell notifications
+                addNotification({
+                    title: status === 'current' ? "Intern Status Updated" : "Internship Completed",
+                    message,
+                    type: 'status-change'
+                });
+            }, 800);
         }
-    };    const handleSubmitEvaluation = () => {
+    };    
+    const handleSubmitEvaluation = () => {
         if (!selectedIntern) return;
         
         // Create a new evaluation or preserve the existing ID when editing
@@ -450,25 +510,34 @@ const DashboardContent = () => {
         );
         
         setInterns(updatedInterns);
-        
-        // Close the form and reset form fields
-        setShowEvaluationForm(false);
-        setIsEditingEvaluation(false); // Reset edit mode
-        setNewEvaluation({
-            internId: '',
-            performanceRating: 0,
-            skillsRating: 0,
-            attitudeRating: 0,
-            comments: '',
-        });
-        
-        // Show success notification with appropriate message
-        showNotification({
-            message: isEditingEvaluation 
-                ? `Evaluation for ${selectedIntern.name} has been updated successfully.`
-                : `Evaluation for ${selectedIntern.name} has been submitted successfully.`,
-            type: 'success'
-        });
+          // Use setTimeout for closing form and showing notification
+        setTimeout(() => {
+            // Close the form and reset form fields
+            setShowEvaluationForm(false);
+            setIsEditingEvaluation(false); // Reset edit mode
+            setNewEvaluation({
+                internId: '',
+                performanceRating: 0,
+                skillsRating: 0,
+                attitudeRating: 0,
+                comments: '',
+            });
+            
+            // Show success notification with appropriate message
+            showNotification({
+                message: isEditingEvaluation 
+                    ? `Evaluation for ${selectedIntern.name} has been updated successfully.`
+                    : `Evaluation for ${selectedIntern.name} has been submitted successfully.`,
+                type: 'success'
+            });
+            
+            // Add to bell notifications
+            addNotification({
+                title: isEditingEvaluation ? "Evaluation Updated" : "Evaluation Submitted",
+                message: `Evaluation for ${selectedIntern.name} has been ${isEditingEvaluation ? 'updated' : 'submitted'} successfully.`,
+                type: 'application'
+            });
+        }, 800);
     };
 
     // Handler to delete an evaluation
@@ -484,17 +553,28 @@ const DashboardContent = () => {
             );
             
             setInterns(updatedInterns);
-            
-            // Close the form
-            setShowEvaluationForm(false);
-            
-            // Show success notification
-            showNotification({
-                message: `Evaluation for ${selectedIntern.name} has been deleted.`,
-                type: 'info'
-            });
+              // Use setTimeout for closing form and showing notification
+            setTimeout(() => {
+                // Close the form
+                setShowEvaluationForm(false);
+                setShowEvaluationDetails(false);
+                
+                // Show success notification
+                showNotification({
+                    message: `Evaluation for ${selectedIntern.name} has been deleted.`,
+                    type: 'info'
+                });
+                
+                // Add to bell notifications
+                addNotification({
+                    title: "Evaluation Deleted",
+                    message: `Evaluation for ${selectedIntern.name} has been deleted.`,
+                    type: 'application'
+                });
+            }, 800);
         }
-    };// Notification handling - simulate random applications for demo purposes
+    };
+    // Notification handling - simulate random applications for demo purposes
     useEffect(() => {
         if (internshipPosts.length === 0) return;
         
@@ -504,10 +584,10 @@ const DashboardContent = () => {
             const randomPost = internshipPosts[Math.floor(Math.random() * internshipPosts.length)];
             // Simulate an application
             handleNewApplication(randomPost.id);
-        }, 30000);
+        }, 10000);
         
         return () => clearInterval(interval);
-    }, [internshipPosts]);
+    }, );
     
     // Prepare filters for sidebars
     const internshipFilters = [
@@ -704,16 +784,7 @@ const DashboardContent = () => {
                 onDelete={handleDeleteEvaluation}
             />
         );
-    };// Notification handling functions
-    const markNotificationAsRead = (id: string) => {
-        setNotifications(prev => prev.map(n => 
-            n.id === id ? {...n, read: true} : n
-        ));
-    };
-
-    const markAllNotificationsAsRead = () => {
-        setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-    };
+    };// Notification handling functions are now handled by the unified notification system
 
     // Function to handle new application submission (simulation)
     const handleNewApplication = (postId: string) => {
@@ -751,40 +822,32 @@ const DashboardContent = () => {
     };
     
     // Function to create application notification and send email
-    const createApplicationNotification = (internshipTitle: string, applicantName: string) => {
-        // Create notification
-        const newNotification: Notification = {
-            id: Date.now().toString(),
+    const createApplicationNotification = (internshipTitle: string, applicantName: string) => {    // Use setTimeout for notifications
+    setTimeout(() => {
+        // Add persistent notification to bell icon
+        addNotification({
+            title: "New Application",
             message: `New application received from ${applicantName} for "${internshipTitle}"`,
             type: 'application',
-            timestamp: new Date(),
-            read: false,
             emailSent: false
-        };
-        
-        // Add to notifications list
-        setNotifications(prev => [newNotification, ...prev]);
-        
-        // Show toast notification
+        });
+            
+        // Show temporary toast notification
         showNotification({
             message: `New application received from ${applicantName} for "${internshipTitle}"`,
             type: 'info'
         });
-        
+            
         // Play notification sound
         const audio = new Audio('/sounds/notification.mp3');
         audio.play().catch(error => console.error('Error playing sound:', error));
+    }, 800); // Simulate network delay
         
-        // Simulate sending email (in a real application, this would call an API endpoint)
-        setTimeout(() => {
-            console.log(`Email sent: New application received for ${internshipTitle}`);
-            // Update notification to reflect email sent
-            setNotifications(prev => prev.map(n => 
-                n.id === newNotification.id 
-                    ? {...n, emailSent: true} 
-                    : n
-            ));
-        }, 1000);
+    // Simulate sending email (in a real application, this would call an API endpoint)
+    setTimeout(() => {
+        console.log(`Email sent: New application received for ${internshipTitle}`);
+        // Email sent notification would be handled by the backend in a real application
+    }, 1000);
     };    // Using the markNotificationAsRead function defined earlier
 
     return (
@@ -816,9 +879,8 @@ const DashboardContent = () => {
                 logo={{
                     src: '/logos/GUCInternshipSystemLogo.png',
                     alt: 'GUC Internship System'
-                }}
-                variant="tabs"
-                notificationCount={unreadNotificationsCount}
+                }}                variant="tabs"
+                notificationCount={unreadCount}
             />
 
             <div className={styles.contentWrapper}>
@@ -826,8 +888,7 @@ const DashboardContent = () => {
                     filters={getCurrentFilters().filters}
                     onFilterChange={getCurrentFilters().onFilterChange}
                 />
-                <main className={styles.mainContent}>                    {/* Tab Navigation is now handled by NavigationMenu */}
-                    
+                <main className={styles.mainContent}>                                        
                     <div className={styles.filterControls}>
                         <SearchBar
                             searchTerm={getSearchProps().searchTerm}
@@ -1003,38 +1064,11 @@ const DashboardContent = () => {
                 />
             )}
             
-            {/* Global notification system */}
-            {notification && (
-                <NotificationSystem
-                    message={notification.message}
-                    type={notification.type}
-                    visible={visible}
-                    onClose={hideNotification}
-                />
-            )}            {/* Notifications panel - show when state is true */}
-            {showNotificationsPanel && (
-                <NotificationsPanel
-                    notifications={notifications}
-                    onClose={() => setShowNotificationsPanel(false)}
-                    onMarkAsRead={(id) => {
-                        setNotifications(prev => prev.map(n => 
-                            n.id === id ? {...n, read: true} : n
-                        ));
-                    }}
-                    onMarkAllAsRead={() => {
-                        setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-                    }}
-                />
-            )}
         </div>
     );
 };
 
-// Main component that provides context
+// Main component
 export default function InternshipDashboard() {
-    return (
-        <NotificationProvider>
-            <DashboardContent />
-        </NotificationProvider>
-    );
+    return <DashboardContent />;
 }

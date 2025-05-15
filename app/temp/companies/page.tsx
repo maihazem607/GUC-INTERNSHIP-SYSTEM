@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import styles from "./page.module.css";
 
 // Import modular components
-import Navigation from "@/components/global/Navigation";
 import NavigationMenu, { MenuItem } from "@/components/global/NavigationMenu";
 import FilterSidebar from "@/components/global/FilterSidebar";
 import SearchBar from "@/components/global/SearchBar";
@@ -11,7 +10,7 @@ import CompanyCard from "@/components/Companies/CompanyCard";
 import CompanyDetailsModal from "@/components/Companies/CompanyDetailsModal";
 import ProfileViewsList from "@/components/ProfileViews/ProfileViewsList";
 import ProfileViewDetailsModal from "@/components/ProfileViews/ProfileViewDetailsModal";
-import NotificationSystem, { useNotification } from "@/components/global/NotificationSystem";
+import { useNotification } from "@/components/global/NotificationSystemAdapter";
 import { Company, FilterOptions } from "@/components/Companies/types";
 import { Eye, Building } from 'lucide-react';
 
@@ -54,7 +53,7 @@ export default function CompaniesPage() {
     timeRange: 'All'
   });
   
-  const { notification, visible, showNotification, hideNotification } = useNotification();
+  const { notification, visible, showNotification, hideNotification, addNotification } = useNotification();
   // Filter options
   const industryOptions = ['All', 'Technology', 'Finance', 'Healthcare', 'Education', 'Entertainment', 'Automotive', 'Design', 'Marketing', 'E-commerce'];
   const recommendationOptions = ['All', 'High', 'Medium', 'Low'];
@@ -537,14 +536,34 @@ export default function CompaniesPage() {
       timeRange: 'All'
     });
     setProfileViewSearchTerm('');
-  };
-  // Handle saving a company
+  };  // Handle saving a company
   const handleSaveCompany = (companyId: number) => {
     // Implement save company functionality (would be API call in real app)
-    showNotification({
-      message: 'Company saved to your favorites!',
-      type: 'success'
-    });
+    
+    // Find the company by ID
+    const company = companies.find(c => c.id === companyId);
+    
+    setTimeout(() => {
+      // Close the modal if it's open
+      if (selectedCompany && selectedCompany.id === companyId) {
+        setSelectedCompany(null);
+      }
+      
+      // Show temporary toast notification
+      showNotification({
+        message: 'Company saved to your favorites!',
+        type: 'success'
+      });
+      
+      // Add persistent notification to bell icon
+      if (company) {
+        addNotification({
+          title: 'Company Saved',
+          message: `${company.name} has been added to your favorites`,
+          type: 'application'
+        });
+      }
+    }, 800); // Simulate network delay
   };
   
   // Handle view profile view details
@@ -555,6 +574,31 @@ export default function CompaniesPage() {
   // Handle closing the profile view details modal
   const handleCloseProfileViewModal = () => {
     setSelectedProfileView(null);
+  };
+  
+  // Handle sending a message to a recruiter
+  const handleSendMessageToRecruiter = (profileView: ProfileView) => {
+    // This would typically send a message via an API call
+    const recruiterName = profileView.recruiterName || 'the recruiter';
+    const companyName = profileView.company;
+    
+    // Use setTimeout for closing modal and showing notifications
+    setTimeout(() => {
+      // Close the profile view modal
+      setSelectedProfileView(null);
+      
+      // Show temporary toast notification
+      showNotification({
+        message: `Message sent to ${recruiterName} at ${companyName}!`,
+        type: 'success'
+      });
+        // Add persistent notification to bell icon
+      addNotification({
+        title: 'Message Sent',
+        message: `You've contacted ${recruiterName} at ${companyName} about a potential opportunity.`,
+        type: 'application'
+      });
+    }, 800); // Simulate network delay
   };
   
   // Navigation menu items for tabs
@@ -693,24 +737,15 @@ export default function CompaniesPage() {
           onSave={() => handleSaveCompany(selectedCompany.id)}
         />
       )}
-      
-      {/* Profile View Details Modal */}
+        {/* Profile View Details Modal */}
       {selectedProfileView && (
         <ProfileViewDetailsModal
           view={selectedProfileView}
           onClose={handleCloseProfileViewModal}
+          onSendMessage={handleSendMessageToRecruiter}
         />
       )}
       
-      {/* Global notification system */}
-      {notification && (
-        <NotificationSystem
-          message={notification.message}
-          type={notification.type}
-          visible={visible}
-          onClose={hideNotification}
-        />
-      )}
     </div>
   );
 }

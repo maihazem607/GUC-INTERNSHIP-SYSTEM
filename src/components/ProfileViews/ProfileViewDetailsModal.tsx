@@ -18,9 +18,10 @@ interface ProfileView {
 interface ProfileViewDetailsModalProps {
   view: ProfileView;
   onClose: () => void;
+  onSendMessage?: (view: ProfileView) => void;
 }
 
-const ProfileViewDetailsModal: React.FC<ProfileViewDetailsModalProps> = ({ view, onClose }) => {
+const ProfileViewDetailsModal: React.FC<ProfileViewDetailsModalProps> = ({ view, onClose, onSendMessage }) => {
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -111,14 +112,18 @@ const ProfileViewDetailsModal: React.FC<ProfileViewDetailsModalProps> = ({ view,
           </div>
         </div>
         
-        <div className={styles.actionButtonContainer}>
-          <button 
-            className={`${styles.actionButton} ${styles.primaryAction}`}
-            onClick={() => {
+        <div className={styles.actionButtonContainer}>          <button 
+            className={`${styles.actionButton} ${styles.primaryAction}`}            onClick={() => {
               // This would typically redirect to a messaging interface or open a compose modal
               console.log('Send message to recruiter:', view.recruiterName);
-              // For demonstration purposes, we'll just log the action
-              alert('Sending message to recruiter: ' + (view.recruiterName || 'Unknown Recruiter'));
+              
+              // If onSendMessage is provided, call it
+              if (onSendMessage) {
+                onSendMessage(view);
+              } else {
+                // Fallback for backwards compatibility
+                alert('Sending message to recruiter: ' + (view.recruiterName || 'Unknown Recruiter'));
+              }
             }}
           >
             Send Message to Recruiter

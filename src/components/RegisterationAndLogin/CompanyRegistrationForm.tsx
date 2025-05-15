@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './CompanyRegistrationForm.module.css';
+import { useNotification } from '../../context/NotificationContext';
 import {
   Factory, Mail, Lock, Upload,
   ArrowRight, ArrowLeft
@@ -44,6 +45,7 @@ const industries: Industry[] = [
 const CompanyRegistrationForm: React.FC = () => {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { showNotification, addNotification } = useNotification();
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [formValues, setFormValues] = useState({
     companyName: '',
@@ -197,9 +199,25 @@ const CompanyRegistrationForm: React.FC = () => {
     // Simulate API call with a timeout
     setTimeout(() => {
       setIsSubmitting(false);
+      
+      // Show notification
+      showNotification({
+        message: "Registration submitted. Your request is under review. You'll receive an email once it's approved or rejected",
+        type: 'success'
+      });
+      
+      // Also add to persistent notifications
+      addNotification({
+        title: "Registration Submitted",
+        message: "Your company registration request is under review. You'll receive an email once it's approved or rejected.",
+        type: 'system'
+      });
 
-      // Redirect to success page or login page
-      router.push('/CompanyLogin?registered=true');
+      // Wait a moment to show the notification before redirecting
+      setTimeout(() => {
+        // Redirect to success page or login page
+        router.push('/CompanyLogin?registered=true');
+      }, 2000);
     }, 1500);
   };
 

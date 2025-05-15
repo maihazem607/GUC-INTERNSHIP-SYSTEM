@@ -9,7 +9,7 @@ import SearchBar from "../../../src/components/global/SearchBar";
 import InternshipCard from "../../../src/components/internships/InternshipCard";
 import InternshipDetailsModal from "../../../src/components/internships/InternshipDetailsModal";
 import InternshipHelpPopup from "../../../src/components/internships/InternshipHelpPopup";
-import NotificationSystem, { useNotification } from "../../../src/components/global/NotificationSystem";
+import NotificationSystem, { useNotification } from "../../../src/components/global/NotificationSystemAdapter";
 import { Internship, FilterOptions } from "../../../src/components/internships/types";
 
 // Internship data (would typically come from an API)
@@ -236,7 +236,7 @@ export default function InternshipListPage() {  const [searchTerm, setSearchTerm
   const [showHelpPopup, setShowHelpPopup] = useState(true);
   
   // Add notification system at page level
-  const { notification, visible, showNotification, hideNotification } = useNotification();
+  const { notification, visible, showNotification, hideNotification, addNotification } = useNotification();
 
   // Filter options
   const industries = ['All', 'Technology', 'Finance', 'Marketing', 'Design', 'Healthcare'];
@@ -354,16 +354,25 @@ export default function InternshipListPage() {  const [searchTerm, setSearchTerm
       if (application.additionalNotes) {
         console.log(`Additional notes: ${application.additionalNotes}`);
       }
-      
-      // Show success notification at the page level
-      showNotification({
-        message: 'Application submitted successfully!',
-        type: 'success'
-      });
+        // Use setTimeout for notification and closing the modal
+      setTimeout(() => {
+        // Show success notification at the page level
+        showNotification({
+          message: 'Application submitted successfully!',
+          type: 'success'
+        });
+        
+        // Add to bell notifications
+        addNotification({
+          title: "Application Submitted",
+          message: `Your application for ${appliedInternship.title} at ${appliedInternship.company} has been submitted.`,
+          type: 'application'
+        });
+
+        // Close the modal after successful submission
+        setSelectedInternship(null);
+      }, 800);
     }
-    
-    // Close the modal after successful submission
-    setSelectedInternship(null);
     
     return new Promise<void>(resolve => setTimeout(resolve, 1000));
   };
@@ -433,16 +442,6 @@ export default function InternshipListPage() {  const [searchTerm, setSearchTerm
           onApply={handleApply}
         />
       )}
-        {/* Global notification system - Moved to page level */}
-      {notification && (
-        <NotificationSystem
-          message={notification.message}
-          type={notification.type}
-          visible={visible}
-          onClose={hideNotification}
-        />
-      )}
-      
       {/* Help popup for internship requirements */}
       {showHelpPopup && (
         <InternshipHelpPopup onClose={() => setShowHelpPopup(false)} />

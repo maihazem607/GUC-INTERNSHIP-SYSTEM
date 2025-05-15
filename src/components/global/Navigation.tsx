@@ -1,13 +1,14 @@
+"use client";
 import Image from "next/image";
 import styles from "./Navigation.module.css";
+import NotificationBell from "./NotificationBell";
 
 interface NavigationProps {
   title?: string;
   logoSrc?: string;
-  notificationCount?: number;
 }
 
-export default function Navigation({ title = "GUC Internship System", logoSrc = '/logos/GUCInternshipSystemLogo.png', notificationCount = 0 }: NavigationProps) {
+export default function Navigation({ title = "GUC Internship System", logoSrc = '/logos/GUCInternshipSystemLogo.png' }: NavigationProps) {
   return (
     <header className={styles.navBar}>
       <div className={styles.navLeft}>
@@ -27,14 +28,10 @@ export default function Navigation({ title = "GUC Internship System", logoSrc = 
           <span className={styles.locationIcon}>📍</span>
           <span>New York, NY</span>
         </div>
-        <div className={styles.userControls}>          <div className={styles.userAvatar}></div>
-          <button className={styles.settingsButton}>⚙️</button>
-          <button className={styles.notificationsButton}>
-            🔔
-            {notificationCount > 0 && (
-              <span className={styles.notificationBadge}>{notificationCount}</span>
-            )}
-          </button>
+        <div className={styles.userControls}>          
+          <div className={styles.userAvatar}></div>
+          <button className={styles.settingsButton}>⚙️</button> 
+                   <NotificationBell />
         </div>
       </div>
     </header>

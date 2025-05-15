@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { ChevronDown, MapPin, Settings, Bell, User } from 'lucide-react';
+import { ChevronDown, MapPin, Settings, User } from 'lucide-react';
 import styles from './NavigationMenu.module.css';
+import NotificationBell from './NotificationBell';
 
 export interface MenuItem {
     id: string;
@@ -147,13 +148,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
             <div className={styles.userControls}>
                 <button className={styles.settingsButton}>
                     <Settings size={18} />
-                </button>
-                <button className={styles.notificationsButton}>
-                    <Bell size={18} />
-                    {notificationCount > 0 && (
-                        <span className={styles.notificationBadge}>{notificationCount}</span>
-                    )}
-                </button>
+                </button>                <NotificationBell />
                 <div className={styles.userAvatar}>
                     <User size={20} />
                 </div>

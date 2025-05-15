@@ -17,7 +17,7 @@ import EvaluationDetails from "../../../src/components/SCAD/EvaluationDetails";
 import InternshipCard from "../../../src/components/internships/InternshipCard";
 import InternshipDetailsModal from "../../../src/components/internships/InternshipDetailsModal";
 import { Internship } from "../../../src/components/internships/types";
-import NotificationSystem, { useNotification } from "../../../src/components/global/NotificationSystem";
+import NotificationSystem, { useNotification } from "../../../src/components/global/NotificationSystemAdapter";
 import {
   Building,
   Users,
@@ -1422,14 +1422,6 @@ export default function SCADDashboardPage() {
           onClose={handleCloseInternshipDetails}
         />
       )}
-
-      {/* Global notification system */}
-      <NotificationSystem
-        message={notification?.message || ''}
-        type={notification?.type || 'info'}
-        visible={visible}
-        onClose={hideNotification}
-      />
     </div>
   );
 }

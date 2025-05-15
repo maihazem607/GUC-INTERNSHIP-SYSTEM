@@ -71,7 +71,6 @@ const InternshipDetailsModal: React.FC<DetailsModalProps> = ({
     
     try {
       if (onApply) {
-        // Just call the onApply function - notifications are now handled at the page level
         await onApply({
           internshipId: internship.id,
           documents,

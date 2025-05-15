@@ -7,7 +7,6 @@ import { Award, BookOpen, CheckSquare, Filter, Grid, InfoIcon, LayoutGrid, Searc
 import NavigationMenu, { MenuItem } from "@/components/global/NavigationMenu";
 import FilterSidebar from "@/components/global/FilterSidebar";
 import SearchBar from "@/components/global/SearchBar";
-import NotificationSystem from "@/components/global/NotificationSystem";
 import { Assessment, FilterOptions } from "@/components/Assessments/types";
 import AssessmentCard from '@/components/Assessments/AssessmentCard';
 import AssessmentDetailsModal from '@/components/Assessments/AssessmentDetailsModal';

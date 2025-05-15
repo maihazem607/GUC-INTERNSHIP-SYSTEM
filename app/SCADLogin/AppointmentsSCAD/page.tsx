@@ -9,7 +9,7 @@ import SearchBar from "../../../src/components/global/SearchBar";
 import AppointmentCard from "../../../src/components/Appointments/AppointmentCard";
 import AppointmentDetailsModal from "../../../src/components/Appointments/AppointmentDetailsModal";
 import VideoCall from "../../../src/components/Appointments/VideoCall";
-import NotificationSystem, { NOTIFICATION_CONSTANTS } from "../../../src/components/global/NotificationSystem";
+import NotificationSystem, { useNotification, NOTIFICATION_CONSTANTS } from "../../../src/components/global/NotificationSystemAdapter";
 import IncomingCallNotification from "../../../src/components/Appointments/IncomingCallNotification";
 import { Appointment } from "../../../src/components/Appointments/types";
 import NewAppointmentForm from "../../../src/components/Appointments/NewAppointmentForm";
@@ -106,9 +106,8 @@ export default function AppointmentsPage() {
   useEffect(() => {
     setActiveItem('appointments');
   }, []);
-    
-  // State for notifications
-  const [notification, setNotification] = useState<{message: string, type: 'success' | 'error' | 'info' | 'warning'} | null>(null);
+      // Use the unified notification system with both toast and persistent notifications
+  const { showNotification, addNotification } = useNotification();
   
   // Audio references for notification sounds
   const notificationSoundRef = useRef<HTMLAudioElement | null>(null);
@@ -181,8 +180,7 @@ export default function AppointmentsPage() {
         app.title === "Academic Progress Review"
       )?.id;
       
-      if (appointmentId) {
-        // Update the appointment status with a visual notification
+      if (appointmentId) {        // Update the appointment status with a visual notification
         setAppointments(prevAppointments => 
           prevAppointments.map(app => 
             app.participantName === "Dr. Emily Rodriguez" && app.title === "Academic Progress Review"
@@ -190,11 +188,20 @@ export default function AppointmentsPage() {
               : app
           )
         );
-        
-        setNotification({
-          message: "Dr. Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
-          type: 'success'
-        });
+
+        if (activeTab === 'my-appointments') {
+          showNotification({
+            message: "Dr. Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
+            type: 'success'
+          });
+          
+          // Add to bell notifications
+          addNotification({
+            title: "Appointment Accepted",
+            message: "Dr. Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
+            type: 'appointment'
+          });
+        }
         
         // Try to play notification sound
         playNotificationSound('notification');
@@ -210,17 +217,7 @@ export default function AppointmentsPage() {
       }
     }, 2000); // Show 2 seconds after page load
   }, []);
-  
-  // Auto-dismiss notifications after the specified time
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => {
-        setNotification(null);
-      }, NOTIFICATION_CONSTANTS.AUTO_DISMISS_TIME);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [notification]);
+    // Auto-dismiss is now handled by the unified notification system
 
   // Filter options
   const statusOptions = ['All', 'Pending', 'Accepted', 'Rejected', 'Completed'];
@@ -379,18 +376,27 @@ export default function AppointmentsPage() {
     setShowAppointmentDetails(false);
   };
   
-  const handleAcceptAppointment = async (appointmentId: string) => {
-    // This would typically be an API call
+  const handleAcceptAppointment = async (appointmentId: string) => {    // This would typically be an API call
     setAppointments(prev => 
       prev.map(app => 
         app.id === appointmentId ? {...app, status: 'accepted'} : app
       )
     );
       const app = appointments.find(a => a.id === appointmentId);
-    setNotification({
-      message: app ? `You have accepted the appointment request from ${app.participantName}` : `Appointment accepted successfully`,
-      type: 'success'
-    });
+    
+    if (activeTab === 'my-appointments') {
+      showNotification({
+        message: app ? `You have accepted the appointment request from ${app.participantName}` : `Appointment accepted successfully`,
+        type: 'success'
+      });
+      
+      // Add to bell notifications
+      addNotification({
+        title: "Appointment Accepted",
+        message: app ? `You have accepted the appointment request from ${app.participantName}` : `Appointment accepted successfully`,
+        type: 'appointment'
+      });
+    }
     
     // If accepting from modal, close it
     if (showAppointmentDetails) {
@@ -403,18 +409,27 @@ export default function AppointmentsPage() {
     return new Promise<void>(resolve => setTimeout(resolve, 500));
   };
   
-  const handleRejectAppointment = async (appointmentId: string) => {
-    // This would typically be an API call
+  const handleRejectAppointment = async (appointmentId: string) => {    // This would typically be an API call
     setAppointments(prev => 
       prev.map(app => 
         app.id === appointmentId ? {...app, status: 'rejected'} : app
       )
     );
       const app = appointments.find(a => a.id === appointmentId);
-    setNotification({
-      message: app ? `You have declined the appointment request from ${app.participantName}` : `Appointment rejected`,
-      type: 'warning'
-    });
+    
+    if (activeTab === 'my-appointments') {
+      showNotification({
+        message: app ? `You have declined the appointment request from ${app.participantName}` : `Appointment rejected`,
+        type: 'warning'
+      });
+      
+      // Add to bell notifications
+      addNotification({
+        title: "Appointment Declined",
+        message: app ? `You have declined the appointment request from ${app.participantName}` : `Appointment rejected`,
+        type: 'appointment'
+      });
+    }
     
     // If rejecting from modal, close it
     if (showAppointmentDetails) {
@@ -433,12 +448,18 @@ export default function AppointmentsPage() {
     setShowAppointmentDetails(false);
   };  const handleEndCall = () => {
     setShowVideoCall(false);
-    
-    // Notify that call has ended
+      // Notify that call has ended
     if (selectedAppointment) {
-      setNotification({
+      showNotification({
         message: `Call with ${selectedAppointment.participantName} has ended`,
         type: 'info'
+      });
+      
+      // Add to bell notifications
+      addNotification({
+        title: "Call Ended",
+        message: `Call with ${selectedAppointment.participantName} has ended`,
+        type: 'appointment'
       });
       
       // Play sound with fallback handling
@@ -468,11 +489,17 @@ export default function AppointmentsPage() {
       const simulateCallEnding = setTimeout(() => {
         // End the call automatically
         setShowVideoCall(false);
-        
-        // Show notification that Dr. Hassan left the call
-        setNotification({
+          // Show notification that Dr. Hassan left the call
+        showNotification({
           message: `Dr. Ahmed Hassan has left the call`,
           type: 'info'
+        });
+        
+        // Add to bell notifications
+        addNotification({
+          title: "Call Ended",
+          message: `Dr. Ahmed Hassan has left the call`,
+          type: 'appointment'
         });
         
         // Play notification sound with fallback handling
@@ -489,22 +516,34 @@ export default function AppointmentsPage() {
       setSelectedAppointment(incomingCall);
       setIncomingCall(null);
       setShowVideoCall(true);
-      
-      // Show notification that we joined the call
-      setNotification({
+        // Show notification that we joined the call
+      showNotification({
         message: `You joined a call with ${incomingCall.participantName}`,
         type: 'info'
       });
+      
+      // Add to bell notifications
+      addNotification({
+        title: "Call Joined",
+        message: `You joined a call with ${incomingCall.participantName}`,
+        type: 'appointment'
+      });
     }
   };
-  
-  const handleRejectIncomingCall = () => {
+    const handleRejectIncomingCall = () => {
     setIncomingCall(null);
-    setNotification({
+    showNotification({
       message: `Call declined`,
       type: 'info'
     });
-  };  // Simulate notification to the other user (in a real app, this would use websockets or other real-time tech)
+    
+    // Add to bell notifications
+    addNotification({
+      title: "Call Declined",
+      message: `Call declined`,
+      type: 'appointment'
+    });
+  };// Simulate notification to the other user (in a real app, this would use websockets or other real-time tech)
   const simulateNotificationToOtherUser = (appointmentId: string, status: string) => {
     console.log(`Notification sent to other user about appointment ${appointmentId} being ${status}`);
     // In a real app, this would send a notification through your backend
@@ -532,10 +571,16 @@ export default function AppointmentsPage() {
           notificationMessage = `${app.participantName} has declined your appointment request for "${app.title}"`;
           notificationType = 'warning';
         }        
-        
-        setNotification({
+          showNotification({
           message: notificationMessage,
           type: notificationType
+        });
+        
+        // Add to bell notifications
+        addNotification({
+          title: status === 'accepted' ? "Appointment Accepted" : "Appointment Declined",
+          message: notificationMessage,
+          type: 'appointment'
         });
         
         // Play notification sound with fallback handling
@@ -564,11 +609,17 @@ export default function AppointmentsPage() {
     };
     
     // Add the new appointment to the list
-    setAppointments(prev => [...prev, newAppointment]);
-      // Show success notification
-    setNotification({
+    setAppointments(prev => [...prev, newAppointment]);    // Show success notification
+    showNotification({
       message: `Appointment request sent to ${newAppointment.participantName}`,
       type: 'success'
+    });
+    
+    // Add to bell notifications
+    addNotification({
+      title: "Appointment Request Sent",
+      message: `Appointment request sent to ${newAppointment.participantName}`,
+      type: 'appointment'
     });
     
     // Switch to the My Appointments tab
@@ -635,13 +686,12 @@ export default function AppointmentsPage() {
           },
           { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=settings') }
         ]}
-        activeItemId={activeItem}
-        logo={{
+        activeItemId={activeItem}        logo={{
           src: '/logos/GUCInternshipSystemLogo.png',
           alt: 'GUC Internship System'
         }}
         variant="navigation"
-        notificationCount={(incomingCall ? 1 : 0) + (notification ? 1 : 0)}
+        notificationCount={incomingCall ? 1 : 0}
       />
 
       <div className={styles.contentWrapper}>
@@ -743,20 +793,6 @@ export default function AppointmentsPage() {
           onClose={handleEndCall}
           participantName={selectedAppointment.participantName}
           participantType={selectedAppointment.participantType}
-        />
-      )}
-      
-      {/* Notification Component */}
-      {notification && (
-        <NotificationSystem
-          message={notification.message}
-          type={notification.type}
-          visible={true}
-          onClose={() => {
-            setTimeout(() => {
-              setNotification(null);
-            }, NOTIFICATION_CONSTANTS.HIDE_ANIMATION_TIME);
-          }}
         />
       )}
 

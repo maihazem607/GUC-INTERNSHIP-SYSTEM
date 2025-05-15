@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { ReactNode } from 'react';
+import NotificationLayout from '@/components/global/NotificationLayout';
 
-export const metadata: Metadata = {
-  title: 'GUC Internship System',
-  description: 'Platform connecting students with internship opportunities',
-};
 
 export default function RootLayout({
   children,
@@ -13,7 +10,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <NotificationLayout>
+          {children}
+        </NotificationLayout>
+      </body>
     </html>
   );
 }

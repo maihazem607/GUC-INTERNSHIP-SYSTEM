@@ -10,7 +10,7 @@ import WorkshopCard from "@/components/workshops/WorkshopCard";
 import WorkshopDetailsModal from "@/components/workshops/WorkshopDetailsModal";
 import LiveSessionModal from "@/components/workshops/LiveSessionModal";
 import RecordedSessionModal from "@/components/workshops/RecordedSessionModal";
-import NotificationSystem, { NOTIFICATION_CONSTANTS } from "@/components/global/NotificationSystem";
+import NotificationSystem, { useNotification } from "@/components/global/NotificationSystemAdapter";
 import { Workshop } from "@/components/workshops/types";
 
 // Workshop data (would typically come from an API)
@@ -130,19 +130,8 @@ export default function WorkshopListPage() {
   const [filteredWorkshops, setFilteredWorkshops] = useState<Workshop[]>(workshops);
   const [selectedWorkshop, setSelectedWorkshop] = useState<Workshop | null>(null);
   const [liveSession, setLiveSession] = useState<Workshop | null>(null);
-  const [recordedSession, setRecordedSession] = useState<Workshop | null>(null);
-  const [notification, setNotification] = useState<{message: string, type: 'success' | 'error' | 'warning' | 'info'} | null>(null);
-
-  // Auto-dismiss notifications after the specified time
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => {
-        setNotification(null);
-      }, NOTIFICATION_CONSTANTS.AUTO_DISMISS_TIME);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [notification]);
+  const [recordedSession, setRecordedSession] = useState<Workshop | null>(null);  // Get notification handling from the unified system
+  const { notification, visible, showNotification, hideNotification, addNotification } = useNotification();
 
   // Filter options
   const statusOptions = ['All', 'Upcoming', 'Ongoing', 'Completed'];
@@ -209,26 +198,85 @@ export default function WorkshopListPage() {
   const handleCloseModal = () => {
     setSelectedWorkshop(null);
   };
-  
-  const handleRegister = async (workshop: Workshop) => {
+      const handleRegister = async (workshop: Workshop) => {
     // This would typically be an API call
     console.log(`Registered for workshop: ${workshop.title}`);
-    setNotification({
-      message: `Successfully registered for "${workshop.title}"`,
-      type: 'success'
-    });
+    
+    // Use setTimeout for notification and closing windows
+    setTimeout(() => {
+      // Close modal if it was open
+      if (selectedWorkshop && selectedWorkshop.id === workshop.id) {
+        setSelectedWorkshop(null);
+      }
+      
+      // Show success notification
+      showNotification({
+        message: `Successfully registered for "${workshop.title}"`,
+        type: 'success'
+      });
+      
+      // Add persistent notification to bell icon
+      addNotification({
+        title: "Workshop Registration",
+        message: `You've successfully registered for "${workshop.title}" on ${workshop.date}`,
+        type: 'application'
+      });
+    }, 800); // Simulate network delay
+    
     return new Promise<void>(resolve => setTimeout(resolve, 1000));
   };
-  
+    
   const handleJoinLive = async (workshop: Workshop) => {
     // This would typically connect to a live session
-    setLiveSession(workshop);
+    setTimeout(() => {
+      setLiveSession(workshop);
+      
+      // Show success notification
+      showNotification({
+        message: `Joining live session for "${workshop.title}"`,
+        type: 'info'
+      });
+      
+      // Add to bell notifications
+      addNotification({
+        title: "Joining Workshop",
+        message: `You've joined the live session for "${workshop.title}"`,
+        type: 'application'
+      });
+      
+      // Close the details modal if it was open
+      if (selectedWorkshop && selectedWorkshop.id === workshop.id) {
+        setSelectedWorkshop(null);
+      }
+    }, 800);
+    
     return new Promise<void>(resolve => setTimeout(resolve, 1000));
   };
-  
+    
   const handleWatchRecording = async (workshop: Workshop) => {
     // This would typically fetch a recording
-    setRecordedSession(workshop);
+    setTimeout(() => {
+      setRecordedSession(workshop);
+      
+      // Show success notification
+      showNotification({
+        message: `Loading recording for "${workshop.title}"`,
+        type: 'info'
+      });
+      
+      // Add to bell notifications
+      addNotification({
+        title: "Workshop Recording",
+        message: `You've started watching the recording for "${workshop.title}"`,
+        type: 'application'
+      });
+      
+      // Close the details modal if it was open
+      if (selectedWorkshop && selectedWorkshop.id === workshop.id) {
+        setSelectedWorkshop(null);
+      }
+    }, 800);
+    
     return new Promise<void>(resolve => setTimeout(resolve, 1000));
   };
 
@@ -285,21 +333,7 @@ export default function WorkshopListPage() {
             </div>
           </div>
         </main>
-      </div>      {/* Notification Component - With auto-dismiss */}
-      {notification && (
-        <NotificationSystem
-          message={notification.message}
-          type={notification.type}
-          visible={true}
-          onClose={() => {
-            // This creates a smooth fade-out animation before removing notification
-            setTimeout(() => {
-              setNotification(null);
-            }, NOTIFICATION_CONSTANTS.HIDE_ANIMATION_TIME);
-          }}
-        />
-      )}
-
+      </div> 
       {/* Details Modal */}
       {selectedWorkshop && (
         <WorkshopDetailsModal

@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './NotificationsPanel.module.css';
-import { Notification } from '../../components/Companyy/types';
-import { X, FileText, RefreshCw, Info, Mail } from 'lucide-react';
+import { PersistentNotification } from '../../context/NotificationContext';
+import { X, FileText, RefreshCw, Info, Mail, Calendar, AlertTriangle } from 'lucide-react';
 
 interface NotificationsPanelProps {
-    notifications: Notification[];
+    notifications: PersistentNotification[];
     onClose: () => void;
     onMarkAsRead: (id: string) => void;
     onMarkAllAsRead: () => void;
@@ -16,6 +16,30 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
     onMarkAsRead,
     onMarkAllAsRead
 }) => {
+    const getNotificationIcon = (type: string) => {
+        switch(type) {
+            case 'application':
+                return <FileText size={16} color="#4c51bf" />;
+            case 'status-change':
+                return <RefreshCw size={16} color="#4c51bf" />;
+            case 'appointment':
+                return <Calendar size={16} color="#4c51bf" />;
+            case 'system':
+            default:
+                return <Info size={16} color="#4c51bf" />;
+        }
+    };
+
+    const handleNotificationClick = (notification: PersistentNotification) => {
+        // Mark as read
+        onMarkAsRead(notification.id);
+        
+        // Navigate to actionUrl if provided
+        if (notification.actionUrl) {
+            window.location.href = notification.actionUrl;
+        }
+    };
+    
     return (
         <div className={styles.notificationsPanelOverlay}>
             <div className={styles.notificationsPanel}>
@@ -42,14 +66,15 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({
                             <div
                                 key={notification.id}
                                 className={`${styles.notificationItem} ${notification.read ? styles.read : styles.unread}`}
-                                onClick={() => onMarkAsRead(notification.id)}
+                                onClick={() => handleNotificationClick(notification)}
                             >
                                 <div className={styles.notificationIcon}>
-                                    {notification.type === 'application' ? <FileText size={16} color="#4c51bf" /> :
-                                        notification.type === 'status-change' ? <RefreshCw size={16} color="#4c51bf" /> :
-                                            <Info size={16} color="#4c51bf" />}
+                                    {getNotificationIcon(notification.type)}
                                 </div>
                                 <div className={styles.notificationContent}>
+                                    {notification.title && (
+                                        <p className={styles.notificationTitle}>{notification.title}</p>
+                                    )}
                                     <p className={styles.notificationMessage}>{notification.message}</p>
                                     <p className={styles.notificationTime}>
                                         {notification.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {notification.timestamp.toLocaleDateString()}

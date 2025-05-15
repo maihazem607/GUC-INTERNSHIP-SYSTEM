@@ -10,7 +10,7 @@ import ReportModal from "../../../src/components/MyInternships/ReportModal";
 import ReportsList from "../../../src/components/MyInternships/ReportsList";
 import ReportResultsModal from "../../../src/components/MyInternships/ReportResultsModal";
 import { Internship, FilterOptions } from "../../../src/components/internships/types";
-import NotificationSystem, { useNotification } from "../../../src/components/global/NotificationSystem";
+import { useNotification } from "../../../src/components/global/NotificationSystemAdapter";
 import styles from "./page.module.css";
 
 // Extended Internship type to include application status and evaluation
@@ -109,13 +109,12 @@ const MyInternshipsPage: React.FC = () => {
     coursesApplied: [] as string[],
     finalized: false
   });
-  
-  // Mock courses based on major (in a real app, this would come from an API)
+    // Mock courses based on major (in a real app, this would come from an API)
   const [availableCourses, setAvailableCourses] = useState<{id: string, name: string}[]>([]);
   const [activeReportTab, setActiveReportTab] = useState<'edit' | 'preview' | 'courses'>('edit');
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [highlightedReportId, setHighlightedReportId] = useState<number | undefined>(undefined);
-  const { notification, visible, showNotification, hideNotification } = useNotification();
+  const { notification, visible, showNotification, hideNotification, addNotification } = useNotification();
   // Filter options  
   const statusOptions = ['All', 'Pending', 'Finalized', 'Accepted', 'Rejected'];
   const internStatusOptions = ['All', 'Current Intern', 'Internship Complete'];
@@ -700,30 +699,22 @@ const MyInternshipsPage: React.FC = () => {
         
         setIsSubmittingEval(false);
         setShowEvaluationModal(false);
-        
-        // Show success notification
+          // Show success notification and add to bell icon
         showNotification({
           message: `Evaluation for ${selectedInternship.title} at ${selectedInternship.company} submitted successfully!`,
           type: 'success'
         });
+        
+        // Add persistent notification to bell icon
+        addNotification({
+          title: "Evaluation Submitted",
+          message: `You've successfully submitted an evaluation for ${selectedInternship.title} at ${selectedInternship.company}.`,
+          type: 'application'
+        });
       }, 800); // Simulate network delay
     }
   };
-    // Handle finalizing an evaluation (makes it read-only)
-  const handleFinalizeEvaluation = () => {
-    if (selectedInternship) {
-      // Set evaluation as finalized
-      setEvaluation(prev => ({...prev, finalized: true}));
-      
-      // Submit the evaluation
-      handleSubmitEvaluation();
-      
-      showNotification({
-        message: `Your evaluation for ${selectedInternship.title} at ${selectedInternship.company} has been finalized.`,
-        type: 'success'
-      });
-    }
-  };
+
   // Handle finalizing a report (makes it read-only)
   const handleFinalizeReport = () => {
     if (selectedInternship) {
@@ -765,11 +756,17 @@ const MyInternshipsPage: React.FC = () => {
           
           setIsSubmittingReport(false);
           setShowReportModal(false);
-          
-          // Show success notification
+            // Show success notification and add to bell icon
           showNotification({
             message: `Your report for ${selectedInternship.title} at ${selectedInternship.company} has been finalized and submitted.`,
             type: 'success'
+          });
+          
+          // Add persistent notification to bell icon
+          addNotification({
+            title: "Report Submitted",
+            message: `Your report for ${selectedInternship.title} at ${selectedInternship.company} has been finalized and is now under review.`,
+            type: 'application'
           });
             // First set the highlighted report ID, then change the active tab
           setHighlightedReportId(selectedInternship.id);
@@ -823,13 +820,21 @@ const MyInternshipsPage: React.FC = () => {
         
         setIsSubmittingReport(false);
         setShowReportModal(false);
-        
-        // Show success notification with appropriate message
+          // Show success notification with appropriate message
         showNotification({
           message: report.finalized 
             ? `Your report for ${selectedInternship.title} at ${selectedInternship.company} has been submitted for review!` 
             : `Draft report for ${selectedInternship.title} at ${selectedInternship.company} saved successfully!`,
           type: 'success'
+        });
+        
+        // Add persistent notification to bell icon
+        addNotification({
+          title: report.finalized ? "Report Submitted" : "Report Saved",
+          message: report.finalized
+            ? `Your report for ${selectedInternship.title} at ${selectedInternship.company} has been submitted for review.`
+            : `Your draft report for ${selectedInternship.title} at ${selectedInternship.company} was saved.`,
+          type: 'application'
         });
           // If the report is finalized, redirect to reports tab and highlight the new report
         if (report.finalized) {
@@ -878,11 +883,17 @@ const MyInternshipsPage: React.FC = () => {
         );
         
         setShowEvaluationModal(false);
-        
-        // Show notification
+          // Show notification
         showNotification({
           message: `Evaluation for ${selectedInternship.title} at ${selectedInternship.company} has been deleted.`,
           type: 'info'
+        });
+        
+        // Add persistent notification to bell icon
+        addNotification({
+          title: "Evaluation Deleted",
+          message: `Your evaluation for ${selectedInternship.title} at ${selectedInternship.company} has been removed.`,
+          type: 'application'
         });
       }
     }
@@ -918,11 +929,17 @@ const MyInternshipsPage: React.FC = () => {
         );
         
         setShowReportModal(false);
-        
-        // Show notification
+          // Show notification
         showNotification({
           message: `Report for ${selectedInternship.title} at ${selectedInternship.company} has been deleted.`,
           type: 'info'
+        });
+        
+        // Add persistent notification to bell icon
+        addNotification({
+          title: "Report Deleted",
+          message: `Your report for ${selectedInternship.title} at ${selectedInternship.company} has been removed.`,
+          type: 'application'
         });
       }
     }
@@ -948,9 +965,9 @@ const MyInternshipsPage: React.FC = () => {
       }
     });
   };
-    // Get course name by ID
+  // Get course name by ID
   const getCourseNameById = (courseId: string): string => {
-    const course = availableCourses.find(c => c.id === courseId);
+    const course = availableCourses.find((c: {id: string, name: string}) => c.id === courseId);
     return course ? course.name : courseId;
   };
   // Handle downloading report as PDF
@@ -990,19 +1007,31 @@ const MyInternshipsPage: React.FC = () => {
           finalized: report.finalized,
           courseNames: courseNames
         });
-        
-        // Show success notification
+          // Show success notification
         showNotification({
           message: `Report "${fileName}" has been downloaded to your device.`,
           type: 'success'
         });
+        
+        // Add persistent notification to bell icon
+        addNotification({
+          title: "Report Downloaded",
+          message: `Your report for ${selectedInternship.title} at ${selectedInternship.company} has been downloaded as "${fileName}".`,
+          type: 'application'
+        });
       } catch (error) {
         console.error('Error generating PDF:', error);
-        
-        // Show error notification
+          // Show error notification
         showNotification({
           message: 'Failed to generate PDF. Please try again.',
           type: 'error'
+        });
+        
+        // Add persistent notification to bell icon
+        addNotification({
+          title: "PDF Generation Failed",
+          message: `We couldn't generate the PDF for your report at ${selectedInternship.company}. Please try again later.`,
+          type: 'application'
         });
       } finally {
         setIsGeneratingPDF(false);
@@ -1023,12 +1052,18 @@ const MyInternshipsPage: React.FC = () => {
     
     // Find the internship to get its details for better notifications
     const internship = myInternships.find(intern => intern.id === internshipId);
-    
-    if (!internship) {
+      if (!internship) {
       setIsSubmittingAppeal(false);
       showNotification({
         message: "Error: Could not find the internship to submit appeal.",
         type: 'error'
+      });
+      
+      // Add persistent notification to bell icon
+      addNotification({
+        title: "Appeal Submission Error",
+        message: "We couldn't process your appeal because the internship details couldn't be found.",
+        type: 'application'
       });
       return;
     }
@@ -1064,11 +1099,17 @@ const MyInternshipsPage: React.FC = () => {
       );
       
       setIsSubmittingAppeal(false);
-      
-      // Show success notification with specific details
+        // Show success notification with specific details
       showNotification({
         message: `Appeal for "${internship.report?.title}" at ${internship.company} has been submitted successfully! SCAD will review your appeal and respond within 5-7 business days.`,
         type: 'success'
+      });
+      
+      // Add persistent notification to bell icon
+      addNotification({
+        title: "Appeal Submitted",
+        message: `Your appeal for the report "${internship.report?.title}" at ${internship.company} has been submitted for review by SCAD.`,
+        type: 'application'
       });
       
       // Close modal after a brief delay so user can see the changes
@@ -1168,14 +1209,14 @@ const MyInternshipsPage: React.FC = () => {
                     </div>
                   ))}
                 </div>
-              )
-            ) : (
+              )            ) : (
               <div className={styles.noResults}>
-                <img 
-                  src="assets/images/icons/search.png" 
-                  alt="Search Icon" 
+                <Search 
+                  size={64} 
                   className={styles.searchIcon} 
-                /> 
+                  strokeWidth={1.5}
+                  color="#888"
+                />
                 <h3>No {activeTab === 'reports' ? 'reports' : 'internships'} found</h3>
                 <p>
                   {activeTab === 'applications' ? 
@@ -1230,20 +1271,8 @@ const MyInternshipsPage: React.FC = () => {
           isSubmittingAppeal={isSubmittingAppeal}
         />
       )}
-      
-      {/* Global notification system */}
-      {notification && (
-        <NotificationSystem
-          message={notification.message}
-          type={notification.type}
-          visible={visible}
-          onClose={hideNotification}
-        />
-      )}
     </div>
   );
 };
 
 export default MyInternshipsPage;
-
- 

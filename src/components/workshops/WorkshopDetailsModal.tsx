@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Image from "next/image";
 import styles from "./WorkshopDetailsModal.module.css";
 import { Workshop } from './types';
-import NotificationSystem, { useNotification } from '../global/NotificationSystem';
 
 interface DetailsModalProps {
   workshop: Workshop;
@@ -20,7 +19,6 @@ const WorkshopDetailsModal: React.FC<DetailsModalProps> = ({
   onWatch
 }) => {  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { notification, visible, showNotification, hideNotification } = useNotification();
   
   // Handler with network error handling
   const handleAction = async (actionFn: (workshop: Workshop) => void, message: string) => {
@@ -32,15 +30,6 @@ const WorkshopDetailsModal: React.FC<DetailsModalProps> = ({
       
       // Close modal immediately first
       onClose();
-      
-      // Then show success notification after a small delay
-      setTimeout(() => {
-        showNotification({
-          message: message,
-          type: 'success'
-        });
-      }, 100); // Small delay to ensure modal closing animation starts first
-      
     } catch (err) {
       console.error('Network error:', err);
       setError('Network connection error. Please check your internet connection and try again.');
@@ -164,14 +153,6 @@ const WorkshopDetailsModal: React.FC<DetailsModalProps> = ({
             </button>
           )}</div>
       </div>
-        {notification && (
-        <NotificationSystem
-          message={notification.message}
-          type={notification.type}
-          visible={visible}
-          onClose={hideNotification}
-        />
-      )}
     </div>
   );
 };
