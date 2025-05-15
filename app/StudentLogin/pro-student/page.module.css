@@ -215,6 +215,35 @@
   width: 100%;
 }
 
+/* Internship completion badge */
+.internshipBadge {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  margin-left: 10px;
+  vertical-align: middle;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all var(--transition-fast);
+  border: 1px solid rgba(128, 60, 255, 0.2);
+}
+
+.internshipBadge:before {
+  content: '✓';
+  font-size: 10px;
+  margin-right: 4px;
+  font-weight: bold;
+}
+
+.internshipBadge:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
 .locationLabel {
   color: var(--text-tertiary);
   margin: 0;

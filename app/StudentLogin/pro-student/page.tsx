@@ -296,11 +296,11 @@ export default function StudentProfilePage() {
                       {studentProfile.name.charAt(0)}
                     </div>
                   )}
-                </div>
-                <div className={styles.profileHeaderInfo}>
+                </div>                <div className={styles.profileHeaderInfo}>
                   <h2>{studentProfile.name}</h2>
                   <p className={styles.roleLabel}>
                     {studentProfile.major ? studentProfile.major.name : 'Student'}
+                    <span className={styles.internshipBadge}>3 Months Completed</span>
                   </p>
                   <p className={styles.locationLabel}>
                     {address.city}, {address.country}
