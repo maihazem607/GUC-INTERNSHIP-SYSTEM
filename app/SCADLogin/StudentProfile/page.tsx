@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import styles from './page.module.css';
-import NavigationMenu from '@/components/global/NavigationMenu';
+import SCADNavigation from '../Navigation/SCADNavigation';
 import { 
   initialStudentProfile, 
   StudentProfile as StudentProfileType, 
@@ -49,6 +49,11 @@ interface Student {
 export default function StudentProfilePage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const handleLogout = () => router.push('/');
+  const handleNavChange = (itemId: string) => {
+    router.push(`/SCADLogin/SCADdashboard${itemId !== 'companies' ? `?activeItem=${itemId}` : ''}`);
+  };
+
   const studentId = searchParams.get('id') ? parseInt(searchParams.get('id')!, 10) : null;
   
   const [studentProfile, setStudentProfile] = useState<StudentProfileType>(initialStudentProfile);
@@ -479,33 +484,10 @@ export default function StudentProfilePage() {
   // Display loading state
   if (loading) {
     return (
-      <div className={styles.pageContainer}>        <NavigationMenu
-          items={[
-            { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard') },
-            { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=students') },
-            { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=reports') },
-            { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=evaluations') },
-            { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=internships') },
-            { id: 'statistics', label: 'Statistics', icon: <BarChart2 size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=statistics') },
-            { id:'Workshops', label: 'Workshops', icon: <BookOpen size={18} />, onClick:  () => router.push('/SCADLogin/workshops?activeItem=workshops') },
-            {
-              id: 'appointments',
-              label: 'Appointments',
-              icon: <Calendar size={18} />,
-              dropdownItems: [
-                { id: 'my-appointments', label: 'My Appointments', onClick: () => router.push('/SCADLogin/AppointmentsSCAD') },
-                { id: 'requests', label: 'Requests', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=requests') },
-                { id: 'new-appointment', label: 'New Appointment', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=new-appointment') }
-              ]
-            },
-            { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=settings') }
-          ]}
-          activeItemId="students"
-          logo={{
-            src: '/logos/GUCInternshipSystemLogo.png',
-            alt: 'GUC Internship System'
-          }}
-          variant="navigation"
+      <div className={styles.pageContainer}>        <SCADNavigation
+          activeItem="students"
+          onActiveItemChange={handleNavChange}
+          onLogout={handleLogout}
         />
         <div className={styles.contentWrapper}>
           <div className={styles.mainContent}>
@@ -522,33 +504,10 @@ export default function StudentProfilePage() {
   // Display error if student not found
   if (!studentData && studentId !== null) {
     return (
-      <div className={styles.pageContainer}>        <NavigationMenu
-          items={[
-            { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard') },
-            { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=students') },
-            { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=reports') },
-            { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=evaluations') },
-            { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=internships') },
-            { id: 'statistics', label: 'Statistics', icon: <BarChart2 size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=statistics') },
-            { id:'Workshops', label: 'Workshops', icon: <BookOpen size={18} />, onClick:  () => router.push('/SCADLogin/workshops?activeItem=workshops') },
-            {
-              id: 'appointments',
-              label: 'Appointments',
-              icon: <Calendar size={18} />,
-              dropdownItems: [
-                { id: 'my-appointments', label: 'My Appointments', onClick: () => router.push('/SCADLogin/AppointmentsSCAD') },
-                { id: 'requests', label: 'Requests', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=requests') },
-                { id: 'new-appointment', label: 'New Appointment', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=new-appointment') }
-              ]
-            },
-            { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=settings') }
-          ]}
-          activeItemId="students"
-          logo={{
-            src: '/logos/GUCInternshipSystemLogo.png',
-            alt: 'GUC Internship System'
-          }}
-          variant="navigation"
+      <div className={styles.pageContainer}>        <SCADNavigation
+          activeItem="students"
+          onActiveItemChange={handleNavChange}
+          onLogout={handleLogout}
         />
         <div className={styles.contentWrapper}>
           <div className={styles.mainContent}>
@@ -569,33 +528,10 @@ export default function StudentProfilePage() {
   }
 
   return (
-    <div className={styles.pageContainer}>      <NavigationMenu
-        items={[
-          { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard') },
-          { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=students') },
-          { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=reports') },
-          { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=evaluations') },
-          { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=internships') },
-          { id: 'statistics', label: 'Statistics', icon: <BarChart2 size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=statistics') },
-          { id:'Workshops', label: 'Workshops', icon: <BookOpen size={18} />, onClick:  () => router.push('/SCADLogin/workshops?activeItem=workshops') },
-          {
-            id: 'appointments',
-            label: 'Appointments',
-            icon: <Calendar size={18} />,
-            dropdownItems: [
-              { id: 'my-appointments', label: 'My Appointments', onClick: () => router.push('/SCADLogin/AppointmentsSCAD') },
-              { id: 'requests', label: 'Requests', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=requests') },
-              { id: 'new-appointment', label: 'New Appointment', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=new-appointment') }
-            ]
-          },
-          { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=settings') }
-        ]}
-        activeItemId="students"
-        logo={{
-          src: '/logos/GUCInternshipSystemLogo.png',
-          alt: 'GUC Internship System'
-        }}
-        variant="navigation"
+    <div className={styles.pageContainer}>      <SCADNavigation
+        activeItem="students"
+        onActiveItemChange={handleNavChange}
+        onLogout={handleLogout}
       />
       
       <div className={styles.contentWrapper}>

@@ -34,7 +34,7 @@ const SCADLogin = () => {
       // Example SCAD login - replace with real logic as needed
       if (email === 'scad@guc.edu.eg' && password === '123456') {
         setTimeout(() => {
-          router.push('/SCADLogin/dashboard');
+          router.push('/SCADLogin/SCADdashboard');
         }, 1500);
       } else {
         throw new Error('Invalid credentials');

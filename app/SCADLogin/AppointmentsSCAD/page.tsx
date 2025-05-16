@@ -1,11 +1,10 @@
 "use client";
 import styles from "./page.module.css";
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 // Import modular components
 import { Calendar, Clock, PlusCircle, Search } from 'lucide-react';
-import ProStudentNavigationMenu from '../Navigation/ProStudentNavigationMenu';
 import FilterSidebar from "@/components/global/FilterSidebar";
 import SearchBar from "@/components/global/SearchBar";
 import AppointmentCard from "@/components/Appointments/AppointmentCard";
@@ -14,7 +13,8 @@ import VideoCall from "@/components/Appointments/VideoCall";
 import NotificationSystem, { useNotification, NOTIFICATION_CONSTANTS } from "@/components/global/NotificationSystemAdapter";
 import IncomingCallNotification from "@/components/Appointments/IncomingCallNotification";
 import { Appointment } from "@/components/Appointments/types";
-import NewAppointmentForm from "@/components/Appointments/NewAppointmentForm";
+import NewAppointmentForm from "@/components/SCAD/SCADNewAppointmentForm";
+import SCADNavigation from "../Navigation/SCADNavigation";
 
 // Mock appointment data (would typically come from an API)
 const mockAppointments: Appointment[] = [
@@ -24,9 +24,9 @@ const mockAppointments: Appointment[] = [
     date: "May 15, 2025",
     time: "10:00 AM - 11:00 AM",
     status: 'pending',
-    participantName: "Dr. Sarah Johnson",
-    participantType: "scad",
-    participantEmail: "sarah.johnson@guc.edu",
+    participantName: "Sarah Johnson",
+    participantType: "student",
+    participantEmail: "sarah.johnson@student.guc.edu",
     isOnline: true,
     description: "Discuss career options in software engineering and potential internship opportunities.",
   },
@@ -36,9 +36,9 @@ const mockAppointments: Appointment[] = [
     date: "May 17, 2025",
     time: "2:00 PM - 3:00 PM",
     status: 'accepted',
-    participantName: "Dr. Ahmed Hassan",
-    participantType: "scad",
-    participantEmail: "ahmed.hassan@guc.edu",
+    participantName: "Ahmed Hassan",
+    participantType: "student",
+    participantEmail: "ahmed.hassan@student.guc.edu",
     isOnline: true,
     description: "Review course options for next semester and discuss prerequisites needed for specialization tracks.",
   },
@@ -48,9 +48,9 @@ const mockAppointments: Appointment[] = [
     date: "May 20, 2025",
     time: "11:30 AM - 12:30 PM",
     status: 'waiting-approval',
-    participantName: "Dr. Emily Rodriguez",
-    participantType: "scad",
-    participantEmail: "emily.rodriguez@guc.edu",
+    participantName: "Emily Rodriguez",
+    participantType: "student",
+    participantEmail: "emily.rodriguez@student.guc.edu",
     isOnline: false,
     description: "Review academic performance from previous semester and discuss areas for improvement.",
   },
@@ -60,9 +60,9 @@ const mockAppointments: Appointment[] = [
     date: "May 22, 2025",
     time: "3:30 PM - 4:30 PM",
     status: 'rejected',
-    participantName: "Dr. Michael Chen",
-    participantType: "scad",
-    participantEmail: "michael.chen@guc.edu",
+    participantName: "Michael Chen",
+    participantType: "student",
+    participantEmail: "michael.chen@student.guc.edu",
     isOnline: true,
     description: "Explore undergraduate research opportunities and faculty-led projects.",
   },
@@ -72,9 +72,9 @@ const mockAppointments: Appointment[] = [
     date: "May 25, 2025",
     time: "1:00 PM - 2:00 PM",
     status: 'pending',
-    participantName: "Dr. Layla Mahmoud",
-    participantType: "scad",
-    participantEmail: "layla.mahmoud@guc.edu",
+    participantName: "Layla Mahmoud",
+    participantType: "student",
+    participantEmail: "layla.mahmoud@student.guc.edu",
     isOnline: true,
     description: "Practice technical interview skills with feedback from SCAD career counselor.",
   }
@@ -86,6 +86,7 @@ export default function AppointmentsPage() {
 
   // Get URL parameters
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   // Use the tab parameter from URL if available, otherwise default to 'my-appointments'
   const initialTab = searchParams.get('tab') || 'my-appointments';
@@ -170,7 +171,7 @@ export default function AppointmentsPage() {
     setTimeout(() => {
       // Find Dr. Emily Rodriguez's appointment and update its status
       const appointmentId = appointments.find(app =>
-        app.participantName === "Dr. Emily Rodriguez" &&
+        app.participantName === "Emily Rodriguez" &&
         app.title === "Academic Progress Review"
       )?.id;
 
@@ -178,21 +179,21 @@ export default function AppointmentsPage() {
         // Update the appointment status with a visual notification
         setAppointments(prevAppointments =>
           prevAppointments.map(app =>
-            app.participantName === "Dr. Emily Rodriguez" && app.title === "Academic Progress Review"
+            app.participantName === "Emily Rodriguez" && app.title === "Academic Progress Review"
               ? { ...app, status: 'accepted' }
               : app
           )
         );
         // Show toast notification
         showNotification({
-          message: "Dr. Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
+          message: "Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
           type: 'success'
         });
 
         // Add notification to the bell
         addNotification({
           title: "Appointment Accepted",
-          message: "Dr. Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
+          message: "Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
           type: 'appointment'
         });
 
@@ -477,7 +478,7 @@ export default function AppointmentsPage() {
   useEffect(() => {
     // Only run once, find Dr. Hassan's appointment
     const drHassanAppointment = appointments.find(
-      app => app.participantName === "Dr. Ahmed Hassan" && app.isOnline
+      app => app.participantName === "Ahmed Hassan" && app.isOnline
     );
     if (drHassanAppointment) {
       const simulateIncomingCall = setTimeout(() => {
@@ -492,19 +493,19 @@ export default function AppointmentsPage() {
 
   // Simulate Dr. Hassan ending the call after 25 seconds of being in the call
   useEffect(() => {
-    if (showVideoCall && selectedAppointment?.participantName === "Dr. Ahmed Hassan") {
+    if (showVideoCall && selectedAppointment?.participantName === "Ahmed Hassan") {
       // Simulate Dr. Hassan muting his microphone after 15 seconds
       const simulateMuting = setTimeout(() => {
         // Show notification that Dr. Hassan muted his microphone
         showNotification({
-          message: `Dr. Ahmed Hassan has muted his microphone`,
+          message: `Ahmed Hassan has muted his microphone`,
           type: 'info'
         });
 
         // Add to bell notifications
         addNotification({
           title: "Participant Muted",
-          message: `Dr. Ahmed Hassan has muted his microphone`,
+          message: `Ahmed Hassan has muted his microphone`,
           type: 'appointment'
         });
       }, 15000); // 15 seconds
@@ -516,14 +517,14 @@ export default function AppointmentsPage() {
 
         // Show notification that Dr. Hassan left the call
         showNotification({
-          message: `Dr. Ahmed Hassan has left the call`,
+          message: `Ahmed Hassan has left the call`,
           type: 'info'
         });
 
         // Add to bell notifications
         addNotification({
           title: "Call Ended",
-          message: `Dr. Ahmed Hassan has left the call`,
+          message: `Ahmed Hassan has left the call`,
           type: 'appointment'
         });
 
@@ -672,8 +673,12 @@ export default function AppointmentsPage() {
 
   return (
     <div className={styles.pageContainer}>
-      {/* Global Navigation for Pro Student */}
-      <ProStudentNavigationMenu />
+      {/* Global Navigation for SCAD */}
+      <SCADNavigation
+        activeItem="appointments"
+        onActiveItemChange={(itemId) => router.push(`/SCADLogin/SCADdashboard?activeItem=${itemId}`)}
+        onLogout={() => router.push('/')}
+      />
 
       <div className={styles.contentWrapper}>
         {/* Left Sidebar with Filters - Only show in appointment listing tabs */}

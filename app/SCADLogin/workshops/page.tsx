@@ -3,7 +3,7 @@ import styles from "./page.module.css";
 import React, { useState, useEffect } from 'react';
 
 // Import modular components
-import NavigationMenu from "../../../src/components/global/NavigationMenu";
+import SCADNavigation from "../Navigation/SCADNavigation";
 import FilterSidebar from "@/components/global/FilterSidebar";
 import SearchBar from "@/components/global/SearchBar";
 import WorkshopCard from "@/components/workshops/WorkshopCard";
@@ -362,58 +362,10 @@ export default function WorkshopListPage() {
   return (
     <div className={styles.pageContainer}>
       {/* Header/Navigation */}
-      <NavigationMenu
-        items={[
-          { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard') },
-          { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=students') },
-          { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=reports') },
-          { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=evaluations') },
-          { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=internships') },
-          { id: 'statistics', label: 'Statistics', icon: <BarChart2 size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=statistics') },
-          { id: 'workshops', label: 'Workshops', icon: <BookOpen size={18} />, onClick: () => { router.push('/SCADLogin/workshops?activeItem=workshops'); } },
-          {
-            id: 'appointments',
-            label: 'Appointments',
-            icon: <Calendar size={18} />,
-            dropdownItems: [
-              { 
-                id: 'my-appointments', 
-                label: 'My Appointments', 
-                count: appointments.filter(app => 
-                  app.status === 'waiting-approval' || 
-                  app.status === 'accepted' || 
-                  app.status === 'rejected' || 
-                  app.status === 'completed'
-                ).length,
-                onClick: () => {
-                  router.push('/SCADLogin/AppointmentsSCAD?tab=my-appointments');
-                }
-              },
-              { 
-                id: 'requests', 
-                label: 'Requests', 
-                count: appointments.filter(app => app.status === 'pending').length,
-                onClick: () => {
-                  router.push('/SCADLogin/AppointmentsSCAD?tab=requests');
-                }
-              },
-              { 
-                id: 'new-appointment', 
-                label: 'New Appointment',
-                onClick: () => {
-                  router.push('/SCADLogin/AppointmentsSCAD?tab=new-appointment');
-                }
-              }
-            ]
-          },
-          { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=settings') }
-        ]}
-        activeItemId={activeItem}
-        logo={{
-          src: '/logos/GUCInternshipSystemLogo.png',
-          alt: 'GUC Internship System'
-        }}
-        variant="navigation"
+      <SCADNavigation
+        activeItem="workshops"
+        onActiveItemChange={(itemId) => router.push(`/SCADLogin/SCADdashboard?activeItem=${itemId}`)}
+        onLogout={() => router.push('/')}
       />
 
       <div className={styles.contentWrapper}>

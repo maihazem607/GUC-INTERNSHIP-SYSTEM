@@ -31,7 +31,7 @@ const CompanyLogin = () => {
       // Simulate API call
       console.log('Company login attempt with:', { email, password });
       setTimeout(() => {
-        router.push('/CompanyDashboard');
+        router.push('CompanyLogin/Company');
       }, 1500);
     } catch (err) {
       setError('Login failed. Please check your credentials and try again.');
