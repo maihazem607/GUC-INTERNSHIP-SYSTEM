@@ -10,18 +10,18 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  overflow-y: hidden;
 }
 
 .modalContent {
   position: relative;
-  width: 1200px;
-  max-width: 95vw;
-  height: 90vh;
+  width: 85%;
+  max-width: 1200px;
+  height: 85vh;
   background-color: white;
   border-radius: 16px;
   overflow: hidden;
-  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .closeButton {
@@ -94,13 +94,12 @@
 
 .sidePanel {
   flex: 1;
-  max-width: 380px;
   min-width: 300px;
-  background-color: #ffffff;
+  max-width: 380px;
+  background-color: #f8f8f8;
   border-left: 1px solid #e0e0e0;
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (min-width: 1200px) {
@@ -336,7 +335,7 @@
 }
 
 .detailsHeader {
-  margin-bottom: 15px;
+  margin: 15px 0;
 }
 
 .detailsHeader h2 {
@@ -454,7 +453,7 @@
 .notesContent {
   flex: 1;
   padding: 15px;
-  overflow: hidden;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -497,7 +496,7 @@
 }
 
 .noteInput textarea {
-  width: 100%;
+  width: 90%;
   padding: 10px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;

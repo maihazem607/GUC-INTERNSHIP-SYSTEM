@@ -4,6 +4,14 @@ import styles from './RecordedSessionModal.module.css';
 import { Workshop, Note, Rating } from './types';
 import { Star } from 'lucide-react';
 import { useNotification } from '@/components/global/NotificationSystemAdapter';
+import { 
+  generateWorkshopCertificatePDF, 
+  generateWorkshopNotesPDF, 
+  generateWorkshopResourcePDF, 
+  WorkshopCertificateData, 
+  WorkshopNotesData,
+  WorkshopResourceData
+} from '@/utils/pdfUtils';
 
 interface RecordedSessionModalProps {
   workshop: Workshop;
@@ -98,34 +106,47 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
     setNotes(prev => [...prev, newNote]);
     setCurrentNote('');
   };
+  const handleDownloadNotes = async () => {
+    // Create workshop notes data object for PDF generation
+    const workshopNotesData: WorkshopNotesData = {
+      workshopTitle: workshop.title,
+      workshopHost: workshop.host,
+      workshopDate: workshop.date,
+      workshopTime: workshop.time,
+      notes: notes.map(note => ({
+        timestamp: note.timestamp,
+        content: note.content
+      }))
+    };
 
-  const handleDownloadNotes = () => {
-    const notesText = notes.map(note =>
-      `[${note.timestamp}] ${note.content}`
-    ).join('\n\n');
-
-    const notesContent = `
-      WORKSHOP NOTES
-      ==============
-      Title: ${workshop.title}
-      Host: ${workshop.host}
-      Date: ${workshop.date}
-      Time: ${workshop.time}
-      ==============
+    try {
+      // Generate PDF blob
+      const pdfBlob = await generateWorkshopNotesPDF(workshopNotesData);
       
-      ${notesText}
-    `;
-
-    const blob = new Blob([notesContent], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${workshop.title.replace(/\s+/g, '_')}_Notes.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
-  const handleSubmitRating = () => {
+      // Create download link
+      const url = URL.createObjectURL(pdfBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${workshop.title.replace(/\s+/g, '_')}_Notes.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      // Show success notification
+      showNotification({
+        message: `Workshop notes for "${workshop.title}" downloaded as PDF`,
+        type: 'success'
+      });
+    } catch (error) {
+      console.error('Error generating notes PDF:', error);
+      
+      // Show error notification
+      showNotification({
+        message: `Error generating PDF. Please try again.`,
+        type: 'error'
+      });
+    }
+  };  const handleSubmitRating = () => {
     if (rating === 0) return;
 
     // In a real app, this would send the rating to the backend
@@ -149,7 +170,62 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
     // Show certificate prompt
     setShowCertificate(true);
   };
-  const handleDownloadCertificate = () => {
+  
+  // Function to handle resource downloads as PDFs
+  const handleDownloadResource = async (resourceTitle: string, resourceType: string) => {
+    try {
+      // Sample content for each resource type
+      let content = '';
+      switch (resourceType) {
+        case 'slides':
+          content = `These are the slides for "${workshop.title}" workshop.\n\nThe actual slides would contain detailed content about the workshop topics, visual examples, and instructions.`;
+          break;
+        case 'code':
+          content = `Code examples from "${workshop.title}" workshop.\n\nThis document would contain code snippets, examples, and explanations from the workshop.`;
+          break;
+        case 'reading':
+          content = `Additional reading materials for "${workshop.title}" workshop.\n\nThis document would contain references, articles, books, and other resources for further learning.`;
+          break;
+        default:
+          content = `Resource content for "${workshop.title}" workshop.`;
+      }
+      
+      // Create resource data object
+      const resourceData: WorkshopResourceData = {
+        title: resourceTitle,
+        type: resourceType,
+        content: content,
+        workshopTitle: workshop.title
+      };
+      
+      // Generate PDF
+      const pdfBlob = await generateWorkshopResourcePDF(resourceData);
+      
+      // Create download link
+      const url = URL.createObjectURL(pdfBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${workshop.title.replace(/\s+/g, '_')}_${resourceType}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      // Show success notification
+      showNotification({
+        message: `${resourceTitle} for "${workshop.title}" downloaded as PDF`,
+        type: 'success'
+      });
+      
+    } catch (error) {
+      console.error('Error generating resource PDF:', error);
+      
+      // Show error notification
+      showNotification({
+        message: `Error downloading resource. Please try again.`,
+        type: 'error'
+      });
+    }
+  };const handleDownloadCertificate = () => {
     // Simulate certificate generation and download with progress
     setIsDownloading(true);
     setDownloadProgress(0);
@@ -173,51 +249,61 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
       }
     }, 400);
   };
+  
   // Function to actually generate and trigger the certificate download
-  const generateAndDownloadCertificate = () => {
-    // In a real app, this would generate an actual PDF certificate
-    // For this example, we'll create a simple text file as a placeholder
-    const certificateContent = `
-    ====================================
-    CERTIFICATE OF COMPLETION
-    ====================================
-    
-    This certifies that
-    
-    Ahmad Mohammed
-    
-    has successfully completed
-    
-    ${workshop.title}
-    
-    presented by ${workshop.host}
-    on ${workshop.date}
-    
-    Duration: ${workshop.duration}
-    ====================================
-    `;
+  const generateAndDownloadCertificate = async () => {
+    try {
+      // Get current date for the completion date
+      const now = new Date();
+      const formattedDate = now.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      
+      // Create certificate data object for PDF generation
+      const certificateData: WorkshopCertificateData = {
+        studentName: "Ahmad Mohammed", // In a real app, this would be the logged-in user's name
+        workshopTitle: workshop.title,
+        workshopHost: workshop.host,
+        workshopDate: workshop.date,
+        workshopDuration: workshop.duration || "2 hours",
+        completionDate: formattedDate
+      };
+      
+      // Generate PDF blob
+      const pdfBlob = await generateWorkshopCertificatePDF(certificateData);
+      
+      // Create download link
+      const url = URL.createObjectURL(pdfBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${workshop.title.replace(/\s+/g, '_')}_Certificate.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
 
-    const blob = new Blob([certificateContent], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${workshop.title.replace(/\s+/g, '_')}_Certificate.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+      // Show notification for certificate download
+      showNotification({
+        message: `Certificate for "${workshop.title}" has been downloaded`,
+        type: 'success'
+      });
 
-    // Show notification for certificate download
-    showNotification({
-      message: `Certificate for "${workshop.title}" has been downloaded`,
-      type: 'success'
-    });
-
-    // Add to persistent notifications
-    addNotification({
-      title: 'Certificate Generated',
-      message: `Your certificate for "${workshop.title}" is now available`,
-      type: 'application'
-    });
+      // Add to persistent notifications
+      addNotification({
+        title: 'Certificate Generated',
+        message: `Your certificate for "${workshop.title}" is now available`,
+        type: 'application'
+      });
+    } catch (error) {
+      console.error('Error generating certificate PDF:', error);
+      
+      // Show error notification
+      showNotification({
+        message: `Error generating certificate. Please try again.`,
+        type: 'error'
+      });
+    }
   };
 
   return (
@@ -361,19 +447,26 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
 
                 <div className={styles.detailsBody}>
                   <p className={styles.description}>{workshop.description}</p>
-                </div>
-
-                <div className={styles.resources}>
+                </div>                <div className={styles.resources}>
                   <h3>Resources</h3>
                   <ul className={styles.resourcesList}>
                     <li>
-                      <a href="#">Workshop Slides (PDF)</a>
+                      <a href="#" onClick={(e) => {
+                        e.preventDefault();
+                        handleDownloadResource('Workshop Slides', 'slides');
+                      }}>Workshop Slides (PDF)</a>
                     </li>
                     <li>
-                      <a href="#">Code Examples</a>
+                      <a href="#" onClick={(e) => {
+                        e.preventDefault();
+                        handleDownloadResource('Code Examples', 'code');
+                      }}>Code Examples (PDF)</a>
                     </li>
                     <li>
-                      <a href="#">Additional Reading</a>
+                      <a href="#" onClick={(e) => {
+                        e.preventDefault();
+                        handleDownloadResource('Additional Reading', 'reading');
+                      }}>Additional Reading (PDF)</a>
                     </li>
                   </ul>
                 </div>

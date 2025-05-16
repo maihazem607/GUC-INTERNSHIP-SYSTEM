@@ -115,6 +115,33 @@ export interface StudentReportData {
   evaluationComments?: string;
 }
 
+export interface WorkshopCertificateData {
+  studentName: string;
+  workshopTitle: string;
+  workshopHost: string;
+  workshopDate: string;
+  workshopDuration: string;
+  completionDate: string;
+}
+
+export interface WorkshopNotesData {
+  workshopTitle: string;
+  workshopHost: string;
+  workshopDate: string;
+  workshopTime: string;
+  notes: {
+    timestamp: string;
+    content: string;
+  }[];
+}
+
+export interface WorkshopResourceData {
+  title: string;
+  type: string;
+  content: string;
+  workshopTitle: string;
+}
+
 export const generateReportPDF = async ({
   title,
   company,
@@ -970,6 +997,209 @@ export const generateStudentReportPDF = async (reportData: StudentReportData) =>
   pdf.save(fileName);
   
   return fileName;
+};
+
+export const generateWorkshopCertificatePDF = async (certificateData: WorkshopCertificateData) => {
+  const pdf = new jsPDF({
+    orientation: 'landscape',
+    unit: 'mm',
+    format: 'a4'
+  });
+  
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const margin = 15;
+  
+  // Add decorative border
+  pdf.setDrawColor(70, 82, 191); // Purple color matching the system's theme
+  pdf.setLineWidth(1);
+  pdf.rect(margin, margin, pageWidth - 2 * margin, pageHeight - 2 * margin);
+  
+  // Add fancy border
+  pdf.setLineWidth(0.5);
+  pdf.rect(margin + 5, margin + 5, pageWidth - 2 * margin - 10, pageHeight - 2 * margin - 10);
+  
+  // Add header
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(30);
+  pdf.setTextColor(70, 82, 191);
+  pdf.text('CERTIFICATE OF COMPLETION', pageWidth / 2, 50, { align: 'center' });
+  
+  // Add description text
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(16);
+  pdf.setTextColor(0, 0, 0);
+  pdf.text('This certifies that', pageWidth / 2, 70, { align: 'center' });
+  
+  // Add student name
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(24);
+  pdf.text(certificateData.studentName, pageWidth / 2, 85, { align: 'center' });
+  
+  // Add completion text
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(16);
+  pdf.text('has successfully completed the workshop', pageWidth / 2, 100, { align: 'center' });
+  
+  // Add workshop title
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(22);
+  pdf.text(certificateData.workshopTitle, pageWidth / 2, 115, { align: 'center' });
+  
+  // Add additional details
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(14);
+  pdf.text(`Presented by: ${certificateData.workshopHost}`, pageWidth / 2, 130, { align: 'center' });
+  pdf.text(`Date: ${certificateData.workshopDate}`, pageWidth / 2, 140, { align: 'center' });
+  pdf.text(`Duration: ${certificateData.workshopDuration}`, pageWidth / 2, 150, { align: 'center' });
+  
+  // Add signature line
+  pdf.line(pageWidth / 2 - 50, 170, pageWidth / 2 + 50, 170);
+  pdf.setFontSize(12);
+  pdf.text('GUC Internship System', pageWidth / 2, 178, { align: 'center' });
+  
+  // Add completion date at bottom
+  pdf.setFont('helvetica', 'italic');
+  pdf.setFontSize(12);
+  pdf.text(`Certificate issued on: ${certificateData.completionDate}`, pageWidth / 2, 190, { align: 'center' });
+  
+  return pdf.output('blob');
+};
+
+export const generateWorkshopNotesPDF = async (notesData: WorkshopNotesData) => {
+  const pdf = new jsPDF();
+  
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const margin = 20;
+  const contentWidth = pageWidth - (margin * 2);
+  
+  // Set initial y position for content
+  let yPos = margin;
+  
+  // Add header with workshop information
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(18);
+  pdf.text('WORKSHOP NOTES', pageWidth / 2, yPos, { align: 'center' });
+  yPos += 15;
+  
+  // Add workshop details
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(14);
+  pdf.text(notesData.workshopTitle, pageWidth / 2, yPos, { align: 'center' });
+  yPos += 10;
+  
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(12);
+  pdf.text(`Host: ${notesData.workshopHost}`, margin, yPos);
+  yPos += 8;
+  pdf.text(`Date: ${notesData.workshopDate}`, margin, yPos);
+  yPos += 8;
+  pdf.text(`Time: ${notesData.workshopTime}`, margin, yPos);
+  yPos += 15;
+  
+  // Add separator line
+  pdf.setDrawColor(200, 200, 200);
+  pdf.line(margin, yPos, pageWidth - margin, yPos);
+  yPos += 15;
+  
+  // Add notes content
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(14);
+  pdf.text('Notes', margin, yPos);
+  yPos += 10;
+  
+  // Handle case of no notes
+  if (notesData.notes.length === 0) {
+    pdf.setFont('helvetica', 'italic');
+    pdf.setFontSize(12);
+    pdf.text('No notes were taken during this session.', margin, yPos);
+    yPos += 10;
+  } else {
+    // Loop through notes and add them to PDF
+    notesData.notes.forEach((note, index) => {
+      // Add note header with timestamp
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(12);
+      pdf.text(`[${note.timestamp}]`, margin, yPos);
+      yPos += 8;
+      
+      // Add note content
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(11);
+      
+      // Split text to fit within page width
+      const noteLines = pdf.splitTextToSize(note.content, contentWidth);
+      pdf.text(noteLines, margin, yPos);
+      
+      // Move y position based on number of text lines
+      yPos += (noteLines.length * 6) + 10;
+      
+      // Add a separator between notes
+      if (index < notesData.notes.length - 1) {
+        pdf.setDrawColor(220, 220, 220);
+        pdf.line(margin + 10, yPos - 5, pageWidth - margin - 10, yPos - 5);
+        yPos += 5;
+      }
+      
+      // Add a new page if needed
+      if (yPos > 270) {
+        pdf.addPage();
+        yPos = margin;
+      }
+    });
+  }
+  
+  // Add footer with generation timestamp
+  const now = new Date();
+  pdf.setFont('helvetica', 'italic');
+  pdf.setFontSize(10);
+  pdf.text(`Generated on: ${now.toLocaleDateString()} at ${now.toLocaleTimeString()}`, pageWidth / 2, 285, { align: 'center' });
+  
+  return pdf.output('blob');
+};
+
+export const generateWorkshopResourcePDF = async (resourceData: WorkshopResourceData) => {
+  const pdf = new jsPDF();
+  
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const margin = 20;
+  const contentWidth = pageWidth - (margin * 2);
+  
+  // Set initial y position for content
+  let yPos = margin;
+  
+  // Add header
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(18);
+  pdf.text(resourceData.type.toUpperCase(), pageWidth / 2, yPos, { align: 'center' });
+  yPos += 15;
+  
+  // Add document title
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(16);
+  pdf.text(resourceData.title, pageWidth / 2, yPos, { align: 'center' });
+  yPos += 10;
+  
+  // Add workshop reference
+  pdf.setFont('helvetica', 'italic');
+  pdf.setFontSize(12);
+  pdf.text(`From workshop: ${resourceData.workshopTitle}`, pageWidth / 2, yPos, { align: 'center' });
+  yPos += 15;
+  
+  // Add separator line
+  pdf.setDrawColor(200, 200, 200);
+  pdf.line(margin, yPos, pageWidth - margin, yPos);
+  yPos += 15;
+  
+  // Add content
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(12);
+  
+  // Split text to fit within page width
+  const contentLines = pdf.splitTextToSize(resourceData.content, contentWidth);
+  pdf.text(contentLines, margin, yPos);
+  
+  return pdf.output('blob');
 };
 
 export default generateReportPDF;

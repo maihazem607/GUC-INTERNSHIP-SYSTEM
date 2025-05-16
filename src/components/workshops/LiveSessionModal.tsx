@@ -4,6 +4,14 @@ import styles from './LiveSessionModal.module.css';
 import { Workshop, Message, Note, Rating } from './types';
 import { useNotification } from '@/components/global/NotificationSystemAdapter';
 import { Star } from 'lucide-react';
+import { 
+  generateWorkshopCertificatePDF, 
+  generateWorkshopNotesPDF, 
+  generateWorkshopResourcePDF, 
+  WorkshopCertificateData, 
+  WorkshopNotesData,
+  WorkshopResourceData
+} from '@/utils/pdfUtils';
 
 interface LiveSessionModalProps {
   workshop: Workshop;
@@ -26,7 +34,7 @@ const LiveSessionModal: React.FC<LiveSessionModalProps> = ({
   const [isLive, setIsLive] = useState(true);
   const [notes, setNotes] = useState<Note[]>([]);
   const [currentNote, setCurrentNote] = useState('');
-  const [activeTab, setActiveTab] = useState<'chat' | 'notes'>('chat');
+  const [activeTab, setActiveTab] = useState<'chat' | 'notes' | 'resources'>('chat');
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [showCertificatePrompt, setShowCertificatePrompt] = useState(false);
   const [showRating, setShowRating] = useState(false);
@@ -192,34 +200,47 @@ const LiveSessionModal: React.FC<LiveSessionModalProps> = ({
     setNotes(prev => [...prev, newNote]);
     setCurrentNote('');
   };
+  const handleDownloadNotes = async () => {
+    // Create workshop notes data object for PDF generation
+    const workshopNotesData: WorkshopNotesData = {
+      workshopTitle: workshop.title,
+      workshopHost: workshop.host,
+      workshopDate: workshop.date,
+      workshopTime: workshop.time,
+      notes: notes.map(note => ({
+        timestamp: note.timestamp,
+        content: note.content
+      }))
+    };
 
-  const handleDownloadNotes = () => {
-    const notesText = notes.map(note =>
-      `[${note.timestamp}] ${note.content}`
-    ).join('\n\n');
-
-    const notesContent = `
-      WORKSHOP NOTES
-      ==============
-      Title: ${workshop.title}
-      Host: ${workshop.host}
-      Date: ${workshop.date}
-      Time: ${workshop.time}
-      ==============
+    try {
+      // Generate PDF blob
+      const pdfBlob = await generateWorkshopNotesPDF(workshopNotesData);
       
-      ${notesText}
-    `;
-
-    const blob = new Blob([notesContent], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${workshop.title.replace(/\s+/g, '_')}_Notes.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+      // Create download link
+      const url = URL.createObjectURL(pdfBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${workshop.title.replace(/\s+/g, '_')}_Notes.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      // Show success notification
+      showNotification({
+        message: `Workshop notes for "${workshop.title}" downloaded as PDF`,
+        type: 'success'
+      });
+    } catch (error) {
+      console.error('Error generating notes PDF:', error);
+      
+      // Show error notification
+      showNotification({
+        message: `Error generating PDF. Please try again.`,
+        type: 'error'
+      });
+    }
   };
-
   const handleSubmitRating = () => {
     if (rating === 0) return;
 
@@ -244,7 +265,62 @@ const LiveSessionModal: React.FC<LiveSessionModalProps> = ({
     // Show certificate prompt
     setShowCertificatePrompt(true);
   };
-
+  
+  // Function to handle resource downloads as PDFs
+  const handleDownloadResource = async (resourceTitle: string, resourceType: string) => {
+    try {
+      // Sample content for each resource type
+      let content = '';
+      switch (resourceType) {
+        case 'slides':
+          content = `These are the slides for "${workshop.title}" workshop.\n\nThe actual slides would contain detailed content about the workshop topics, visual examples, and instructions.`;
+          break;
+        case 'code':
+          content = `Code examples from "${workshop.title}" workshop.\n\nThis document would contain code snippets, examples, and explanations from the workshop.`;
+          break;
+        case 'reading':
+          content = `Additional reading materials for "${workshop.title}" workshop.\n\nThis document would contain references, articles, books, and other resources for further learning.`;
+          break;
+        default:
+          content = `Resource content for "${workshop.title}" workshop.`;
+      }
+      
+      // Create resource data object
+      const resourceData: WorkshopResourceData = {
+        title: resourceTitle,
+        type: resourceType,
+        content: content,
+        workshopTitle: workshop.title
+      };
+      
+      // Generate PDF
+      const pdfBlob = await generateWorkshopResourcePDF(resourceData);
+      
+      // Create download link
+      const url = URL.createObjectURL(pdfBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${workshop.title.replace(/\s+/g, '_')}_${resourceType}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      // Show success notification
+      showNotification({
+        message: `${resourceTitle} for "${workshop.title}" downloaded as PDF`,
+        type: 'success'
+      });
+      
+    } catch (error) {
+      console.error('Error generating resource PDF:', error);
+      
+      // Show error notification
+      showNotification({
+        message: `Error downloading resource. Please try again.`,
+        type: 'error'
+      });
+    }
+  };
   const handleDownloadCertificate = () => {
     // Simulate certificate generation and download with progress
     setIsDownloading(true);
@@ -271,50 +347,59 @@ const LiveSessionModal: React.FC<LiveSessionModalProps> = ({
   };
 
   // Function to actually generate and trigger the certificate download
-  const generateAndDownloadCertificate = () => {
-    // In a real app, this would generate an actual PDF certificate
-    // For this example, we'll create a simple text file as a placeholder
-    const certificateContent = `
-    ====================================
-    CERTIFICATE OF COMPLETION
-    ====================================
-    
-    This certifies that
-    
-    Ahmad Mohammed
-    
-    has successfully completed
-    
-    ${workshop.title}
-    
-    presented by ${workshop.host}
-    on ${workshop.date}
-    
-    Duration: ${workshop.duration || '1 hour'}
-    ====================================
-    `;
+  const generateAndDownloadCertificate = async () => {
+    try {
+      // Get current date for the completion date
+      const now = new Date();
+      const formattedDate = now.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      
+      // Create certificate data object for PDF generation
+      const certificateData: WorkshopCertificateData = {
+        studentName: "Ahmad Mohammed", // In a real app, this would be the logged-in user's name
+        workshopTitle: workshop.title,
+        workshopHost: workshop.host,
+        workshopDate: workshop.date,
+        workshopDuration: workshop.duration || "1 hour",
+        completionDate: formattedDate
+      };
+      
+      // Generate PDF blob
+      const pdfBlob = await generateWorkshopCertificatePDF(certificateData);
+      
+      // Create download link
+      const url = URL.createObjectURL(pdfBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${workshop.title.replace(/\s+/g, '_')}_Certificate.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
 
-    const blob = new Blob([certificateContent], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${workshop.title.replace(/\s+/g, '_')}_Certificate.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+      // Show notification for certificate download
+      showNotification({
+        message: `Certificate for "${workshop.title}" has been downloaded`,
+        type: 'success'
+      });
 
-    // Show notification for certificate download
-    showNotification({
-      message: `Certificate for "${workshop.title}" has been downloaded`,
-      type: 'success'
-    });
-
-    // Add to persistent notifications
-    addNotification({
-      title: 'Certificate Generated',
-      message: `Your certificate for "${workshop.title}" is now available`,
-      type: 'application'
-    });
+      // Add to persistent notifications
+      addNotification({
+        title: 'Certificate Generated',
+        message: `Your certificate for "${workshop.title}" is now available`,
+        type: 'application'
+      });
+    } catch (error) {
+      console.error('Error generating certificate PDF:', error);
+      
+      // Show error notification
+      showNotification({
+        message: `Error generating certificate. Please try again.`,
+        type: 'error'
+      });
+    }
   };
 
   return (
@@ -362,8 +447,7 @@ const LiveSessionModal: React.FC<LiveSessionModalProps> = ({
             </div>
           </div>
 
-          <div className={styles.sidePanel}>
-            <div className={styles.tabButtons}>
+          <div className={styles.sidePanel}>            <div className={styles.tabButtons}>
               <button
                 className={`${styles.tabButton} ${activeTab === 'chat' ? styles.activeTab : ''}`}
                 onClick={() => setActiveTab('chat')}
@@ -376,6 +460,12 @@ const LiveSessionModal: React.FC<LiveSessionModalProps> = ({
                 onClick={() => setActiveTab('notes')}
               >
                 Notes
+              </button>
+              <button
+                className={`${styles.tabButton} ${activeTab === 'resources' ? styles.activeTab : ''}`}
+                onClick={() => setActiveTab('resources')}
+              >
+                Resources
               </button>
             </div>
 
@@ -413,9 +503,7 @@ const LiveSessionModal: React.FC<LiveSessionModalProps> = ({
                   <button type="submit">Send</button>
                 </form>
               </div>
-            )}
-
-            {activeTab === 'notes' && (
+            )}            {activeTab === 'notes' && (
               <div className={styles.notesSection}>
                 <div className={styles.notesHeader}>
                   <h3>Workshop Notes</h3>
@@ -458,6 +546,50 @@ const LiveSessionModal: React.FC<LiveSessionModalProps> = ({
                   >
                     Save Note
                   </button>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'resources' && (
+              <div className={styles.resourcesSection}>
+                <div className={styles.resourcesHeader}>
+                  <h3>Workshop Resources</h3>
+                  <p>Download these resources to support your learning</p>
+                </div>
+                
+                <div className={styles.resourcesContent}>
+                  <div className={styles.resourceItem}>
+                    <h4>Workshop Slides</h4>
+                    <p>Presentation slides from the workshop</p>
+                    <button 
+                      className={styles.downloadResourceButton}
+                      onClick={() => handleDownloadResource('Workshop Slides', 'slides')}
+                    >
+                      Download PDF
+                    </button>
+                  </div>
+                  
+                  <div className={styles.resourceItem}>
+                    <h4>Code Examples</h4>
+                    <p>Sample code demonstrated during the workshop</p>
+                    <button 
+                      className={styles.downloadResourceButton}
+                      onClick={() => handleDownloadResource('Code Examples', 'code')}
+                    >
+                      Download PDF
+                    </button>
+                  </div>
+                  
+                  <div className={styles.resourceItem}>
+                    <h4>Additional Reading</h4>
+                    <p>Further resources for continued learning</p>
+                    <button 
+                      className={styles.downloadResourceButton}
+                      onClick={() => handleDownloadResource('Additional Reading', 'reading')}
+                    >
+                      Download PDF
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
