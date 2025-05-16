@@ -20,11 +20,10 @@ export type ActiveMenuItem = 'companies' | 'students' | 'reports' | 'settings' |
 
 interface SCADNavigationProps {
   activeItem: ActiveMenuItem;
-  onActiveItemChange: (itemId: ActiveMenuItem) => void;
   onLogout: () => void;
 }
 
-const SCADNavigation: React.FC<SCADNavigationProps> = ({ activeItem, onActiveItemChange, onLogout }) => {
+const SCADNavigation: React.FC<SCADNavigationProps> = ({ activeItem, onLogout }) => {
   const router = useRouter();
   const { resetNotifications } = useNotification();
   
@@ -35,12 +34,12 @@ const SCADNavigation: React.FC<SCADNavigationProps> = ({ activeItem, onActiveIte
   };
   
   const items: MenuItem[] = [
-    { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => onActiveItemChange('companies') },
-    { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => onActiveItemChange('students') },
-    { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => onActiveItemChange('reports') },
-    { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => onActiveItemChange('evaluations') },
-    { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => onActiveItemChange('internships') },
-    { id: 'statistics', label: 'Statistics', icon: <BarChart2 size={18} />, onClick: () => onActiveItemChange('statistics') },
+    { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=companies') },
+    { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=students') },
+    { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=reports') },
+    { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=evaluations') },
+    { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=internships') },
+    { id: 'statistics', label: 'Statistics', icon: <BarChart2 size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=statistics') },
     { id: 'workshops', label: 'Workshops', icon: <BookOpen size={18} />, onClick: () => router.push('/SCADLogin/workshops?activeItem=workshops') },
     {
       id: 'appointments',
@@ -52,7 +51,7 @@ const SCADNavigation: React.FC<SCADNavigationProps> = ({ activeItem, onActiveIte
         { id: 'new-appointment', label: 'New Appointment', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=new-appointment') }
       ]
     },
-    { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => onActiveItemChange('settings') }
+    { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=settings') }
   ];
   return (
     <NavigationMenu

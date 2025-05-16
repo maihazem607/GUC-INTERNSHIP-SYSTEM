@@ -580,15 +580,8 @@ export default function SCADDashboardPage() {
   const searchParams = useSearchParams();
   
   // State for navigation - Get from URL or default to 'companies'
-  const [activeItem, setActiveItem] = useState<ActiveMenuItem>(
-    (searchParams.get('activeItem') as ActiveMenuItem) || 'companies'
-  );
+  const activeItem = (searchParams.get('activeItem') as ActiveMenuItem) || 'companies';
   
-  // Update the URL when activeItem changes
-  useEffect(() => {
-    router.push(`/SCADLogin/SCADdashboard${activeItem !== 'companies' ? `?activeItem=${activeItem}` : ''}`);
-  }, [activeItem, router]);
-
   // Companies states
   const [companies, setCompanies] = useState<Company[]>([]);
   const [companySearchTerm, setCompanySearchTerm] = useState('');
@@ -633,7 +626,7 @@ export default function SCADDashboardPage() {
   const [internshipCycleEnd, setInternshipCycleEnd] = useState('2024-06-30');
 
   // Global notification state
-  const { notification, visible, showNotification, hideNotification } = useNotification();
+  const { notification, visible, showNotification, hideNotification, resetNotifications } = useNotification();
 
   // Load mock data
   useEffect(() => {
@@ -1061,6 +1054,7 @@ export default function SCADDashboardPage() {
   
   // Handle logout functionality
   const handleLogout = () => {
+    resetNotifications();
     router.push('/');
   };
     
@@ -1093,7 +1087,6 @@ export default function SCADDashboardPage() {
   return (
     <div className={styles.pageContainer}>      <SCADNavigation
         activeItem={activeItem}
-        onActiveItemChange={setActiveItem}
         onLogout={handleLogout}
       />      
       <div className={styles.contentWrapper}>        

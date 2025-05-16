@@ -173,7 +173,7 @@ const appointments = [
 
 export default function WorkshopListPage() {
   const router = useRouter();
-  const searchParams = useSearchParams(); 
+  const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState({
     status: 'All',
@@ -191,12 +191,7 @@ export default function WorkshopListPage() {
   const { notification, visible, showNotification, hideNotification, addNotification } = useNotification();
 
   // Get active item from URL parameter or default to 'workshops'
-  const [activeItem, setActiveItem] = useState<ActiveMenuItem>(
-    (searchParams.get('activeItem') as ActiveMenuItem) || 'workshops'
-  );
-
-  // For handling appointments dropdown
-  const [activeTab, setActiveTab] = useState<string>('my-appointments');
+  const activeItem = (searchParams.get('activeItem') as ActiveMenuItem) || 'workshops';
 
   // Filter options
   const statusOptions = ['All', 'Upcoming', 'Ongoing', 'Completed'];
@@ -262,16 +257,6 @@ export default function WorkshopListPage() {
     });
     setSearchTerm('');
   };
-  // Update URL when tab changes
-  useEffect(() => {
-    if (activeTab) {
-      const current = new URLSearchParams(window.location.search);
-      current.set('tab', activeTab);
-      const newSearch = current.toString();
-      router.push(`/SCADLogin/workshops?${newSearch}`);
-    }
-
-  }, [activeTab, router]);
   // Toggle between view and manage modes
   const toggleManageMode = () => {
     setIsManageMode(!isManageMode);
@@ -515,7 +500,6 @@ export default function WorkshopListPage() {
       {/* Header/Navigation */}
       <SCADNavigation
         activeItem="workshops"
-        onActiveItemChange={(itemId) => router.push(`/SCADLogin/SCADdashboard?activeItem=${itemId}`)}
         onLogout={() => router.push('/')}
       />
 
