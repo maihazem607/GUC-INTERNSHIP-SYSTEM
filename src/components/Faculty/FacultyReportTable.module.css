@@ -1,57 +1,87 @@
 .statusDropdownContainer {
     position: relative;
     display: inline-block;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 20px 8px;
+    min-width: 120px; /* ensure container is wide enough */
+}
+
+.statusDropdownContainer:hover {
+    filter: brightness(0.9);
 }
 
 .statusDropdown {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
     width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-    z-index: 1;
-}
-
-/* Status badge styles */
-.statusBadge {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 12px;
+    padding: 4px 0;
+    padding-right: 24px;
+    background: transparent;
+    border: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     font-size: 12px;
     font-weight: 600;
-    min-width: 80px;
-    text-align: center;
+    color: inherit;
+    cursor: pointer;
+    z-index: 2;
 }
 
-.pending {
+/* Status container colors */
+.statusDropdownContainer.pending {
     background-color: #f3f4f6;
     color: #6b7280;
 }
 
-.flagged {
+.statusDropdownContainer.flagged {
     background-color: #fef3c7;
     color: #d97706;
 }
 
-.rejected {
+.statusDropdownContainer.rejected {
     background-color: #fee2e2;
     color: #dc2626;
 }
 
-.accepted {
+.statusDropdownContainer.accepted {
     background-color: #d1fae5;
     color: #059669;
 }
 
-/* Additional styling to indicate the dropdown functionality */
-.statusDropdownContainer::after {
-    content: "▼";
-    font-size: 10px;
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
+/* Removed custom arrow; using native select arrow for consistent placement */
+
+/* Status badge styles */
+.statusBadge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    background: #f4f6fa;
+    color: #555;
+    border: 1px solid transparent;
+    /* allow native dropdown arrow */
+    appearance: menulist;
+    min-width: 100px; /* give the select its own width */
+}
+
+.statusBadge.pending {
+    background: #fffbe6;
+    color: #bfa100;
+}
+
+.statusBadge.flagged {
+    background: #e6f7ff;
+    color: #217dbb;
+}
+
+.statusBadge.accepted {
+    background: #e6fff2;
+    color: #1aaf5d;
+}
+
+.statusBadge.rejected {
+    background: #ffeaea;
+    color: #d32f2f;
 }

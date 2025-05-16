@@ -30,11 +30,9 @@ const StatusDropdown = ({
 }) => {
   return (
     <div className={styles.statusDropdownContainer} onClick={(e) => e.stopPropagation()}>
-      <span className={`${styles.statusBadge} ${styles[report.status]}`}>
-        {report.status.toUpperCase()}
-      </span>
+      {/* Styled select as the status pill */}
       <select 
-        className={styles.statusDropdown}
+        className={`${styles.statusBadge} ${styles[report.status]}`}
         value={report.status}
         onChange={(e) => onStatusChange(report.id, e.target.value as any)}
       >
