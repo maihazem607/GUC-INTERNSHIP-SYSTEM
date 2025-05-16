@@ -126,31 +126,7 @@ const DashboardContent = () => {
         expectedSalary: undefined,
         skillsRequired: [],
     });
-    
-    // Clear all filters function based on active tab
-    const handleClearFilters = () => {
-        switch (activeItem) {
-            case 'internships':
-                setInternshipFilter('all');
-                setInternshipSearchTerm('');
-                break;
-            case 'applications':
-                setApplicationFilter('all');
-                setActiveStatusFilter('all');
-                setActivePostFilter('All');
-                setSelectedPost(null);
-                setApplicationSearchTerm('');
-                break;
-            case 'interns':
-                setInternFilter('all');
-                setInternSearchTerm('');
-                break;
-            default:
-                break;
-        }
-    };
-    
-    // Using the unified notification context
+      // Using the unified notification context
     const { 
         notification, 
         visible, 
@@ -732,14 +708,14 @@ const DashboardContent = () => {
                 };
         }
     };
-      // Get current filters based on active tab
+    
+    // Get current filters based on active tab
     const getCurrentFilters = () => {
         switch (activeItem) {
             case 'internships':
                 return {
                     filters: internshipFilters,
-                    onFilterChange: (type: string, value: string) => setInternshipFilter(value.toLowerCase()),
-                    onClearFilters: handleClearFilters
+                    onFilterChange: (type: string, value: string) => setInternshipFilter(value.toLowerCase())
                 };            case 'applications':
                 return {
                     filters: applicationFilters,
@@ -762,20 +738,17 @@ const DashboardContent = () => {
                                 }
                             }
                         }
-                    },
-                    onClearFilters: handleClearFilters
+                    }
                 };
             case 'interns':
                 return {
                     filters: internFilters,
-                    onFilterChange: (type: string, value: string) => setInternFilter(value.toLowerCase()),
-                    onClearFilters: handleClearFilters
+                    onFilterChange: (type: string, value: string) => setInternFilter(value.toLowerCase())
                 };
             default:
                 return {
                     filters: [],
-                    onFilterChange: () => {},
-                    onClearFilters: () => {}
+                    onFilterChange: () => {}
                 };
         }
     };    // Use the imported EvaluationDetailsModal component with EvaluationDetails from SCAD folder
@@ -874,6 +847,11 @@ const DashboardContent = () => {
         );
     };// Notification handling functions are now handled by the unified notification system
 
+
+    // Handle logout functionality
+    const handleLogout = () => {
+        router.push('/');
+    };
     // Function to handle new application submission (simulation)
     const handleNewApplication = (postId: string) => {
         // Find the internship post
@@ -974,16 +952,18 @@ const DashboardContent = () => {
                 logo={{
                     src: '/logos/GUCInternshipSystemLogo.png',
                     alt: 'GUC Internship System'
-                }}                variant="tabs"
+                }}                
+                variant="tabs"
                 notificationCount={unreadCount}
-            />            
+                onLogout={handleLogout}
+            />
+
             <div className={styles.contentWrapper}>
                 <FilterSidebar 
                     filters={getCurrentFilters().filters}
                     onFilterChange={getCurrentFilters().onFilterChange}
-                    onClearFilters={getCurrentFilters().onClearFilters}
                 />
-                <main className={styles.mainContent}>
+                <main className={styles.mainContent}>                                        
                     <div className={styles.filterControls}>
                         <SearchBar
                             searchTerm={getSearchProps().searchTerm}
@@ -1039,18 +1019,10 @@ const DashboardContent = () => {
                                         );
                                     })}
                                 </div>
-                            ) : (                                <div className={styles.noResults}>
+                            ) : (
+                                <div className={styles.noResults}>
                                     <div className={styles.noResultsIcon}>📋</div>
                                     <p>No internship postings found matching your criteria.</p>
-                                    {(internshipSearchTerm || internshipFilter !== 'all') && (
-                                        <button 
-                                            className={styles.shareProfileButton}
-                                            onClick={handleClearFilters}
-                                            style={{ marginTop: '20px' }}
-                                        >
-                                            Clear All Filters
-                                        </button>
-                                    )}
                                 </div>
                             )}
                         </div>
@@ -1071,18 +1043,10 @@ const DashboardContent = () => {
                                     onStatusChange={handleApplicationStatusChange}
                                     onViewDetails={(app) => setSelectedApplication(app)}
                                 />
-                            ) : (                                <div className={styles.noResults}>
+                            ) : (
+                                <div className={styles.noResults}>
                                     <div className={styles.noResultsIcon}>📝</div>
                                     <p>No applications found matching your criteria.</p>
-                                    {(applicationSearchTerm || applicationFilter !== 'all' || activeStatusFilter !== 'all' || activePostFilter !== 'All') && (
-                                        <button 
-                                            className={styles.shareProfileButton}
-                                            onClick={handleClearFilters}
-                                            style={{ marginTop: '20px' }}
-                                        >
-                                            Clear All Filters
-                                        </button>
-                                    )}
                                 </div>
                             )}
                         </div>
@@ -1096,7 +1060,8 @@ const DashboardContent = () => {
                                 <p>Redirecting to SCAD Internships...</p>
                             </div>
                         </div>
-                    )}                    {/* INTERNS TAB */}
+                    )}                   
+                     {/* INTERNS TAB */}
                     {activeItem === 'interns' && (
                         <div className={styles.internListings}>
                             <div className={styles.listingHeader}>
@@ -1125,18 +1090,10 @@ const DashboardContent = () => {
                                         }}
                                     />
                                // </div>
-                            ) : (                                <div className={styles.noResults}>
+                            ) : (
+                                <div className={styles.noResults}>
                                     <div className={styles.noResultsIcon}>👨‍💼</div>
-                                    <p>No interns found matching your criteria.</p>
-                                    {(internSearchTerm || internFilter !== 'all') && (
-                                        <button 
-                                            className={styles.shareProfileButton}
-                                            onClick={handleClearFilters}
-                                            style={{ marginTop: '20px' }}
-                                        >
-                                            Clear All Filters
-                                        </button>
-                                    )}                                
+                                    <p>No interns found matching your criteria.</p>                                
                                 </div>
                             )}
                         </div>

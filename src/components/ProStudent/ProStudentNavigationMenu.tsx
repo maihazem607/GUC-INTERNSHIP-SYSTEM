@@ -16,6 +16,14 @@ const ProStudentNavigationMenu: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
   
+  // Handle logout functionality
+  const handleLogout = () => {
+    // You could add any cleanup logic here, like clearing local storage or cookies
+    
+    // Navigate to the login page
+    router.push('/');
+  };
+  
   // Determine active item based on current path
   const getActiveItemId = (): string => {
     if (pathname?.includes('/StudentLogin/pro-student/StudentProfile')) {
@@ -143,9 +151,9 @@ const ProStudentNavigationMenu: React.FC = () => {
         src: '/logos/GUCInternshipSystemLogo.png',
         alt: 'GUC Internship System',
         width: 250,
-        height: 50
-      }}
+        height: 50      }}
       variant="navigation"
+      onLogout={handleLogout}
     />
   );
 };
