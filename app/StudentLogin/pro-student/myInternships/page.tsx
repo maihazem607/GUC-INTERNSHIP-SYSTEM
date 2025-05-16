@@ -542,94 +542,6 @@ const MyInternshipsPage: React.FC = () => {
     
   }, []); 
 
-  // Simulate a report status change (available for internal testing purposes)
-  const simulateReportStatusChange = (reportId: number, newStatus: 'pending' | 'accepted' | 'flagged' | 'rejected') => {
-    // Find the internship with the matching report
-    const internshipIndex = myInternships.findIndex(i => i.id === reportId && i.report);
-    
-    if (internshipIndex === -1) return;
-    
-    const internship = myInternships[internshipIndex];
-    
-    if (!internship.report) return;
-
-    // Update the internship report with new status
-    const updatedInternship = {
-      ...internship,
-      report: {
-        ...internship.report,
-        status: newStatus
-      }
-    };
-    
-    // Update the internships list
-    const updatedInternships = [...myInternships];
-    updatedInternships[internshipIndex] = updatedInternship;
-    
-    setMyInternships(updatedInternships);
-    setFilteredInternships(prev => 
-      prev.map(item => 
-        item.id === reportId ? updatedInternship : item
-      )
-    );
-    
-    // Highlight the row with the changed report
-    setHighlightedReportId(reportId);
-    setTimeout(() => {
-      setHighlightedReportId(undefined);
-    }, 3000); // Clear highlight after animation completes
-    
-    // Set the active tab to reports to show the change
-    setActiveTab('reports');
-    
-    // Show notification based on the status change
-    if (newStatus === 'pending') {
-      showNotification({
-        message: `Your report for ${internship.title} at ${internship.company} is now under review.`,
-        type: 'info'
-      });
-      
-      addNotification({
-        title: "Report Status Changed",
-        message: `Your report for "${internship.title}" at ${internship.company} is now being reviewed by SCAD.`,
-        type: 'status-change'
-      });
-    } else if (newStatus === 'rejected') {
-      showNotification({
-        message: `Your report for ${internship.title} at ${internship.company} has been rejected. Please check the feedback.`,
-        type: 'warning'
-      });
-      
-      addNotification({
-        title: "Report Rejected",
-        message: `Your report for "${internship.title}" at ${internship.company} has been rejected. Please review SCAD comments and consider submitting an appeal.`,
-        type: 'status-change'
-      });
-    } else if (newStatus === 'accepted') {
-      showNotification({
-        message: `Congratulations! Your report for ${internship.title} at ${internship.company} has been accepted.`,
-        type: 'success'
-      });
-      
-      addNotification({
-        title: "Report Accepted",
-        message: `Your report for "${internship.title}" at ${internship.company} has been approved by SCAD.`,
-        type: 'status-change'
-      });
-    } else if (newStatus === 'flagged') {
-      showNotification({
-        message: `Your report for ${internship.title} at ${internship.company} has been flagged for revision.`,
-        type: 'warning'
-      });
-      
-      addNotification({
-        title: "Report Flagged",
-        message: `Your report for "${internship.title}" at ${internship.company} has been flagged and requires revision. Please check SCAD comments.`,
-        type: 'status-change'
-      });
-    }
-  };
-
   // Update active tab when URL parameters change
   useEffect(() => {
     const tabParam = searchParams.get('tab');
@@ -686,7 +598,7 @@ const MyInternshipsPage: React.FC = () => {
           
           // Add to persistent notifications
           addNotification({
-            title: "Report Status Changed (Pro Student)",
+            title: "Report Status Changed",
             message: `Your report for "${updatedInternship.title}" at ${updatedInternship.company} has been rejected. Please review SCAD comments and consider submitting an appeal.`,
             type: 'status-change'
           });
