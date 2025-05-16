@@ -263,27 +263,8 @@ const CompanyApplicationModal: React.FC<CompanyApplicationModalProps> = ({
                             <span className={styles.documentName} title={doc.name}>
                               {doc.name.length > 20 ? `${doc.name.substring(0, 18)}...` : doc.name}
                             </span>
-                          </div>                          <div className={styles.documentActions}>
-                            <a
-                              href={doc.url}
-                              className={styles.documentDownload}
-                              download={doc.name}
-                              onClick={(e) => {
-                                if (!doc.url.startsWith('blob:') && !doc.url.startsWith('data:')) {
-                                  e.preventDefault();
-                                  const link = document.createElement('a');
-                                  link.href = doc.url;
-                                  link.download = doc.name;
-                                  link.target = '_blank';
-                                  document.body.appendChild(link);
-                                  link.click();
-                                  document.body.removeChild(link);
-                                }
-                              }}
-                            >
-                              <span className={styles.downloadIcon}><Download size={16} color="#4c51bf" /></span>
-                              Download
-                            </a>
+                          </div>                          
+                          <div className={styles.documentActions}>
                             <button
                               className={styles.pdfButton}
                               onClick={() => handleGeneratePDF(doc)}

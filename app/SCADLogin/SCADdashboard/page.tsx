@@ -6,7 +6,6 @@ import FilterSidebar from "../../../src/components/global/FilterSidebar";
 import SearchBar from "../../../src/components/global/SearchBar";
 import CompanyApplicationCard from "../../../src/components/SCAD/CompanyApplicationCard";
 import CompanyApplicationModal from "../../../src/components/SCAD/CompanyApplicationModal";
-import StudentCard from "../../../src/components/SCAD/StudentCard";
 import ReportTable from "../../../src/components/SCAD/ReportList";
 import SettingsCard from "../../../src/components/SCAD/SettingsCard";
 import StudentDetailsModal from "../../../src/components/SCAD/StudentDetailsModal";
@@ -18,6 +17,7 @@ import InternshipDetailsModal from "../../../src/components/internships/Internsh
 import { Internship } from "../../../src/components/internships/types";
 import NotificationSystem, { useNotification } from "../../../src/components/global/NotificationSystemAdapter";
 import SCADNavigation from '../Navigation/SCADNavigation';
+import StudentList from '../../../src/components/SCAD/StudentList';
 
 import {
   Building,
@@ -218,7 +218,7 @@ interface Student {
   email: string;
   major: string;
   gpa: number;
-  internshipStatus: 'not started' | 'in progress' | 'completed' | 'not applicable';
+  internshipStatus: 'not started' | 'in progress' | 'completed' | 'deferred';
   academicYear: string;
   companyName?: string;
   internshipStartDate?: string;
@@ -1190,74 +1190,20 @@ export default function SCADDashboardPage() {
                 placeholder="Search students by name or email..."
               />
 
-              {/* Student Listings */}              <div className={styles.listings}>
+              {/* Student Listings */}              
+              <div className={styles.listings}>
                 <div className={styles.listingHeader}>
                   <h1 className={styles.listingTitle}>Students</h1>
                   <span className={styles.studentCount}>
                     {activeInternshipCount} active internships
                   </span>
-                </div>                {filteredStudents.length > 0 ? (
-                  <div className={styles.studentList}>
-                    <table className={styles.studentsTable}>
-                      <tbody>
-                        {filteredStudents.map(student => (
-                          <tr
-                            key={student.id}
-                            className={styles.studentRow}
-                            onClick={() => handleViewStudentDetails(student)}
-                          >
-                            {/* Student Name and Email Column */}
-                            <td>
-                              <div className={styles.studentProfile}>
-                                <div className={styles.studentAvatar}>
-                                  {student.name.charAt(0)}
-                                </div>
-                                <div className={styles.studentInfo}>
-                                  <div className={styles.studentName}>{student.name}</div>
-                                  <div className={styles.studentAge}>{student.email}</div>
-                                </div>
-                              </div>
-                            </td>
-                            
-                            {/* Major Column */}
-                            <td>
-                              <div className={styles.tagContainer}>
-                                <span className={styles.tag}>{student.major}</span>
-                              </div>
-                            </td>
-                            
-                            {/* GPA Column */}
-                            <td>
-                              <div className={styles.majorCell}>
-                                {student.gpa} GPA
-                              </div>
-                            </td>
-                            
-                            {/* Internship Status Column */}
-                            <td>
-                              <div className={styles.tagContainer}>
-                                <span className={`${styles.statusBadge} ${styles[student.internshipStatus.toLowerCase()]}`}>
-                                  {student.internshipStatus.toUpperCase()}
-                                </span>
-                              </div>
-                            </td>
-                            
-                            {/* Details Button Column */}
-                            <td>
-                              <button 
-                                className={styles.detailsButton}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleViewStudentDetails(student);
-                                }}
-                              >
-                                Details
-                              </button>
-                            </td>                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>                ) : (
+                </div>                  
+                {filteredStudents.length > 0 ? (
+                  <StudentList
+                    students={filteredStudents}
+                    onViewDetails={handleViewStudentDetails}
+                  />
+                  ) : (
                   <div className={styles.noResults}>
                     <Search size={48} className={styles.noResultsIcon} />
                     <p>No students found matching your criteria.</p>
@@ -1329,7 +1275,7 @@ export default function SCADDashboardPage() {
               {/* Evaluation Listings */}
               <div className={styles.listings}>                <div className={styles.listingHeader}>
                   <h1 className={styles.listingTitle}>Internship Evaluations</h1>
-                  <span className={styles.evaluationCount}>
+                  <span className={styles.reportCount}>
                     {completedEvaluationsCount} completed evaluations
                   </span>
                 </div>
@@ -1368,7 +1314,7 @@ export default function SCADDashboardPage() {
               <div className={styles.listings}>
                 <div className={styles.listingHeader}>
                   <h1 className={styles.listingTitle}>Internships</h1>
-                  <span className={styles.internshipCount}>
+                  <span className={styles.reportCount}>
                     {activeInternshipsCount} active internships
                   </span>
                 </div>
