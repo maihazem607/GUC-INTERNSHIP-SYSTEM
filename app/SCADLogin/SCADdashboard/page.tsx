@@ -343,30 +343,31 @@ const mockReports = [
     scadFeedback: 'This report has been flagged for revision. While you demonstrate solid technical work on the patient management system, the report lacks critical details regarding security implementation in a healthcare context. Given the sensitive nature of healthcare data, please provide comprehensive information about:\n\n1. Specific HIPAA compliance measures implemented in your code\n2. Encryption standards used for data at rest and in transit\n3. Authentication and authorization protocols\n4. Audit logging mechanisms for regulatory compliance\n\nPlease submit a revised report addressing these security aspects in detail.',
     studentResponses: ['Thank you for the feedback. I\'ll add more details about our encryption methods and HIPAA compliance approach in my revised report. I\'ve been working closely with the security team and can provide specific implementation details.']
   },
-  {      id: 4,
-    title: 'Initial Progress Report',
-    studentId: 1,
-    studentName: 'Sarah Johnson',
-    major: 'Computer Science',
-    companyName: 'Tech Solutions Inc.',
-    submissionDate: '2023-06-15',
+  {
+    id: 4,
+    title: 'First Internship Update',
+    studentId: 3,
+    studentName: 'Michael Lee',
+    major: 'Information Technology',
+    companyName: 'Nexlify Solutions',
+    submissionDate: '2024-08-05',
     status: 'rejected' as 'rejected',
-    content: 'First two weeks at Tech Solutions Inc. were focused on onboarding and getting familiar with their codebase.\n\nI attended orientation sessions and was assigned to the mobile app development team. I set up my development environment and started exploring the project structure.',
-    supervisorName: 'John Doe',
-    internshipStartDate: '2023-06-01',
-    internshipEndDate: '2023-08-31',
-    clarificationComment: 'The report lacks sufficient detail about your specific contributions and learning experiences.',
+    content: 'The first two weeks at Nexlify Solutions involved onboarding and understanding their backend systems.\n\nI attended training sessions and was assigned to the API development team. I set up my environment and started reviewing the database schema.',
+    supervisorName: 'Lisa Brown',
+    internshipStartDate: '2024-07-20',
+    internshipEndDate: '2024-10-20',
+    clarificationComment: 'The update lacks specific details about your technical contributions and learning outcomes.',
     comments: [
-      'Your report falls significantly below the minimum word count requirement for internship reports.',
-      'Please include specific technologies you worked with during onboarding with concrete examples.',
-      'This submission lacks any discussion of learning outcomes or challenges faced.',
-      'The report needs substantial revision to meet academic requirements.'
+      'Your update is far below the required word count for internship reports.',
+      'Please specify the programming languages or tools you used during onboarding.',
+      'The submission lacks discussion of challenges or technical skills gained.',
+      'Significant revisions are needed to meet academic standards.'
     ],
-    logo: '/logos/amazon.png',
-    scadFeedback: 'This report has been rejected as it does not meet the minimum academic requirements for an internship report submission. Major issues include:\n\n1. Extremely limited content (less than 100 words when minimum requirement is 750)\n2. No specific details about technologies, methodologies, or tools used\n3. No reflection on learning experiences or challenges\n4. No connection to academic coursework\n5. Missing required sections (project details, skills developed, etc.)\n\nPlease refer to the internship report guidelines and submit a completely revised report that properly documents your internship activities, technical contributions, and learning outcomes. The revised report should include specific examples of your work and detailed reflections on your experience.',
+    logo: '/logos/nexlify.png',
+    scadFeedback: 'This update has been rejected for not meeting academic requirements. Issues include:\n\n1. Content is too brief (under 100 words, while 750 is required)\n2. No details on specific tools, frameworks, or methodologies used\n3. No reflection on challenges or skills developed\n4. No connection to coursework\n5. Missing sections like project overview or technical contributions\n\nRefer to the guidelines and submit a revised update with detailed examples of your work and reflections on your experience.',
     studentResponses: [
-      'I apologize for the brief report. I misunderstood the requirements. I\'ll add details about the React Native components I worked with and the challenges I faced with state management.',
-      'I\'ve submitted my revised report with more details about my specific contributions and learning experiences.'
+      'Sorry for the short update. I will include details about the Python scripts I worked on and issues with database queries.',
+      'I have submitted a revised update with more specifics on my contributions and learning.'
     ]
   }
 ];
