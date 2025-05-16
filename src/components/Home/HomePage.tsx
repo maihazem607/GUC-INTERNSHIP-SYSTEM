@@ -79,7 +79,8 @@ const HomePage: React.FC = () => {
 
       {/* Main Content */}
       <div className={styles.contentWrapper}>
-        <main className={styles.mainContent}>          <div className={styles.heroSection}>
+        <main className={styles.mainContent}>          
+          <div className={styles.heroSection}>
           <div className={styles.heroContent}>
             <h1 className={styles.title}>Welcome to GUC Internship System</h1>
             <p className={styles.subtitle}>Connecting Students, Companies, and Faculty for Successful Internships</p>

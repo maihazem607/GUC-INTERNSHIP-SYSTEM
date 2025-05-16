@@ -946,9 +946,40 @@ export default function SCADDashboardPage() {
     const matchesPaid = selectedInternshipPaid === '' || (selectedInternshipPaid === 'true' ? internship.isPaid : !internship.isPaid);
     return matchesSearch && matchesIndustry && matchesDuration && matchesPaid;
   });
-
   // Get unique majors for filter
   const majors = Array.from(new Set(evaluations.map((evaluation: Evaluation) => evaluation.major)));
+
+  // Clear all filters based on active tab
+  const handleClearFilters = () => {
+    switch (activeItem) {
+      case 'companies':
+        setCompanySearchTerm('');
+        setSelectedIndustry('');
+        break;
+      case 'students':
+        setStudentSearchTerm('');
+        setSelectedInternshipStatus('');
+        break;
+      case 'reports':
+        setReportSearchTerm('');
+        setSelectedReportStatus('');
+        setSelectedReportMajor('');
+        break;
+      case 'evaluations':
+        setEvaluationSearchTerm('');
+        setSelectedEvaluationStatus('');
+        setSelectedEvaluationMajor('');
+        break;
+      case 'internships':
+        setInternshipSearchTerm('');
+        setSelectedInternshipIndustry('');
+        setSelectedInternshipDuration('');
+        setSelectedInternshipPaid('');
+        break;
+      default:
+        break;
+    }
+  };
 
   // Calculate counters
   const pendingCompanyCount = companies.filter((company: Company) => company.status === 'pending').length;
@@ -1079,8 +1110,7 @@ export default function SCADDashboardPage() {
           alt: 'GUC Internship System'
         }}
         variant="navigation"
-      />      <div className={styles.contentWrapper}>
-        {/* Filter Sidebar - shows filters based on active tab, hidden for settings and statistics */}
+      />      <div className={styles.contentWrapper}>        {/* Filter Sidebar - shows filters based on active tab, hidden for settings and statistics */}
         {activeItem !== 'settings' && activeItem !== 'statistics' && (
           <FilterSidebar
             filters={
@@ -1099,6 +1129,7 @@ export default function SCADDashboardPage() {
                       activeItem === 'internships' ? handleInternshipFilterChange :
                         () => { }
             }
+            onClearFilters={handleClearFilters}
           />
         )}
 
@@ -1151,11 +1182,19 @@ export default function SCADDashboardPage() {
                         onViewDetails={() => handleViewCompanyDetails(company)}
                       />
                     ))}
-                  </div>
-                ) : (
+                  </div>                ) : (
                   <div className={styles.noResults}>
                     <Search size={48} className={styles.noResultsIcon} />
                     <p>No companies found matching your criteria.</p>
+                    {(companySearchTerm || selectedIndustry) && (
+                      <button 
+                        className={styles.shareProfileButton} 
+                        onClick={handleClearFilters} 
+                        style={{ marginTop: '20px' }}
+                      >
+                        Clear All Filters
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
@@ -1238,11 +1277,19 @@ export default function SCADDashboardPage() {
                         ))}
                       </tbody>
                     </table>
-                  </div>
-                ) : (
+                  </div>                ) : (
                   <div className={styles.noResults}>
                     <Search size={48} className={styles.noResultsIcon} />
                     <p>No students found matching your criteria.</p>
+                    {(studentSearchTerm || selectedInternshipStatus) && (
+                      <button 
+                        className={styles.shareProfileButton} 
+                        onClick={handleClearFilters} 
+                        style={{ marginTop: '20px' }}
+                      >
+                        Clear All Filters
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
@@ -1266,11 +1313,26 @@ export default function SCADDashboardPage() {
                   <span className={styles.reportCount}>
                     {pendingReportsCount} pending reviews
                   </span>
-                </div>
-                <ReportTable
-                  reports={filteredReports}
-                  onViewReport={handleViewReportDetails}
-                />
+                </div>                {filteredReports.length > 0 ? (
+                  <ReportTable
+                    reports={filteredReports}
+                    onViewReport={handleViewReportDetails}
+                  />
+                ) : (
+                  <div className={styles.noResults}>
+                    <Search size={48} className={styles.noResultsIcon} />
+                    <p>No reports found matching your criteria.</p>
+                    {(reportSearchTerm || selectedReportStatus || selectedReportMajor) && (
+                      <button 
+                        className={styles.shareProfileButton} 
+                        onClick={handleClearFilters} 
+                        style={{ marginTop: '20px' }}
+                      >
+                        Clear All Filters
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -1294,11 +1356,19 @@ export default function SCADDashboardPage() {
                   <EvaluationTable
                     evaluations={filteredEvaluations}
                     onViewDetails={(evaluation) => handleViewEvaluationDetails(evaluation)}
-                  />
-                ) : (
+                  />                ) : (
                   <div className={styles.noResults}>
                     <Search size={48} className={styles.noResultsIcon} />
                     <p>No evaluations found matching your criteria.</p>
+                    {(evaluationSearchTerm || selectedEvaluationStatus || selectedEvaluationMajor) && (
+                      <button 
+                        className={styles.shareProfileButton} 
+                        onClick={handleClearFilters} 
+                        style={{ marginTop: '20px' }}
+                      >
+                        Clear All Filters
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
@@ -1332,11 +1402,19 @@ export default function SCADDashboardPage() {
                         onViewDetails={() => handleViewInternshipDetails(internship)}
                       />
                     ))}
-                  </div>
-                ) : (
+                  </div>                ) : (
                   <div className={styles.noResults}>
                     <Search size={48} className={styles.noResultsIcon} />
                     <p>No internships found matching your criteria.</p>
+                    {(internshipSearchTerm || selectedInternshipIndustry || selectedInternshipDuration || selectedInternshipPaid) && (
+                      <button 
+                        className={styles.shareProfileButton} 
+                        onClick={handleClearFilters} 
+                        style={{ marginTop: '20px' }}
+                      >
+                        Clear All Filters
+                      </button>
+                    )}
                   </div>
                 )}
               </div>

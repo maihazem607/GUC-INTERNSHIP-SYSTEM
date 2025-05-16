@@ -300,14 +300,22 @@ export default function AppointmentsPage() {
     
     setFilteredAppointments(results);
   }, [searchTerm, activeFilters, appointments, activeTab]);
-  
-  // Handle filter changes
+    // Handle filter changes
   const handleFilterChange = (filterType: string, value: string) => {
     setActiveFilters(prev => ({
       ...prev,
       [filterType.toLowerCase()]: value
     }));
-  };    // Function to play notification sounds with autoplay fallback
+  };
+  
+  // Clear all filters
+  const handleClearFilters = () => {
+    setActiveFilters({
+      status: 'All',
+      date: 'All'
+    });
+    setSearchTerm('');
+  };// Function to play notification sounds with autoplay fallback
   const playNotificationSound = (type: 'notification' | 'call') => {
     const hasUserInteracted = document.documentElement.dataset.hasUserInteracted === 'true';
     
@@ -734,10 +742,10 @@ export default function AppointmentsPage() {
 
       <div className={styles.contentWrapper}>
         {/* Left Sidebar with Filters - Only show in appointment listing tabs */}
-        {activeTab !== 'new-appointment' && (
-          <FilterSidebar 
+        {activeTab !== 'new-appointment' && (          <FilterSidebar 
             filters={formattedFilters}
             onFilterChange={handleFilterChange}
+            onClearFilters={handleClearFilters}
           />
         )}
 
@@ -788,8 +796,7 @@ export default function AppointmentsPage() {
                         />
                       </div>
                     ))
-                  ) : (
-                    <div className={styles.noResults}>
+                  ) : (                    <div className={styles.noResults}>
                       <img 
                         src="/assets/images/icons/search.png" 
                         alt="Search Icon" 
@@ -797,6 +804,13 @@ export default function AppointmentsPage() {
                       /> 
                       <h3>No appointments found</h3>
                       <p>Try adjusting your search criteria or filters</p>
+                      <button 
+                        className={styles.shareProfileButton} 
+                        onClick={handleClearFilters} 
+                        style={{ marginTop: '20px' }}
+                      >
+                        Clear All Filters
+                      </button>
                     </div>
                   )}
                 </div>

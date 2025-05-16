@@ -1292,23 +1292,35 @@ const MyInternshipsPage: React.FC = () => {
       }, 1000);
     }, 800); // Simulate network delay
   };
-
   // Handle filter changes
   const handleFilterChange = (filterType: string, value: string) => {
     setActiveFilters(prev => ({
       ...prev,
       [filterType]: value
     }));
-  };  return (
+  };
+  
+  // Clear all filters
+  const handleClearFilters = () => {
+    setActiveFilters({
+      status: 'All',
+      internStatus: 'All',
+      reportStatus: 'All',
+      date: 'All'
+    });
+    setSearchTerm('');
+  };
+  
+  return (
     <div className={styles.pageContainer}>
       {/* Global Navigation for Pro Student */}
       <ProStudentNavigationMenu />
       
       <div className={styles.contentWrapper}>
-        {/* Filter Sidebar - Show for both tabs */}
-        <FilterSidebar
+        {/* Filter Sidebar - Show for both tabs */}        <FilterSidebar
           filters={getFormattedFilters()}
           onFilterChange={handleFilterChange}
+          onClearFilters={handleClearFilters}
         />
 
         {/* Main Content */}        
@@ -1350,8 +1362,7 @@ const MyInternshipsPage: React.FC = () => {
                     </div>
                   ))}
                 </div>
-              )            ) : (
-              <div className={styles.noResults}>
+              )            ) : (              <div className={styles.noResults}>
                 <Search 
                   size={64} 
                   className={styles.searchIcon} 
@@ -1367,6 +1378,16 @@ const MyInternshipsPage: React.FC = () => {
                     'You don\'t have any report results yet. Make sure to finalize and submit your internship reports.'
                   }
                 </p>
+                {(searchTerm || activeFilters.status !== 'All' || activeFilters.internStatus !== 'All' || 
+                  activeFilters.reportStatus !== 'All' || activeFilters.date !== 'All') && (
+                  <button 
+                    className={styles.shareProfileButton} 
+                    onClick={handleClearFilters} 
+                    style={{ marginTop: '20px' }}
+                  >
+                    Clear All Filters
+                  </button>
+                )}
               </div>
             )}
           </div>

@@ -1036,8 +1036,27 @@ const MyInternshipsPage: React.FC = () => {
       } finally {
         setIsGeneratingPDF(false);
       }
-    }
+    }  };
+  
+  // Handle filter changes
+  const handleFilterChange = (filterType: string, value: string) => {
+    setActiveFilters(prev => ({
+      ...prev,
+      [filterType]: value
+    }));
   };
+
+  // Clear all filters
+  const handleClearFilters = () => {
+    setActiveFilters({
+      status: 'All',
+      internStatus: 'All',
+      reportStatus: 'All',
+      date: 'All'
+    });
+    setSearchTerm('');
+  };
+  
   // Handle viewing report results
   const handleViewReportResults = (report: any) => {
     const internship = myInternships.find(i => i.id === report.id);
@@ -1206,19 +1225,11 @@ const MyInternshipsPage: React.FC = () => {
       
       // Close modal after a brief delay so user can see the changes
       setTimeout(() => {
-        setShowReportResultsModal(false);
+      setShowReportResultsModal(false);
       }, 1000);
     }, 800); // Simulate network delay
   };
 
-  // Handle filter changes
-  const handleFilterChange = (filterType: string, value: string) => {
-    setActiveFilters(prev => ({
-      ...prev,
-      [filterType]: value
-    }));
-  };  
-  
   // Simulate a report status change when the reports tab is clicked (only once)
   useEffect(() => {
     // Only run when reports tab is active and notification hasn't been shown yet
@@ -1320,10 +1331,10 @@ const MyInternshipsPage: React.FC = () => {
       />
       
       <div className={styles.contentWrapper}>
-        {/* Filter Sidebar - Show for both tabs */}
-        <FilterSidebar
+        {/* Filter Sidebar - Show for both tabs */}        <FilterSidebar
           filters={getFormattedFilters()}
           onFilterChange={handleFilterChange}
+          onClearFilters={handleClearFilters}
         />
 
         {/* Main Content */}        
@@ -1365,8 +1376,7 @@ const MyInternshipsPage: React.FC = () => {
                     </div>
                   ))}
                 </div>
-              )            ) : (
-              <div className={styles.noResults}>
+              )            ) : (              <div className={styles.noResults}>
                 <Search 
                   size={64} 
                   className={styles.searchIcon} 
@@ -1382,6 +1392,16 @@ const MyInternshipsPage: React.FC = () => {
                     'You don\'t have any report results yet. Make sure to finalize and submit your internship reports.'
                   }
                 </p>
+                {(searchTerm || activeFilters.status !== 'All' || activeFilters.internStatus !== 'All' || 
+                  activeFilters.reportStatus !== 'All' || activeFilters.date !== 'All') && (
+                  <button 
+                    className={styles.shareProfileButton} 
+                    onClick={handleClearFilters} 
+                    style={{ marginTop: '20px' }}
+                  >
+                    Clear All Filters
+                  </button>
+                )}
               </div>
             )}
           </div>

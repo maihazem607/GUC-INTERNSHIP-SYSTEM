@@ -537,6 +537,16 @@ export default function CompaniesPage() {
     }));
   };
   
+  // Clear all company filters
+  const handleClearFilters = () => {
+    setActiveFilters({
+      industry: 'All',
+      recommendation: 'All',
+      rating: 'All'
+    });
+    setSearchTerm('');
+  };
+  
   // Handle profile view filter changes
   const handleProfileViewFilterChange = (filterType: string, value: string) => {
     setProfileViewFilters(prev => ({
@@ -553,7 +563,9 @@ export default function CompaniesPage() {
       timeRange: 'All'
     });
     setProfileViewSearchTerm('');
-  };  // Handle saving a company
+  };  
+  
+  // Handle saving a company
   const handleSaveCompany = (companyId: number) => {
     // Implement save company functionality (would be API call in real app)
     
@@ -642,11 +654,11 @@ export default function CompaniesPage() {
   
       <div className={styles.contentWrapper}>
         {activeTab === 'companies' ? (
-          <>
-            {/* Left Sidebar with Filters */}
+          <>            {/* Left Sidebar with Filters */}
             <FilterSidebar 
               filters={getFormattedFilters()}
               onFilterChange={handleFilterChange}
+              onClearFilters={handleClearFilters}
             />
 
             {/* Main Content */}
@@ -677,8 +689,7 @@ export default function CompaniesPage() {
                         onSave={() => handleSaveCompany(company.id)}
                       />
                     ))
-                  ) : (
-                    <div className={styles.noResults}>
+                  ) : (                    <div className={styles.noResults}>
                       <img 
                         src="assets/images/icons/search.png" 
                         alt="Search Icon" 
@@ -686,6 +697,15 @@ export default function CompaniesPage() {
                       /> 
                       <h3>No companies found</h3>
                       <p>Try adjusting your search criteria or filters</p>
+                      {(searchTerm || activeFilters.industry !== 'All' || activeFilters.recommendation !== 'All' || activeFilters.rating !== 'All') && (
+                        <button 
+                          className={styles.shareProfileButton}
+                          onClick={handleClearFilters}
+                          style={{ marginTop: '20px' }}
+                        >
+                          Clear All Filters
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>

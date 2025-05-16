@@ -126,7 +126,31 @@ const DashboardContent = () => {
         expectedSalary: undefined,
         skillsRequired: [],
     });
-      // Using the unified notification context
+    
+    // Clear all filters function based on active tab
+    const handleClearFilters = () => {
+        switch (activeItem) {
+            case 'internships':
+                setInternshipFilter('all');
+                setInternshipSearchTerm('');
+                break;
+            case 'applications':
+                setApplicationFilter('all');
+                setActiveStatusFilter('all');
+                setActivePostFilter('All');
+                setSelectedPost(null);
+                setApplicationSearchTerm('');
+                break;
+            case 'interns':
+                setInternFilter('all');
+                setInternSearchTerm('');
+                break;
+            default:
+                break;
+        }
+    };
+    
+    // Using the unified notification context
     const { 
         notification, 
         visible, 
@@ -708,14 +732,14 @@ const DashboardContent = () => {
                 };
         }
     };
-    
-    // Get current filters based on active tab
+      // Get current filters based on active tab
     const getCurrentFilters = () => {
         switch (activeItem) {
             case 'internships':
                 return {
                     filters: internshipFilters,
-                    onFilterChange: (type: string, value: string) => setInternshipFilter(value.toLowerCase())
+                    onFilterChange: (type: string, value: string) => setInternshipFilter(value.toLowerCase()),
+                    onClearFilters: handleClearFilters
                 };            case 'applications':
                 return {
                     filters: applicationFilters,
@@ -738,17 +762,20 @@ const DashboardContent = () => {
                                 }
                             }
                         }
-                    }
+                    },
+                    onClearFilters: handleClearFilters
                 };
             case 'interns':
                 return {
                     filters: internFilters,
-                    onFilterChange: (type: string, value: string) => setInternFilter(value.toLowerCase())
+                    onFilterChange: (type: string, value: string) => setInternFilter(value.toLowerCase()),
+                    onClearFilters: handleClearFilters
                 };
             default:
                 return {
                     filters: [],
-                    onFilterChange: () => {}
+                    onFilterChange: () => {},
+                    onClearFilters: () => {}
                 };
         }
     };    // Use the imported EvaluationDetailsModal component with EvaluationDetails from SCAD folder
@@ -949,14 +976,14 @@ const DashboardContent = () => {
                     alt: 'GUC Internship System'
                 }}                variant="tabs"
                 notificationCount={unreadCount}
-            />
-
+            />            
             <div className={styles.contentWrapper}>
                 <FilterSidebar 
                     filters={getCurrentFilters().filters}
                     onFilterChange={getCurrentFilters().onFilterChange}
+                    onClearFilters={getCurrentFilters().onClearFilters}
                 />
-                <main className={styles.mainContent}>                                        
+                <main className={styles.mainContent}>
                     <div className={styles.filterControls}>
                         <SearchBar
                             searchTerm={getSearchProps().searchTerm}
@@ -1012,10 +1039,18 @@ const DashboardContent = () => {
                                         );
                                     })}
                                 </div>
-                            ) : (
-                                <div className={styles.noResults}>
+                            ) : (                                <div className={styles.noResults}>
                                     <div className={styles.noResultsIcon}>📋</div>
                                     <p>No internship postings found matching your criteria.</p>
+                                    {(internshipSearchTerm || internshipFilter !== 'all') && (
+                                        <button 
+                                            className={styles.shareProfileButton}
+                                            onClick={handleClearFilters}
+                                            style={{ marginTop: '20px' }}
+                                        >
+                                            Clear All Filters
+                                        </button>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -1036,10 +1071,18 @@ const DashboardContent = () => {
                                     onStatusChange={handleApplicationStatusChange}
                                     onViewDetails={(app) => setSelectedApplication(app)}
                                 />
-                            ) : (
-                                <div className={styles.noResults}>
+                            ) : (                                <div className={styles.noResults}>
                                     <div className={styles.noResultsIcon}>📝</div>
                                     <p>No applications found matching your criteria.</p>
+                                    {(applicationSearchTerm || applicationFilter !== 'all' || activeStatusFilter !== 'all' || activePostFilter !== 'All') && (
+                                        <button 
+                                            className={styles.shareProfileButton}
+                                            onClick={handleClearFilters}
+                                            style={{ marginTop: '20px' }}
+                                        >
+                                            Clear All Filters
+                                        </button>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -1082,10 +1125,18 @@ const DashboardContent = () => {
                                         }}
                                     />
                                // </div>
-                            ) : (
-                                <div className={styles.noResults}>
+                            ) : (                                <div className={styles.noResults}>
                                     <div className={styles.noResultsIcon}>👨‍💼</div>
-                                    <p>No interns found matching your criteria.</p>                                
+                                    <p>No interns found matching your criteria.</p>
+                                    {(internSearchTerm || internFilter !== 'all') && (
+                                        <button 
+                                            className={styles.shareProfileButton}
+                                            onClick={handleClearFilters}
+                                            style={{ marginTop: '20px' }}
+                                        >
+                                            Clear All Filters
+                                        </button>
+                                    )}                                
                                 </div>
                             )}
                         </div>

@@ -327,13 +327,22 @@ export default function InternshipListPage() {
     
     setFilteredInternships(results);
   }, [searchTerm, activeFilters]);
-
   // Handle filter changes
   const handleFilterChange = (filterType: string, value: string) => {
     setActiveFilters(prev => ({
       ...prev,
       [filterType]: value
     }));
+  };
+  
+  // Clear all filters
+  const handleClearFilters = () => {
+    setActiveFilters({
+      industry: 'All',
+      duration: 'All',
+      isPaid: 'All'
+    });
+    setSearchTerm('');
   };
 
   // Handle starring/unstarring internships
@@ -396,10 +405,10 @@ export default function InternshipListPage() {
       />
 
       <div className={styles.contentWrapper}>
-        {/* Left Sidebar with Filters */}
-        <FilterSidebar 
+        {/* Left Sidebar with Filters */}        <FilterSidebar 
           filters={formattedFilters}
           onFilterChange={handleFilterChange}
+          onClearFilters={handleClearFilters}
         />
 
         {/* Main Content */}
@@ -431,8 +440,7 @@ export default function InternshipListPage() {
                     onViewDetails={handleViewDetails}
                   />
                 ))
-              ) : (
-                <div className={styles.noResults}>
+              ) : (                <div className={styles.noResults}>
                   <img 
                     src="assets/images/icons/search.png" 
                     alt="Search Icon" 
@@ -440,6 +448,13 @@ export default function InternshipListPage() {
                   /> 
                   <h3>No internships found</h3>
                   <p>Try adjusting your search criteria or filters</p>
+                  <button 
+                    className={styles.shareProfileButton} 
+                    onClick={handleClearFilters} 
+                    style={{ marginTop: '20px' }}
+                  >
+                    Clear All Filters
+                  </button>
                 </div>
               )}
             </div>

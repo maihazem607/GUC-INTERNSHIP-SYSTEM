@@ -181,13 +181,21 @@ export default function WorkshopListPage() {
     
     setFilteredWorkshops(results);
   }, [searchTerm, activeFilters]);
-  
-  // Handle filter changes
+    // Handle filter changes
   const handleFilterChange = (filterType: string, value: string) => {
     setActiveFilters(prev => ({
       ...prev,
       [filterType]: value
     }));
+  };
+  
+  // Clear all filters
+  const handleClearFilters = () => {
+    setActiveFilters({
+      status: 'All',
+      type: 'All'
+    });
+    setSearchTerm('');
   };
 
   // Workshop action handlers
@@ -285,10 +293,10 @@ export default function WorkshopListPage() {
       <ProStudentNavigationMenu />
       
       <div className={styles.contentWrapper}>
-        {/* Left Sidebar with Filters */}
-        <FilterSidebar 
+        {/* Left Sidebar with Filters */}        <FilterSidebar 
           filters={formattedFilters}
           onFilterChange={handleFilterChange}
+          onClearFilters={handleClearFilters}
         />
 
         {/* Main Content */}
@@ -318,8 +326,7 @@ export default function WorkshopListPage() {
                     onViewDetails={handleViewDetails}
                   />
                 ))
-              ) : (
-                <div className={styles.noResults}>
+              ) : (                <div className={styles.noResults}>
                   <img 
                     src="assets/images/icons/search.png" 
                     alt="Search Icon" 
@@ -327,6 +334,13 @@ export default function WorkshopListPage() {
                   /> 
                   <h3>No workshops found</h3>
                   <p>Try adjusting your search criteria or filters</p>
+                  <button 
+                    className={styles.shareProfileButton} 
+                    onClick={handleClearFilters} 
+                    style={{ marginTop: '20px' }}
+                  >
+                    Clear All Filters
+                  </button>
                 </div>
               )}
             </div>
