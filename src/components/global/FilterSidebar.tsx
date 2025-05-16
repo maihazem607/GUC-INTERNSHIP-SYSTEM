@@ -65,7 +65,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
                     checked={filter.value === option}
                     onChange={() => onFilterChange(filter.type, option)}
                   />
-                  <span style={{ flex: 1 }}>{option}</span>
+                  <span style={{ flex: 1 }}>{option === '' ? 'All' : option}</span>
                   {filter.counts && (
                     <span className={styles.filterCount}>{filter.counts[option] || 0}</span>
                   )}
