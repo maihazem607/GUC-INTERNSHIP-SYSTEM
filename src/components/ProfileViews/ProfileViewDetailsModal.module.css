@@ -177,11 +177,11 @@
 
 .recurringBadge {
   background-color: #e3f2fd;
-  color: #1976d2;
+  color: #4c51bf;
 }
 
 .recurringBadge::before {
-  background-color: #1976d2;
+  background-color: #4c51bf;
   box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
 }
 
@@ -228,16 +228,16 @@
 }
 
 .primaryAction {
-  background-color: #2196f3;
-  background-image: linear-gradient(135deg, #2196f3, #1976d2);
-  border-color: #1976d2;
+  background-color: #4c51bf;
+  background-image: linear-gradient(135deg, #4c51bf, #34399b);
+  border-color: #4c51bf;
   color: white;
   box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
 }
 
 .primaryAction:hover {
   background-color: #1976d2;
-  background-image: linear-gradient(135deg, #1e88e5, #1565c0);
+  background-image: linear-gradient(135deg, #1e88e5, #34399b);
   border-color: #1565c0;
   box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4);
 }

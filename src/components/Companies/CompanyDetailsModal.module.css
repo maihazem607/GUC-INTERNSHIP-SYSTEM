@@ -212,13 +212,13 @@
 }
 
 .tabButton:hover {
-  color: #3182ce;
+  color: #4c51bf;
   background-color: #ebf8ff;
 }
 
 .activeTab {
-  border-bottom-color: #3182ce;
-  color: #3182ce;
+  border-bottom-color: #4c51bf;
+  color: #4c51bf;
 }
 
 .tabContent {
@@ -302,7 +302,7 @@
   padding: 0.3rem 0.8rem;
   border-radius: 15px;
   background-color: #ebf4ff;
-  color: #3182ce;
+  color: #4c51bf;
   font-weight: 500;
 }
 
@@ -364,7 +364,7 @@
   background-color: #f8fafc;
   border-radius: 10px;
   padding: 1rem;
-  border-left: 4px solid #3182ce;
+  border-left: 4px solid #4c51bf;
 }
 
 .reviewHeader {
@@ -443,7 +443,7 @@
 
 .positionsDisclaimer {
   background-color: #ebf8ff;
-  border-left: 4px solid #3182ce;
+  border-left: 4px solid #4c51bf;
   padding: 0.8rem 1rem;
   margin-bottom: 1.5rem;
   border-radius: 0 4px 4px 0;
@@ -507,13 +507,13 @@
   padding: 0.2rem 0.6rem;
   border-radius: 10px;
   background-color: #ebf4ff;
-  color: #3182ce;
+  color: #4c51bf;
 }
 
 .positionLink {
   display: inline-block;
   font-size: 0.85rem;
-  color: #3182ce;
+  color: #4c51bf;
   font-weight: 600;
   text-decoration: none;
 }
@@ -529,7 +529,7 @@
 
 .viewAllButton {
   background-color: #ebf8ff;
-  color: #3182ce;
+  color: #4c51bf;
   border: none;
   padding: 0.7rem 1.5rem;
   border-radius: 8px;
@@ -562,7 +562,7 @@
 }
 
 .saveButton {
-  background-color: #3182ce;
+  background-color: #4c51bf;
   color: white;
   border: none;
 }
@@ -573,8 +573,8 @@
 
 .websiteButton {
   background-color: white;
-  color: #3182ce;
-  border: 1px solid #3182ce;
+  color: #4c51bf;
+  border: 1px solid #4c51bf;
 }
 
 .websiteButton:hover {
@@ -665,7 +665,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: #5B5BD6;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 6px;

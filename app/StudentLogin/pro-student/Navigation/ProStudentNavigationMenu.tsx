@@ -69,8 +69,7 @@ const ProStudentNavigationMenu: React.FC = () => {
       case 'myInternships':
         return 'my-internships';
       case 'workshops':
-        return 'workshops';
-      case 'Assessments':
+        return 'workshops';      case 'assessments':
         return 'assessments';
       case 'companies':
         return 'companies';
@@ -119,11 +118,11 @@ const ProStudentNavigationMenu: React.FC = () => {
           icon: <Building size={18} />,
           onClick: () => router.push('/StudentLogin/pro-student/companies')
         },
-        {
+        {          
           id: 'assessments',
           label: 'Assessments',
           icon: <ClipboardCheck size={18} />,
-          onClick: () => router.push('/StudentLogin/pro-student/Assessments')
+          onClick: () => router.push('/StudentLogin/pro-student/assessments')
         },
         {
           id: 'internships',

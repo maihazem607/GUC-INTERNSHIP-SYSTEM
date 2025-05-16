@@ -189,7 +189,7 @@
 
 .reportButton {
   padding: 8px 12px;
-  background-color: #2196f3;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 8px;
@@ -201,7 +201,7 @@
 }
 
 .reportButton:hover {
-  background-color: #1976d2;
+  background-color: #34399b;
 }
 
 .evaluateButton {

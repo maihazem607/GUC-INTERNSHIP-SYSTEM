@@ -101,11 +101,11 @@
 
 .recurringBadge {
   background-color: #e3f2fd;
-  color: #1976d2;
+  color: #4c51bf;
 }
 
 .recurringBadge::before {
-  background-color: #1976d2;
+  background-color: #4c51bf;
   box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
 }
 
@@ -116,7 +116,7 @@
 
 .viewButton {
   padding: 8px 16px;
-  background-color: #2196f3;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 8px;
@@ -141,7 +141,7 @@
 }
 
 .viewButton:hover {
-  background-color: #1976d2;
+  background-color: #34399b;
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
 }

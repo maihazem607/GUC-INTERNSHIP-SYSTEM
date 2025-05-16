@@ -137,7 +137,7 @@
 
 .viewButton {
   padding: 8px 16px;
-  background-color: #2196f3;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 8px;
@@ -162,7 +162,7 @@
 }
 
 .viewButton:hover {
-  background-color: #1976d2;
+  background-color: #34399b;
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
 }

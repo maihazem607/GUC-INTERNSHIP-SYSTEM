@@ -81,7 +81,7 @@
 }
 
 .primaryButton {
-  background-color: #4c7bff;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 8px;
@@ -93,7 +93,7 @@
 }
 
 .primaryButton:hover {
-  background-color: #3b6aef;
+  background-color: #34399b;
 }
 
 .secondaryButton {
