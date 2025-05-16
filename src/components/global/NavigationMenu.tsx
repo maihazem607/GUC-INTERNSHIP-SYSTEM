@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { ChevronDown, MapPin, Settings, User } from 'lucide-react';
+import { ChevronDown, MapPin, Settings, User, LogOut } from 'lucide-react';
 import styles from './NavigationMenu.module.css';
 import NotificationBell from './NotificationBell';
 
@@ -29,6 +29,7 @@ interface NavigationMenuProps {
     variant?: 'navigation' | 'tabs';
     notificationCount?: number;
     locationName?: string;
+    onLogout?: () => void;
 }
 
 /**
@@ -40,9 +41,9 @@ interface NavigationMenuProps {
  * @param props.logo - Optional logo configuration
  * @param props.rightElements - Optional elements to display on the right side
  * @param props.className - Optional additional CSS class name
- * @param props.variant - 'navigation' (horizontal bar) or 'tabs' (tab style)
- * @param props.notificationCount - Number of notifications to display
+ * @param props.variant - 'navigation' (horizontal bar) or 'tabs' (tab style) * @param props.notificationCount - Number of notifications to display
  * @param props.locationName - Location name to display
+ * @param props.onLogout - Function to call when the logout button is clicked
  */
 const NavigationMenu: React.FC<NavigationMenuProps> = ({
     items,
@@ -53,7 +54,8 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
     className = '',
     variant = 'navigation',
     notificationCount = 0,
-    locationName = 'New York, NY'
+    locationName = 'New York, NY',
+    onLogout
 }) => {
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
@@ -136,9 +138,8 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
                 )}
             </div>
         );
-    };
-
-    // Default right elements with notification bell, settings, and user avatar
+    };    
+    // Default right elements with notification bell, settings, and logout button
     const defaultRightElements = (
         <>
             <div className={styles.locationDisplay}>
@@ -148,10 +149,19 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
             <div className={styles.userControls}>
                 <button className={styles.settingsButton}>
                     <Settings size={18} />
-                </button>                <NotificationBell />
-                <div className={styles.userAvatar}>
-                    <User size={20} />
-                </div>
+                </button>                
+                <NotificationBell />               
+                <button 
+                    className={styles.logoutButton} 
+                    onClick={() => {
+                        if (window.confirm('Are you sure you want to logout?')) {
+                            if (onLogout) onLogout();
+                        }
+                    }}
+                    title="Logout"
+                >
+                    <LogOut size={18} />
+                </button>
             </div>
         </>
     );

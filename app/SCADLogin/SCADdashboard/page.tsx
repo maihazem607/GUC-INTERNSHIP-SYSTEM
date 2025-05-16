@@ -1056,7 +1056,14 @@ export default function SCADDashboardPage() {
       type: "paid",
       value: selectedInternshipPaid
     }
-  ];  function handleSaveInternshipCycle(): void {
+  ];  
+  
+  // Handle logout functionality
+  const handleLogout = () => {
+    router.push('/');
+  };
+    
+  function handleSaveInternshipCycle(): void {
     // In a real application, this would involve an API call to save the internship cycle dates
     console.log('Internship cycle saved:', {
       startDate: internshipCycleStart,
@@ -1110,7 +1117,10 @@ export default function SCADDashboardPage() {
           alt: 'GUC Internship System'
         }}
         variant="navigation"
-      />      <div className={styles.contentWrapper}>        {/* Filter Sidebar - shows filters based on active tab, hidden for settings and statistics */}
+        onLogout={handleLogout}
+      />      
+      <div className={styles.contentWrapper}>        
+        {/* Filter Sidebar - shows filters based on active tab, hidden for settings and statistics */}
         {activeItem !== 'settings' && activeItem !== 'statistics' && (
           <FilterSidebar
             filters={

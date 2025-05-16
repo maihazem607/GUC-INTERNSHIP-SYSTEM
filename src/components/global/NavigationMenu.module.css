@@ -269,11 +269,33 @@
     align-items: center;
     justify-content: center;
     color: #4c51bf;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .userAvatar:hover {
-    background-color: #e5e7eb;
+    background-color: #e74c3c;
+    color: white;
+}
+
+/* Logout button specific styling */
+.logoutButton {
+    background-color: #f0f0f0;
+    color: #4c51bf;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.logoutButton:hover {
+    background-color: #e74c3c;
+    color: white;
+    transform: translateY(-2px);
 }
 
 .settingsButton,

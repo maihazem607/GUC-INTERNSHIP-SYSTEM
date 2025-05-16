@@ -16,8 +16,13 @@ import {
 const ProStudentNavigationMenu: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname() || '';
+  
+  // Handle logout functionality
+  const handleLogout = () => {
+    router.push('/');
+  };
     
-  // Determine active item based on current path  
+  // Determine active item based on current path
   const getActiveItemId = (): string => {
     // Extract path segments for more precise matching
     const segments = pathname.split('/').filter(segment => segment);
@@ -183,9 +188,9 @@ const ProStudentNavigationMenu: React.FC = () => {
         src: '/logos/GUCInternshipSystemLogo.png',
         alt: 'GUC Internship System',
         width: 250,
-        height: 150
-      }}
+        height: 150      }}
       variant="navigation"
+      onLogout={handleLogout}
     />
   );
 };
