@@ -3,6 +3,28 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 
+// Storage keys for localStorage
+const STORAGE_KEYS = {
+    APPLICATIONS: 'company-applications-data',
+    INTERNSHIP_POSTS: 'company-internship-posts-data',
+    INTERNS: 'company-interns-data'
+};
+
+// Helper function to handle date serialization/deserialization
+const deserializeDates = (obj: any) => {
+    if (obj === null || obj === undefined || typeof obj !== 'object') return obj;
+    
+    Object.keys(obj).forEach(key => {
+        if (typeof obj[key] === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(obj[key])) {
+            obj[key] = new Date(obj[key]);
+        } else if (typeof obj[key] === 'object') {
+            obj[key] = deserializeDates(obj[key]);
+        }
+    });
+    
+    return obj;
+};
+
 // Import global components
 import { useNotification } from "@/components/global/NotificationSystemAdapter";
 import FilterSidebar from "@/components/global/FilterSidebar";
@@ -107,8 +129,28 @@ const CompanyInternshipsPage = () => {
     
     // Initializing mock data
     useEffect(() => {
-        // Generate mock internship posts data
-        const mockInternshipPosts: InternshipPost[] = [
+        // Check if there's data in localStorage
+        const storedPosts = localStorage.getItem(STORAGE_KEYS.INTERNSHIP_POSTS);
+        
+        if (storedPosts) {
+            try {
+                // Parse and deserialize dates
+                const parsedPosts = deserializeDates(JSON.parse(storedPosts));
+                setInternshipPosts(parsedPosts);
+            } catch (error) {
+                console.error('Error loading internship posts from localStorage:', error);
+                // Use mock data as fallback
+                setInternshipPosts(getDefaultInternshipPosts());
+            }
+        } else {
+            // No data in localStorage, use mock data
+            setInternshipPosts(getDefaultInternshipPosts());
+        }
+    }, []);
+    
+    // Helper function to get default internship posts data
+    const getDefaultInternshipPosts = (): InternshipPost[] => {
+        return [
             {
                 id: '1',
                 title: 'Frontend Developer Intern',
@@ -149,9 +191,7 @@ const CompanyInternshipsPage = () => {
                 applicationsCount: 15,
             },
         ];
-        
-        setInternshipPosts(mockInternshipPosts);
-    }, []);
+    };
 
     // Filtering for Internship Posts
     const filteredInternshipPosts = internshipPosts.filter(post => {

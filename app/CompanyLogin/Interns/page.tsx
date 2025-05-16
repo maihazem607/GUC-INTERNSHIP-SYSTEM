@@ -2,6 +2,28 @@
 import { useState, useEffect } from 'react';
 import styles from './page.module.css';
 
+// Storage keys for localStorage
+const STORAGE_KEYS = {
+    APPLICATIONS: 'company-applications-data',
+    INTERNSHIP_POSTS: 'company-internship-posts-data',
+    INTERNS: 'company-interns-data'
+};
+
+// Helper function to handle date serialization/deserialization
+const deserializeDates = (obj: any) => {
+    if (obj === null || obj === undefined || typeof obj !== 'object') return obj;
+    
+    Object.keys(obj).forEach(key => {
+        if (typeof obj[key] === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(obj[key])) {
+            obj[key] = new Date(obj[key]);
+        } else if (typeof obj[key] === 'object') {
+            obj[key] = deserializeDates(obj[key]);
+        }
+    });
+    
+    return obj;
+};
+
 // Import global components
 import { useNotification } from "@/components/global/NotificationSystemAdapter";
 import FilterSidebar from "@/components/global/FilterSidebar";
@@ -55,11 +77,30 @@ const InternsPage = () => {
     const handleClearFilters = () => {
         setInternFilter('all');
         setInternSearchTerm('');
-    };
-
-    // Mock data initialization
+    };    // Load interns from localStorage or initialize with mock data
     useEffect(() => {
-        const mockInterns: Intern[] = [
+        // Check if there's data in localStorage
+        const storedInterns = localStorage.getItem(STORAGE_KEYS.INTERNS);
+        
+        if (storedInterns) {
+            try {
+                // Parse and deserialize dates
+                const parsedInterns = deserializeDates(JSON.parse(storedInterns));
+                setInterns(parsedInterns);
+            } catch (error) {
+                console.error('Error loading interns from localStorage:', error);
+                // Use mock data as fallback
+                setInterns(getDefaultInterns());
+            }
+        } else {
+            // No data in localStorage, use mock data
+            setInterns(getDefaultInterns());
+        }
+    }, []);
+    
+    // Helper function to get default interns data
+    const getDefaultInterns = (): Intern[] => {
+        return [
             {
                 id: '2',
                 name: 'Jane Smith',
@@ -83,9 +124,7 @@ const InternsPage = () => {
                 status: 'current',
             },
         ];
-
-        setInterns(mockInterns);
-    }, []);
+    };
 
     // Calculate counters
     const currentInternsCount = interns.filter(intern => intern.status === 'current').length;
@@ -97,15 +136,20 @@ const InternsPage = () => {
         const matchesFilter = internFilter === 'all' || intern.status === internFilter;
         return matchesSearch && matchesFilter;
     });
-    
-    // Status change handler
+      // Status change handler
     const handleInternStatusChange = (internId: string, status: Intern['status'], endDate?: Date) => {
         const intern = interns.find(intern => intern.id === internId);
-        setInterns(interns.map(intern => 
+        const updatedInterns = interns.map(intern => 
             intern.id === internId 
                 ? {...intern, status, endDate: status === 'completed' ? endDate || new Date() : null}
                 : intern
-        ));
+        );
+        
+        // Update state
+        setInterns(updatedInterns);
+        
+        // Save to localStorage
+        localStorage.setItem(STORAGE_KEYS.INTERNS, JSON.stringify(updatedInterns));
         
         // Show notification based on status
         if (intern) {
@@ -134,9 +178,7 @@ const InternsPage = () => {
                 });
             }, 800);
         }
-    };
-
-    // This function handles evaluation submission with direct data
+    };    // This function handles evaluation submission with direct data
     const handleSubmitEvaluationWithData = (evalData: Omit<Evaluation, 'id' | 'evaluationDate'>) => {
         if (!selectedIntern) return;
         
@@ -156,7 +198,11 @@ const InternsPage = () => {
                 : intern
         );
         
+        // Update state
         setInterns(updatedInterns);
+        
+        // Save to localStorage
+        localStorage.setItem(STORAGE_KEYS.INTERNS, JSON.stringify(updatedInterns));
         
         // Close the form and reset form fields
         setShowEvaluationForm(false);
@@ -174,9 +220,7 @@ const InternsPage = () => {
             message: `Evaluation for ${selectedIntern.name} has been updated successfully.`,
             type: 'success'
         });
-    };
-
-    const handleSubmitEvaluation = () => {
+    };    const handleSubmitEvaluation = () => {
         if (!selectedIntern) return;
         
         // Create a new evaluation or preserve the existing ID when editing
@@ -195,7 +239,11 @@ const InternsPage = () => {
                 : intern
         );
         
+        // Update state
         setInterns(updatedInterns);
+        
+        // Save to localStorage
+        localStorage.setItem(STORAGE_KEYS.INTERNS, JSON.stringify(updatedInterns));
           
         // Use setTimeout for closing form and showing notification
         setTimeout(() => {
@@ -225,9 +273,7 @@ const InternsPage = () => {
                 type: 'application'
             });
         }, 800);
-    };
-
-    // Handler to delete an evaluation
+    };    // Handler to delete an evaluation
     const handleDeleteEvaluation = () => {
         if (!selectedIntern || !selectedIntern.evaluation) return;
         
@@ -238,7 +284,11 @@ const InternsPage = () => {
                 : intern
         );
         
+        // Update state
         setInterns(updatedInterns);
+        
+        // Save to localStorage
+        localStorage.setItem(STORAGE_KEYS.INTERNS, JSON.stringify(updatedInterns));
             
         // Use setTimeout for closing form and showing notification
         setTimeout(() => {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import NavigationMenu from '../global/NavigationMenu';
+import { useNotification } from '../../context/NotificationContext';
 import { 
   User, 
   Briefcase, 
@@ -15,10 +16,12 @@ import {
 const ProStudentNavigationMenu: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const { resetNotifications } = useNotification();
   
   // Handle logout functionality
   const handleLogout = () => {
-    // You could add any cleanup logic here, like clearing local storage or cookies
+    // Reset notifications when logging out
+    resetNotifications();
     
     // Navigate to the login page
     router.push('/');

@@ -52,6 +52,7 @@ export interface NotificationContextType {
   markAsRead: (id: string) => void;
   markAllAsRead: () => void;
   removeNotification: (id: string) => void;
+  resetNotifications: () => void; // New function to reset all notifications
 }
 
 // Sound for notifications
@@ -80,7 +81,8 @@ export const NotificationContext = createContext<NotificationContextType>({
   addNotification: () => {},
   markAsRead: () => {},
   markAllAsRead: () => {},
-  removeNotification: () => {}
+  removeNotification: () => {},
+  resetNotifications: () => {} // Added resetNotifications function
 });
 
 export function NotificationProvider({ children }: { children: ReactNode }) {
@@ -191,6 +193,12 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   const removeNotification = (id: string) => {
     setNotifications(prev => prev.filter(notif => notif.id !== id));
   };
+
+  // New function to reset all notifications when logging out
+  const resetNotifications = () => {
+    setNotifications([]);
+    notificationCounterRef.current = 0;
+  };
   return (
     <NotificationContext.Provider 
       value={{
@@ -215,7 +223,8 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         addNotification,
         markAsRead,
         markAllAsRead,
-        removeNotification
+        removeNotification,
+        resetNotifications
       }}
     >
       {children}

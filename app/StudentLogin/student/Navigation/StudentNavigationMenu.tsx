@@ -2,6 +2,7 @@
 import React from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import NavigationMenu from '../../../../src/components/global/NavigationMenu';
+import { useNotification } from '../../../../src/context/NotificationContext';
 import { 
   User, 
   Briefcase, 
@@ -12,9 +13,12 @@ import {
 const StudentNavigationMenu: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname() || '';
+  const { resetNotifications } = useNotification();
   
   // Handle logout functionality
   const handleLogout = () => {
+    // Reset notifications when logging out
+    resetNotifications();
     router.push('/');
   };
     

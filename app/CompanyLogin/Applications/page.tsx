@@ -2,6 +2,28 @@
 import { useState, useEffect } from 'react';
 import styles from './page.module.css';
 
+// Storage keys for localStorage
+const STORAGE_KEYS = {
+    APPLICATIONS: 'company-applications-data',
+    INTERNSHIP_POSTS: 'company-internship-posts-data',
+    INTERNS: 'company-interns-data'
+};
+
+// Helper function to handle date serialization/deserialization
+const deserializeDates = (obj: any) => {
+    if (obj === null || obj === undefined || typeof obj !== 'object') return obj;
+    
+    Object.keys(obj).forEach(key => {
+        if (typeof obj[key] === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(obj[key])) {
+            obj[key] = new Date(obj[key]);
+        } else if (typeof obj[key] === 'object') {
+            obj[key] = deserializeDates(obj[key]);
+        }
+    });
+    
+    return obj;
+};
+
 // Import global components
 import { useNotification } from "@/components/global/NotificationSystemAdapter";
 import FilterSidebar from "@/components/global/FilterSidebar";
@@ -13,7 +35,7 @@ import ApplicationsList from "@/components/Companyy/ApplicationsList";
 import ApplicationDetailsModal from "@/components/Companyy/ApplicationDetailsModal";
 
 // Import types
-import { Application, InternshipPost } from "@/components/Companyy/types";
+import { Application, InternshipPost, Intern } from "@/components/Companyy/types";
 
 // Applications Page Component
 const ApplicationsPage = () => {
@@ -53,11 +75,45 @@ const ApplicationsPage = () => {
         setActivePostFilter('All');
         setSelectedPost(null);
         setApplicationSearchTerm('');
-    };
-
-    // Mock data initialization
+    };    // Load data from localStorage or initialize with mock data
     useEffect(() => {
-        const mockPosts: InternshipPost[] = [
+        // Load internship posts
+        let storedPosts = localStorage.getItem(STORAGE_KEYS.INTERNSHIP_POSTS);
+        let posts: InternshipPost[];
+        
+        if (storedPosts) {
+            try {
+                posts = deserializeDates(JSON.parse(storedPosts));
+            } catch (e) {
+                // Fallback to mock data if parsing fails
+                posts = getDefaultInternshipPosts();
+            }
+        } else {
+            posts = getDefaultInternshipPosts();
+        }
+        
+        // Load applications
+        let storedApplications = localStorage.getItem(STORAGE_KEYS.APPLICATIONS);
+        let apps: Application[];
+        
+        if (storedApplications) {
+            try {
+                apps = deserializeDates(JSON.parse(storedApplications));
+            } catch (e) {
+                // Fallback to mock data if parsing fails
+                apps = getDefaultApplications();
+            }
+        } else {
+            apps = getDefaultApplications();
+        }
+        
+        setInternshipPosts(posts);
+        setApplications(apps);
+    }, []);
+    
+    // Helper function to get default internship posts data
+    const getDefaultInternshipPosts = (): InternshipPost[] => {
+        return [
             {
                 id: '1',
                 title: 'Frontend Developer Intern',
@@ -85,8 +141,11 @@ const ApplicationsPage = () => {
                 skillsRequired: ['Social Media', 'Content Creation'],
             },
         ];
-
-        const mockApplications: Application[] = [
+    };
+    
+    // Helper function to get default applications data
+    const getDefaultApplications = (): Application[] => {
+        return [
             {
                 id: '1',
                 internshipPostId: '1',
@@ -114,25 +173,65 @@ const ApplicationsPage = () => {
                 coverLetterUrl: '#',
             },
         ];
-
-        setInternshipPosts(mockPosts);
-        setApplications(mockApplications);
-    }, []);
+    };
 
     // Calculate counters
-    const pendingApplicationsCount = applications.filter(app => app.status === 'pending').length;
-    
-    // Status change handler
+    const pendingApplicationsCount = applications.filter(app => app.status === 'pending').length;    // Status change handler
     const handleApplicationStatusChange = (applicationId: string, status: Application['status']) => {
         const application = applications.find(app => app.id === applicationId);
-        setApplications(applications.map(app => 
+        
+        if (!application) {
+            console.error(`Application with ID ${applicationId} not found`);
+            return;
+        }
+        
+        // Update applications
+        const updatedApplications = applications.map(app => 
             app.id === applicationId ? {...app, status} : app
-        ));
+        );
+        setApplications(updatedApplications);
+        
+        // Save updated applications to localStorage
+        localStorage.setItem(STORAGE_KEYS.APPLICATIONS, JSON.stringify(updatedApplications));
         
         // Add to interns list when finalized
-        if (application && status === 'finalized') {
-            // In a real app, this would add the intern to the interns list
-            // And might make an API call to update the backend
+        if (status === 'finalized') {
+            // Retrieve existing interns from localStorage or initialize an empty array
+            const storedInterns = localStorage.getItem(STORAGE_KEYS.INTERNS);
+            let interns: Intern[] = [];
+            
+            if (storedInterns) {
+                try {
+                    interns = JSON.parse(storedInterns);
+                } catch (e) {
+                    console.error('Error parsing interns from localStorage:', e);
+                    interns = [];
+                }
+            }
+            
+            // Check if the intern already exists (based on application ID)
+            const internExists = interns.some(intern => intern.id === application.id);
+            
+            if (!internExists) {
+                // Create a new intern record from the application
+                const newIntern: Intern = {
+                    id: application.id,
+                    name: application.applicantName,
+                    email: application.applicantEmail,
+                    university: application.applicantUniversity,
+                    major: application.applicantMajor,
+                    internshipTitle: application.internshipTitle,
+                    startDate: new Date(),
+                    endDate: null,
+                    status: 'current'
+                };
+                
+                // Add the new intern to the array
+                interns.push(newIntern);
+                
+                // Save updated interns list to localStorage
+                localStorage.setItem(STORAGE_KEYS.INTERNS, JSON.stringify(interns));
+            }
         }
           
         // Show notification based on status
@@ -246,9 +345,7 @@ const ApplicationsPage = () => {
             type: "post",
             value: selectedPost ? selectedPost.title : "All"
         }
-    ];
-
-    // Notification handling - simulate random applications for demo purposes
+    ];    // Notification handling - simulate random applications for demo purposes
     useEffect(() => {
         if (internshipPosts.length === 0) return;
         
@@ -271,22 +368,30 @@ const ApplicationsPage = () => {
                 coverLetterUrl: '#',
             };
             
-            // Update applications list
-            setApplications(prev => [...prev, newApplication]);
+            // Add the new application to the state
+            const updatedApplications = [...applications, newApplication];
+            setApplications(updatedApplications);
+            
+            // Save to localStorage
+            localStorage.setItem(STORAGE_KEYS.APPLICATIONS, JSON.stringify(updatedApplications));
             
             // Update application count for the post
-            setInternshipPosts(internshipPosts.map(p => 
+            const updatedPosts = internshipPosts.map(p => 
                 p.id === randomPost.id 
                     ? {...p, applicationsCount: p.applicationsCount + 1} 
                     : p
-            ));
+            );
+            
+            // Update state and save to localStorage
+            setInternshipPosts(updatedPosts);
+            localStorage.setItem(STORAGE_KEYS.INTERNSHIP_POSTS, JSON.stringify(updatedPosts));
             
             // Create a notification
             createApplicationNotification(randomPost.title, newApplication.applicantName);
         }, 60000); // A longer interval to avoid too many notifications during development
         
         return () => clearInterval(interval);
-    }, [internshipPosts]);    return (
+    }, [internshipPosts, applications]);return (
         <div className={styles.pageContainer}>
             <CompanyNavigationMenu />
             
@@ -340,7 +445,7 @@ const ApplicationsPage = () => {
                             />
                         ) : (
                             <div className={styles.noResults}>
-                                <div className={styles.noResultsIcon}>📝</div>
+                                <div className={styles.noResultsIcon}></div>
                                 <p>No applications found matching your criteria.</p>
                                 {(applicationSearchTerm || applicationFilter !== 'all' || activeStatusFilter !== 'all' || activePostFilter !== 'All') && (
                                     <button 

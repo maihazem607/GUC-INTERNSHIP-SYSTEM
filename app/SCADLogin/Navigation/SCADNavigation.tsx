@@ -2,6 +2,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import NavigationMenu, { MenuItem } from '../../../src/components/global/NavigationMenu';
+import { useNotification } from '../../../src/context/NotificationContext';
 import {
   Building,
   Users,
@@ -25,6 +26,14 @@ interface SCADNavigationProps {
 
 const SCADNavigation: React.FC<SCADNavigationProps> = ({ activeItem, onActiveItemChange, onLogout }) => {
   const router = useRouter();
+  const { resetNotifications } = useNotification();
+  
+  // Wrap the onLogout function to reset notifications before calling the original
+  const handleLogoutWithReset = () => {
+    resetNotifications();
+    onLogout();
+  };
+  
   const items: MenuItem[] = [
     { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => onActiveItemChange('companies') },
     { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => onActiveItemChange('students') },
@@ -45,14 +54,13 @@ const SCADNavigation: React.FC<SCADNavigationProps> = ({ activeItem, onActiveIte
     },
     { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => onActiveItemChange('settings') }
   ];
-
   return (
     <NavigationMenu
       items={items}
       activeItemId={activeItem}
       logo={{ src: '/logos/GUCInternshipSystemLogo.png', alt: 'GUC Internship System' }}
       variant="navigation"
-      onLogout={onLogout}
+      onLogout={handleLogoutWithReset}
     />
   );
 };

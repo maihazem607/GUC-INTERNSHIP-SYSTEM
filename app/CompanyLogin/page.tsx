@@ -15,7 +15,6 @@ const CompanyLogin = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -27,14 +26,24 @@ const CompanyLogin = () => {
     setIsLoading(true);
     setError('');
 
-    try {      // Simulate API call
-      console.log('Company login attempt with:', { email, password });
-      setTimeout(() => {
-        router.push('CompanyLogin/CompanyInternships');
-      }, 1500);
-    } catch (err) {
+    try {
+      // Mock credentials
+      const mockEmail = "company@gmail.com";
+      const mockPassword = "12345678";
+
+      // Check if credentials match
+      if (email === mockEmail && password === mockPassword) {
+        // Successful login
+        console.log('Company login successful:', { email });
+        setTimeout(() => {
+          router.push('CompanyLogin/CompanyInternships');
+        }, 1500);
+      } else {
+        // Failed login
+        setError('Invalid email or password. Please try again.');
+        setIsLoading(false);
+      }    } catch (err) {
       setError('Login failed. Please check your credentials and try again.');
-    } finally {
       setIsLoading(false);
     }
   };
