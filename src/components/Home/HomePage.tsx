@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, Briefcase, GraduationCap, ShieldCheck } from 'lucide-react';
 import styles from './HomePage.module.css';
-import Navigation from '../global/Navigation';
+import NavigationMenu, { MenuItem } from '../global/NavigationMenu';
 import Image from 'next/image';
 
 interface UserType {
@@ -18,6 +18,7 @@ interface UserType {
 
 const HomePage: React.FC = () => {
   const [hoveredUser, setHoveredUser] = useState<string | null>(null);
+  const [openFaq, setOpenFaq] = useState<string | null>(null);
   const router = useRouter();
 
   // Color palette for user cards and UI elements
@@ -72,10 +73,34 @@ const HomePage: React.FC = () => {
     } else {
       console.log(`User selected: ${userId}`);
     }
-  }; return (
+  };
+
+  // Scroll to footer section
+  const scrollToFooter = () => {
+    const footerEl = document.getElementById('footer');
+    if (footerEl) footerEl.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // FAQ items for footer
+  const faqs = [
+    { id: 'q1', question: 'How to apply for an internship?', answer: 'Log in as a student, browse positions, and click "Continue as Student" to apply.' },
+    { id: 'q2', question: 'How do I reset my password?', answer: 'Click "Forgot Password" on the login page, enter your email, and follow the email instructions.' },
+    { id: 'q3', question: 'Who can use this system?', answer: 'Students, companies, faculty, and SCAD officers each have tailored dashboards and permissions.' },
+  ];
+  const toggleFaq = (id: string) => setOpenFaq(openFaq === id ? null : id);
+
+  // Navigation Menu items
+  const menuItems: MenuItem[] = [
+    { id: 'community', label: 'Community', onClick: scrollToFooter },
+    { id: 'faq', label: 'FAQ', onClick: scrollToFooter },
+    { id: 'contact-us', label: 'Contact Us', onClick: scrollToFooter },
+    { id: 'about', label: 'About', onClick: scrollToFooter },
+  ];
+
+  return (
     <div className={styles.pageContainer}>
-      {/* Use the global Navigation component */}
-      <Navigation title="GUC Internship System" />
+      {/* Use the global NavigationMenu component */}
+      <NavigationMenu items={menuItems} activeItemId="find-job" />
 
       {/* Main Content */}
       <div className={styles.contentWrapper}>
@@ -158,14 +183,45 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* Footer */}
-      <footer className={styles.footer}>
+      <footer id="footer" className={styles.footer}>
+        {/* Footer Top: info + links */}
         <div className={styles.footerContainer}>
-          <p>© {new Date().getFullYear()} GUC Internship System</p>
+          <div className={styles.footerInfo}>
+            <h4>About the GUC Internship System</h4>
+            <p>The GUC Internship System simplifies the entire internship lifecycle by providing application management, progress tracking, and report submission in one place.</p>
+            <p>Designed for students, companies, and faculty at the German University in Cairo, it offers role-specific dashboards and notifications.</p>
+            <h4>Contact Us</h4>
+            <p>Email us at <a href="mailto:support@gucinternshipsys.com">support@gucinternshipsys.com</a> for assistance.</p>
+          </div>
+          {/* Mockup FAQ Section */}
+          <div className={styles.footerFAQ}>
+            <h4>FAQ</h4>
+            <div className={styles.faqList}>
+              {faqs.map(f => (
+                <div key={f.id} className={styles.faqItem}>
+                  <div className={styles.faqQuestion} onClick={() => toggleFaq(f.id)}>
+                    {f.question}
+                    <span>{openFaq === f.id ? '-' : '+'}</span>
+                  </div>
+                  {openFaq === f.id && (
+                    <div className={styles.faqAnswer}>{f.answer}</div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
           <div className={styles.footerLinks}>
             <a href="#" className={styles.footerLink}>Terms</a>
             <a href="#" className={styles.footerLink}>Privacy</a>
-            <a href="#" className={styles.footerLink}>Contact</a>
+            <a href="#" className={styles.footerLink} onClick={(e) => { e.preventDefault(); scrollToFooter(); }}>About</a>
+            <a href="#" className={styles.footerLink} onClick={(e) => { e.preventDefault(); scrollToFooter(); }}>Contact Us</a>
+            <a href="#" className={styles.footerLink} onClick={(e) => { e.preventDefault(); scrollToFooter(); }}>Community</a>
+            <a href="#" className={styles.footerLink} onClick={(e) => { e.preventDefault(); scrollToFooter(); }}>FAQ</a>
           </div>
+        </div>
+        {/* Footer Bottom: copyright */}
+        <div className={styles.footerBottom}>
+          <p>© {new Date().getFullYear()} GUC Internship System</p>
         </div>
       </footer>
     </div>
