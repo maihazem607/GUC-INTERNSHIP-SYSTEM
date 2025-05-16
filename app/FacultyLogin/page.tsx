@@ -34,7 +34,7 @@ const FacultyLogin = () => {
 
       // Mock faculty credentials
       const validCredentials = [
-        { email: 'mohamed.ahmed@guc.edu.eg', password: '123456' },
+        { email: 'faculty@guc.edu.eg', password: '123456' },
       ];
       
       // Check if the provided credentials match any valid credentials

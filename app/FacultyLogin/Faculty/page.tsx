@@ -599,7 +599,7 @@ const majors = Array.from(new Set(evaluations.map((evaluation: Evaluation) => ev
               {/* Evaluation Listings */}
               <div className={styles.listings}>                <div className={styles.listingHeader}>
                   <h1 className={styles.listingTitle}>Internship Evaluations</h1>
-                  <span className={styles.evaluationCount}>
+                  <span className={styles.reportCount}>
                     {completedEvaluationsCount} completed evaluations
                   </span>
                 </div>

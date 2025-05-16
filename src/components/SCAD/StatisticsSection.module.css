@@ -26,10 +26,11 @@
   gap: 12px;
 }
 
-.reportButton, .downloadButton {
+.reportButton{
   display: flex;
   align-items: center;
   gap: 6px;
+  background: rgb(76, 81, 191);
   padding: 10px 16px;
   border-radius: 8px;
   font-weight: 500;
@@ -37,15 +38,11 @@
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
-}
-
-.reportButton {
-  background-color: #3b82f6;
   color: white;
 }
 
 .reportButton:hover {
-  background-color: #2563eb;
+  background-color: #34399b;
 }
 
 .downloadButton {

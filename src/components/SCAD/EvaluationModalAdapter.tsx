@@ -239,7 +239,8 @@ const EvaluationModalAdapter: React.FC<EvaluationDetailsProps> = ({
                       </div>
                       <span className={styles.ratingNumber}>{adaptedEvaluation.attitudeRating}/5</span>
                     </div>
-                  </div>                  <div className={styles.ratingItem}>
+                  </div>                  
+                  <div className={styles.ratingItem}>
                     <span className={styles.ratingLabel}>Overall Rating:</span>
                     <div className={styles.ratingValue}>
                       <div className={styles.ratingStars}>
@@ -260,11 +261,12 @@ const EvaluationModalAdapter: React.FC<EvaluationDetailsProps> = ({
                           );
                         })}
                       </div>
-                      <span className={styles.overallScore}>{adaptedEvaluation.rating}/5</span>
+                      <span className={styles.ratingNumber}>{adaptedEvaluation.rating}/5</span>
                     </div>
                   </div>
                 </div>
-              </div>                <div className={styles.commentsSection}>
+              </div>                
+              <div className={styles.commentsSection}>
                 <h4 className={styles.commentsTitle}>Performance Feedback</h4>
                 {isEditMode ? (
                   <textarea
