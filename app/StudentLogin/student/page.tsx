@@ -7,7 +7,7 @@ import StudentNavigationMenu from './Navigation/StudentNavigationMenu';
 import NotificationSystem, { useNotification } from "@/components/global/NotificationSystemAdapter";
 
 import { 
-  initialStudentProfile, 
+  initialStandardStudentProfile, 
   StudentProfile as StudentProfileType, 
   majors,
   Major,
@@ -17,7 +17,7 @@ import {
 
 
 export default function StudentProfilePage() {
-  const [studentProfile, setStudentProfile] = useState<StudentProfileType>(initialStudentProfile);
+  const [studentProfile, setStudentProfile] = useState<StudentProfileType>(initialStandardStudentProfile);
   const [isEditing, setIsEditing] = useState<{
     personal: boolean;
     address: boolean;

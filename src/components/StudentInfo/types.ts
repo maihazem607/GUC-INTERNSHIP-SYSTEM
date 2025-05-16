@@ -48,11 +48,23 @@ export const majors: Major[] = [
   { id: '5', name: 'Media Engineering', availableSemesters: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
 ];
 
-// Sample initial profile data
+// Sample initial profile data for pro-student and standard student
 export const initialStudentProfile: StudentProfile = {
   id: '1',
-  name: 'John Doe',
-  email: 'john.doe@student.guc.edu.eg',
+  name: 'Salma Hassan', // default pro-student profile
+  email: 'salma.hassan@student.guc.edu.eg',
+  phone: '+201234567890',
+  gpa: 3.5,
+  jobInterests: ['Web Development', 'Mobile Development'],
+  previousExperiences: [],
+  collegeActivities: [],
+};
+
+// Alternative profile for standard student login
+export const initialStandardStudentProfile: StudentProfile = {
+  id: '2',
+  name: 'Ahmed Mostafa',
+  email: 'ahmed.mostafa@student.guc.edu.eg',
   phone: '+201234567890',
   gpa: 3.5,
   jobInterests: ['Web Development', 'Mobile Development'],
