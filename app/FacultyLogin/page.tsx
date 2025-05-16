@@ -31,10 +31,19 @@ const FacultyLogin = () => {
       // Simulate API call
       console.log('Faculty login attempt with:', { email, password });
 
-      // Example faculty login - replace with real logic as needed
-      if (email === 'faculty@guc.edu.eg' && password === '123456') {
+      // Mock faculty credentials
+      const validCredentials = [
+        { email: 'mohamed.ahmed@guc.edu.eg', password: '123456' },
+      ];
+      
+      // Check if the provided credentials match any valid credentials
+      const isValidCredential = validCredentials.some(
+        cred => cred.email === email && cred.password === password
+      );
+
+      if (isValidCredential) {
         setTimeout(() => {
-          router.push('/FacultyLogin/dashboard');
+          router.push('/FacultyLogin/Faculty');
         }, 1500);
       } else {
         throw new Error('Invalid credentials');

@@ -77,13 +77,13 @@ const getStatusBadgeClass = (status: string) => {
 const getStatusText = (status: string) => {
   switch (status) {
     case 'accepted':
-      return 'Accepted by SCAD';
+      return 'Accepted ';
     case 'flagged':
-      return 'Flagged by SCAD - Needs Revision';
+      return 'Flagged  - Needs Revision';
     case 'rejected': 
-      return 'Rejected by SCAD';
+      return 'Rejected ';
     default:
-      return 'Pending SCAD Review';
+      return 'Pending Review';
   }
 };
 
@@ -325,12 +325,12 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
                 {/* Comments section */}
                 {allComments.length > 0 && (
                   <div className={styles.commentBlock}>
-                    <h4 className={styles.commentTitle}>Previous Comments</h4>
+                    <h4 className={styles.commentTitle}>Comments</h4>
                     <div className={styles.existingComments}>
                       {allComments.map((commentText, index) => (
                         <div key={index} className={styles.commentItem}>
                           <div className={styles.commentHeader}>
-                            <span className={styles.commentAuthor}>SCAD</span>
+                            {/* <span className={styles.commentAuthor}>SCAD</span> */}
                             <button 
                               className={styles.deleteCommentButton}
                               onClick={() => handleDeleteComment(index)}
@@ -387,7 +387,7 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
                 {/* Comments section - merged from the removed Student Appeal tab */}
                 {allComments.length > 0 && (
                   <div className={styles.commentBlock}>
-                    <h4 className={styles.commentTitle}>Previous Comments</h4>
+                    <h4 className={styles.commentTitle}>Comments</h4>
                     <div className={styles.existingComments}>
                       {allComments.map((commentText, index) => (
                         <div key={index} className={styles.commentItem}>
