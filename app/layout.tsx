@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { ReactNode } from 'react';
 import NotificationLayout from '@/components/global/NotificationLayout';
 
-
 export default function RootLayout({
   children,
 }: {

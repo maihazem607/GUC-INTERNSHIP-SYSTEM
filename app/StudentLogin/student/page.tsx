@@ -15,7 +15,6 @@ import {
   Activity
 } from '@/components/StudentInfo/types';
 
-import Image from 'next/image';
 
 export default function StudentProfilePage() {
   const [studentProfile, setStudentProfile] = useState<StudentProfileType>(initialStudentProfile);
@@ -56,17 +55,22 @@ export default function StudentProfilePage() {
     endDate: '',
     isCurrentlyActive: false
   });
-  
-  // Get notification functions
+    // Get notification functions
   const { showNotification, addNotification } = useNotification();
   
-  // Show internship cycle notifications when the page loads
+  // Show internship cycle notifications when the page loads - using a ref to prevent duplicate notifications
+  const notificationShownRef = React.useRef(false);
+  
   useEffect(() => {
+    // Prevent duplicate notifications by checking if notifications were already shown
+    if (notificationShownRef.current) return;
+    
+    // Set the ref to true to prevent showing notifications again
+    notificationShownRef.current = true;
+    
     // Set a timeout to simulate backend data fetch
     setTimeout(() => {
-      // Current date is May 15, 2025
-      const today = new Date();
-      
+            
       // Notification about current internship cycle
       showNotification({
         message: "The Summer 2025 Internship Cycle has officially begun! Browse and apply for opportunities now.",

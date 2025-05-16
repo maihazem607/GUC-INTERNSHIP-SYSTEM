@@ -101,9 +101,7 @@ export default function StudentProfilePage() {
   useEffect(() => {
     // Set a timeout to simulate backend data fetch
     setTimeout(() => {
-      // Current date is May 15, 2025
-      const today = new Date();
-      
+
       // Notification about current internship cycle
       showNotification({
         message: "The Summer 2025 Internship Cycle has officially begun! Browse and apply for opportunities now.",

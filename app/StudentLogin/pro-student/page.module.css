@@ -1,22 +1,11 @@
 /* Base Styles and Variables */
 :root {
-  --primary-color: #803cff; /* Changed to bluish-purple */
-  --primary-light: #EAE6FE; /* Lighter bluish-purple shade */
-  --primary-dark: #4732C4; /* Darker bluish-purple shade */
-  --accent-color: #1976D2; /* Changed to blue */
-  --accent-dark: #1565C0; /* Darker blue */
-  --text-primary: #333;
-  --text-secondary: #666;
-  --text-tertiary: #999;
-  --background-light: #f9fafb;
-  --background-white: #ffffff;
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
   --border-radius-sm: 8px;
   --border-radius-md: 12px;
   --border-radius-lg: 20px;
-  --border-color: #eee;
   --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -27,8 +16,8 @@
   display: flex;
   flex-direction: column;
   font-family: 'Inter', 'Arial', sans-serif;
-  background-color: var(--background-light);
-  color: var(--text-primary);
+  background-color: #f9fafb;
+  color: #333;
   min-height: 100vh;
   position: relative;
   overflow-x: hidden; /* Prevent horizontal overflow */
@@ -66,7 +55,7 @@
   font-size: 28px;
   font-weight: 700;
   margin: 0 0 20px 0;
-  color: var(--text-primary);
+  color: #333;
   position: relative;
   padding-bottom: 8px;
   transform: translateY(0);
@@ -80,7 +69,7 @@
   left: 0;
   width: 60px;
   height: 3px;
-  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  background: linear-gradient(90deg, #803cff, #1976D2);
   border-radius: 3px;
   transition: width var(--transition-normal);
 }
@@ -95,7 +84,7 @@
 
 /* Profile Card */
 .profileCard {
-  background-color: var(--background-white);
+  background-color: #ffffff;
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-sm);
   padding: 24px;
@@ -118,7 +107,7 @@
   left: 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  background: linear-gradient(90deg, #803cff, #1976D2);
   opacity: 0;
   transition: opacity var(--transition-normal);
 }
@@ -167,7 +156,7 @@
 .profileImagePlaceholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, var(--accent-color), var(--accent-dark));
+  background: linear-gradient(135deg, #1976D2, #1565C0);
   color: white;
   display: flex;
   align-items: center;
@@ -180,7 +169,7 @@
   margin: 0 0 6px 0;
   font-size: 26px;
   font-weight: 700;
-  background: linear-gradient(90deg, var(--text-primary), var(--primary-color));
+  background: linear-gradient(90deg, #333, #803cff);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -192,7 +181,7 @@
 }
 
 .roleLabel {
-  color: var(--text-secondary);
+  color: #666;
   margin: 0 0 6px 0;
   font-size: 16px;
   position: relative;
@@ -208,8 +197,8 @@
 .internshipBadge {
   display: inline-flex;
   align-items: center;
-  background-color: var(--primary-light);
-  color: var(--primary-color);
+  background-color: #EAE6FE;
+  color: #803cff;
   font-size: 12px;
   padding: 3px 10px;
   border-radius: 12px;
@@ -234,7 +223,7 @@
 }
 
 .locationLabel {
-  color: var(--text-tertiary);
+  color: #999;
   margin: 0;
   font-size: 14px;
   display: flex;
@@ -249,7 +238,7 @@
 
 /* Information Sections */
 .infoSection {
-  background-color: var(--background-white);
+  background-color: #ffffff;
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-sm);
   padding: 24px;
@@ -285,7 +274,7 @@
   left: 0;
   width: 3px;
   height: 0;
-  background-color: var(--primary-color);
+  background-color: #803cff;
   transition: height var(--transition-normal);
 }
 
@@ -299,7 +288,7 @@
   align-items: center;
   margin-bottom: 20px;
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid #eee;
   position: relative;
 }
 
@@ -307,7 +296,7 @@
   font-size: 18px;
   font-weight: 600;
   margin: 0;
-  color: var(--text-primary);
+  color: #333;
   position: relative;
   padding-left: 10px;
   transition: all var(--transition-normal);
@@ -321,7 +310,7 @@
   transform: translateY(-50%);
   width: 4px;
   height: 18px;
-  background-color: var(--primary-color);
+  background-color: #803cff;
   border-radius: 2px;
   transition: height var(--transition-fast);
 }
@@ -331,9 +320,9 @@
 }
 
 .editButton {
-  background-color: var(--accent-color);
+  background-color: #1976D2;
   color: white;
-  border: 2px solid var(--primary-color);
+  border: 2px solid #803cff;
   border-radius: var(--border-radius-sm);
   padding: 8px 16px;
   font-size: 14px;
@@ -346,7 +335,7 @@
 }
 
 .editButton:hover {
-  background-color: var(--accent-dark);
+  background-color: #1565C0;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(25, 118, 210, 0.3);
 }
@@ -407,19 +396,19 @@
 
 .infoLabel {
   font-size: 14px;
-  color: var(--text-secondary);
+  color: #666;
   margin-bottom: 5px;
   transition: color var(--transition-fast);
   letter-spacing: 0.2px;
 }
 
 .infoItem:hover .infoLabel {
-  color: var(--primary-color);
+  color: #803cff;
 }
 
 .infoValue {
   font-size: 16px;
-  color: var(--text-primary);
+  color: #333;
   font-weight: 500;
   transition: all var(--transition-fast);
 }
@@ -455,13 +444,13 @@
 .formGroup label {
   display: block;
   font-size: 14px;
-  color: var(--text-secondary);
+  color: #666;
   margin-bottom: 6px;
   transition: color var(--transition-fast);
 }
 
 .formGroup:focus-within label {
-  color: var(--primary-color);
+  color: #803cff;
   font-weight: 500;
 }
 
@@ -480,7 +469,7 @@
 .formGroup input:focus,
 .formGroup select:focus,
 .formGroup textarea:focus {
-  border-color: var(--primary-color);
+  border-color: #803cff;
   box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
   outline: none;
 }
@@ -494,7 +483,7 @@
 
 .cancelButton {
   background-color: #f1f1f1;
-  color: var(--text-primary);
+  color: #333;
   border: none;
   border-radius: var(--border-radius-sm);
   padding: 8px 18px;
@@ -510,7 +499,7 @@
 }
 
 .saveButton {
-  background-color: var(--accent-color);
+  background-color: #1976D2;
   color: white;
   border: none;
   border-radius: var(--border-radius-sm);
@@ -524,7 +513,7 @@
 }
 
 .saveButton:hover {
-  background-color: var(--accent-dark);
+  background-color: #1565C0;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(25, 118, 210, 0.3);
 }
@@ -565,8 +554,8 @@
 }
 
 .interestTag {
-  background-color: var(--primary-light);
-  color: var(--primary-color);
+  background-color: #EAE6FE;
+  color: #803cff;
   padding: 6px 16px;
   border-radius: 20px;
   font-size: 14px;
@@ -582,8 +571,8 @@
 }
 
 .interestTagWithRemove {
-  background-color: var(--primary-light);
-  color: var(--primary-color);
+  background-color: #EAE6FE;
+  color: #803cff;
   padding: 6px 8px 6px 16px;
   border-radius: 20px;
   font-size: 14px;
@@ -602,7 +591,7 @@
 .removeButton {
   background: none;
   border: none;
-  color: var(--primary-color);
+  color: #803cff;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
@@ -637,7 +626,7 @@
 }
 
 .addInterestButton {
-  background-color: var(--primary-color);
+  background-color: #803cff;
   color: white;
   border: none;
   border-radius: 0 4px 4px 0;
@@ -649,7 +638,7 @@
 }
 
 .addInterestButton:hover {
-  background-color: var(--primary-dark);
+  background-color: #4732C4;
   box-shadow: 0 2px 6px rgba(25, 118, 210, 0.3);
 }
 
@@ -660,7 +649,7 @@
 .currentInterests label {
   display: block;
   font-size: 14px;
-  color: var(--text-secondary);
+  color: #666;
   margin-bottom: 10px;
   font-weight: 500;
 }
@@ -670,7 +659,7 @@
 .activityItem {
   margin-bottom: 20px;
   padding-bottom: 20px;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid #eee;
   transition: all var(--transition-normal);
   border-radius: var(--border-radius-sm);
   padding: 12px;
@@ -703,13 +692,13 @@
   margin: 0 0 5px 0;
   font-size: 18px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #333;
   transition: color var(--transition-fast);
 }
 
 .experienceItem:hover .experienceHeader h3,
 .activityItem:hover .activityHeader h3 {
-  color: var(--primary-color);
+  color: #803cff;
 }
 
 .experienceActions,
@@ -720,7 +709,7 @@
 
 .actionButton {
   background-color: transparent;
-  color: var(--text-secondary);
+  color: #666;
   border: 1px solid #ddd;
   border-radius: var(--border-radius-sm);
   padding: 5px 10px;
@@ -731,14 +720,14 @@
 
 .actionButton:hover {
   background-color: #f1f1f1;
-  color: var(--text-primary);
+  color: #333;
   border-color: #ccc;
   transform: translateY(-2px);
 }
 
 .experienceDates,
 .activityDates {
-  color: var(--text-secondary);
+  color: #666;
   font-size: 14px;
   margin: 0 0 8px 0;
   display: flex;
@@ -757,13 +746,13 @@
 }
 
 .experienceType {
-  color: var(--primary-color);
+  color: #803cff;
   font-size: 14px;
   margin: 0 0 10px 0;
   font-weight: 500;
   display: inline-block;
   padding: 2px 10px;
-  background-color: var(--primary-light);
+  background-color: #EAE6FE;
   border-radius: 4px;
   transition: all var(--transition-fast);
 }
@@ -777,17 +766,17 @@
   font-size: 16px;
   line-height: 1.5;
   margin: 0;
-  color: var(--text-secondary);
+  color: #666;
   transition: color var(--transition-fast);
 }
 
 .experienceItem:hover .experienceDesc,
 .activityItem:hover .activityDesc {
-  color: var(--text-primary);
+  color: #333;
 }
 
 .emptyState {
-  color: var(--text-tertiary);
+  color: #999;
   font-style: italic;
   text-align: center;
   padding: 20px;
@@ -839,7 +828,7 @@
 
 .modalHeader {
   padding: 18px 24px;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid #eee;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -853,7 +842,7 @@
   margin: 0;
   font-size: 20px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #333;
 }
 
 .modalCloseButton {
@@ -861,7 +850,7 @@
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: var(--text-tertiary);
+  color: #999;
   width: 36px;
   height: 36px;
   display: flex;
@@ -873,7 +862,7 @@
 
 .modalCloseButton:hover {
   background-color: #f5f5f5;
-  color: var(--text-primary);
+  color: #333;
   transform: rotate(90deg);
 }
 
@@ -888,7 +877,7 @@
 
 .modalFooter {
   padding: 16px 24px;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid #eee;
   display: flex;
   justify-content: flex-end;
   gap: 12px;
@@ -930,7 +919,7 @@
 }
 
 .radioGroup input[type="radio"]:checked {
-  border-color: var(--primary-color);
+  border-color: #803cff;
 }
 
 .radioGroup input[type="radio"]:checked::before {
@@ -941,7 +930,7 @@
   transform: translate(-50%, -50%);
   width: 10px;
   height: 10px;
-  background-color: var(--primary-color);
+  background-color: #803cff;
   border-radius: 50%;
   animation: pulseRadio 0.3s ease-out;
 }
@@ -987,8 +976,8 @@
 }
 
 .checkboxLabel input[type="checkbox"]:checked {
-  border-color: var(--primary-color);
-  background-color: var(--primary-color);
+  border-color: #803cff;
+  background-color: #803cff;
 }
 
 .checkboxLabel input[type="checkbox"]:checked::before {
@@ -1025,7 +1014,7 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: var(--primary-color);
+  background-color: #803cff;
   color: white;
   display: flex;
   align-items: center;
@@ -1043,7 +1032,7 @@
 .backToTopButton:hover {
   transform: translateY(-5px);
   box-shadow: var(--shadow-lg);
-  background-color: var(--primary-dark);
+  background-color: #4732C4;
   opacity: 1;
 }
 
@@ -1071,7 +1060,7 @@
 }
 
 .assessmentItem {
-  background-color: var(--background-white);
+  background-color: #ffffff;
   border-radius: var(--border-radius-sm);
   box-shadow: var(--shadow-sm);
   padding: 16px;
@@ -1096,7 +1085,7 @@
   font-size: 18px;
   font-weight: 600;
   margin: 0;
-  color: var(--text-primary);
+  color:  #333;
 }
 
 .scoreDisplay {
@@ -1107,11 +1096,11 @@
 
 .scoreValue {
   font-weight: 600;
-  color: var(--primary-color);
+  color: #803cff;
 }
 
 .scorePercentage {
-  color: var(--text-secondary);
+  color: #666;
   font-size: 13px;
 }
 
@@ -1126,7 +1115,7 @@
 
 .scoreProgress {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  background: linear-gradient(90deg, #803cff, #1976D2);
   border-radius: 3px;
   transition: width 0.5s ease;
 }
@@ -1142,7 +1131,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--text-secondary);
+  color: #666;
   font-size: 14px;
 }
 
@@ -1190,7 +1179,7 @@
 
 .assessmentCategory {
   font-size: 13px;
-  color: var(--text-secondary);
+  color: #666;
 }
 
 .skillsList {
@@ -1203,7 +1192,7 @@
   font-size: 12px;
   padding: 4px 8px;
   border-radius: 4px;
-  background-color: var(--primary-light);
-  color: var(--primary-dark);
+  background-color:#EAE6FE;
+  color: #4732C4;
   font-weight: 500;
 }
