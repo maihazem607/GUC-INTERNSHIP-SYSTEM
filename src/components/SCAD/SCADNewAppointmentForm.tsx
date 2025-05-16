@@ -23,12 +23,31 @@ const purposes = [
   'General Consultation'
 ];
 
+// Add types and utility for time slots
+interface TimeSlot {
+  id: string;
+  time: string;
+  isAvailable: boolean;
+}
+
+const generateTimeSlots = (date: Date): TimeSlot[] => {
+  const slots: TimeSlot[] = [];
+  const isRandomlyAvailable = () => Math.random() > 0.3;
+  for (let hour = 9; hour <= 17; hour++) {
+    const timeStr = `${hour.toString().padStart(2, '0')}:00`;
+    const halfTimeStr = `${hour.toString().padStart(2, '0')}:30`;
+    slots.push({ id: `slot-${hour}-00`, time: timeStr, isAvailable: isRandomlyAvailable() });
+    slots.push({ id: `slot-${hour}-30`, time: halfTimeStr, isAvailable: isRandomlyAvailable() });
+  }
+  return slots;
+};
+
 const SCADNewAppointmentForm: React.FC<SCADNewAppointmentFormProps> = ({ onSubmit }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedStudentId, setSelectedStudentId] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<TimeSlot[]>([]);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [purpose, setPurpose] = useState(purposes[0]);
   const [description, setDescription] = useState('');
@@ -125,7 +144,7 @@ const SCADNewAppointmentForm: React.FC<SCADNewAppointmentFormProps> = ({ onSubmi
                 onChange={e => setSelectedTimeSlot(e.target.value)}
               >
                 {availableTimeSlots.map(slot => (
-                  <option key={slot} value={slot}>{slot}</option>
+                  <option key={slot.id} value={slot.time}>{slot.time}</option>
                 ))}
               </select>
             </div>
