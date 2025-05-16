@@ -47,7 +47,7 @@ const SCADNavigation: React.FC<SCADNavigationProps> = ({ activeItem, onActiveIte
       label: 'Appointments',
       icon: <Calendar size={18} />, 
       dropdownItems: [
-        { id: 'my-appointments', label: 'My Appointments', onClick: () => router.push('/SCADLogin/AppointmentsSCAD/tab=my-appointments') },
+        { id: 'my-appointments', label: 'My Appointments', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=my-appointments') },
         { id: 'requests', label: 'Requests', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=requests') },
         { id: 'new-appointment', label: 'New Appointment', onClick: () => router.push('/SCADLogin/AppointmentsSCAD?tab=new-appointment') }
       ]
