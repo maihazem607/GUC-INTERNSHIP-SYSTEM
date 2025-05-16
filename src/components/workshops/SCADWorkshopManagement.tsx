@@ -182,12 +182,11 @@ const SCADWorkshopManagement: React.FC<SCADWorkshopManagementProps> = ({
     e.preventDefault();
     setIsLoading(true);
     
-    try {
-      // Format times
+    try {      // Format times
       const formattedData = {
         ...formData,
         time: `${formData.startTime} - ${formData.endTime}`,
-        date: formData.startDate, // Use start date as main date
+        date: formData.startDate || new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric'}), // Use start date as main date or default to today
       };
       
       // Calculate duration in hours and minutes
@@ -217,9 +216,7 @@ const SCADWorkshopManagement: React.FC<SCADWorkshopManagementProps> = ({
         await onUpdateWorkshop({ ...formattedData, id: selectedWorkshop.id });
         
         // Update local state
-        setWorkshopList(prev => 
-          prev.map(w => w.id === selectedWorkshop.id ? { ...formattedData, id: selectedWorkshop.id } : w)
-        );
+        setWorkshopList(prev => prev.map(w => w.id === selectedWorkshop.id ? { ...formattedData, id: selectedWorkshop.id } : w));
         
         showNotification({
           message: `Workshop "${formattedData.title}" updated successfully`,

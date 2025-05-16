@@ -237,5 +237,50 @@
   font-weight: 500;
 }
 
+/* Agenda styling */
+.agendaList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.agendaItem {
+  display: flex;
+  gap: 16px;
+  border-left: 3px solid #e0e0e0;
+  padding-left: 16px;
+  position: relative;
+}
+
+.agendaItem:hover {
+  border-left-color: #1976d2;
+}
+
+.agendaTime {
+  min-width: 140px;
+  font-weight: 500;
+  color: #555;
+  font-size: 14px;
+  padding-top: 2px;
+}
+
+.agendaContent {
+  flex: 1;
+}
+
+.agendaContent h4 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.agendaContent p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 /* Success notification styling */
 /* Notification styling moved to global/NotificationSystem.module.css */
