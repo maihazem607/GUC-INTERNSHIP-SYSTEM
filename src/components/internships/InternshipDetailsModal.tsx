@@ -261,21 +261,21 @@ const InternshipDetailsModal: React.FC<DetailsModalProps> = ({
             </button>
           </div>
         )}          {(onEdit || onDelete) && !showApplicationSection && (
-          <div className={styles.modalActions} style={{ justifyContent: 'space-between' }}>
-              {onDelete && (
+          <div className={styles.modalActions} style={{ justifyContent: 'flex-end' }}>            {onEdit && (
+              <button 
+                className={styles.editButton}
+                onClick={onEdit}
+                style={{ marginRight: '10px' }}
+              >
+                Edit Internship
+              </button>
+            )}
+            {onDelete && (
               <button 
                 className={`${styles.cancelBtn}`}
                 onClick={onDelete}
               >
                 Delete Internship
-              </button>
-            )}
-            {onEdit && (
-              <button 
-                className={styles.applyButton}
-                onClick={onEdit}
-              >
-                Edit Internship
               </button>
             )}
           </div>

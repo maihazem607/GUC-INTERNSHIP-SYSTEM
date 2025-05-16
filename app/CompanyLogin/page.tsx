@@ -27,11 +27,10 @@ const CompanyLogin = () => {
     setIsLoading(true);
     setError('');
 
-    try {
-      // Simulate API call
+    try {      // Simulate API call
       console.log('Company login attempt with:', { email, password });
       setTimeout(() => {
-        router.push('CompanyLogin/Company');
+        router.push('CompanyLogin/CompanyInternships');
       }, 1500);
     } catch (err) {
       setError('Login failed. Please check your credentials and try again.');

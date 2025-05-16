@@ -4,10 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 // Import modular components
-import { Briefcase, FileText, Users,Search } from 'lucide-react';
-import NavigationMenu from "@/components/global/NavigationMenu";
-import Navigation from "@/components/global/Navigation";
-import NotificationSystem, { useNotification } from "@/components/global/NotificationSystemAdapter";
+import { Search } from 'lucide-react';
+import { useNotification } from "@/components/global/NotificationSystemAdapter";
+import CompanyNavigationMenu from '../Navigation/CompanyNavigationMenu';
 import FilterSidebar from "@/components/global/FilterSidebar";
 import SearchBar from "@/components/global/SearchBar";
 import InternshipCard from "@/components/internships/InternshipCard";
@@ -240,15 +239,7 @@ export default function InternshipListPage() {
   const [selectedInternship, setSelectedInternship] = useState<Internship | null>(null);
   const [showHelpPopup, setShowHelpPopup] = useState(false);
 
-  // Dashboard navigation state
-  const [activeTab, setActiveTab] = useState('scad-internships');
-
-  // Handle navigation to company dashboard pages
-  const handleNavigate = (tab: string) => {
-    if (tab !== 'scad-internships') {
-      router.push(`/CompanyLogin/Company?activeItem=${tab}`);
-    }
-  };
+ 
 
   // Add notification system at page level
   const { notification, visible, showNotification, hideNotification, addNotification } = useNotification();
@@ -364,48 +355,14 @@ export default function InternshipListPage() {
     setSelectedInternship(null);
   };
   
-
   return (
     <div className={styles.pageContainer}>     
-     {/* Company Dashboard Navigation Menu */}
-      <NavigationMenu
-        items={[
-          { 
-            id: 'internships', 
-            label: 'Internship Posts', 
-            icon: <Briefcase size={18} />,
-            onClick: () => handleNavigate('internships')
-          },
-          { 
-            id: 'applications', 
-            label: 'Applications', 
-            icon: <FileText size={18} />,
-            onClick: () => handleNavigate('applications')
-          },
-          { 
-            id: 'interns', 
-            label: 'Current Interns', 
-            icon: <Users size={18} />,
-            onClick: () => handleNavigate('interns')
-          },
-          { 
-            id: 'scad-internships', 
-            label: 'SCAD Internships', 
-            icon: <Briefcase size={18} />,
-            onClick: () => {} // Already on this page
-          }
-        ]}
-
-        activeItemId={activeTab}
-        logo={{
-          src: '/logos/GUCInternshipSystemLogo.png',
-          alt: 'GUC Internship System'
-        }}
-        variant="tabs"
-      />
+      {/* Company Dashboard Navigation Menu */}
+      <CompanyNavigationMenu />
 
       <div className={styles.contentWrapper}>
-        {/* Left Sidebar with Filters */}        <FilterSidebar 
+        {/* Left Sidebar with Filters */}
+        <FilterSidebar 
           filters={formattedFilters}
           onFilterChange={handleFilterChange}
           onClearFilters={handleClearFilters}
@@ -450,31 +407,26 @@ export default function InternshipListPage() {
                   <p>Try adjusting your search criteria or filters</p>
                   <button 
                     className={styles.shareProfileButton} 
-                    onClick={handleClearFilters} 
-                    style={{ marginTop: '20px' }}
+                    onClick={handleClearFilters}
                   >
-                    Clear All Filters
+                    Clear filters
                   </button>
                 </div>
               )}
             </div>
           </div>
         </main>
-      </div>
-
-      {/* Details Modal */}
+      </div>      {/* Modals */}
       {selectedInternship && (
         <InternshipDetailsModal
           internship={selectedInternship}
           onClose={handleCloseModal}
-         
         />
       )}
-      {/* Help popup for internship requirements */}
+
       {showHelpPopup && (
         <InternshipHelpPopup onClose={() => setShowHelpPopup(false)} />
       )}
     </div>
   );
 }
- 

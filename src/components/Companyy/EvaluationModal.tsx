@@ -196,7 +196,7 @@ const EvaluationModal: React.FC<EvaluationModalProps> = ({
           </div>
         </div>
           <div className={`${styles.formGroup} ${styles.commentsSection}`}>
-          <label>Detailed Evaluation Comments</label>
+          <label>Supervisor's Comments</label>
           <textarea
             value={evaluation.comments}
             onChange={(e) => setEvaluation({

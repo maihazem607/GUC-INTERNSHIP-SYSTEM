@@ -3,29 +3,29 @@
   padding: 15px 0 0 0;
   display: flex;
   flex-direction: column;
-  min-height: 300px;
+  min-height: 400px;
   position: relative;
-  max-height: calc(85vh - 100px); /* Limit maximum height to prevent overflow issues */
+  max-height: calc(90vh - 100px); /* Increased max height */
   overflow: hidden; /* Prevent overflow of the container */
 }
 
 .formContent {
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: calc(70vh - 80px); /* Ensure space for the buttons */
-  padding: 0 20px 20px 20px; /* Increased horizontal padding */
+  max-height: calc(80vh - 80px); /* Increased max height */
+  padding: 0 30px 30px 30px; /* More horizontal padding */
   margin-bottom: 0;
   flex: 1;
 }
 
 /* Form field styling */
 .formField {
-  margin-bottom: 24px; /* Increased bottom margin for better spacing */
+  margin-bottom: 28px; /* Increased bottom margin for better spacing */
 }
 
 .formRow {
   display: flex;
-  gap: 24px; /* Increased gap for better spacing */
+  gap: 30px; /* Increased gap for better spacing */
 }
 
 .formRow .formField {
@@ -35,23 +35,23 @@
 /* Form labels */
 .label {
   display: block;
-  font-size: 14px;
-  font-weight: 600; /* Increased font weight for better readability */
+  font-size: 15px;
+  font-weight: 600;
   color: #333;
-  margin-bottom: 8px; /* Increased margin for better spacing */
+  margin-bottom: 10px;
   transition: color 0.2s ease;
 }
 
 /* Form inputs */
 .input, .select {
   width: 100%;
-  padding: 12px 15px; /* Increased padding for better visual */
-  border: 1px solid #dcdfe6; /* Softer border color */
-  border-radius: 8px; /* Increased border radius */
-  font-size: 14px;
+  padding: 14px 16px; /* Further increased padding */
+  border: 1px solid #dcdfe6;
+  border-radius: 10px; /* Increased border radius */
+  font-size: 15px;
   background-color: white;
   transition: all 0.3s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .input:focus, .select:focus, .textarea:focus {
@@ -67,17 +67,17 @@
 
 .textarea {
   width: 100%;
-  padding: 12px 15px;
-  min-height: 120px;
-  max-height: 200px;
+  padding: 14px 16px;
+  min-height: 150px;
+  max-height: 250px;
   border: 1px solid #dcdfe6;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 10px;
+  font-size: 15px;
   resize: vertical;
   font-family: inherit;
   transition: all 0.3s ease;
-  line-height: 1.5;
-  margin-bottom: 10px;
+  line-height: 1.6;
+  margin-bottom: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
@@ -85,15 +85,19 @@
 .checkboxGroup {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin-top: 15px;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #f8fafc;
 }
 
 .checkboxLabel {
-  font-size: 14px;
-  font-weight: normal;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
   user-select: none; /* Prevent text selection when clicking */
+  color: #444;
 }
 
 .checkboxGroup input[type="checkbox"] {
@@ -107,13 +111,14 @@
 .skillsContainer {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  padding: 12px;
+  gap: 12px;
+  padding: 16px;
   border: 1px solid #dcdfe6;
-  border-radius: 8px;
-  min-height: 60px;
+  border-radius: 10px;
+  min-height: 80px;
   background-color: #fafafa;
   transition: border-color 0.3s ease;
+  margin-bottom: 16px;
 }
 
 .skillsContainer:focus-within {
@@ -124,13 +129,13 @@
 .skillTag {
   background-color: var(--light-purple);
   color: var(--primary);
-  padding: 6px 12px;
+  padding: 8px 14px;
   border-radius: 20px;
-  font-size: 13px;
+  font-size: 14px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  gap: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   font-weight: 500;
 }
 
@@ -177,14 +182,14 @@
 
 .skillSelect {
   width: 100%;
-  padding: 12px;
+  padding: 14px 16px;
   border: 1px solid #dcdfe6;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 10px;
+  font-size: 15px;
   background-color: white;
   cursor: pointer;
-  margin-bottom: 10px;
-  max-width: 300px;
+  margin-bottom: 15px;
+  max-width: 450px;
   transition: all 0.3s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
@@ -208,16 +213,16 @@
 }
 
 .cancelButton {
-  padding: 10px 20px;
+  padding: 12px 24px;
   background-color: white;
   color: #555;
   border: 1px solid #dcdfe6;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 10px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  min-width: 100px;
+  min-width: 120px;
 }
 
 .cancelButton:hover {
@@ -226,21 +231,21 @@
 }
 
 .submitButton {
-  padding: 10px 20px;
-  background-color: rgb(28, 94, 228) !important;
+  padding: 12px 24px;
+  background-color: rgb(106, 31, 205) !important;
   color: rgb(255, 255, 255);
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 10px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   z-index: 9999;
   display: inline-block;
-  min-width: 150px;
+  min-width: 180px;
   width: auto;
-  height: 42px;
-  box-shadow: 0 2px 5px rgba(28, 94, 228, 0.3);
+  height: 48px;
+  box-shadow: 0 3px 6px rgba(28, 94, 228, 0.3);
   position: relative;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -248,8 +253,8 @@
 }
 
 .submitButton:hover {
-  background-color: rgb(25, 85, 206) !important;
-  box-shadow: 0 4px 8px rgba(28, 94, 228, 0.4);
+  background-color: rgb(88, 24, 169) !important; /* Darker violet for hover state */
+  box-shadow: 0 4px 8px rgba(106, 31, 205, 0.4); /* Shadow matches the violet color */
   transform: translateY(-1px);
 }
 
@@ -286,12 +291,12 @@
 
 .fixedActionBar {
   margin-top: 0;
-  padding: 16px 20px 16px 16px;
+  padding: 20px 30px;
   display: flex;
   justify-content: flex-end;
-  gap: 16px;
-  border-top: 1px solid #eaeaea;
-  background-color: #fafafa; /* Light gray background for visual separation */
+  gap: 20px;
+  border-top: 1px solid #e2e8f0;
+  background-color: #f8fafc;
   z-index: 100000;
   position: sticky;
   bottom: 0;
@@ -299,24 +304,36 @@
   right: 0;
   width: 100%;
   box-sizing: border-box;
-  box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
 }
 
 /* Form section heading */
 .sectionHeading {
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
-  color: #333;
-  margin-bottom: 15px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #eaeaea;
+  color: #1e293b;
+  margin: 28px 0 20px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e2e8f0;
+  position: relative;
+}
+
+.sectionHeading::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 80px;
+  height: 2px;
+  background-color: #1976d2;
 }
 
 /* Helper text styles */
 .helperText {
-  font-size: 12px;
+  font-size: 13px;
   color: #666;
-  margin-top: 5px;
+  margin-top: 7px;
+  padding-left: 2px;
 }
 
 /* Animation for form transitions */

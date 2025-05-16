@@ -384,6 +384,27 @@
   cursor: not-allowed;
 }
 
+.editButton {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: #5B5BD6;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.editButton:hover {
+  background-color: rgb(88, 24, 169);
+}
+
+.editButton:disabled {
+  background-color: rgb(177, 132, 233);
+  cursor: not-allowed;
+}
+
 .errorMessage {
   background-color: #ffebee;
   color: #c62828;

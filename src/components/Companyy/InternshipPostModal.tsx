@@ -90,15 +90,13 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
       duration: !!post.duration,
       formValid: canSubmit
     });
-  }, [post.title, post.description, post.duration, canSubmit]);
-  return (
+  }, [post.title, post.description, post.duration, canSubmit]);  return (
     <Modal
       title={isEditing ? 'Edit Internship Post' : 'Create Internship Post'}
       onClose={onClose}
-      width="600px"
+      width="800px"
     >    <div className={`${styles.postForm} ${styles.fadeInAnimation}`}>
-        <div className={styles.formContent}>
-          <div className={styles.helperText} style={{ marginBottom: '20px', fontSize: '14px', color: '#666', backgroundColor: '#f8f9fa', padding: '10px', borderRadius: '8px', borderLeft: '4px solid #e74c3c' }}>
+        <div className={styles.formContent}>          <div className={styles.helperText} style={{ marginBottom: '25px', fontSize: '14px', color: '#666', backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '10px', borderLeft: '4px solid #e74c3c', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
             Fields marked with <span style={{ color: '#e74c3c', fontWeight: 'bold' }}>*</span> are required
           </div>
 
@@ -134,10 +132,8 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
               <span>{post.description?.length || 0}/500</span>
             </div>
           </div>
-          
-          <div className={styles.sectionHeading}>Details</div>
-          
-          <div className={styles.formRow}>
+            <div className={styles.sectionHeading}>Internship Details</div>
+            <div className={styles.formRow}>
             <div className={styles.formField}>
               <label className={styles.label}>Department</label>
               <select
@@ -150,6 +146,7 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
                 <option value="Design">Design</option>
                 <option value="Business">Business</option>
                 <option value="HR">HR</option>
+                <option value="Technology">Technology</option>
                 <option value="Other">Other</option>
               </select>
               {isCustomDepartment && (
@@ -159,7 +156,7 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
                   value={post.department}
                   onChange={handleCustomDepartmentChange}
                   placeholder="Specify department"
-                  style={{ marginTop: '8px' }}
+                  style={{ marginTop: '12px' }}
               />              )}
             </div>          
             <div className={styles.formField}>
@@ -183,8 +180,7 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
                   className={styles.input}
                   value={post.duration}
                   onChange={handleCustomDurationChange}
-                  placeholder="Specify duration (e.g. 4 months)"
-                  style={{ marginTop: '8px' }}
+                  placeholder="Specify duration (e.g. 4 months)"                  style={{ marginTop: '12px' }}
                 />
               )}
               <div className={styles.helperText}>How long will this internship position last?</div>
@@ -201,8 +197,7 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
             <div className={styles.helperText}>Last day students can apply for this position</div>
           </div>
           
-          <div className={styles.formField}>
-            <div className={styles.checkboxGroup} style={{ marginTop: '5px' }}>
+          <div className={styles.formField}>            <div className={styles.checkboxGroup} style={{ marginTop: '10px' }}>
               <input
                 type="checkbox"
                 id="isPaid"
@@ -225,17 +220,17 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
                 <div className={styles.helperText}>Monthly compensation in USD</div>
               </div>
             )}
-          </div><div className={styles.sectionHeading}>Skills & Qualifications</div>
+          </div>
+          
+          <div className={styles.sectionHeading}>Skills & Qualifications</div>
           
           <div className={styles.formField}>
-            <label className={styles.label}>Skills needed for this position</label>
-            <div className={styles.helperText} style={{ marginBottom: '10px' }}>
+            <label className={styles.label}>Skills needed for this position</label>            <div className={styles.helperText} style={{ marginBottom: '15px', fontSize: '14px' }}>
               Select relevant skills that applicants should possess
             </div>
             
-            <div className={styles.skillsContainer}>
-              {post.skillsRequired.length === 0 && (
-                <div style={{ color: '#888', padding: '10px 0', fontStyle: 'italic' }}>
+            <div className={styles.skillsContainer}>              {post.skillsRequired.length === 0 && (
+                <div style={{ color: '#888', padding: '15px 0', fontStyle: 'italic', textAlign: 'center' }}>
                   No skills selected yet. Choose from the dropdown below.
                 </div>
               )}
@@ -256,8 +251,7 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
               ))}
             </div>
             
-            <div className={styles.skillsSelectionContainer} style={{ marginTop: '12px' }}>
-              <select 
+            <div className={styles.skillsSelectionContainer} style={{ marginTop: '12px' }}>              <select 
                 className={styles.skillSelect}
                 onChange={(e) => {
                   if (e.target.value && !post.skillsRequired.includes(e.target.value)) {
@@ -269,6 +263,7 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
                   }
                 }}
                 value=""
+                style={{ maxWidth: '100%' }}
               >
                 <option value="">+ Add a required skill...</option>
                 
@@ -414,8 +409,7 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
           >
             Cancel
           </button>
-            <button 
-            id="createPostButton"
+            <button            id="createPostButton"
             className={`${styles.submitButton} ${!post.title || !post.description || !post.duration ? styles.disabledButton : ''}`}
             onClick={() => {
               console.log('Submit button clicked');

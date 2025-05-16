@@ -227,9 +227,9 @@ const EvaluationDetailsModal: React.FC<EvaluationDetailsModalProps> = ({
                   Delete Evaluation
                 </button>
               )}
-              <button className={styles.actionButtonsClose} onClick={onClose}>
+              {/* <button className={styles.actionButtonsClose} onClick={onClose}>
                 Close
-              </button>
+              </button> */}
             </div>
           </div>
         )}
