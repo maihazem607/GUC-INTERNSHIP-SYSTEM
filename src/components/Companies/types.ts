@@ -1,4 +1,15 @@
 // Types for Companies
+export interface CompanyDocument {
+  id: number;
+  title: string;
+  type: string;
+  description: string;
+  sections: {
+    title: string;
+    content: string;
+  }[];
+}
+
 export interface Company {
   id: number;
   name: string;
@@ -14,6 +25,7 @@ export interface Company {
   benefits: string[];
   pastInternReviews: Review[];
   matchScore: number; // Score to determine how good the match is for the student (0-100)
+  documents?: CompanyDocument[]; // Optional array of company documents
 }
 
 export interface Review {

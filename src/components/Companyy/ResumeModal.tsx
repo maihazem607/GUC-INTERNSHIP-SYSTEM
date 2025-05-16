@@ -1,7 +1,8 @@
 import React from 'react';
 import Modal from '../global/Modal';
 import styles from './ResumeModal.module.css';
-import { FileText, User, Mail, Phone, MapPin, Calendar, Briefcase, GraduationCap } from 'lucide-react';
+import { FileText, User, Mail, Phone, MapPin, Calendar, Briefcase, GraduationCap, Download } from 'lucide-react';
+import { generateResumePDF, ResumeData } from '../../utils/pdfUtils';
 
 interface ResumeModalProps {
   applicantName: string;
@@ -10,7 +11,7 @@ interface ResumeModalProps {
 
 const ResumeModal: React.FC<ResumeModalProps> = ({ applicantName, onClose }) => {
   // Mock resume data for the demonstration
-  const resumeData = {
+  const resumeData: ResumeData = {
     name: applicantName,
     email: `${applicantName.toLowerCase().replace(' ', '.')}@example.com`,
     phone: '+20 123 456 7890',
@@ -61,9 +62,22 @@ const ResumeModal: React.FC<ResumeModalProps> = ({ applicantName, onClose }) => 
       }
     ]
   };
+  const handleDownloadPDF = async () => {
+    try {
+      await generateResumePDF(resumeData);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
+  };
 
   return (
     <Modal title={`${applicantName}'s Resume`} onClose={onClose} width="800px">
+      <div className={styles.modalActions}>
+        <button onClick={handleDownloadPDF} className={styles.downloadButton}>
+          <Download size={16} />
+          Download as PDF
+        </button>
+      </div>
       <div className={styles.resumeContainer}>
         {/* Header Section */}
         <div className={styles.header}>
@@ -134,8 +148,7 @@ const ResumeModal: React.FC<ResumeModalProps> = ({ applicantName, onClose }) => 
           <h2 className={styles.sectionTitle}>
             <FileText size={18} />
             <span>Projects</span>
-          </h2>
-          {resumeData.projects.map((project, index) => (
+          </h2>          {resumeData.projects?.map((project, index) => (
             <div key={index} className={styles.projectItem}>
               <h3 className={styles.projectName}>{project.name}</h3>
               <p className={styles.projectDescription}>{project.description}</p>

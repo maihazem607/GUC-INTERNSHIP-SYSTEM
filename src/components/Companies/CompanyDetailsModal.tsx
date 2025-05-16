@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Company } from './types';
+import { Company, CompanyDocument } from './types';
 import styles from './CompanyDetailsModal.module.css';
-import { ThumbsUp, MapPin, Clock, CheckCircle, Star } from 'lucide-react';
+import { ThumbsUp, MapPin, Clock, CheckCircle, Star, FileText, Download } from 'lucide-react';
+import { generateCompanyDocumentPDF } from '../../utils/pdfUtils';
 
 interface Props {
   company: Company;
@@ -10,7 +11,7 @@ interface Props {
 }
 
 const CompanyDetailsModal: React.FC<Props> = ({ company, onClose, onSave }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'reviews' | 'positions'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'reviews' | 'positions' | 'documents'>('overview');
 
   const renderStarRating = (rating: number) => {
     return (
@@ -88,12 +89,17 @@ const CompanyDetailsModal: React.FC<Props> = ({ company, onClose, onSave }) => {
             onClick={() => setActiveTab('reviews')}
           >
             Intern Reviews ({company.pastInternReviews.length})
-          </button>
-          <button
+          </button>          <button
             className={`${styles.tabButton} ${activeTab === 'positions' ? styles.activeTab : ''}`}
             onClick={() => setActiveTab('positions')}
           >
             Open Positions ({company.openPositions})
+          </button>
+          <button
+            className={`${styles.tabButton} ${activeTab === 'documents' ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab('documents')}
+          >
+            Documents {company.documents ? `(${company.documents.length})` : ''}
           </button>
         </div>
 
@@ -268,8 +274,125 @@ const CompanyDetailsModal: React.FC<Props> = ({ company, onClose, onSave }) => {
               <div className={styles.viewAllPositions}>
                 <button className={styles.viewAllButton}>
                   View All {company.openPositions} Open Positions
-                </button>
+                </button>              </div>
+            </div>
+          )}
+          
+          {activeTab === 'documents' && (
+            <div className={styles.documentsTab}>
+              <div className={styles.documentsDisclaimer}>
+                <p>
+                  <strong>Company Documents:</strong> These resources provide additional information about the company, 
+                  internship programs, and application guidelines. Click to download.
+                </p>
               </div>
+              
+              {/* Add mock documents if they don't exist */}
+              {(!company.documents || company.documents.length === 0) ? (
+                // Create sample documents for demonstration
+                (() => {
+                  const sampleDocuments: CompanyDocument[] = [
+                    {
+                      id: 1,
+                      title: "Internship Program Overview",
+                      type: "PDF",
+                      description: "Details about our internship program structure, duration, and benefits.",
+                      sections: [
+                        {
+                          title: "Program Introduction",
+                          content: `${company.name}'s Internship Program is designed to provide students with hands-on experience in a professional environment. Our program runs for 3-6 months and offers exposure to real-world projects and challenges.`
+                        },
+                        {
+                          title: "Program Benefits",
+                          content: "Participants in our internship program receive competitive compensation, mentorship from industry experts, networking opportunities, and the possibility of full-time employment after graduation."
+                        },
+                        {
+                          title: "Application Process",
+                          content: "The application process includes an online application, resume review, technical or skill assessment, and interviews with the hiring team and potential mentors."
+                        }
+                      ]
+                    },
+                    {
+                      id: 2,
+                      title: "Student Guidelines",
+                      type: "PDF",
+                      description: "Information for students about expectations, code of conduct, and tips for success.",
+                      sections: [
+                        {
+                          title: "Expectations",
+                          content: "Interns are expected to work approximately 40 hours per week, contribute meaningfully to assigned projects, attend team meetings and company events, and maintain professional conduct."
+                        },
+                        {
+                          title: "Code of Conduct",
+                          content: "All interns must adhere to our company values of integrity, respect, innovation, and excellence. Confidentiality of company information must be maintained at all times."
+                        },
+                        {
+                          title: "Tips for Success",
+                          content: "Be proactive in seeking feedback, ask questions when needed, network across departments, maintain a positive attitude, and document your achievements for your final report."
+                        }
+                      ]
+                    }
+                  ];
+                  
+                  // Display the sample documents
+                  return (
+                    <div className={styles.documentsList}>
+                      {sampleDocuments.map((doc) => (
+                        <div key={doc.id} className={styles.documentCard}>
+                          <div className={styles.documentInfo}>
+                            <div className={styles.documentIcon}>
+                              <FileText size={24} />
+                            </div>
+                            <div className={styles.documentDetails}>
+                              <h4 className={styles.documentTitle}>{doc.title}</h4>
+                              <p className={styles.documentDescription}>{doc.description}</p>
+                            </div>
+                          </div>
+                          <button 
+                            className={styles.downloadDocumentButton}
+                            onClick={() => generateCompanyDocumentPDF({
+                              companyName: company.name,
+                              documentTitle: doc.title,
+                              contentSections: doc.sections
+                            })}
+                          >
+                            <Download size={16} />
+                            Download
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()
+              ) : (
+                // Display actual company documents
+                <div className={styles.documentsList}>
+                  {company.documents.map((doc) => (
+                    <div key={doc.id} className={styles.documentCard}>
+                      <div className={styles.documentInfo}>
+                        <div className={styles.documentIcon}>
+                          <FileText size={24} />
+                        </div>
+                        <div className={styles.documentDetails}>
+                          <h4 className={styles.documentTitle}>{doc.title}</h4>
+                          <p className={styles.documentDescription}>{doc.description}</p>
+                        </div>
+                      </div>
+                      <button 
+                        className={styles.downloadDocumentButton}
+                        onClick={() => generateCompanyDocumentPDF({
+                          companyName: company.name,
+                          documentTitle: doc.title,
+                          contentSections: doc.sections
+                        })}
+                      >
+                        <Download size={16} />
+                        Download
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import styles from './StatisticsSection.module.css';
 import StatsCard from './StatsCard';
 import { BarChart, PieChart, LineChart, FilePlus, Download } from 'lucide-react';
+import { jsPDF } from 'jspdf';
+import { generateStatisticsPDF } from '../../utils/pdfUtils';
 
 // Types for the statistics data
 export interface StatisticsData {
@@ -39,6 +41,21 @@ interface StatisticsSectionProps {
 const StatisticsSection: React.FC<StatisticsSectionProps> = ({ data, onGenerateReport }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'reports' | 'companies' | 'courses'>('overview');
   const [chartView, setChartView] = useState<'bar' | 'pie' | 'line'>('bar');
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  
+  // Function to generate and download statistics as PDF
+  const handleDownloadPDF = async () => {
+    setIsGeneratingPDF(true);
+    
+    try {
+      // Use the utility function to generate the statistics PDF
+      await generateStatisticsPDF(data);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
 
   // Function to render the chart based on active tab and chart view
   const renderChart = () => {
@@ -575,17 +592,14 @@ const StatisticsSection: React.FC<StatisticsSectionProps> = ({ data, onGenerateR
     <div className={styles.statisticsSection}>
       <div className={styles.sectionHeader}>
         <h2 className={styles.sectionTitle}>Internship Cycle Statistics</h2>
-        <div className={styles.sectionActions}>
+        <div className={styles.sectionActions}> 
           <button 
-            className={styles.reportButton} 
-            onClick={onGenerateReport}
+            className={styles.reportButton}
+            onClick={handleDownloadPDF}
+            disabled={isGeneratingPDF}
           >
-            <FilePlus size={18} />
-            <span>Generate Report</span>
-          </button>
-          <button className={styles.downloadButton}>
             <Download size={18} />
-            <span>Export Data</span>
+            <span>{isGeneratingPDF ? 'Generating...' : 'Generate Report'}</span>
           </button>
         </div>
       </div>

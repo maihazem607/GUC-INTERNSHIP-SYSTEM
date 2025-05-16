@@ -1,7 +1,8 @@
 import React from 'react';
 import Modal from '../global/Modal';
 import styles from './CoverLetterModal.module.css';
-import { Calendar } from 'lucide-react';
+import { Calendar, Download } from 'lucide-react';
+import { generateCoverLetterPDF, CoverLetterData } from '../../utils/pdfUtils';
 
 interface CoverLetterModalProps {
   applicantName: string;
@@ -24,9 +25,47 @@ const CoverLetterModal: React.FC<CoverLetterModalProps> = ({
   const companyName = internshipTitle.includes('at') 
     ? internshipTitle.split(' at ')[1] 
     : 'Your Company';
+  // Generate mock cover letter data
+  const coverLetterData: CoverLetterData = {
+    applicantName,
+    applicantEmail: `${applicantName.toLowerCase().replace(' ', '.')}@example.com`,
+    applicantPhone: '+20 123 456 7890',
+    applicantAddress: 'Cairo, Egypt',
+    companyName,
+    positionTitle: internshipTitle,
+    date: currentDate,
+    content: `Dear Hiring Manager,
+
+I am writing to express my interest in the ${internshipTitle} position at ${companyName}. As a Computer Science student at the German University in Cairo, I am eager to apply my academic knowledge and technical skills in a professional environment that fosters growth and innovation.
+
+Throughout my academic journey, I have developed strong programming skills in various languages and frameworks. I have worked on several projects that have enhanced my problem-solving abilities and teamwork skills. These experiences have prepared me to contribute effectively to your organization.
+
+I am particularly drawn to ${companyName} because of your commitment to technological advancement and innovation. Your company's work in [specific field/technology] aligns perfectly with my career aspirations and academic focus.
+
+I am confident that my technical skills, enthusiasm for learning, and dedication to quality work make me a strong candidate for this internship. I am excited about the opportunity to contribute to your team and gain valuable industry experience.
+
+Thank you for considering my application. I look forward to the possibility of discussing how my skills and experiences align with your needs.
+
+Sincerely,
+${applicantName}`
+  };
+
+  const handleDownloadPDF = async () => {
+    try {
+      await generateCoverLetterPDF(coverLetterData);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
+  };
 
   return (
     <Modal title="Cover Letter" onClose={onClose} width="800px">
+      <div className={styles.modalActions}>
+        <button onClick={handleDownloadPDF} className={styles.downloadButton}>
+          <Download size={16} />
+          Download as PDF
+        </button>
+      </div>
       <div className={styles.coverLetterContainer}>
         <div className={styles.letterHeader}>
           <div className={styles.applicantInfo}>

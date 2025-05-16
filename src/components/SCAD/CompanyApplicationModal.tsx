@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './CompanyApplicationModal.module.css';
 import {
   Clock, CheckCircle, X as XIcon,
   Building, Phone, User, Mail, Smartphone,
   FileText, FileImage, FileSpreadsheet, FileArchive,
-  Download, Check, X
+  Download, Check, X, FileDown
 } from 'lucide-react';
+import { jsPDF } from 'jspdf';
+import type { CompanyDocumentData } from '../../utils/pdfUtils';
+import { generateCompanyDocumentPDF } from '../../utils/pdfUtils';
 
 interface CompanyApplicationModalProps {
   company: {
@@ -58,6 +61,9 @@ const CompanyApplicationModal: React.FC<CompanyApplicationModalProps> = ({
   onAccept,
   onReject
 }) => {
+  // State for tracking PDF generation
+  const [generatingPDF, setGeneratingPDF] = useState<Record<number, boolean>>({});
+  
   // Format date to be more readable
   const formattedDate = new Date(company.applicationDate).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -66,6 +72,42 @@ const CompanyApplicationModal: React.FC<CompanyApplicationModalProps> = ({
   });
   const initials = getCompanyInitials(company.name);
   const logoBackground = getLogoBackground(company.name);
+  
+  // Function to handle PDF generation for company documents
+  const handleGeneratePDF = async (doc: { id: number; name: string; type: string; url: string }) => {
+    // Mark this document as generating PDF
+    setGeneratingPDF(prev => ({ ...prev, [doc.id]: true }));
+    
+    try {
+      // Create document data structure for PDF generation
+      const documentData: CompanyDocumentData = {
+        companyName: company.name,
+        documentTitle: doc.name,
+        contentSections: [
+          {
+            title: "Document Information",
+            content: `This document was submitted by ${company.name} as part of their application to join the GUC Internship System. Document type: ${doc.type}`
+          },
+          {
+            title: "Company Information",
+            content: `Company: ${company.name}\nIndustry: ${company.industry}\nContact Person: ${company.contactPerson}\nEmail: ${company.email}\nPhone: ${company.phone}\nApplication Date: ${formattedDate}`
+          },
+          {
+            title: "Document Content",
+            content: "The original document content is available for download through the provided link. This PDF serves as a reference and summary of the document's metadata."
+          }
+        ]
+      };
+      
+      // Generate PDF using the utility function
+      await generateCompanyDocumentPDF(documentData);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    } finally {
+      // Mark this document as no longer generating PDF
+      setGeneratingPDF(prev => ({ ...prev, [doc.id]: false }));
+    }
+  };
 
   // Format company size for display
   const formatCompanySize = (size?: string) => {
@@ -205,9 +247,7 @@ const CompanyApplicationModal: React.FC<CompanyApplicationModalProps> = ({
                     <span className={styles.contactValue}>{company.phone}</span>
                   </div>
                 </div>
-              </div>
-
-              {company.documents && company.documents.length > 0 && (
+              </div>              {company.documents && company.documents.length > 0 && (
                 <div className={styles.sectionCard}>
                   <h3 className={styles.sectionTitle}>
                     <span className={styles.sectionIcon}><FileText size={18} color="#4c51bf" /></span>
@@ -223,27 +263,36 @@ const CompanyApplicationModal: React.FC<CompanyApplicationModalProps> = ({
                             <span className={styles.documentName} title={doc.name}>
                               {doc.name.length > 20 ? `${doc.name.substring(0, 18)}...` : doc.name}
                             </span>
+                          </div>                          <div className={styles.documentActions}>
+                            <a
+                              href={doc.url}
+                              className={styles.documentDownload}
+                              download={doc.name}
+                              onClick={(e) => {
+                                if (!doc.url.startsWith('blob:') && !doc.url.startsWith('data:')) {
+                                  e.preventDefault();
+                                  const link = document.createElement('a');
+                                  link.href = doc.url;
+                                  link.download = doc.name;
+                                  link.target = '_blank';
+                                  document.body.appendChild(link);
+                                  link.click();
+                                  document.body.removeChild(link);
+                                }
+                              }}
+                            >
+                              <span className={styles.downloadIcon}><Download size={16} color="#4c51bf" /></span>
+                              Download
+                            </a>
+                            <button
+                              className={styles.pdfButton}
+                              onClick={() => handleGeneratePDF(doc)}
+                              disabled={!!generatingPDF[doc.id]}
+                            >
+                              <span className={styles.pdfIcon}><FileDown size={16} color="#e53e3e" /></span>
+                              {generatingPDF[doc.id] ? 'Generating...' : 'PDF'}
+                            </button>
                           </div>
-                          <a
-                            href={doc.url}
-                            className={styles.documentDownload}
-                            download={doc.name}
-                            onClick={(e) => {
-                              if (!doc.url.startsWith('blob:') && !doc.url.startsWith('data:')) {
-                                e.preventDefault();
-                                const link = document.createElement('a');
-                                link.href = doc.url;
-                                link.download = doc.name;
-                                link.target = '_blank';
-                                document.body.appendChild(link);
-                                link.click();
-                                document.body.removeChild(link);
-                              }
-                            }}
-                          >
-                            <span className={styles.downloadIcon}><Download size={16} color="#4c51bf" /></span>
-                            Download
-                          </a>
                         </div>
                       );
                     })}

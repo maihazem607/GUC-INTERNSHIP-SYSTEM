@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styles from "./ReportDetailsModal.module.css";
 import Modal from '../global/Modal';
 import { CheckCircle, AlertCircle, XCircle, Download } from 'lucide-react';
+import { jsPDF } from 'jspdf';
+import { StudentReportData, generateStudentReportPDF } from '../../utils/pdfUtils';
 
 export interface ReportDetailsModalProps {
   title: string;
@@ -130,16 +132,38 @@ const ReportDetailsModal: React.FC<ReportDetailsModalProps> = ({
       onDeleteComment(index);
     }
   };
-
   const handleDownloadPDF = () => {
     setIsGeneratingPDF(true);
     
-    // Simulate PDF generation
-    setTimeout(() => {
+    try {
+      // Create the student report data structure
+      const reportData: StudentReportData = {
+        id: 0, // Since we don't have ID in the props, use 0 as default
+        title,
+        studentId: 0, // Since we don't have student ID in the props, use 0 as default
+        studentName,
+        major,
+        companyName,
+        submissionDate,
+        status: status as 'pending' | 'accepted' | 'flagged' | 'rejected',
+        content,
+        supervisorName,
+        internshipStartDate,
+        internshipEndDate,
+        scadFeedback: clarificationComment,
+        studentResponses: allComments,
+        evaluationScore,
+        evaluationComments,
+        logo,
+      };
+      
+      // Generate PDF using the utility function
+      generateStudentReportPDF(reportData);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    } finally {
       setIsGeneratingPDF(false);
-      // In a real application, here you would generate and download the PDF
-      console.log('PDF download simulated');
-    }, 2000);
+    }
   };
     // Removed action buttons as requested
   const actions = null;

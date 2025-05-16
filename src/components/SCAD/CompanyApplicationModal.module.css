@@ -460,9 +460,47 @@
 .documentDownload:hover {
   background-color: #bee3f8;
   transform: translateY(-2px);
-  margin-left: 5px;
 }
 
 .downloadIcon {
+  font-size: 1rem;
+}
+
+.documentActions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.pdfButton {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  background-color: #fff5f5;
+  color: #e53e3e;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+}
+
+.pdfButton:hover {
+  background-color: #fed7d7;
+  transform: translateY(-2px);
+}
+
+.pdfButton:disabled {
+  background-color: #edf2f7;
+  color: #a0aec0;
+  cursor: not-allowed;
+  transform: translateY(0);
+}
+
+.pdfIcon {
   font-size: 1rem;
 }
