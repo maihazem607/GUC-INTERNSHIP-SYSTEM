@@ -1293,7 +1293,8 @@ export default function SCADDashboardPage() {
                   <span className={styles.reportCount}>
                     {pendingReportsCount} pending reviews
                   </span>
-                </div>                {filteredReports.length > 0 ? (
+                 </div>               
+                   {filteredReports.length > 0 ? (
                   <ReportTable
                     reports={filteredReports}
                     onViewReport={handleViewReportDetails}

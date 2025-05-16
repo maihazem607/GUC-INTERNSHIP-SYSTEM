@@ -6,15 +6,16 @@ import Image from 'next/image';
 import { Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import styles from './CompanyLogin.module.css';
 import Link from 'next/link';
+import { useNotification } from '@/context/NotificationContext';
 
 const CompanyLogin = () => {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const { showNotification } = useNotification();
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -132,8 +133,17 @@ const CompanyLogin = () => {
                     <label htmlFor="rememberMe" className={styles.checkboxLabel}>
                       Remember me
                     </label>
-                  </div>
-                  <Link href="/forgot-password" className={styles.forgotPassword}>
+                  </div>                  <Link 
+                    href="/forgot-password" 
+                    className={styles.forgotPassword}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      showNotification({
+                        message: "Password reset link sent. Please check your email.",
+                        type: "success"
+                      });
+                    }}
+                  >
                     Forgot password?
                   </Link>
                 </div>
