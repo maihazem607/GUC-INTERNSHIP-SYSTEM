@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from '../Appointments/NewAppointmentForm.module.css';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Search as SearchIcon, CheckCircle } from 'lucide-react';
 
 interface SCADNewAppointmentFormProps {
   onSubmit: (data: any) => Promise<void>;
@@ -14,12 +14,6 @@ const students = [
   { id: '4', name: 'Ahmed Hassan', email: 'ahmed.hassan@student.guc.edu', gpa: 3.9 },
   { id: '5', name: 'Fatima Zahra', email: 'fatima.zahra@student.guc.edu', gpa: 3.6 }
 ];
-  { id: '1', name: 'Sarah Johnson', email: 'sarah.johnson@student.guc.edu' },
-  { id: '2', name: 'Mohammed Ali', email: 'mohammed.ali@student.guc.edu' },
-  { id: '3', name: 'Emily Rodriguez', email: 'emily.rodriguez@student.guc.edu' },
-  { id: '4', name: 'Ahmed Hassan', email: 'ahmed.hassan@student.guc.edu' },
-  { id: '5', name: 'Fatima Zahra', email: 'fatima.zahra@student.guc.edu' }
-];
 
 const purposes = [
   'Career Guidance',
@@ -30,71 +24,134 @@ const purposes = [
 ];
 
 const SCADNewAppointmentForm: React.FC<SCADNewAppointmentFormProps> = ({ onSubmit }) => {
-  const [studentId, setStudentId] = useState(students[0].id);
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
+  const [currentStep, setCurrentStep] = useState(1);
+  const [selectedStudentId, setSelectedStudentId] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [purpose, setPurpose] = useState(purposes[0]);
   const [description, setDescription] = useState('');
+  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+
+  const filteredStudents = students.filter(s => s.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  useEffect(() => {
+    if (selectedDate) {
+      const slots = generateTimeSlots(selectedDate);
+      setAvailableTimeSlots(slots);
+    }
+  }, [selectedDate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit({ participantId: studentId, title: purpose, date, time, description });
+    await onSubmit({ participantId: selectedStudentId, title: purpose, date: selectedDate?.toISOString().split('T')[0] || '', time: selectedTimeSlot, description });
   };
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit}>
-      <h2>Select Student</h2>
-      <select
-        name="studentId"
-        value={studentId}
-        onChange={e => setStudentId(e.target.value)}
-      >
-        {students.map(s => (
-          <option key={s.id} value={s.id}>{s.name}</option>
-        ))}
-      </select>
+    <form className={styles.appointmentForm} onSubmit={handleSubmit}>
+      <div className={styles.formContent}>
+        {currentStep === 1 && (
+          <>
+            <h2>Select Student</h2>
+            <div className={styles.formGroup}>
+              <label>Search Students</label>
+              <div className={styles.formRow}>
+                <SearchIcon />
+                <input type="text" placeholder="Search students..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+              </div>
+            </div>
+            <div className={styles.advisorCards}>
+              {filteredStudents.length > 0 ? (
+                filteredStudents.map(student => (
+                  <div key={student.id}
+                    className={`${styles.advisorCard} ${student.id === selectedStudentId ? styles.selectedAdvisor : ''}`}
+                    onClick={() => {
+                      setSelectedStudentId(student.id);
+                      setFormErrors({});
+                    }}>
+                    <div className={styles.advisorDetails}>
+                      <h3>{student.name}</h3>
+                      <span className={styles.advisorTitle}>{`GPA: ${student.gpa.toFixed(2)}`}</span>
+                    </div>
+                    {student.id === selectedStudentId && (
+                      <div className={styles.selectedIndicator}><CheckCircle size={16} color="#10b981" /></div>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <div className={styles.noAdvisorsMessage}>No students found</div>
+              )}
+            </div>
+            <div className={styles.formActions}>
+              <button type="button" onClick={() => window.history.back()}>
+                <ChevronLeft /> Back
+              </button>
+              <button type="button" onClick={() => {
+                if (!selectedStudentId) {
+                  setFormErrors({ participant: 'Please select a student' });
+                  return;
+                }
+                setCurrentStep(2);
+              }}>
+                Continue <ChevronRight />
+              </button>
+            </div>
+          </>
+        )}
 
-      <h2>Select Purpose</h2>
-      <select
-        name="purpose"
-        value={purpose}
-        onChange={e => setPurpose(e.target.value)}
-      >
-        {purposes.map(p => (
-          <option key={p} value={p}>{p}</option>
-        ))}
-      </select>
+        {currentStep === 2 && (
+          <>
+            <a href="#" className={styles.backLink} onClick={e => { e.preventDefault(); setCurrentStep(1); }}>
+              <ChevronLeft /> Change Student
+            </a>
+            <h2>Choose Date & Time</h2>
+            <div className={styles.formGroup}>
+              <label htmlFor="date">Date</label>
+              <input
+                type="date"
+                id="date"
+                name="date"
+                value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
+                onChange={e => setSelectedDate(new Date(e.target.value))}
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="timeSlot">Time Slot</label>
+              <select
+                id="timeSlot"
+                name="timeSlot"
+                value={selectedTimeSlot}
+                onChange={e => setSelectedTimeSlot(e.target.value)}
+              >
+                {availableTimeSlots.map(slot => (
+                  <option key={slot} value={slot}>{slot}</option>
+                ))}
+              </select>
+            </div>
 
-      <h2>Choose Date & Time</h2>
-      <input
-        type="date"
-        name="date"
-        value={date}
-        onChange={e => setDate(e.target.value)}
-      />
-      <input
-        type="time"
-        name="time"
-        value={time}
-        onChange={e => setTime(e.target.value)}
-      />
-
-      <h2>Description</h2>
-      <textarea
-        name="description"
-        rows={4}
-        value={description}
-        onChange={e => setDescription(e.target.value)}
-        placeholder="Enter meeting details..."
-      />
-
-      <div className={styles.formActions}>
-        <button type="button" onClick={() => window.history.back()}>
-          <ChevronLeft /> Back
-        </button>
-        <button type="submit">
-          Schedule <ChevronRight />
-        </button>
+            <div className={styles.sectionDivider}></div>
+            <h2>Appointment Details</h2>
+            <div className={styles.formGroup}>
+              <label htmlFor="purpose">Purpose</label>
+              <select id="purpose" name="purpose" value={purpose} onChange={e => setPurpose(e.target.value)}>
+                {purposes.map(p => <option key={p} value={p}>{p}</option>)}
+              </select>
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="description">Description</label>
+              <textarea id="description" name="description" rows={4} value={description} onChange={e => setDescription(e.target.value)} placeholder="Enter meeting details..." />
+            </div>
+            <div className={styles.formActions}>
+              <button type="button" onClick={() => setCurrentStep(1)}>
+                <ChevronLeft /> Back
+              </button>
+              <button type="submit" disabled={!selectedTimeSlot}>
+                Schedule <ChevronRight />
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </form>
   );
