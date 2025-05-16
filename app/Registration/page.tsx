@@ -6,12 +6,14 @@ import Image from 'next/image';
 import { Mail, Lock, Building, Users, ArrowLeft, Upload, FileText } from 'lucide-react';
 import styles from './Registration.module.css';
 import Link from 'next/link';
+import { useNotification } from '@/context/NotificationContext';
 
 const Registration = () => {
   const router = useRouter();
   const documentInputRef = useRef<HTMLInputElement>(null);
   const [documentUploaded, setDocumentUploaded] = useState<boolean>(false);
   const [documentName, setDocumentName] = useState<string>('');
+  const { showNotification } = useNotification();
   const [formValues, setFormValues] = useState({
     companyName: '',
     companyEmail: '',
@@ -118,6 +120,7 @@ const Registration = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -145,6 +148,12 @@ const Registration = () => {
       // Simulate API call
       console.log('Company registration attempt with:', formValues);
       console.log('Document uploaded:', documentName);
+      
+      // Show notification
+      showNotification({
+        message: "Registration submitted. Your request is under review. You'll receive an email once it's approved or rejected",
+        type: 'success'
+      });
       
       setTimeout(() => {
         router.push('/CompanyLogin');
