@@ -14,7 +14,7 @@ import ProfileViewsList from "@/components/ProfileViews/ProfileViewsList";
 import ProfileViewDetailsModal from "@/components/ProfileViews/ProfileViewDetailsModal";
 import { useNotification } from "@/components/global/NotificationSystemAdapter";
 import { Company, FilterOptions } from "@/components/Companies/types";
-import { Eye, Building } from 'lucide-react';
+import { Eye, Building, Search } from 'lucide-react';
 
 // Define the profile view interface
 interface ProfileView {
@@ -689,12 +689,12 @@ export default function CompaniesPage() {
                         onSave={() => handleSaveCompany(company.id)}
                       />
                     ))
-                  ) : (                    <div className={styles.noResults}>
-                      <img 
-                        src="assets/images/icons/search.png" 
-                        alt="Search Icon" 
-                        className={styles.searchIcon} 
-                      /> 
+                  ) : (
+                    <div className={styles.noResults}>
+                      <Search 
+                    size={48} 
+                    className={styles.searchIcon} 
+                    /> 
                       <h3>No companies found</h3>
                       <p>Try adjusting your search criteria or filters</p>
                       {(searchTerm || activeFilters.industry !== 'All' || activeFilters.recommendation !== 'All' || activeFilters.rating !== 'All') && (

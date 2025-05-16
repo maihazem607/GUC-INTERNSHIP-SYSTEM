@@ -10,18 +10,18 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  overflow-y: hidden;
 }
 
 .modalContent {
   position: relative;
-  width: 85%;
-  max-width: 1200px;
-  height: 85vh;
+  width: 1200px;
+  max-width: 95vw;
+  height: 90vh;
   background-color: white;
   border-radius: 16px;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  overflow-y: hidden;
 }
 
 .closeButton {
@@ -45,24 +45,45 @@
 
 .recordedSessionContainer {
   display: flex;
-  flex-direction: column;
+  width: 100%;
   height: 100%;
-  overflow-y: auto;
   overflow-x: hidden;
 }
 
+.leftColumn {
+  flex: 3;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+.leftColumn::-webkit-scrollbar {
+  width: 8px;
+  height: 0;
+}
+
+.leftColumn::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.leftColumn::-webkit-scrollbar-thumb {
+  background: #4c51bf;
+  border-radius: 8px;
+}
+
 .videoSection {
-  flex: none;
+  width: 100%;
+  height: 90vh;
   display: flex;
   flex-direction: column;
-  height: 85vh; /* Increased height so content below is not visible initially */
-  min-height: 500px;
 }
 
 .belowVideoContent {
-  flex: none;
-  padding-top: 50px; /* Extra padding to push it further down */
-  margin-top: 100px; /* Additional margin to ensure it's below the fold */
+  flex: 1;
+  padding: 20px;
+  margin-top: 40px;
+  min-height: 300px;
 }
 
 .workshopInfoDivider {
@@ -73,47 +94,36 @@
 
 .sidePanel {
   flex: 1;
+  max-width: 380px;
+  min-width: 300px;
   background-color: #ffffff;
-  display: flex;
-  flex-direction: column;
+  border-left: 1px solid #e0e0e0;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 @media (min-width: 1200px) {
   .recordedSessionContainer {
-    flex-direction: column;
-    overflow-y: auto;
+    flex-direction: row;
+    overflow-y: hidden;
   }
 
   .videoSection {
-    flex: none;
-    height: 70vh;
-    min-height: 500px;
+    flex: 3;
+    height: 100%;
+    min-height: 600px;
   }
 
   .belowVideoContent {
-    flex: none;
-  }
-
-  .sidePanel {
     flex: 1;
-    padding: 0 20px 20px;
+    padding: 20px;
+    margin-top: 0;
+    min-height: 300px;
   }
 
   /* Optional layout for very wide screens */
   @media (min-width: 1600px) {
-    .recordedSessionContainer {
-      flex-direction: row;
-    }
-
-    .videoSection {
-      flex: 3;
-      height: 100%;
-    }
-
-    .belowVideoContent {
-      display: none; /* Hide in ultra wide layout where we use side-by-side */
-    }
-
     .sidePanel {
       flex: 1;
       min-width: 300px;
@@ -149,7 +159,6 @@
   flex: 1;
   background-color: #000;
   position: relative;
-  overflow: hidden;
 }
 
 .recordedVideo {
@@ -177,14 +186,12 @@
 
 /* Certificate Section Styles - Below video player */
 .certificateSection {
+  width: calc(100% - 40px);
   background-color: #f8f9fa;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   padding: 20px;
-  margin: 0 20px;
-  transform: translateY(-15px);
-  opacity: 1;
-  transition: opacity 0.3s, transform 0.3s;
+  margin: 20px;
 }
 
 .certificateSectionInner {
@@ -280,7 +287,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  border-bottom: 1px solid #ddd;
+  overflow-x: hidden;
 }
 
 .playPauseButton {
@@ -317,6 +324,7 @@
   justify-content: space-between;
   font-size: 12px;
   color: #666;
+  overflow: hidden;
 }
 
 /* Workshop Details Styles */
@@ -325,7 +333,6 @@
   flex-direction: column;
   height: 100%;
   padding: 15px;
-  overflow-y: auto;
 }
 
 .detailsHeader {
@@ -447,7 +454,7 @@
 .notesContent {
   flex: 1;
   padding: 15px;
-  overflow-y: auto;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -468,7 +475,7 @@
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 12px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .noteTimestamp {
@@ -639,11 +646,11 @@
 
 .certificateContent h3 {
   font-size: 24px;
-  color: #2ecc71;
+  color: #4c51bf;
   margin-bottom: 15px;
 }
 
-.certificateContent > p {
+.certificateContent>p {
   margin-bottom: 10px;
   color: #333;
 }
@@ -698,7 +705,7 @@
 }
 
 .downloadCertButton {
-  background-color: #2ecc71;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 6px;
@@ -707,7 +714,7 @@
   cursor: pointer;
 }
 
-.closeButton {
+.certificateContent .closeButton {
   background-color: #f1f1f1;
   color: #666;
   border: none;
@@ -715,6 +722,15 @@
   padding: 12px 20px;
   font-weight: 500;
   cursor: pointer;
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 15px;
+  right: 15px;
 }
 
 @media (min-width: 768px) {
@@ -722,11 +738,11 @@
     flex-direction: row;
     gap: 20px;
   }
-  
+
   .videoSection {
     flex: 3;
   }
-  
+
   .workshopDetails {
     flex: 2;
     padding-top: 0;
@@ -762,7 +778,20 @@
 
 .downloadProgress .progressBar {
   height: 100%;
-  background-color: #2ecc71;
+  background-color: #4c51bf;
   border-radius: 6px;
   transition: width 0.3s ease-in-out;
+}
+
+@media (max-width: 900px) {
+
+  .modalContent,
+  .leftColumn {
+    height: 100vh;
+    min-height: 0;
+  }
+
+  .certificateSection {
+    margin: 40px 10px 0 10px;
+  }
 }

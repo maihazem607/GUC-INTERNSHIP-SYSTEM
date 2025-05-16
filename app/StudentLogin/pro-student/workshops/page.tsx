@@ -12,6 +12,7 @@ import LiveSessionModal from "@/components/workshops/LiveSessionModal";
 import RecordedSessionModal from "@/components/workshops/RecordedSessionModal";
 import NotificationSystem, { useNotification } from "@/components/global/NotificationSystemAdapter";
 import { Workshop } from "@/components/workshops/types";
+import { Search } from "lucide-react";
 
 // Workshop data (would typically come from an API)
 const workshops: Workshop[] = [
@@ -132,6 +133,40 @@ export default function WorkshopListPage() {
   const [liveSession, setLiveSession] = useState<Workshop | null>(null);
   const [recordedSession, setRecordedSession] = useState<Workshop | null>(null);  // Get notification handling from the unified system
   const { notification, visible, showNotification, hideNotification, addNotification } = useNotification();
+
+  // Notification for upcoming registered workshop
+  useEffect(() => {
+    // Find upcoming workshops that the user is registered for
+    const upcomingRegisteredWorkshops = workshops.filter(
+      workshop => workshop.status === 'upcoming' && workshop.isRegistered
+    );
+    
+    if (upcomingRegisteredWorkshops.length > 0) {
+      // Sort by date to get the closest upcoming workshop
+      const sortedWorkshops = [...upcomingRegisteredWorkshops].sort((a, b) => {
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+      });
+      
+      const nextWorkshop = sortedWorkshops[0];
+      
+      // Show notification after 2 seconds
+      const timer = setTimeout(() => {
+        // Show toast notification
+        showNotification({
+          message: `Reminder: "${nextWorkshop.title}" is coming up on ${nextWorkshop.date}`,
+          type: 'info'
+        });
+          // Add persistent notification to bell icon
+        addNotification({
+          title: "Upcoming Workshop Reminder",
+          message: `You're registered for "${nextWorkshop.title}" on ${nextWorkshop.date} at ${nextWorkshop.time}`,
+          type: 'application'
+        });
+      }, 2000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, []); // Empty dependency array ensures this runs once when component mounts
 
   // Filter options
   const statusOptions = ['All', 'Upcoming', 'Ongoing', 'Completed'];
@@ -326,10 +361,10 @@ export default function WorkshopListPage() {
                     onViewDetails={handleViewDetails}
                   />
                 ))
-              ) : (                <div className={styles.noResults}>
-                  <img 
-                    src="assets/images/icons/search.png" 
-                    alt="Search Icon" 
+              ) : (
+                <div className={styles.noResults}>
+                  <Search 
+                    size={48} 
                     className={styles.searchIcon} 
                   /> 
                   <h3>No workshops found</h3>

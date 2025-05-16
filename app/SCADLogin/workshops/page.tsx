@@ -14,7 +14,7 @@ import NotificationSystem, { useNotification } from "@/components/global/Notific
 import { Workshop } from "@/components/workshops/types";
 import SCADWorkshopCard from "../../../src/components/workshops/SCADWorkshopCard";
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Building, Users, FileText, Settings, ClipboardCheck, Briefcase, Calendar, BookOpen, BarChart2 } from 'lucide-react';
+import { Building, Users, FileText, Settings, ClipboardCheck, Briefcase, Calendar, BookOpen, BarChart2, Search } from 'lucide-react';
 
 // Workshop data (would typically come from an API)
 const workshops: Workshop[] = [
@@ -449,10 +449,10 @@ export default function WorkshopListPage() {
                     onViewDetails={handleViewDetails}
                   />
                 ))
-              ) : (                <div className={styles.noResults}>
-                  <img 
-                    src="assets/images/icons/search.png" 
-                    alt="Search Icon" 
+              ) : (
+                <div className={styles.noResults}>
+                 <Search 
+                    size={48} 
                     className={styles.searchIcon} 
                   /> 
                   <h3>No workshops found</h3>

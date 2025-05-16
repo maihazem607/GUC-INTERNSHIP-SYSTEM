@@ -1,20 +1,20 @@
 "use client";
 import styles from "./page.module.css";
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 // Import modular components
-import NavigationMenu from "../../../src/components/global/NavigationMenu";
-import FilterSidebar from "../../../src/components/global/FilterSidebar";
-import SearchBar from "../../../src/components/global/SearchBar";
-import AppointmentCard from "../../../src/components/Appointments/AppointmentCard";
-import AppointmentDetailsModal from "../../../src/components/Appointments/AppointmentDetailsModal";
-import VideoCall from "../../../src/components/Appointments/VideoCall";
-import NotificationSystem, { useNotification, NOTIFICATION_CONSTANTS } from "../../../src/components/global/NotificationSystemAdapter";
-import { Appointment } from "../../../src/components/Appointments/types";
-import NewAppointmentForm from "../../../src/components/Appointments/NewAppointmentForm";
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Building, Users, FileText, Settings, ClipboardCheck, Briefcase, Calendar, BookOpen, BarChart2 } from 'lucide-react';
+import { Calendar, Clock, PlusCircle, Search } from 'lucide-react';
+import ProStudentNavigationMenu from '../Navigation/ProStudentNavigationMenu';
+import FilterSidebar from "@/components/global/FilterSidebar";
+import SearchBar from "@/components/global/SearchBar";
+import AppointmentCard from "@/components/Appointments/AppointmentCard";
+import AppointmentDetailsModal from "@/components/Appointments/AppointmentDetailsModal";
+import VideoCall from "@/components/Appointments/VideoCall";
+import NotificationSystem, { useNotification, NOTIFICATION_CONSTANTS } from "@/components/global/NotificationSystemAdapter";
 import IncomingCallNotification from "@/components/Appointments/IncomingCallNotification";
+import { Appointment } from "@/components/Appointments/types";
+import NewAppointmentForm from "@/components/Appointments/NewAppointmentForm";
 
 // Mock appointment data (would typically come from an API)
 const mockAppointments: Appointment[] = [
@@ -79,40 +79,26 @@ const mockAppointments: Appointment[] = [
     description: "Practice technical interview skills with feedback from SCAD career counselor.",
   }
 ];
-type ActiveMenuItem = 'companies' | 'students' | 'reports' | 'settings' | 'evaluations' | 'internships' | 'appointments'| 'workshops' | 'internship-requests' | 'internship-reports' | 'internship-evaluations' | 'internship-settings'| 'internship-statistics';
 
 export default function AppointmentsPage() {
-  // Router and search params for handling URL query parameters
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  
   // Current user type - in a real app, this would be from authentication
   const currentUserType = 'pro-student'; // or 'scad', depending on who is logged in
-  
-  // Tab navigation state - Always set to 'appointments' for this page
-  const [activeItem, setActiveItem] = useState<ActiveMenuItem>('appointments');
-  
-  // Get the active tab from URL query parameter or default to 'my-appointments'
-  const [activeTab, setActiveTab] = useState<string>(
-    searchParams.get('tab') || 'my-appointments'
-  );
-  
-  // Update URL when tab changes
-  useEffect(() => {
-    router.push(`/SCADLogin/AppointmentsSCAD${activeTab !== 'my-appointments' ? `?tab=${activeTab}` : ''}`);
-  }, [activeTab, router]);
-  
-  // Always set activeItem to 'appointments' whenever this page is loaded
-  useEffect(() => {
-    setActiveItem('appointments');
-  }, []);
-      // Use the unified notification system with both toast and persistent notifications
+
+  // Get URL parameters
+  const searchParams = useSearchParams();
+
+  // Use the tab parameter from URL if available, otherwise default to 'my-appointments'
+  const initialTab = searchParams.get('tab') || 'my-appointments';
+
+  // Tab navigation state
+  const [activeTab, setActiveTab] = useState<string>(initialTab);
+  // Use the unified notification system with both toast and persistent notifications
   const { showNotification, addNotification } = useNotification();
-  
+
   // Audio references for notification sounds
   const notificationSoundRef = useRef<HTMLAudioElement | null>(null);
   const callNotificationSoundRef = useRef<HTMLAudioElement | null>(null);
-  
+
   // Track user interaction to enable sound playback
   useEffect(() => {
     const markUserInteraction = () => {
@@ -122,12 +108,12 @@ export default function AppointmentsPage() {
       document.removeEventListener('keydown', markUserInteraction);
       document.removeEventListener('touchstart', markUserInteraction);
     };
-    
+
     // Add event listeners to detect user interaction
     document.addEventListener('click', markUserInteraction);
     document.addEventListener('keydown', markUserInteraction);
     document.addEventListener('touchstart', markUserInteraction);
-    
+
     return () => {
       // Clean up event listeners
       document.removeEventListener('click', markUserInteraction);
@@ -135,7 +121,15 @@ export default function AppointmentsPage() {
       document.removeEventListener('touchstart', markUserInteraction);
     };
   }, []);
-  
+
+  // Update active tab when URL parameters change
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab && ['my-appointments', 'requests', 'new-appointment'].includes(tab)) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
+
   // Listen for custom tab change events from the appointment form
   useEffect(() => {
     const handleTabChange = (event: Event) => {
@@ -144,28 +138,28 @@ export default function AppointmentsPage() {
         setActiveTab(customEvent.detail.tab);
       }
     };
-    
+
     window.addEventListener('changeTab', handleTabChange);
-    
+
     return () => {
       window.removeEventListener('changeTab', handleTabChange);
     };
   }, []);
-  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState({
     status: 'All',
     date: 'All'
   });
-    const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments);
+  const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments);
   const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>(
-    mockAppointments.filter(app => 
-      app.status === 'waiting-approval' || 
-      app.status === 'accepted' || 
-      app.status === 'rejected' || 
+    mockAppointments.filter(app =>
+      app.status === 'waiting-approval' ||
+      app.status === 'accepted' ||
+      app.status === 'rejected' ||
       app.status === 'completed'
     )
-  );  
+  );
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [showAppointmentDetails, setShowAppointmentDetails] = useState(false);
   const [showVideoCall, setShowVideoCall] = useState(false);
@@ -175,40 +169,36 @@ export default function AppointmentsPage() {
     // Display an initial notification that someone accepted your appointment
     setTimeout(() => {
       // Find Dr. Emily Rodriguez's appointment and update its status
-      const appointmentId = appointments.find(app => 
-        app.participantName === "Dr. Emily Rodriguez" && 
+      const appointmentId = appointments.find(app =>
+        app.participantName === "Dr. Emily Rodriguez" &&
         app.title === "Academic Progress Review"
       )?.id;
-      
-      if (appointmentId) {        // Update the appointment status with a visual notification
-        setAppointments(prevAppointments => 
-          prevAppointments.map(app => 
+
+      if (appointmentId) {
+        // Update the appointment status with a visual notification
+        setAppointments(prevAppointments =>
+          prevAppointments.map(app =>
             app.participantName === "Dr. Emily Rodriguez" && app.title === "Academic Progress Review"
               ? { ...app, status: 'accepted' }
               : app
           )
-        );        
-        if (activeTab === 'my-appointments') {
-          // Use setTimeout for notification consistency
-          setTimeout(() => {
-            // Show toast notification
-            showNotification({
-              message: "Dr. Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
-              type: 'success'
-            });
-            
-            // Add to bell notifications
-            addNotification({
-              title: "Appointment Accepted",
-              message: "Dr. Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
-              type: 'appointment'
-            });
-          }, 800); // Simulate network delay
-        }
-        
+        );
+        // Show toast notification
+        showNotification({
+          message: "Dr. Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
+          type: 'success'
+        });
+
+        // Add notification to the bell
+        addNotification({
+          title: "Appointment Accepted",
+          message: "Dr. Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
+          type: 'appointment'
+        });
+
         // Try to play notification sound
         playNotificationSound('notification');
-        
+
         // Add a temporary highlight class to the accepted appointment card
         const appointmentCard = document.querySelector(`[data-appointment-id="${appointmentId}"]`);
         if (appointmentCard) {
@@ -220,12 +210,12 @@ export default function AppointmentsPage() {
       }
     }, 2000); // Show 2 seconds after page load
   }, []);
-    // Auto-dismiss is now handled by the unified notification system
+  // Auto-dismiss is now handled by the unified notification system
 
   // Filter options
   const statusOptions = ['All', 'Pending', 'Accepted', 'Rejected', 'Completed'];
   const dateOptions = ['All', 'Today', 'This Week', 'This Month', 'Future'];
-  
+
   // Format filters for the global FilterSidebar component
   const formattedFilters = [
     {
@@ -243,37 +233,37 @@ export default function AppointmentsPage() {
   ];  // Apply filters and search - using useLayoutEffect to run before browser paint
   useLayoutEffect(() => {
     let results = [...appointments];
-    
+
     // First apply tab-specific filters
     if (activeTab === 'my-appointments') {
       // Show only appointments with waiting-approval, accepted, rejected, or completed status
-      results = results.filter(appointment => 
-        appointment.status === 'waiting-approval' || 
-        appointment.status === 'accepted' || 
-        appointment.status === 'rejected' || 
+      results = results.filter(appointment =>
+        appointment.status === 'waiting-approval' ||
+        appointment.status === 'accepted' ||
+        appointment.status === 'rejected' ||
         appointment.status === 'completed'
       );
     } else if (activeTab === 'requests') {
       // Show only appointments with pending status
       results = results.filter(appointment => appointment.status === 'pending');
     }
-    
+
     // Then apply user-selected status filter
     if (activeFilters.status !== 'All') {
       const statusLower = activeFilters.status.toLowerCase();
       results = results.filter(appointment => appointment.status === statusLower);
     }
-    
+
     // Apply date filter
     if (activeFilters.date !== 'All') {
       const today = new Date();
       const thisWeekStart = new Date(today.setDate(today.getDate() - today.getDay()));
       const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-      
+
       results = results.filter(appointment => {
         const appointmentDate = new Date(appointment.date);
-        
-        switch(activeFilters.date) {
+
+        switch (activeFilters.date) {
           case 'Today':
             return appointmentDate.toDateString() === new Date().toDateString();
           case 'This Week':
@@ -287,17 +277,17 @@ export default function AppointmentsPage() {
         }
       });
     }
-    
+
     // Apply search term
     if (searchTerm.trim() !== '') {
       const term = searchTerm.toLowerCase();
       results = results.filter(
-        appointment => 
-          appointment.title.toLowerCase().includes(term) || 
+        appointment =>
+          appointment.title.toLowerCase().includes(term) ||
           appointment.participantName.toLowerCase().includes(term)
       );
     }
-    
+
     setFilteredAppointments(results);
   }, [searchTerm, activeFilters, appointments, activeTab]);
     // Handle filter changes
@@ -318,12 +308,12 @@ export default function AppointmentsPage() {
   };// Function to play notification sounds with autoplay fallback
   const playNotificationSound = (type: 'notification' | 'call') => {
     const hasUserInteracted = document.documentElement.dataset.hasUserInteracted === 'true';
-    
+
     const attemptPlaySound = () => {
       try {
         if (type === 'call' && callNotificationSoundRef.current) {
           const playPromise = callNotificationSoundRef.current.play();
-          
+
           if (playPromise !== undefined) {
             playPromise.catch(error => {
               console.log("Notification sound error:", error);
@@ -332,7 +322,7 @@ export default function AppointmentsPage() {
           }
         } else if (type === 'notification' && notificationSoundRef.current) {
           const playPromise = notificationSoundRef.current.play();
-          
+
           if (playPromise !== undefined) {
             playPromise.catch(error => {
               console.log("Notification sound error:", error);
@@ -345,150 +335,143 @@ export default function AppointmentsPage() {
         setupPlayOnFirstInteraction();
       }
     };
-    
+
     // Setup event listeners to play sound on first interaction if autoplay fails
     const setupPlayOnFirstInteraction = () => {
       if (!document.documentElement.dataset.soundPendingPlay) {
         document.documentElement.dataset.soundPendingPlay = type;
-        
+
         const playOnFirstInteraction = () => {
           const pendingSound = document.documentElement.dataset.soundPendingPlay;
           if (pendingSound) {
             document.documentElement.dataset.hasUserInteracted = 'true';
             document.documentElement.dataset.soundPendingPlay = '';
             playNotificationSound(pendingSound as 'notification' | 'call');
-            
+
             // Remove event listeners
             document.removeEventListener('click', playOnFirstInteraction);
             document.removeEventListener('keydown', playOnFirstInteraction);
             document.removeEventListener('touchstart', playOnFirstInteraction);
           }
         };
-        
+
         // Add event listeners for first interaction
         document.addEventListener('click', playOnFirstInteraction, { once: true });
         document.addEventListener('keydown', playOnFirstInteraction, { once: true });
         document.addEventListener('touchstart', playOnFirstInteraction, { once: true });
       }
     };
-    
+
     // Try to play immediately, with fallback to play on first interaction
     attemptPlaySound();
   };
-  
+
   // Appointment action handlers
   const handleViewDetails = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
     setShowAppointmentDetails(true);
   };
-  
+
   const handleCloseModal = () => {
     setSelectedAppointment(null);
     setShowAppointmentDetails(false);
   };
-  
-  const handleAcceptAppointment = async (appointmentId: string) => {    // This would typically be an API call
-    setAppointments(prev => 
-      prev.map(app => 
-        app.id === appointmentId ? {...app, status: 'accepted'} : app
+
+  const handleAcceptAppointment = async (appointmentId: string) => {
+    // This would typically be an API call
+    setAppointments(prev =>
+      prev.map(app =>
+        app.id === appointmentId ? { ...app, status: 'accepted' } : app
       )
-    );
-      const app = appointments.find(a => a.id === appointmentId);
-    
+    ); const app = appointments.find(a => a.id === appointmentId);
+
+    // Only show notifications in my-appointments tab
+    if (activeTab === 'my-appointments') {
+      // Show toast notification
+      showNotification({
+        message: app ? `You have accepted the appointment request from ${app.participantName}` : `Appointment accepted successfully`,
+        type: 'success'
+      });
+
+      // Add to bell notifications
+      addNotification({
+        title: "Appointment Accepted",
+        message: app ? `You have accepted the appointment request from ${app.participantName}` : `Appointment accepted successfully`,
+        type: 'appointment'
+      });
+    }
+
     // If accepting from modal, close it
     if (showAppointmentDetails) {
       setShowAppointmentDetails(false);
     }
-    
-    if (activeTab === 'my-appointments') {
-      // Use setTimeout for notification consistency
-      setTimeout(() => {
-        // Show toast notification
-        showNotification({
-          message: app ? `You have accepted the appointment request from ${app.participantName}` : `Appointment accepted successfully`,
-          type: 'success'
-        });
-        
-        // Add to bell notifications
-        addNotification({
-          title: "Appointment Accepted",
-          message: app ? `You have accepted the appointment request from ${app.participantName}` : `Appointment accepted successfully`,
-          type: 'appointment'
-        });
-      }, 800); // Simulate network delay
-    }
-    
+
     // Simulate notification to the other user
     simulateNotificationToOtherUser(appointmentId, 'accepted');
-    
+
     return new Promise<void>(resolve => setTimeout(resolve, 500));
   };
-  
-  const handleRejectAppointment = async (appointmentId: string) => {    // This would typically be an API call
-    setAppointments(prev => 
-      prev.map(app => 
-        app.id === appointmentId ? {...app, status: 'rejected'} : app
+
+  const handleRejectAppointment = async (appointmentId: string) => {
+    // This would typically be an API call
+    setAppointments(prev =>
+      prev.map(app =>
+        app.id === appointmentId ? { ...app, status: 'rejected' } : app
       )
-    );    const app = appointments.find(a => a.id === appointmentId);
-    
+    ); const app = appointments.find(a => a.id === appointmentId);
+
+    // Only show notifications in my-appointments tab
+    if (activeTab === 'my-appointments') {
+      // Show toast notification
+      showNotification({
+        message: app ? `You have declined the appointment request from ${app.participantName}` : `Appointment rejected`,
+        type: 'warning'
+      });
+
+      // Add to bell notifications
+      addNotification({
+        title: "Appointment Declined",
+        message: app ? `You have declined the appointment request from ${app.participantName}` : `Appointment rejected`,
+        type: 'appointment'
+      });
+    }
+
     // If rejecting from modal, close it
     if (showAppointmentDetails) {
       setShowAppointmentDetails(false);
     }
-    
-    if (activeTab === 'my-appointments') {
-      // Use setTimeout for notification consistency
-      setTimeout(() => {
-        // Show toast notification
-        showNotification({
-          message: app ? `You have declined the appointment request from ${app.participantName}` : `Appointment rejected`,
-          type: 'warning'
-        });
-        
-        // Add to bell notifications
-        addNotification({
-          title: "Appointment Declined",
-          message: app ? `You have declined the appointment request from ${app.participantName}` : `Appointment rejected`,
-          type: 'appointment'
-        });
-      }, 800); // Simulate network delay
-    }
-    
+
     // Simulate notification to the other user
     simulateNotificationToOtherUser(appointmentId, 'rejected');
-    
+
     return new Promise<void>(resolve => setTimeout(resolve, 500));
   };
-  
+
   const handleStartCall = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
     setShowVideoCall(true);
     setShowAppointmentDetails(false);
-  };  const handleEndCall = () => {
+  }; const handleEndCall = () => {
     setShowVideoCall(false);
-    
     // Notify that call has ended
     if (selectedAppointment) {
-      // Use setTimeout for notification consistency
-      setTimeout(() => {
-        // Show temporary toast notification
-        showNotification({
-          message: `Call with ${selectedAppointment.participantName} has ended`,
-          type: 'info'
-        });
-        
-        // Add to bell notifications
-        addNotification({
-          title: "Call Ended",
-          message: `Call with ${selectedAppointment.participantName} has ended`,
-          type: 'appointment'
-        });
-        
-        // Play sound with fallback handling
-        playNotificationSound('notification');
-      }, 800); // Simulate network delay
+      // Show toast notification
+      showNotification({
+        message: `Call with ${selectedAppointment.participantName} has ended`,
+        type: 'info'
+      });
+
+      // Add to bell notifications
+      addNotification({
+        title: "Call Ended",
+        message: `Call with ${selectedAppointment.participantName} has ended`,
+        type: 'appointment'
+      });
+
+      // Play sound with fallback handling
+      playNotificationSound('notification');
     }
-    
+
     // No demo notification needed since we'll simulate Dr. Hassan ending the call
   };// Simulate an incoming call from Dr. Ahmed Hassan specifically (for demonstration purposes)
   useEffect(() => {
@@ -496,109 +479,121 @@ export default function AppointmentsPage() {
     const drHassanAppointment = appointments.find(
       app => app.participantName === "Dr. Ahmed Hassan" && app.isOnline
     );
-      if (drHassanAppointment) {
+    if (drHassanAppointment) {
       const simulateIncomingCall = setTimeout(() => {
         setIncomingCall(drHassanAppointment);
         setActiveCall(drHassanAppointment);
         playNotificationSound('call');
       }, 10000); // Simulate after 10 seconds
-      
+
       return () => clearTimeout(simulateIncomingCall);
     }
   }, []); // Empty dependency array ensures it only runs once
-  // Simulate Dr. Hassan ending the call after 1 minute of being in the call
+
+  // Simulate Dr. Hassan ending the call after 25 seconds of being in the call
   useEffect(() => {
-    if (showVideoCall && selectedAppointment?.participantName === "Dr. Ahmed Hassan") {      
+    if (showVideoCall && selectedAppointment?.participantName === "Dr. Ahmed Hassan") {
+      // Simulate Dr. Hassan muting his microphone after 15 seconds
+      const simulateMuting = setTimeout(() => {
+        // Show notification that Dr. Hassan muted his microphone
+        showNotification({
+          message: `Dr. Ahmed Hassan has muted his microphone`,
+          type: 'info'
+        });
+
+        // Add to bell notifications
+        addNotification({
+          title: "Participant Muted",
+          message: `Dr. Ahmed Hassan has muted his microphone`,
+          type: 'appointment'
+        });
+      }, 15000); // 15 seconds
+
+      // Simulate Dr. Hassan ending the call after 25 seconds
       const simulateCallEnding = setTimeout(() => {
         // End the call automatically
         setShowVideoCall(false);
-        
-        // Use setTimeout for notification consistency
-        setTimeout(() => {
-          // Show notification that Dr. Hassan left the call
-          showNotification({
-            message: `Dr. Ahmed Hassan has left the call`,
-            type: 'info'
-          });
-          
-          // Add to bell notifications
-          addNotification({
-            title: "Call Ended",
-            message: `Dr. Ahmed Hassan has left the call`,
-            type: 'appointment'
-          });
-          
-          // Play notification sound with fallback handling
-          playNotificationSound('notification');
-        }, 800); // Simulate network delay
-      }, 60000); // 1 minute (60 seconds)
-      
-      return () => clearTimeout(simulateCallEnding);
+
+        // Show notification that Dr. Hassan left the call
+        showNotification({
+          message: `Dr. Ahmed Hassan has left the call`,
+          type: 'info'
+        });
+
+        // Add to bell notifications
+        addNotification({
+          title: "Call Ended",
+          message: `Dr. Ahmed Hassan has left the call`,
+          type: 'appointment'
+        });
+
+        // Play notification sound with fallback handling
+        playNotificationSound('notification');
+      }, 25000); // 25 seconds
+
+      return () => {
+        clearTimeout(simulateMuting);
+        clearTimeout(simulateCallEnding);
+      };
     }
   }, [showVideoCall, selectedAppointment]);
-  
-  // Handle incoming call actions  
+
+  // Handle incoming call actions
   const handleAcceptIncomingCall = () => {
     if (incomingCall) {
-      const participantName = incomingCall.participantName;
       setSelectedAppointment(incomingCall);
       setIncomingCall(null);
       setShowVideoCall(true);
-      
-      // Use setTimeout for notification consistency
-      setTimeout(() => {
-        // Show notification that we joined the call
-        showNotification({
-          message: `You joined a call with ${participantName}`,
-          type: 'info'
-        });
-        
-        // Add to bell notifications
-        addNotification({
-          title: "Call Joined",
-          message: `You joined a call with ${participantName}`,
-          type: 'appointment'
-        });
-      }, 800); // Simulate network delay
-    }
-  };    const handleRejectIncomingCall = () => {
-    setIncomingCall(null);
-    
-    // Use setTimeout for notification consistency
-    setTimeout(() => {
-      // Show temporary toast notification
+      // Show notification that we joined the call
       showNotification({
-        message: `Call declined`,
+        message: `You joined a call with ${incomingCall.participantName}`,
         type: 'info'
       });
-      
+
       // Add to bell notifications
       addNotification({
-        title: "Call Declined",
-        message: `Call declined`,
+        title: "Call Started",
+        message: `You joined a call with ${incomingCall.participantName}`,
         type: 'appointment'
       });
-    }, 800); // Simulate network delay
-  };// Simulate notification to the other user (in a real app, this would use websockets or other real-time tech)
+    }
+  };
+  const handleRejectIncomingCall = () => {
+    setIncomingCall(null);
+    // Show toast notification
+    showNotification({
+      message: `Call declined`,
+      type: 'info'
+    });
+
+    // Add to bell notifications
+    addNotification({
+      title: "Call Declined",
+      message: `Call declined`,
+      type: 'appointment'
+    });
+  };
+  // Simulate notification to the other user (in a real app, this would use websockets or other real-time tech)
   const simulateNotificationToOtherUser = (appointmentId: string, status: string) => {
     console.log(`Notification sent to other user about appointment ${appointmentId} being ${status}`);
     // In a real app, this would send a notification through your backend
-    
+
     // Update the appointment status in our local state
-    setAppointments(prevAppointments => 
-      prevAppointments.map(app => 
+    setAppointments(prevAppointments =>
+      prevAppointments.map(app =>
         app.id === appointmentId
           ? { ...app, status: status as 'pending' | 'accepted' | 'rejected' | 'completed' }
           : app
       )
     );
-    
+
     // For demonstration purposes, show a mockup of the notification the other party would receive
     setTimeout(() => {
       const app = appointments.find(a => a.id === appointmentId);
-      if (app) {        let notificationMessage = '';
+      if (app) {
+        let notificationMessage = '';
         let notificationType: 'success' | 'info' | 'warning' = 'info';
-          
+
         if (status === 'accepted') {
           notificationMessage = `${app.participantName} has accepted your appointment request for "${app.title}"`;
           notificationType = 'success';
@@ -606,25 +601,21 @@ export default function AppointmentsPage() {
           notificationMessage = `${app.participantName} has declined your appointment request for "${app.title}"`;
           notificationType = 'warning';
         }
-        
-        // Use setTimeout for notification consistency
-        setTimeout(() => {
-          // Show toast notification
-          showNotification({
-            message: notificationMessage,
-            type: notificationType
-          });
-          
-          // Add to bell notifications
-          addNotification({
-            title: status === 'accepted' ? "Appointment Accepted" : "Appointment Declined",
-            message: notificationMessage,
-            type: 'appointment'
-          });
-          
-          // Play notification sound with fallback handling
-          playNotificationSound('notification');
-        }, 800); // Simulate network delay
+        // Show toast notification
+        showNotification({
+          message: notificationMessage,
+          type: notificationType
+        });
+
+        // Add to bell notifications
+        addNotification({
+          title: status === 'accepted' ? "Appointment Accepted" : "Appointment Declined",
+          message: notificationMessage,
+          type: 'appointment'
+        });
+
+        // Play notification sound with fallback handling
+        playNotificationSound('notification');
       }
     }, 2000); // Delayed to simulate network latency
   };// Handle creating a new appointment
@@ -634,7 +625,7 @@ export default function AppointmentsPage() {
       setActiveTab('my-appointments');
       return;
     }
-      // This would typically be an API call
+    // This would typically be an API call
     const newAppointment: Appointment = {
       id: `${appointments.length + 1}`,
       title: appointmentData.title,
@@ -647,98 +638,42 @@ export default function AppointmentsPage() {
       isOnline: false, // Since we removed the online checkbox
       description: appointmentData.description
     };
-      // Add the new appointment to the list
-    setAppointments(prev => [...prev, newAppointment]);
-    
-    // Use setTimeout for notification consistency
-    setTimeout(() => {
-      // Show success notification
-      showNotification({
-        message: `Appointment request sent to ${newAppointment.participantName}`,
-        type: 'success'
-      });
-      
-      // Add to bell notifications
-      addNotification({
-        title: "Appointment Request Sent",
-        message: `Appointment request sent to ${newAppointment.participantName}`,
-        type: 'appointment'
-      });
-    }, 800); // Simulate network delay
-    
+
+    // Add the new appointment to the list
+    setAppointments(prev => [...prev, newAppointment]);    // Show success notification
+    showNotification({
+      message: `Appointment request sent to ${newAppointment.participantName}`,
+      type: 'success'
+    });
+
+    // Add to bell notifications
+    addNotification({
+      title: "Appointment Request Sent",
+      message: `Appointment request sent to ${newAppointment.participantName}`,
+      type: 'appointment'
+    });
+
     // Switch to the My Appointments tab
     setActiveTab('my-appointments');
-    
+
     // Play notification sound
     playNotificationSound('notification');
-    
+
     return Promise.resolve();
   };
-  
+
   // Helper function to format date for display
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
+    return date.toLocaleDateString('en-US', {
       month: 'long', day: 'numeric', year: 'numeric'
     });
   };
 
   return (
     <div className={styles.pageContainer}>
-      {/* Header/Navigation */}
-      <NavigationMenu
-        items={[
-          { id: 'companies', label: 'Companies', icon: <Building size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard') },
-          { id: 'students', label: 'Students', icon: <Users size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=students') },
-          { id: 'reports', label: 'Reports', icon: <FileText size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=reports') },
-          { id: 'evaluations', label: 'Evaluations', icon: <ClipboardCheck size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=evaluations') },
-          { id: 'internships', label: 'Internships', icon: <Briefcase size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=internships') },
-          { id: 'statistics', label: 'Statistics', icon: <BarChart2 size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=statistics') },
-          { id:'Workshops', label: 'Workshops', icon: <BookOpen size={18} />, onClick:  () => { router.push('/SCADLogin/workshops?activeItem=workshops'); } },
-          {
-            id: 'appointments',
-            label: 'Appointments',
-            icon: <Calendar size={18} />,
-            dropdownItems: [
-              { 
-                id: 'my-appointments', 
-                label: 'My Appointments', 
-                count: appointments.filter(app => 
-                  app.status === 'waiting-approval' || 
-                  app.status === 'accepted' || 
-                  app.status === 'rejected' || 
-                  app.status === 'completed'
-                ).length,
-                onClick: () => {
-                  setActiveTab('my-appointments');
-                }
-              },
-              { 
-                id: 'requests', 
-                label: 'Requests', 
-                count: appointments.filter(app => app.status === 'pending').length,
-                onClick: () => {
-                  setActiveTab('requests');
-                }
-              },
-              { 
-                id: 'new-appointment', 
-                label: 'New Appointment',
-                onClick: () => {
-                  setActiveTab('new-appointment');
-                }
-              }
-            ]
-          },
-          { id: 'settings', label: 'Settings', icon: <Settings size={18} />, onClick: () => router.push('/SCADLogin/SCADdashboard?activeItem=settings') }
-        ]}
-        activeItemId={activeItem}        logo={{
-          src: '/logos/GUCInternshipSystemLogo.png',
-          alt: 'GUC Internship System'
-        }}
-        variant="navigation"
-        notificationCount={incomingCall ? 1 : 0}
-      />
+      {/* Global Navigation for Pro Student */}
+      <ProStudentNavigationMenu />
 
       <div className={styles.contentWrapper}>
         {/* Left Sidebar with Filters - Only show in appointment listing tabs */}
@@ -750,18 +685,18 @@ export default function AppointmentsPage() {
         )}
 
         {/* Main Content */}
-        <main className={styles.mainContent}>
-          
+        <main className={styles.mainContent}>          {/* Tab Navigation is now handled by NavigationMenu */}
+
           {/* Tab content based on which tab is active */}
           {(activeTab === 'my-appointments' || activeTab === 'requests') && (
             <>
               {/* Search Bar */}
-              <SearchBar 
-                searchTerm={searchTerm} 
-                setSearchTerm={setSearchTerm} 
+              <SearchBar
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
                 placeholder="Search appointments by title or participant name..."
               />
-              
+
               {/* Appointment Listings */}
               <div className={styles.appointmentListings}>
                 <div className={styles.listingHeader}>
@@ -773,12 +708,12 @@ export default function AppointmentsPage() {
                   </span>
                 </div>
 
-                <div className={styles.cards}>                  
+                <div className={styles.cards}>
                   {filteredAppointments.length > 0 ? (
                     filteredAppointments.map(appointment => (
-                      <div 
-                        key={appointment.id} 
-                        data-appointment-id={appointment.id} 
+                      <div
+                        key={appointment.id}
+                        data-appointment-id={appointment.id}
                         className={styles.appointmentCardWrapper}
                       >
                         <AppointmentCard
@@ -791,7 +726,7 @@ export default function AppointmentsPage() {
                           participantType={appointment.participantType}
                           participantEmail={appointment.participantEmail}
                           isOnline={appointment.isOnline}
-                          onViewDetails={() => handleViewDetails(appointment)}                          onAccept={() => handleAcceptAppointment(appointment.id)}
+                          onViewDetails={() => handleViewDetails(appointment)} onAccept={() => handleAcceptAppointment(appointment.id)}
                           onReject={() => handleRejectAppointment(appointment.id)}
                         />
                       </div>
@@ -856,17 +791,17 @@ export default function AppointmentsPage() {
           onReject={handleRejectIncomingCall}
         />
       )}
-      
+
       {/* Audio elements for sounds (hidden) */}
-      <audio 
-        ref={notificationSoundRef} 
-        src="/sounds/notification.mp3" 
+      <audio
+        ref={notificationSoundRef}
+        src="/sounds/notification.mp3"
         preload="auto"
         style={{ display: 'none' }}
       />
-      <audio 
-        ref={callNotificationSoundRef} 
-        src="/sounds/notification.mp3" 
+      <audio
+        ref={callNotificationSoundRef}
+        src="/sounds/notification.mp3"
         preload="auto"
         style={{ display: 'none' }}
       />

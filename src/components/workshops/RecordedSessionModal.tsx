@@ -3,6 +3,7 @@ import Image from 'next/image';
 import styles from './RecordedSessionModal.module.css';
 import { Workshop, Note, Rating } from './types';
 import { Star } from 'lucide-react';
+import { useNotification } from '@/components/global/NotificationSystemAdapter';
 
 interface RecordedSessionModalProps {
   workshop: Workshop;
@@ -26,7 +27,12 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
   const [isDownloading, setIsDownloading] = useState(false);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
-  const calculateCurrentTime = (progressPercent: number, duration: string) => {
+  // Get notification functions
+  const { showNotification, addNotification } = useNotification();
+  const calculateCurrentTime = (progressPercent: number, duration: string | undefined) => {
+    // Handle undefined duration
+    if (!duration) return 0;
+
     // Extract the numeric value from duration
     const durationMatch = duration.match(/\d+/);
     if (!durationMatch) return 0;
@@ -55,6 +61,10 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
             if (!showRating) {
               setShowRating(true);
             }
+            // Close the modal after a short delay to show the rating
+            setTimeout(() => {
+              onClose();
+            }, 30000); // 30 seconds delay to allow rating
             return 100;
           }
           return prev + 1;
@@ -115,15 +125,25 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
     a.click();
     document.body.removeChild(a);
   };
-
   const handleSubmitRating = () => {
     if (rating === 0) return;
 
     // In a real app, this would send the rating to the backend
     console.log('Rating submitted:', { rating, feedback, workshopId: workshop.id });
 
-    // Show success message
-    alert('Thank you for your feedback!');
+    // Show success notification instead of alert
+    showNotification({
+      message: `Thank you for rating "${workshop.title}"!`,
+      type: 'success'
+    });
+
+    // Add to persistent notifications
+    addNotification({
+      title: 'Workshop Rating Submitted',
+      message: `You rated "${workshop.title}" ${rating} stars. Thank you for your feedback!`,
+      type: 'application'
+    });
+
     setShowRating(false);
 
     // Show certificate prompt
@@ -147,14 +167,12 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
         clearInterval(downloadInterval);
         generateAndDownloadCertificate();
         setIsDownloading(false);
-        // Keep the modal open for a moment so user can see 100% progress
-        setTimeout(() => {
-          setShowCertificate(false);
-        }, 1000);
+        // Close both the certificate modal and the main modal
+        setShowCertificate(false);
+        onClose();
       }
     }, 400);
   };
-
   // Function to actually generate and trigger the certificate download
   const generateAndDownloadCertificate = () => {
     // In a real app, this would generate an actual PDF certificate
@@ -187,6 +205,19 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+
+    // Show notification for certificate download
+    showNotification({
+      message: `Certificate for "${workshop.title}" has been downloaded`,
+      type: 'success'
+    });
+
+    // Add to persistent notifications
+    addNotification({
+      title: 'Certificate Generated',
+      message: `Your certificate for "${workshop.title}" is now available`,
+      type: 'application'
+    });
   };
 
   return (
@@ -195,47 +226,50 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
         <button className={styles.closeButton} onClick={onClose}>×</button>
 
         <div className={styles.recordedSessionContainer}>
-          <div className={styles.videoSection}>
-            <div className={styles.videoContainer}>
-              <div className={styles.recordedVideo}>
-                {/* Placeholder for video player */}                <div className={styles.videoPlaceholder}>
-                  <Image
-                    src={workshop.logo || '/logos/GUCInternshipSystemLogo.png'}
-                    alt={workshop.title}
-                    width={80}
-                    height={80}
-                    className={styles.placeholderLogo}
-                  />
-                  <h3>{workshop.title}</h3>
-                  <p>Recorded session by {workshop.host}</p>
+          {/* Left column: video + certificate progress (stacked) */}
+          <div className={styles.leftColumn}>
+            {/* Video section takes full height initially */}
+            <div className={styles.videoSection}>
+              <div className={styles.videoContainer}>
+                <div className={styles.recordedVideo}>
+                  {/* Placeholder for video player */}
+                  <div className={styles.videoPlaceholder}>
+                    <Image
+                      src={workshop.logo || '/logos/GUCInternshipSystemLogo.png'}
+                      alt={workshop.title}
+                      width={80}
+                      height={80}
+                      className={styles.placeholderLogo}
+                    />
+                    <h3>{workshop.title}</h3>
+                    <p>Recorded session by {workshop.host}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.videoControls}>
+                <button
+                  className={styles.playPauseButton}
+                  onClick={handlePlayPause}
+                >
+                  {isPlaying ? '⏸️ Pause' : '▶️ Play'}
+                </button>
+
+                <div className={styles.progressBarContainer}>
+                  <div
+                    className={styles.progressBar}
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+
+                <div className={styles.timeDisplay}>
+                  <span>{calculateCurrentTime(progress, workshop.duration)} min</span>
+                  <span>{workshop.duration}</span>
                 </div>
               </div>
             </div>
 
-            <div className={styles.videoControls}>
-              <button
-                className={styles.playPauseButton}
-                onClick={handlePlayPause}
-              >
-                {isPlaying ? '⏸️ Pause' : '▶️ Play'}
-              </button>
-
-              <div className={styles.progressBarContainer}>
-                <div
-                  className={styles.progressBar}
-                  style={{ width: `${progress}%` }}
-                ></div>
-              </div>
-
-              <div className={styles.timeDisplay}>
-                <span>{calculateCurrentTime(progress, workshop.duration)} min</span>
-                <span>{workshop.duration}</span>
-              </div>
-            </div>          </div>
-
-          {/* Content below video - only visible when scrolling */}
-          <div className={styles.belowVideoContent}>
-            {/* Certificate Progress Section */}
+            {/* Certificate Progress Section - below video, only visible when scrolling */}
             <div className={styles.certificateSection}>
               <div className={styles.certificateSectionInner}>
                 <h4 className={styles.certificateHeading}>Certificate Progress</h4>
@@ -273,10 +307,9 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
                 </div>
               </div>
             </div>
-
-            <div className={styles.workshopInfoDivider}></div>
           </div>
 
+          {/* Right column: side panel */}
           <div className={styles.sidePanel}>
             <div className={styles.tabButtons}>
               <button
@@ -316,12 +349,12 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
                           <Star
                             key={i}
                             size={16}
-                            fill={i < Math.floor(workshop.avgRating) ? "#FFD700" : "none"}
-                            color={i < Math.floor(workshop.avgRating) ? "#FFD700" : "#D1D5DB"}
+                            fill={typeof workshop.avgRating === 'number' ? (i < Math.floor(workshop.avgRating) ? "#FFD700" : "none") : "none"}
+                            color={typeof workshop.avgRating === 'number' ? (i < Math.floor(workshop.avgRating) ? "#FFD700" : "#D1D5DB") : "#D1D5DB"}
                           />
                         ))}
                       </span>
-                      <span className={styles.ratingValue}>{workshop.avgRating.toFixed(1)}</span>
+                      <span className={styles.ratingValue}>{typeof workshop.avgRating === 'number' ? workshop.avgRating.toFixed(1) : ''}</span>
                     </div>
                   )}
                 </div>
@@ -491,9 +524,9 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
                   </button>
                   <button
                     className={styles.closeButton}
-                    onClick={() => setShowCertificate(false)}
+                    onClick={onClose}
                   >
-                    Close
+                    ×
                   </button>
                 </div>
               )}

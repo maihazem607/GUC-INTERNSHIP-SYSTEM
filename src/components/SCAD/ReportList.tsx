@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./ReportList.module.css";
+import { Search } from "lucide-react";
 
 export interface Report {
   id: number;
@@ -104,9 +105,8 @@ const ReportTable: React.FC<ReportTableProps> = ({ reports, onViewReport }) => (
       </table>
     ) : (
       <div className={styles.noResults}>
-        <img 
-          src="assets/images/icons/search.png" 
-          alt="Search Icon" 
+        <Search 
+          size={48} 
           className={styles.searchIcon} 
         /> 
         <p>No reports found matching your criteria.</p>

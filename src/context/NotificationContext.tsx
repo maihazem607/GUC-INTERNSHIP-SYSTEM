@@ -142,8 +142,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       setToastNotification(null);
     }, 300);
   };
-  
-  // Persistent notifications methods
+    // Persistent notifications methods
   const toggleNotificationPanel = () => {
     setNotificationPanelOpen(!notificationPanelOpen);
   };
@@ -152,10 +151,16 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     setNotificationPanelOpen(false);
   };
   
+  // Counter for generating unique IDs even when timestamps are the same
+  const notificationCounterRef = useRef(0);
+  
   const addNotification = (notificationData: Omit<PersistentNotification, 'id' | 'timestamp' | 'read'>) => {
+    // Increment counter to ensure uniqueness
+    notificationCounterRef.current += 1;
+    
     const newNotification: PersistentNotification = {
       ...notificationData,
-      id: Date.now().toString(),
+      id: `${Date.now()}-${notificationCounterRef.current}`,
       timestamp: new Date(),
       read: false
     };

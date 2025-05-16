@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './EvaluationList.module.css';
+import { Search } from 'lucide-react';
 
 export interface Evaluation {
   id: number;
@@ -123,11 +124,10 @@ const EvaluationTable: React.FC<EvaluationTableProps> = ({ evaluations, onViewDe
       </table>
     ) : (
       <div className={styles.noResults}>
-        <img 
-          src="assets/images/icons/search.png" 
-          alt="Search Icon" 
-          className={styles.searchIcon} 
-        /> 
+       <Search 
+        size={48} 
+        className={styles.searchIcon} 
+      /> 
         <p>No evaluations found matching your criteria.</p>
       </div>
     )}

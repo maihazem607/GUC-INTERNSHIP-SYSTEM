@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 // Import modular components
-import { Briefcase, FileText, Users } from 'lucide-react';
+import { Briefcase, FileText, Users,Search } from 'lucide-react';
 import NavigationMenu from "@/components/global/NavigationMenu";
 import Navigation from "@/components/global/Navigation";
 import NotificationSystem, { useNotification } from "@/components/global/NotificationSystemAdapter";
@@ -440,10 +440,10 @@ export default function InternshipListPage() {
                     onViewDetails={handleViewDetails}
                   />
                 ))
-              ) : (                <div className={styles.noResults}>
-                  <img 
-                    src="assets/images/icons/search.png" 
-                    alt="Search Icon" 
+              ) : (
+                <div className={styles.noResults}>
+                  <Search 
+                    size={48} 
                     className={styles.searchIcon} 
                   /> 
                   <h3>No internships found</h3>

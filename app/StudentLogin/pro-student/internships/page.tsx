@@ -12,6 +12,7 @@ import InternshipCard from "@/components/internships/InternshipCard";
 import InternshipDetailsModal from "@/components/internships/InternshipDetailsModal";
 import InternshipHelpPopup from "@/components/internships/InternshipHelpPopup";
 import { Internship, FilterOptions } from "@/components/internships/types";
+import { Search } from "lucide-react";
 
 // Internship data (would typically come from an API)
 const internships: Internship[] = [
@@ -427,10 +428,11 @@ export default function InternshipListPage() {  const [searchTerm, setSearchTerm
                     onViewDetails={handleViewDetails}
                   />
                 ))
-              ) : (                <div className={styles.noResults}>
-                  <img 
-                    src="assets/images/icons/search.png" 
-                    alt="Search Icon" 
+
+              ) : (
+                <div className={styles.noResults}>
+                 <Search 
+                    size={48} 
                     className={styles.searchIcon} 
                   /> 
                   <h3>No internships found</h3>
