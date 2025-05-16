@@ -166,8 +166,17 @@ export default function AppointmentsPage() {
   const [showVideoCall, setShowVideoCall] = useState(false);
   const [incomingCall, setIncomingCall] = useState<Appointment | null>(null);
   const [activeCall, setActiveCall] = useState<Appointment | null>(null);  // Show notification on initial load that someone accepted your appointment
+  
+  const notificationShownRef = React.useRef(false);
+    
   useEffect(() => {
     // Display an initial notification that someone accepted your appointment
+    // Prevent duplicate notifications by checking if notifications were already shown
+    if (notificationShownRef.current) return;
+    
+    // Set the ref to true to prevent showing notifications again
+    notificationShownRef.current = true;
+    
     setTimeout(() => {
       // Find Dr. Emily Rodriguez's appointment and update its status
       const appointmentId = appointments.find(app =>
@@ -196,9 +205,6 @@ export default function AppointmentsPage() {
           message: "Emily Rodriguez has accepted your appointment request for \"Academic Progress Review\"",
           type: 'appointment'
         });
-
-        // Try to play notification sound
-        playNotificationSound('notification');
 
         // Add a temporary highlight class to the accepted appointment card
         const appointmentCard = document.querySelector(`[data-appointment-id="${appointmentId}"]`);
@@ -306,23 +312,14 @@ export default function AppointmentsPage() {
       date: 'All'
     });
     setSearchTerm('');
-  };// Function to play notification sounds with autoplay fallback
-  const playNotificationSound = (type: 'notification' | 'call') => {
-    const hasUserInteracted = document.documentElement.dataset.hasUserInteracted === 'true';
-
+  };
+  
+  // Function to play notification sounds with autoplay fallback
+  const playNotificationSound = (type: 'call') => {
     const attemptPlaySound = () => {
       try {
-        if (type === 'call' && callNotificationSoundRef.current) {
+        if (callNotificationSoundRef.current) {
           const playPromise = callNotificationSoundRef.current.play();
-
-          if (playPromise !== undefined) {
-            playPromise.catch(error => {
-              console.log("Notification sound error:", error);
-              setupPlayOnFirstInteraction();
-            });
-          }
-        } else if (type === 'notification' && notificationSoundRef.current) {
-          const playPromise = notificationSoundRef.current.play();
 
           if (playPromise !== undefined) {
             playPromise.catch(error => {
@@ -347,7 +344,7 @@ export default function AppointmentsPage() {
           if (pendingSound) {
             document.documentElement.dataset.hasUserInteracted = 'true';
             document.documentElement.dataset.soundPendingPlay = '';
-            playNotificationSound(pendingSound as 'notification' | 'call');
+            playNotificationSound(pendingSound as 'call');
 
             // Remove event listeners
             document.removeEventListener('click', playOnFirstInteraction);
@@ -469,8 +466,6 @@ export default function AppointmentsPage() {
         type: 'appointment'
       });
 
-      // Play sound with fallback handling
-      playNotificationSound('notification');
     }
 
     // No demo notification needed since we'll simulate Dr. Hassan ending the call
@@ -528,8 +523,6 @@ export default function AppointmentsPage() {
           type: 'appointment'
         });
 
-        // Play notification sound with fallback handling
-        playNotificationSound('notification');
       }, 25000); // 25 seconds
 
       return () => {
@@ -615,8 +608,6 @@ export default function AppointmentsPage() {
           type: 'appointment'
         });
 
-        // Play notification sound with fallback handling
-        playNotificationSound('notification');
       }
     }, 2000); // Delayed to simulate network latency
   };// Handle creating a new appointment
@@ -656,9 +647,6 @@ export default function AppointmentsPage() {
 
     // Switch to the My Appointments tab
     setActiveTab('my-appointments');
-
-    // Play notification sound
-    playNotificationSound('notification');
 
     return Promise.resolve();
   };

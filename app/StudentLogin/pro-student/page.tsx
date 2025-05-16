@@ -96,9 +96,18 @@ export default function StudentProfilePage() {
   
   // Get notification functions
   const { showNotification, addNotification } = useNotification();
-  
+
+  // Show internship cycle notifications when the page loads - using a ref to prevent duplicate notifications
+  const notificationShownRef = React.useRef(false);
+    
   // Show internship cycle notifications when the page loads
   useEffect(() => {
+    // Prevent duplicate notifications by checking if notifications were already shown
+    if (notificationShownRef.current) return;
+    
+    // Set the ref to true to prevent showing notifications again
+    notificationShownRef.current = true;
+    
     // Set a timeout to simulate backend data fetch
     setTimeout(() => {
 
