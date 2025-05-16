@@ -1406,7 +1406,8 @@ export default function SCADDashboardPage() {
                 )}
               </div>
             </>
-          )}          {/* STATISTICS TAB */}
+          )}          
+          {/* STATISTICS TAB */}
           {activeItem === 'statistics' && (
             <StatisticsSection 
               data={mockStatisticsData}

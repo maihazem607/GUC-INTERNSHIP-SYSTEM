@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styles from './StatisticsSection.module.css';
 import StatsCard from './StatsCard';
 import { BarChart, PieChart, LineChart, FilePlus, Download } from 'lucide-react';
-import { jsPDF } from 'jspdf';
 import { generateStatisticsPDF } from '../../utils/pdfUtils';
 
 // Types for the statistics data
