@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import styles from './page.module.css';
-import Navigation from '../../../src/components/global/Navigation';
+import StudentNavigationMenu from './Navigation/StudentNavigationMenu';
 import NotificationSystem, { useNotification } from "@/components/global/NotificationSystemAdapter";
 
 import { 
@@ -13,7 +13,8 @@ import {
   Major,
   Experience,
   Activity
-} from '../../../src/components/StudentInfo/types';
+} from '@/components/StudentInfo/types';
+
 import Image from 'next/image';
 
 export default function StudentProfilePage() {
@@ -94,6 +95,7 @@ export default function StudentProfilePage() {
       }, 5000); // Show this notification 5 seconds after the first one
     }, 1000);
   }, []);
+  
 
   // Mock address data - we'll add this to our profile
   const [address, setAddress] = useState({
@@ -235,7 +237,7 @@ export default function StudentProfilePage() {
   
   return (
     <div className={styles.pageContainer}>
-      <Navigation />
+      <StudentNavigationMenu />
       
       <div className={styles.contentWrapper}>
         <div className={styles.mainContent}>
@@ -257,8 +259,7 @@ export default function StudentProfilePage() {
                       {studentProfile.name.charAt(0)}
                     </div>
                   )}
-                </div>
-                <div className={styles.profileHeaderInfo}>
+                </div>                <div className={styles.profileHeaderInfo}>
                   <h2>{studentProfile.name}</h2>
                   <p className={styles.roleLabel}>
                     {studentProfile.major ? studentProfile.major.name : 'Student'}

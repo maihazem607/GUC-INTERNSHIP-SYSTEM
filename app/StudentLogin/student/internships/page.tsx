@@ -4,12 +4,13 @@ import React, { useState, useEffect } from 'react';
 
 // Import modular components
 import Navigation from "@/components/global/Navigation";
+import NotificationSystem, { useNotification } from "@/components/global/NotificationSystemAdapter";
+import StudentNavigationMenu from '../Navigation/StudentNavigationMenu';
 import FilterSidebar from "@/components/global/FilterSidebar";
 import SearchBar from "@/components/global/SearchBar";
 import InternshipCard from "@/components/internships/InternshipCard";
 import InternshipDetailsModal from "@/components/internships/InternshipDetailsModal";
 import InternshipHelpPopup from "@/components/internships/InternshipHelpPopup";
-import NotificationSystem, { useNotification } from "@/components/global/NotificationSystemAdapter";
 import { Internship, FilterOptions } from "@/components/internships/types";
 import { Search } from "lucide-react";
 
@@ -388,9 +389,8 @@ export default function InternshipListPage() {  const [searchTerm, setSearchTerm
   };
 
   return (
-    <div className={styles.pageContainer}>
-      {/* Header/Navigation */}
-      <Navigation title="GUC Internship Portal" />
+    <div className={styles.pageContainer}>      {/* Global Navigation for Pro Student */}
+      <StudentNavigationMenu />
 
       <div className={styles.contentWrapper}>
         {/* Left Sidebar with Filters */}        <FilterSidebar 
@@ -428,6 +428,7 @@ export default function InternshipListPage() {  const [searchTerm, setSearchTerm
                     onViewDetails={handleViewDetails}
                   />
                 ))
+
               ) : (
                 <div className={styles.noResults}>
                  <Search 
