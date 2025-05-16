@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import styles from './WorkshopCard.module.css';
-import { Workshop } from './types';
+import { Workshop } from './types-enhanced';
 
 interface WorkshopCardProps {
   workshop: Workshop;
@@ -24,7 +24,7 @@ const WorkshopCard: React.FC<WorkshopCardProps> = ({
   const cardBackground = getCardBackground(workshop.id);
 
   return (
-    <div className={styles.card}>
+    <div className={styles.card} onClick={() => onViewDetails(workshop)}>
       <div className={styles.cardInner} style={{ backgroundColor: cardBackground }}>
         <div className={styles.cardDate}>
           <span>{workshop.date}</span>

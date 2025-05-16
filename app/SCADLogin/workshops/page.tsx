@@ -6,15 +6,16 @@ import React, { useState, useEffect } from 'react';
 import SCADNavigation from "../Navigation/SCADNavigation";
 import FilterSidebar from "@/components/global/FilterSidebar";
 import SearchBar from "@/components/global/SearchBar";
-import WorkshopCard from "@/components/workshops/WorkshopCard";
-import WorkshopDetailsModal from "@/components/workshops/WorkshopDetailsModal";
+import SCADWorkshopDetailsModal from "@/components/workshops/SCADWorkshopDetailsModal";
 import LiveSessionModal from "@/components/workshops/LiveSessionModal";
 import RecordedSessionModal from "@/components/workshops/RecordedSessionModal";
-import NotificationSystem, { useNotification } from "@/components/global/NotificationSystemAdapter";
-import { Workshop } from "@/components/workshops/types";
-import SCADWorkshopCard from "../../../src/components/workshops/SCADWorkshopCard";
+import SCADWorkshopManagement from "@/components/workshops/SCADWorkshopManagement";
+import SCADWorkshopDetailedView from "@/components/workshops/SCADWorkshopDetailedView";
+import { useNotification } from "@/components/global/NotificationSystemAdapter";
+import { Workshop } from "@/components/workshops/types-enhanced";
+import WorkshopCard from "@/components/workshops/WorkshopCard";
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Building, Users, FileText, Settings, ClipboardCheck, Briefcase, Calendar, BookOpen, BarChart2, Search } from 'lucide-react';
+import { Search, Plus } from 'lucide-react';
 
 // Workshop data (would typically come from an API)
 const workshops: Workshop[] = [
@@ -178,10 +179,15 @@ export default function WorkshopListPage() {
     status: 'All',
     type: 'All'
   });
+  const [workshopsData, setWorkshopsData] = useState<Workshop[]>(workshops);
   const [filteredWorkshops, setFilteredWorkshops] = useState<Workshop[]>(workshops);
   const [selectedWorkshop, setSelectedWorkshop] = useState<Workshop | null>(null);
   const [liveSession, setLiveSession] = useState<Workshop | null>(null);
-  const [recordedSession, setRecordedSession] = useState<Workshop | null>(null);  // Get notification handling from the unified system
+  const [recordedSession, setRecordedSession] = useState<Workshop | null>(null);
+  const [detailedWorkshop, setDetailedWorkshop] = useState<Workshop | null>(null);
+  const [isManageMode, setIsManageMode] = useState(false);
+  
+  // Get notification handling from the unified system
   const { notification, visible, showNotification, hideNotification, addNotification } = useNotification();
 
   // Get active item from URL parameter or default to 'workshops'
@@ -256,7 +262,6 @@ export default function WorkshopListPage() {
     });
     setSearchTerm('');
   };
-
   // Update URL when tab changes
   useEffect(() => {
     if (activeTab) {
@@ -267,14 +272,160 @@ export default function WorkshopListPage() {
     }
 
   }, [activeTab, router]);
+  // Toggle between view and manage modes
+  const toggleManageMode = () => {
+    setIsManageMode(!isManageMode);
+  };
+  
+  // Listen for the "Back to Workshops" event
+  useEffect(() => {
+    const handleBackToWorkshops = () => {
+      setIsManageMode(false);
+    };
+    
+    document.addEventListener('backToWorkshops', handleBackToWorkshops);
+    
+    return () => {
+      document.removeEventListener('backToWorkshops', handleBackToWorkshops);
+    };
+  }, []);
 
   // Workshop action handlers
   const handleViewDetails = (workshop: Workshop) => {
-    setSelectedWorkshop(workshop);
+    if (isManageMode) {
+      // In manage mode, show detailed view instead of regular modal
+      setDetailedWorkshop(workshop);
+    } else {
+      setSelectedWorkshop(workshop);
+    }
   };
   
   const handleCloseModal = () => {
     setSelectedWorkshop(null);
+    setDetailedWorkshop(null);
+  };
+
+  // CRUD operations for workshop management
+  const handleCreateWorkshop = async (workshopData: Omit<Workshop, 'id'>) => {
+    try {
+      // In a real app, this would be an API call
+      // For this example, we'll simulate a server response
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Generate a new ID (in a real app, the server would do this)
+      const newId = Math.max(0, ...workshopsData.map(w => w.id)) + 1;
+      
+      // Create new workshop with metadata
+      const newWorkshop: Workshop = {
+        ...workshopData,
+        id: newId,
+        createdAt: new Date().toLocaleDateString(),
+        createdBy: 'SCAD Admin',
+      };
+      
+      // Update state
+      setWorkshopsData(prev => [...prev, newWorkshop]);
+      
+      // Also update filtered workshops
+      setFilteredWorkshops(prev => {
+        // Check if the new workshop meets filter criteria
+        if (meetFilters(newWorkshop, activeFilters, searchTerm)) {
+          return [...prev, newWorkshop];
+        }
+        return prev;
+      });
+      
+      return Promise.resolve();
+    } catch (error) {
+      console.error('Error creating workshop:', error);
+      return Promise.reject(error);
+    }
+  };
+  
+  const handleUpdateWorkshop = async (updatedWorkshop: Workshop) => {
+    try {
+      // In a real app, this would be an API call
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Add modification metadata
+      const workshopWithMeta = {
+        ...updatedWorkshop,
+        lastModifiedAt: new Date().toLocaleDateString(),
+        lastModifiedBy: 'SCAD Admin',
+      };
+      
+      // Update both data sources
+      setWorkshopsData(prev => 
+        prev.map(w => w.id === updatedWorkshop.id ? workshopWithMeta : w)
+      );
+      
+      setFilteredWorkshops(prev => {
+        const newWorkshops = prev.filter(w => w.id !== updatedWorkshop.id);
+        
+        // Check if updated workshop meets filter criteria
+        if (meetFilters(workshopWithMeta, activeFilters, searchTerm)) {
+          return [...newWorkshops, workshopWithMeta];
+        }
+        return newWorkshops;
+      });
+      
+      // If we were viewing the details of this workshop, update it
+      if (detailedWorkshop && detailedWorkshop.id === updatedWorkshop.id) {
+        setDetailedWorkshop(workshopWithMeta);
+      }
+      
+      return Promise.resolve();
+    } catch (error) {
+      console.error('Error updating workshop:', error);
+      return Promise.reject(error);
+    }
+  };
+  
+  const handleDeleteWorkshop = async (workshopId: number) => {
+    try {
+      // In a real app, this would be an API call
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Update both data sources
+      setWorkshopsData(prev => prev.filter(w => w.id !== workshopId));
+      setFilteredWorkshops(prev => prev.filter(w => w.id !== workshopId));
+      
+      // Close details if open
+      if (detailedWorkshop && detailedWorkshop.id === workshopId) {
+        setDetailedWorkshop(null);
+      }
+      
+      return Promise.resolve();
+    } catch (error) {
+      console.error('Error deleting workshop:', error);
+      return Promise.reject(error);
+    }
+  };
+  
+  // Helper function to check if a workshop meets filter criteria
+  const meetFilters = (workshop: Workshop, filters: any, search: string): boolean => {
+    // Check status filter
+    if (filters.status !== 'All' && workshop.status !== filters.status.toLowerCase()) {
+      return false;
+    }
+    
+    // Check type filter
+    if (filters.type !== 'All' && workshop.type !== filters.type.toLowerCase()) {
+      return false;
+    }
+    
+    // Check search term
+    if (search.trim() !== '') {
+      const term = search.toLowerCase();
+      if (
+        !workshop.title.toLowerCase().includes(term) && 
+        !workshop.host.toLowerCase().includes(term)
+      ) {
+        return false;
+      }
+    }
+    
+    return true;
   };
 
   const handleRegister = async (workshop: Workshop) => {
@@ -384,52 +535,85 @@ export default function WorkshopListPage() {
             placeholder="Search workshops by title or host..."
           />
 
-          {/* Workshop Listings */}
-          <div className={styles.workshopListings}>
-            <div className={styles.listingHeader}>
-                <h2 className={styles.listingTitle}>Career Workshops Management</h2>              <span className={styles.workshopCount}>
-                {filteredWorkshops.length} workshop{filteredWorkshops.length !== 1 ? 's' : ''}
-              </span>
-            </div>
-
-            <div className={styles.cards}>
-              {filteredWorkshops.length > 0 ? (
-                filteredWorkshops.map(workshop => (
-                  <SCADWorkshopCard
-                    key={workshop.id}
-                    workshop={workshop}
-                    onViewDetails={handleViewDetails}
-                  />
-                ))
-              ) : (
-                <div className={styles.noResults}>
-                 <Search 
-                    size={48} 
-                    className={styles.searchIcon} 
-                  /> 
-                  <h3>No workshops found</h3>
-                  <p>Try adjusting your search criteria or filters</p>
-                  <button 
-                    className={styles.shareProfileButton} 
-                    onClick={handleClearFilters} 
-                    style={{ marginTop: '20px' }}
-                  >
-                    Clear All Filters
-                  </button>
+          {/* Workshop Listings */}          {isManageMode ? (
+            // Workshop Management Mode
+            <SCADWorkshopManagement
+              workshops={workshopsData} 
+              onCreateWorkshop={handleCreateWorkshop}
+              onUpdateWorkshop={handleUpdateWorkshop}
+              onDeleteWorkshop={handleDeleteWorkshop}
+            />
+          ) : (
+            // Workshop Viewing Mode
+            <div className={styles.workshopListings}>
+              <div className={styles.listingHeader}>
+                <div className={styles.headerTitleSection}>
+                  <h2 className={styles.listingTitle}>Career Workshops Management</h2>
+                  <span className={styles.workshopCount}>
+                    {filteredWorkshops.length} workshop{filteredWorkshops.length !== 1 ? 's' : ''}
+                  </span>
                 </div>
-              )}
+                <button 
+                  className={styles.manageButton}
+                  onClick={toggleManageMode}
+                  title="Switch to management view"
+                >
+                  Manage Workshops
+                </button>
+              </div>              <div className={styles.cards}>
+                {filteredWorkshops.length > 0 ? (
+                  filteredWorkshops.map(workshop => (
+                    <WorkshopCard
+                      key={workshop.id}
+                      workshop={workshop}
+                      onViewDetails={handleViewDetails}
+                    />
+                  ))
+                ) : (
+                  <div className={styles.noResults}>
+                    <Search 
+                      size={48} 
+                      className={styles.searchIcon} 
+                    /> 
+                    <h3>No workshops found</h3>
+                    <p>Try adjusting your search criteria or filters</p>
+                    <button 
+                      className={styles.shareProfileButton} 
+                      onClick={handleClearFilters} 
+                      style={{ marginTop: '20px' }}
+                    >
+                      Clear All Filters
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </main>
-      </div> 
-      {/* Details Modal */}
+      </div>      {/* Details Modal */}
       {selectedWorkshop && (
-        <WorkshopDetailsModal
+        <SCADWorkshopDetailsModal
           workshop={selectedWorkshop}
           onClose={handleCloseModal}
-          onRegister={handleRegister}
-          onJoinLive={handleJoinLive}
-          onWatch={handleWatchRecording}
+        />
+      )}
+
+      {/* Detailed Workshop View (for SCAD Admin) */}
+      {detailedWorkshop && (
+        <SCADWorkshopDetailedView
+          workshop={detailedWorkshop}
+          onClose={handleCloseModal}
+          onEdit={(workshop) => {
+            handleCloseModal();
+            setIsManageMode(true);
+            // Set timeout to let the modal close before opening the form
+            setTimeout(() => {
+              const workshopElement = document.getElementById(`workshop-management`);
+              if (workshopElement) {
+                workshopElement.scrollIntoView({ behavior: 'smooth' });
+              }
+            }, 100);
+          }}
         />
       )}
 

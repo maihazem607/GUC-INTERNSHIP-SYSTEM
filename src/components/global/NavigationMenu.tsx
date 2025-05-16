@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { ChevronDown, MapPin, Settings, User, LogOut } from 'lucide-react';
+import { ChevronDown, MapPin, User, LogOut } from 'lucide-react';
 import styles from './NavigationMenu.module.css';
 import NotificationBell from './NotificationBell';
 
@@ -139,17 +139,14 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
             </div>
         );
     };    
-    // Default right elements with notification bell, settings, and logout button
+    // Default right elements with notification bell, and logout button
     const defaultRightElements = (
         <>
             <div className={styles.locationDisplay}>
                 <MapPin size={16} className={styles.locationIcon} />
                 <span>{locationName}</span>
             </div>
-            <div className={styles.userControls}>
-                <button className={styles.settingsButton}>
-                    <Settings size={18} />
-                </button>                
+            <div className={styles.userControls}>         
                 <NotificationBell />               
                 <button 
                     className={styles.logoutButton} 
