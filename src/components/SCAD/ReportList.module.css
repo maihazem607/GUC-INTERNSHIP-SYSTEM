@@ -1,0 +1,540 @@
+/* Table Styles for ReportTable */
+.reportTable {
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  margin-bottom: 18px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* New Card-based Styles */
+.reportCardContainer {
+  width: 100%;
+  padding: 10px 0;
+}
+
+.reportsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.card {
+  background-color: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+  border: 1px solid #f0f5ff;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.1);
+  border-color: #d1e0ff;
+}
+
+.cardInner {
+  padding: 20px;
+}
+
+.cardDate {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.companyInfo {
+  margin-bottom: 15px;
+}
+
+.companyName {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.jobTitleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.jobTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+  flex: 1;
+}
+
+.reportInfo {
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
+.studentName, .major {
+  margin-bottom: 5px;
+}
+
+.jobTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.jobTag {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.cardFooter {
+  background-color: white;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f0f0f0;
+}
+
+.jobMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.salary {
+  font-weight: 700;
+  font-size: 16px;
+  color: #333;
+}
+
+.location {
+  font-size: 14px;
+  color: #666;
+}
+
+.detailsButton {
+  padding: 10px 18px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(37, 99, 235, 0.25);
+  letter-spacing: 0.3px;
+}
+
+.detailsButton:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+}
+
+/* Status Badge Styles - preserved from original */
+.statusBadge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #f4f6fa;
+  color: #555;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+}
+.statusBadge.pending {
+  background: linear-gradient(to right, #fffbe6, #fff7cc);
+  color: #d97706;
+  box-shadow: 0 2px 4px rgba(217, 119, 6, 0.1);
+}
+.statusBadge.accepted {
+  background: linear-gradient(to right, #e6fff2, #b3f0d4);
+  color: #059669;
+  box-shadow: 0 2px 4px rgba(5, 150, 105, 0.1);
+}
+.statusBadge.flagged {
+  background: linear-gradient(to right, #e6f7ff, #bae3ff);
+  color: #0369a1;
+  box-shadow: 0 2px 4px rgba(3, 105, 161, 0.1);
+}
+.statusBadge.rejected {
+  background: linear-gradient(to right, #ffeeee, #ffd6d6);
+  color: #dc2626;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.1);
+}
+
+/* List-based Styles */
+.studentsTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.studentRow {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.studentRow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.studentRow:hover {
+  border-left: 4px solid #2563eb;
+  background-color: #f8fafc;
+}
+
+.studentRow td {
+  padding: 16px;
+  vertical-align: middle;
+  background-color: white;
+  border-top: 1px solid rgba(0, 0, 0, 0.02);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.02);
+  transition: background-color 0.3s ease;
+}
+
+.studentRow:nth-child(odd) td {
+  background-color: rgba(249, 250, 251, 0.7);
+}
+
+.studentRow:hover td {
+  background-color: #f9fafb;
+}
+
+.studentRow td:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.studentRow td:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.studentProfile {
+  display: flex;
+  align-items: center;
+}
+
+.studentAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e0eaff, #c7d7ff);
+  overflow: hidden;
+  margin-right: 12px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 18px;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.15);
+  border: 3px solid #fff;
+}
+
+.studentInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.studentName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.studentAge {
+  font-size: 14px;
+  color: #666;
+}
+
+.tagContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  background-color: #f0f5ff;
+  color: #2563eb;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.08);
+  transition: all 0.2s ease;
+}
+
+.tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(37, 99, 235, 0.12);
+}
+
+.communicationCell {
+  color: #555;
+  font-size: 14px;
+  border-bottom: none; /* Remove any border that might create the green line */
+  text-decoration: none; /* Remove any text decoration that might appear as an underline */
+}
+
+.skillsCell {
+  color: #555;
+  font-size: 14px;
+}
+
+.lifeSkills {
+  display: inline-block;
+  background-color: #f5f5f5;
+  color: #555;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+/* Major cell styles */
+.majorCell {
+  color: #555; 
+  font-size: 14px;
+  font-weight: 500;
+  background-color: #f8f9fa;
+  padding: 6px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* Date cell styles */
+.dateCell {
+  color: #555; 
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Submission tag styles */
+.submissionTag {
+  display: inline-block;
+  background: linear-gradient(to right, #e8f3ff, #d1e4ff);
+  color: #217dbb;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.progressContainer {
+  min-width: 180px;
+}
+
+.progressLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.progressBar {
+  height: 8px;
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 4px;
+}
+
+/* Progress colors */
+.developmentColor { background-color: #4caf50; }
+.socialSkillsColor { background-color: #2196f3; }
+.stimulationColor { background-color: #ff9800; }
+.motorSkillsColor { background-color: #9c27b0; }
+.promotionColor { background-color: #e91e63; }
+.selfRegulationColor { background-color: #00bcd4; }
+.creativeThinkingColor { background-color: #ff5722; }
+.adaptationColor { background-color: #8bc34a; }
+
+.noResults {
+  text-align: center;
+  color: #888;
+  padding: 30px 0 10px 0;
+}
+
+.noResultsIcon {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+/* Keep existing styles for backward compatibility */
+.card {
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  margin-bottom: 15px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cardInner {
+  padding: 16px;
+  background-color: #f5f8ff;
+}
+
+.cardDate {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+}
+
+.jobMeta {
+  display: flex;
+  flex-direction: column;
+}
+
+.salary {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.location {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.companyInfo {
+  margin-bottom: 10px;
+}
+
+.companyName {
+  font-weight: 600;
+  color: #1a73e8;
+}
+
+.jobTitleContainer {
+  margin-bottom: 10px;
+}
+
+.jobTitle {
+  margin: 0;
+  font-size: 1.125rem;
+  color: #333;
+}
+
+.reportInfo {
+  margin-bottom: 15px;
+}
+
+.jobTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.jobTag {
+  background-color: #e8f0fe;
+  color: #1a73e8;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.detailsButton {
+  background-color: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.detailsButton:hover {
+  background-color: #1765cc;
+}
+
+/* Status Badge Styles with enhanced styling */
+.statusBadge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #f4f6fa;
+  color: #555;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+}
+
+.statusBadge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.pending {
+  background: linear-gradient(to right, #fffbe6, #fff7cc);
+  color: #bfa100;
+}
+
+.accepted {
+  background: linear-gradient(to right, #e6fff2, #ccffeb);
+  color: #1aaf5d;
+}
+
+.flagged {
+  background: linear-gradient(to right, #e6f7ff, #cce7ff);
+  color: #217dbb;
+}
+
+.rejected {
+  background: linear-gradient(to right, #ffeaea, #ffcccc);
+  color: #d32f2f;
+}

@@ -1,0 +1,338 @@
+.reportsContainer {
+  width: 100%;
+  margin: 20px 0;
+  overflow-x: auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.reportsTable {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.reportsTable th {
+  text-align: left;
+  font-weight: 600;
+  color: #444;
+  border-bottom: 1px solid #eaeaea;
+  padding: 18px 16px;
+  font-size: 0.95rem;
+  background-color: #f8f9fa;
+  position: sticky;
+  top: 0;
+}
+
+.reportRow {
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.25s ease;
+}
+
+.reportRow:hover {
+  background-color: #f5f9ff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.reportRow:last-child {
+  border-bottom: none;
+}
+
+.reportRow td {
+  padding: 16px;
+  vertical-align: middle;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.companyCell {
+  min-width: 180px;
+}
+
+.companyInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.companyLogo {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+.reportTitleCell {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.statusBadge::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.statusBadge:hover {
+  transform: translateY(-2px);
+}
+
+.pendingBadge {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+.pendingBadge::before {
+  background-color: #888;
+  animation: pulse 2s infinite;
+}
+
+.acceptedBadge {
+  background-color: #e0f7e6;
+  color: #1d8841;
+}
+
+.acceptedBadge::before {
+  background-color: #1d8841;
+  box-shadow: 0 0 0 2px rgba(29, 136, 65, 0.2);
+}
+
+.flaggedBadge {
+  background-color: #fff2e0;
+  color: #e67e22;
+}
+
+.flaggedBadge::before {
+  background-color: #e67e22;
+  box-shadow: 0 0 0 2px rgba(230, 126, 34, 0.2);
+}
+
+.rejectedBadge {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.rejectedBadge::before {
+  background-color: #d32f2f;
+  box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.2);
+}
+
+.viewButton {
+  padding: 8px 16px;
+  background-color: #4c51bf;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 2px 5px rgba(33, 150, 243, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.viewButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.4s;
+}
+
+.viewButton:hover {
+  background-color: #34399b;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+}
+
+.viewButton:hover::before {
+  left: 100%;
+}
+
+.noReports {
+  text-align: center;
+  padding: 50px 0;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #777;
+}
+
+.emptyIcon {
+  font-size: 3.5rem;
+  margin-bottom: 16px;
+  color: #d0d0d0;
+  opacity: 0.8;
+}
+
+.emptyTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.emptyMessage {
+  font-size: 16px;
+  color: #888;
+  max-width: 400px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.createReportLink {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #2196f3;
+  color: white;
+  border-radius: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.createReportLink:hover {
+  background-color: #1976d2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+}
+
+.reportsList {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reportRow {
+  transition: all 0.3s ease;
+}
+
+.reportRow:nth-child(odd) {
+  background-color: rgba(245, 247, 250, 0.5);
+}
+
+.reportRow:nth-child(even) {
+  background-color: white;
+}
+
+.reportRow:first-child td:first-child {
+  border-top-left-radius: 8px;
+}
+
+.reportRow:first-child td:last-child {
+  border-top-right-radius: 8px;
+}
+
+.reportRow:last-child td:first-child {
+  border-bottom-left-radius: 8px;
+}
+
+.reportRow:last-child td:last-child {
+  border-bottom-right-radius: 8px;
+}
+
+@media (max-width: 992px) {
+  .reportsTable {
+    min-width: 800px;
+  }
+  
+  .reportsContainer {
+    margin: 15px 0;
+    border-radius: 8px;
+  }
+  
+  .reportRow td {
+    padding: 14px 12px;
+    font-size: 0.9rem;
+  }
+  
+  .reportsTable th {
+    padding: 16px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Status indicator styles for better status visibility */
+.statusCell {
+  position: relative;
+}
+
+/* Status badge animation */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(136, 136, 136, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(136, 136, 136, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(136, 136, 136, 0);
+  }
+}
+
+/* Status tooltip */
+.statusTooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 12px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.3s;
+  z-index: 10;
+}
+
+.statusBadge:hover .statusTooltip {
+  opacity: 1;
+  transform: translate(-50%, -5px);
+}
+
+/* Status badge focus effect for accessibility */
+.statusBadge:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px white, 0 0 0 4px #2196f3;
+}

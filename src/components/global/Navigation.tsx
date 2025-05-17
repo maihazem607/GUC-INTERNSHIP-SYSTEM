@@ -1,5 +1,7 @@
+"use client";
 import Image from "next/image";
 import styles from "./Navigation.module.css";
+import NotificationBell from "./NotificationBell";
 
 interface NavigationProps {
   title?: string;
@@ -11,10 +13,10 @@ export default function Navigation({ title = "GUC Internship System", logoSrc = 
     <header className={styles.navBar}>
       <div className={styles.navLeft}>
         <div className={styles.logoContainer}>
-          <Image src={logoSrc} alt={title} width={100} height={100} style={{ margin: -13 }} />
-        </div>
-        <nav className={styles.mainNav}>
+          <Image src={logoSrc} alt={title} width={150} height={150} style={{ margin: -13 }} />
+        </div>        <nav className={styles.mainNav}>
           <a href="#" className={styles.navLink}>Find job</a>
+          <a href="/Appointments" className={styles.navLink}>Appointments</a>
           <a href="#" className={styles.navLink}>Messages</a>
           <a href="#" className={styles.navLink}>Hiring</a>
           <a href="#" className={styles.navLink}>Community</a>
@@ -26,10 +28,10 @@ export default function Navigation({ title = "GUC Internship System", logoSrc = 
           <span className={styles.locationIcon}>📍</span>
           <span>New York, NY</span>
         </div>
-        <div className={styles.userControls}>
+        <div className={styles.userControls}>          
           <div className={styles.userAvatar}></div>
-          <button className={styles.settingsButton}>⚙️</button>
-          <button className={styles.notificationsButton}>🔔</button>
+          <button className={styles.settingsButton}>⚙️</button> 
+                   <NotificationBell />
         </div>
       </div>
     </header>

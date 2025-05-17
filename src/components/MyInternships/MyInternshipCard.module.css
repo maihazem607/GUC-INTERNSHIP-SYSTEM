@@ -1,0 +1,235 @@
+.card {
+  background-color: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.cardInner {
+  padding: 20px 20px 15px;
+  flex-grow: 1;
+}
+
+/* Status Badges */
+.statusContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.statusBadge {
+  padding: 6px 11px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: white;
+}
+
+.pendingBadge {
+  background-color: #FFB800;
+  color: white;
+}
+
+.acceptedBadge {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.rejectedBadge {
+  background-color: #F44336;
+  color: white;
+}
+
+.interviewBadge {
+  background-color: #1976d2;
+  color: white;
+}
+
+.activeBadge {
+  background-color: #2196F3;  /* Blue for active internships */
+  color: white;
+}
+
+.completedBadge {
+  background-color: #4CAF50;  /* Green for completed internships */
+  color: white;
+}
+
+.cardDate {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.bookmark, .bookmarkActive {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.bookmarkActive {
+  color: #f5b400;
+}
+
+.companyInfo {
+  margin-bottom: 15px;
+}
+
+.companyName {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.jobTitleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.jobTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+  flex: 1;
+}
+
+.companyLogo {
+  width: 30px;
+  height: 30px;
+  overflow: hidden;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.jobTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.jobTag {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.cardFooter {
+  background-color: white;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;  /* Changed from center to flex-start for better vertical alignment */
+  border-top: 1px solid #f0f0f0;
+}
+
+.jobMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.salary {
+  font-weight: 700;
+  font-size: 16px;
+  color: #333;
+}
+
+.location {
+  font-size: 14px;
+  color: #666;
+}
+
+.detailsButton {
+  padding: 8px 16px;
+  background-color: #4c51bf;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.detailsButton:hover {
+  background-color: #34399b}
+
+.badgeContainer {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.buttonsContainer {
+  display: flex;
+  gap: 8px;
+}
+
+.verticalButtonsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 130px; /* Ensure buttons have consistent width */
+}
+
+.reportButton {
+  padding: 8px 12px;
+  background-color: #4c51bf;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.reportButton:hover {
+  background-color: #34399b;
+}
+
+.evaluateButton {
+  padding: 8px 12px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.evaluateButton:hover {
+  background-color: #388e3c;
+}
+
+.inProgressButton {
+  padding: 8px 16px;
+  background-color: #9e9e9e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: not-allowed;
+  transition: background-color 0.2s;
+  min-width: 130px;  /* Ensure consistent width with other buttons */
+  text-align: center;
+}

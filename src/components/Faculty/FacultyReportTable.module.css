@@ -1,0 +1,87 @@
+.statusDropdownContainer {
+    position: relative;
+    display: inline-block;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 20px 8px;
+    min-width: 120px; /* ensure container is wide enough */
+}
+
+.statusDropdownContainer:hover {
+    filter: brightness(0.9);
+}
+
+.statusDropdown {
+    position: relative;
+    width: 100%;
+    padding: 4px 0;
+    padding-right: 24px;
+    background: transparent;
+    border: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font-size: 12px;
+    font-weight: 600;
+    color: inherit;
+    cursor: pointer;
+    z-index: 2;
+}
+
+/* Status container colors */
+.statusDropdownContainer.pending {
+    background-color: #f3f4f6;
+    color: #6b7280;
+}
+
+.statusDropdownContainer.flagged {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.statusDropdownContainer.rejected {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.statusDropdownContainer.accepted {
+    background-color: #d1fae5;
+    color: #059669;
+}
+
+/* Removed custom arrow; using native select arrow for consistent placement */
+
+/* Status badge styles */
+.statusBadge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    background: #f4f6fa;
+    color: #555;
+    border: 1px solid transparent;
+    /* allow native dropdown arrow */
+    appearance: menulist;
+    min-width: 100px; /* give the select its own width */
+}
+
+.statusBadge.pending {
+    background: #fffbe6;
+    color: #bfa100;
+}
+
+.statusBadge.flagged {
+    background: #e6f7ff;
+    color: #217dbb;
+}
+
+.statusBadge.accepted {
+    background: #e6fff2;
+    color: #1aaf5d;
+}
+
+.statusBadge.rejected {
+    background: #ffeaea;
+    color: #d32f2f;
+}

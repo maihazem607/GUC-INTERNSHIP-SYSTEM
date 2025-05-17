@@ -1,0 +1,181 @@
+/* filepath: c:\Users\omar tarek\Desktop\GUC-INTERNSHIP-SYSTEM\app\CompanyLogin\Interns\page.module.css */
+/* Base Styles */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Arial', sans-serif;
+  background-color: #f9fafb;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* Content Layout */
+.contentWrapper {
+  display: flex;
+  flex: 1;
+  padding: 20px;
+  gap: 20px;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Listings Common Styles */
+.internshipListings,
+.applicationListings,
+.internListings {
+  background-color: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.listingHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.listingTitle {
+  font-size: 26px;
+  font-weight: 700;
+  color: #222;
+}
+
+.itemCount,
+.applicationCount,
+.internCount {
+  font-size: 13.5px;
+  color: #6121bb;
+  font-weight: 300;
+  background: #d9cfe5;
+  border-radius: 8px;
+  padding: 4px 14px;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* No results */
+.noResults {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  text-align: center;
+  background-color: #f9fafb;
+  border-radius: 12px;
+  border: 1px dashed #e0e0e0;
+  margin: 20px 0;
+  width: 100%;
+}
+
+.noResultsIcon {
+  font-size: 32px;
+  margin-bottom: 16px;
+  color: #94a3b8;
+}
+
+/* Filter controls */
+.filterControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Status badges */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.pending {
+  background-color: #fff8e1;
+  color: #ff9800;
+}
+
+.accepted {
+  background-color: #e8f5e9;
+  color: #4caf50;
+}
+
+.rejected {
+  background-color: #ffebee;
+  color: #f44336;
+}
+
+.current {
+  background-color: #e1f5fe;
+  color: #03a9f4;
+}
+
+.completed {
+  background-color: #e8eaf6;
+  color: #3f51b5;
+}
+
+/* For clearing filters */
+.shareProfileButton {
+  padding: 8px 16px;
+  background-color: #3f51b5;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.shareProfileButton:hover {
+  background-color: #303f9f;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .mainContent {
+    padding: 24px 10px 24px 0;
+  }
+  .listingHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .contentWrapper {
+    flex-direction: column;
+    padding: 0;
+  }
+  .mainContent {
+    padding: 18px 0 18px 0;
+  }
+  .listingTitle {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .cardWrapper {
+    width: calc(50% - 10px);
+  }
+}
+
+@media (max-width: 768px) {
+  .cardWrapper {
+    width: 100%;
+  }
+}

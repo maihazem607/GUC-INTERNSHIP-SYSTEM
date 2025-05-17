@@ -1,0 +1,25 @@
+/* 
+ * ReportHighlight.module.css
+ * Animation styles for highlighting newly submitted reports
+ */
+
+@keyframes highlightPulse {
+  0% {
+    background-color: rgba(33, 150, 243, 0.05);
+    box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.4);
+  }
+  50% {
+    background-color: rgba(33, 150, 243, 0.15);
+    box-shadow: 0 0 0 10px rgba(33, 150, 243, 0);
+  }
+  100% {
+    background-color: rgba(33, 150, 243, 0.05);
+    box-shadow: 0 0 0 0 rgba(33, 150, 243, 0);
+  }
+}
+
+.highlightedRow {
+  animation: highlightPulse 1.5s ease-in-out;
+  animation-iteration-count: 2;
+  animation-fill-mode: forwards;
+}

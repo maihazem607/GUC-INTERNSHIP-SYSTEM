@@ -1,0 +1,321 @@
+/* Table Styles for ApplicationsList */
+.section {
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  margin-bottom: 18px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Card-based Styles */
+.applicationCardContainer {
+  width: 100%;
+  padding: 10px 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+}
+
+.applicationsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.card {
+  background-color: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.cardInner {
+  padding: 20px;
+}
+
+.cardDate {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.applicantInfo {
+  margin-bottom: 15px;
+}
+
+.applicantName {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.applicantEmail {
+  font-size: 14px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.internshipTitleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.internshipTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a365d;
+  padding: 6px 12px;
+  background-color: #fefefe;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.applicationInfo {
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
+.university, .major {
+  margin-bottom: 5px;
+}
+
+.applicationTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.applicationTag {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.cardFooter {
+  background-color: white;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f0f0f0;
+}
+
+.statusActions {
+  display: flex;
+  gap: 10px;
+}
+
+.actionButton {
+  padding: 8px 16px;
+  background-color: #4c51bf;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.actionButton:hover {
+  background-color: #34399b}
+
+.acceptButton {
+  background-color: #27ae60;
+}
+
+.acceptButton:hover {
+  background-color: #219653;
+}
+
+.rejectButton {
+  background-color: #e74c3c;
+}
+
+.rejectButton:hover {
+  background-color: #c0392b;
+}
+
+/* Status Badge Styles */
+.statusBadge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #f4f6fa;
+  color: #555;
+}
+.statusBadge.pending {
+  background: #fffbe6;
+  color: #bfa100;
+}
+.statusBadge.accepted {
+  background: #e6fff2;
+  color: #1aaf5d;
+}
+.statusBadge.finalized {
+  background: #e6f7ff;
+  color: #217dbb;
+}
+.statusBadge.rejected {
+  background: #ffeaea;
+  color: #d32f2f;
+}
+.statusBadge.current {
+  background: #e6f7ff;
+  color: #217dbb;
+}
+.statusBadge.completed {
+  background: #f0f0f0;
+  color: #333333;
+}
+
+/* List-based Styles */
+.applicationsTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 12px;
+  margin-top: 6px;
+}
+
+/* Table header styles */
+.tableHeader {
+  background: none;
+}
+
+.tableHeader th {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a5568;
+  text-align: left;
+  letter-spacing: 0.3px;
+  border-bottom: 2px solid #edf2f7;
+}
+
+.applicationRow {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.applicationRow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(71, 117, 255, 0.08);
+  z-index: 2;
+}
+
+.applicationRow td {
+  padding: 16px 18px;
+  vertical-align: middle;
+  background-color: white;
+  border-bottom: none;
+}
+
+.applicationRow td:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.applicationRow td:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.applicantProfile {
+  display: flex;
+  align-items: center;
+}
+
+.applicantAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #e8f3ff;
+  overflow: hidden;
+  margin-right: 14px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  color: #217dbb;
+  box-shadow: 0 2px 8px rgba(33, 125, 187, 0.15);
+}
+
+.applicantDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.universityTag {
+  display: inline-block;
+  background-color: #edf2f7;
+  color: #4a5568;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  letter-spacing: 0.2px;
+}
+
+/* University name style */
+.universityName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 4px;
+}
+
+/* Date display styles */
+.dateContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dateValue {
+  font-size: 14px;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.relativeTime {
+  font-size: 12px;
+  color: #718096;
+  font-weight: 400;
+}
+
+.noResults {
+  text-align: center;
+  color: #888;
+  padding: 30px 0 10px 0;
+}
+
+.noResultsIcon {
+  font-size: 24px;
+  margin-bottom: 10px;
+}

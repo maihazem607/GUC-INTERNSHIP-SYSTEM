@@ -1,0 +1,206 @@
+/* Base Styles */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Arial', sans-serif;
+  background-color: #f9fafb;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* Content Layout */
+.contentWrapper {
+  display: flex;
+  flex: 1;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* Main Content */
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Appointment Listings */
+.appointmentListings {
+  background-color: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.listingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.listingTitle {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.appointmentCount {
+  background-color: #e8f5e9;
+  color: #43a047;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* No results */
+.noResults {
+  text-align: center;
+  padding: 40px 0;
+  color: #666;
+}
+
+.noResultsIcon {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+.noResults h3 {
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+  color: #374151;
+}
+
+.noResults p {
+  margin-top: 0;
+  color: #6b7280;
+}
+
+.incomingCallContainer {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  animation: slideInFromBottom 0.3s ease-out forwards;
+}
+
+.incomingCallCard {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  width: 300px;
+}
+
+.incomingCallHeader {
+  margin-bottom: 16px;
+}
+
+.incomingCallHeader h3 {
+  font-size: 1.125rem;
+  margin: 0 0 4px;
+  color: #111827;
+}
+
+.callerInfo {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.incomingCallActions {
+  display: flex;
+  gap: 12px;
+}
+
+.acceptCallButton {
+  flex: 1;
+  padding: 10px;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.acceptCallButton:hover {
+  background-color: #059669;
+}
+
+.rejectCallButton {
+  flex: 1;
+  padding: 10px;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.rejectCallButton:hover {
+  background-color: #dc2626;
+}
+
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Highlight animation for newly updated appointments */
+.highlightCard {
+  animation: highlightFade 2s ease-in-out;
+}
+
+@keyframes highlightFade {
+  0% {
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    transform: translateY(-5px);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(76, 175, 80, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0);
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .incomingCallContainer {
+    left: 24px;
+    right: 24px;
+  }
+    .incomingCallCard {
+    width: auto;
+  }
+}
+
+/* Error message */
+.errorMessage {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-weight: 500;
+}

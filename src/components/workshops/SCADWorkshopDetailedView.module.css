@@ -1,0 +1,392 @@
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: white;
+  border-radius: 16px;
+  padding: 32px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.closeButton {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #666;
+  height: 30px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.closeButton:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.modalHeader {
+  margin-bottom: 20px;
+}
+
+.modalTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 8px 0;
+}
+
+.modalHost {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modalHostLogo {
+  border-radius: 6px;
+  object-fit: contain;
+  background-color: #f8fafc;
+}
+
+.modalHostName {
+  font-size: 16px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.statusBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.statusBadge,
+.typeBadge,
+.draftBadge {
+  display: inline-flex;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: capitalize;
+  align-items: center;
+  gap: 6px;
+}
+
+.statusBadge.upcoming {
+  background-color: #dbeafe;
+  color: #2563eb;
+}
+
+.statusBadge.ongoing {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.statusBadge.completed {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.typeBadge.live {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+.typeBadge.recorded {
+  background-color: #f3e8ff;
+  color: #a855f7;
+}
+
+.draftBadge {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.modalInfo {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 28px;
+  padding: 20px;
+  border: 1px solid #eee;
+  background-color: #fafafa;
+  border-radius: 12px;
+}
+
+.modalInfoItem {
+  display: flex;
+  gap: 12px;
+}
+
+.modalInfoIcon {
+  color: #64748b;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 2px;
+}
+
+.modalInfoLabel {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.modalInfoValue {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.modalSection {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #eee;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: #0f172a;
+  font-weight: 600;
+  position: relative;
+  padding-left: 12px;
+}
+
+.sectionTitle::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #4c51bf;
+  border-radius: 4px;
+}
+
+.modalDescription {
+  line-height: 1.7;
+  color: #334155;
+  font-size: 16px;
+}
+
+.speakerInfo {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  background-color: #f8fafc;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.speakerIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e0e7ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4f46e5;
+  flex-shrink: 0;
+}
+
+.speakerBio {
+  flex: 1;
+  line-height: 1.7;
+  color: #334155;
+}
+
+.agenda {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.agendaItem {
+  display: flex;
+  gap: 24px;
+}
+
+.agendaTime {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 100px;
+}
+
+.agendaTimeBox {
+  background-color: #f1f5f9;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748b;
+  text-align: center;
+  width: 100%;
+}
+
+.agendaTimeDivider {
+  width: 2px;
+  height: 24px;
+  background-color: #cbd5e1;
+  margin: 4px 0;
+}
+
+.agendaContent {
+  flex: 1;
+  background-color: #f8fafc;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.agendaTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #0f172a;
+}
+
+.agendaDescription {
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.6;
+  margin: 0 0 12px 0;
+}
+
+.agendaPresenter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.visibilityStatus {
+  background-color: #f8fafc;
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+
+.publishedStatus, .draftStatus {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.metadataSection {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 24px;
+}
+
+.metadataItem {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.metadataItem span {
+  font-weight: 500;
+}
+
+.metadataItem:last-child {
+  margin-bottom: 0;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.editButton {
+  padding: 10px 20px;
+  background-color: #4c51bf;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.editButton:hover {
+  background-color: #434190;
+}
+
+.closeActionButton {
+  padding: 10px 20px;
+  background-color: white;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.closeActionButton:hover {
+  background-color: #f1f5f9;
+  color: #334155;
+}
+
+@media (max-width: 768px) {
+  .modalContent {
+    width: 95%;
+    padding: 24px;
+  }
+  
+  .modalInfo {
+    grid-template-columns: 1fr;
+  }
+  
+  .agendaItem {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .agendaTime {
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .agendaTimeBox {
+    min-width: 80px;
+  }
+  
+  .agendaTimeDivider {
+    width: 16px;
+    height: 2px;
+    margin: 0;
+  }
+}

@@ -1,0 +1,755 @@
+/* ReportDetailsModal Styles - Updated to match ReportPreview */
+.reportContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-height: calc(80vh - 120px); /* Account for header and footer of the modal */
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
+  padding-right: 4px; /* Prevent content shift when scrollbar appears */
+}
+
+/* Custom scrollbar for the entire report container */
+.reportContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.reportContainer::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+
+.reportContainer::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 4px;
+  border: 2px solid #f3f4f6;
+}
+
+.reportContainer::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+}
+
+/* Tabbed interface styling from ReportResultsModal */
+.modalHeader {
+  padding: 16px 16px 0;
+  background: white;
+  z-index: 5;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.tabsContainer {
+  display: flex;
+  margin: 0 -16px;
+  border-bottom: 1px solid #eaeaea;
+  padding: 0 16px;
+}
+
+.tabButton {
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.tabButton:hover {
+  color: #333;
+}
+
+.tabButton:focus {
+  outline: none;
+}
+
+.activeTab {
+  color: #2196f3;
+  font-weight: 600;
+}
+
+.activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: #2196f3;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+/* Status badges */
+.statusContainer {
+  display: flex;
+  align-items: center;
+}
+
+.statusBadge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+}
+
+.statusBadge::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.pendingBadge {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+.pendingBadge::before {
+  background-color: #888;
+  box-shadow: 0 0 0 2px rgba(136, 136, 136, 0.2);
+}
+
+.acceptedBadge {
+  background-color: #e0f7e6;
+  color: #1d8841;
+}
+
+.acceptedBadge::before {
+  background-color: #1d8841;
+  box-shadow: 0 0 0 2px rgba(29, 136, 65, 0.2);
+}
+
+.flaggedBadge {
+  background-color: #fff2e0;
+  color: #e67e22;
+}
+
+.flaggedBadge::before {
+  background-color: #e67e22;
+  box-shadow: 0 0 0 2px rgba(230, 126, 34, 0.2);
+}
+
+.rejectedBadge {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.rejectedBadge::before {
+  background-color: #d32f2f;
+  box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.2);
+}
+
+/* Status indicators for feedback tab */
+.statusIndicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.pendingIndicator {
+  background-color: #888;
+  box-shadow: 0 0 0 4px rgba(136, 136, 136, 0.2);
+}
+
+.acceptedIndicator {
+  background-color: #1d8841;
+  box-shadow: 0 0 0 4px rgba(29, 136, 65, 0.2);
+}
+
+.flaggedIndicator {
+  background-color: #e67e22;
+  box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.2);
+}
+
+.rejectedIndicator {
+  background-color: #d32f2f;
+  box-shadow: 0 0 0 4px rgba(211, 47, 47, 0.2);
+}
+
+/* Report title styling */
+.reportTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+/* Company/Host Header */
+.modalHost {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #eee;
+  position: relative;
+}
+
+.modalHostLogo {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.hostInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHostName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ReportPreview styling from MyInternships */
+.reportForm {
+  padding: 20px 0;
+}
+
+.reportPreviewContainer {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 30px;
+  margin-top: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.reportPreviewTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.reportPreviewSection {
+  margin-bottom: 25px;
+}
+
+.reportPreviewSection h3 {
+  font-size: 18px;
+  color: #1976d2;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px dashed #e0e0e0;
+}
+
+.reportPreviewSection p {
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.reportPreviewCourses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.reportPreviewCourse {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.reportDetailsSection {
+  background-color: #f9fafb;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+/* Details Section - updated to match ReportPreview */
+.detailsSection {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+/* Internship info styling from ReportResultsModal */
+.internshipInfo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 20px;
+  padding: 16px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+}
+
+.companyHeader {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.companyLogo {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.companyName {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 30px;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.value {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Report section styling */
+.reportSection {
+  padding: 16px;
+  background-color: #f9fafc;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: #333;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background-color: #2196f3;
+  border-radius: 3px;
+}
+
+/* Report content styling */
+.reportSummary {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.summaryItem {
+  margin-bottom: 16px;
+}
+
+.summaryTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1976d2;
+  margin-bottom: 8px;
+}
+
+.summaryText {
+  line-height: 1.7;
+  color: #333;
+  margin: 0;
+}
+
+.reportContent {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
+}
+
+.reportParagraph {
+  line-height: 1.7;
+  margin: 0 0 12px;
+  white-space: pre-wrap;
+}
+
+/* Feedback tab styling */
+.feedbackTab {
+  padding: 16px;
+}
+
+.feedbackHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.feedbackTitle {
+  font-weight: 600;
+  font-size: 18px;
+  color: #333;
+}
+
+.feedbackDate {
+  display: block;
+  font-size: 12px;
+  font-weight: normal;
+  color: #666;
+  margin-top: 4px;
+}
+
+.feedbackContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.commentBlock {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 4px solid #2196f3;
+}
+
+.commentTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 12px;
+}
+
+.commentText {
+  line-height: 1.7;
+  color: #444;
+}
+
+.noFeedback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.noFeedback h3 {
+  margin: 16px 0 8px;
+  color: #333;
+  font-weight: 600;
+}
+
+.noFeedback p {
+  color: #666;
+  max-width: 400px;
+}
+
+/* Response tab styling */
+.responseTab {
+  padding: 16px;
+}
+
+.responseHeader {
+  margin-bottom: 20px;
+}
+
+.responseHeader h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px;
+}
+
+.responseHeader p {
+  color: #666;
+  margin: 0;
+}
+
+.noResponses {
+  padding: 40px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  text-align: center;
+  color: #666;
+}
+
+/* Download button styling */
+.downloadButtonContainer {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  margin: 0 auto;
+}
+
+.downloadButton {
+  background-color: #ff9800;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.downloadButton:hover {
+  background-color: #f57c00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.pdfProgressBar {
+  height: 6px;
+  background-color: #ebebeb;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 10px;
+  position: relative;
+}
+
+.pdfProgressFill {
+  height: 100%;
+  background-color: #ff9800;
+  border-radius: 3px;
+  animation: progressAnimation 2s infinite ease-in-out;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 30%;
+}
+
+@keyframes progressAnimation {
+  0% {
+    left: -30%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Comments Section */
+.existingComments {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
+}
+
+/* Custom scrollbar for comments */
+.existingComments::-webkit-scrollbar {
+  width: 8px;
+}
+
+.existingComments::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+
+.existingComments::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 4px;
+  border: 2px solid #f3f4f6;
+}
+
+.existingComments::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+}
+
+.commentItem {
+  background-color: #f9fafb;
+  border-radius: 8px;
+  padding: 14px;
+  position: relative;
+}
+
+.commentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.commentAuthor {
+  font-weight: 600;
+  color: #1976d2; /* Updated to match ReportPreview blue */
+}
+
+.commentText {
+  line-height: 1.6;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.commentDate {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.deleteCommentButton {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 16px;
+  transition: color 0.2s;
+  padding: 4px;
+}
+
+.deleteCommentButton:hover {
+  color: #ef4444;
+}
+
+.addCommentForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.commentTextarea {
+  width: 96%;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  resize: vertical;
+  min-height: 120px;
+  font-family: inherit;
+}
+
+.commentTextarea:focus {
+  outline: none;
+  border-color: #4c51bf;
+  box-shadow: 0 0 0 2px rgba(76, 81, 191, 0.2);
+}
+
+.submitCommentButton {
+  align-self: flex-end;
+  background-color: #4c51bf;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submitCommentButton:hover {
+  background-color: #3c4099;
+}
+
+.submitCommentButton:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Action Buttons */
+.actionButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.acceptButton, .flagButton, .rejectButton {
+  padding: 10px 18px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.acceptButton {
+  background-color: #10b981;
+}
+
+.acceptButton:hover {
+  background-color: #059669;
+}
+
+.flagButton {
+  background-color: #217dbb;
+}
+
+.flagButton:hover {
+  background-color: #1a6099;
+}
+
+.rejectButton {
+  background-color: #ef4444;
+}
+
+.rejectButton:hover {
+  background-color: #dc2626;
+}
+
+/* Disability for action buttons */
+.acceptButton:disabled, .flagButton:disabled, .rejectButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

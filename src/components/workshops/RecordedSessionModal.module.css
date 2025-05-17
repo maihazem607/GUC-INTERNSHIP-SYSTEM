@@ -45,14 +45,51 @@
 
 .recordedSessionContainer {
   display: flex;
+  width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
+}
+
+.leftColumn {
+  flex: 3;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+.leftColumn::-webkit-scrollbar {
+  width: 8px;
+  height: 0;
+}
+
+.leftColumn::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.leftColumn::-webkit-scrollbar-thumb {
+  background: #4c51bf;
+  border-radius: 8px;
 }
 
 .videoSection {
-  flex: 3;
+  width: 100%;
+  height: 90vh;
   display: flex;
   flex-direction: column;
+}
+
+.belowVideoContent {
+  flex: 1;
+  padding: 20px;
+  margin-top: 40px;
+  min-height: 300px;
+}
+
+.workshopInfoDivider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+  margin: 20px 0;
 }
 
 .sidePanel {
@@ -63,6 +100,36 @@
   border-left: 1px solid #e0e0e0;
   display: flex;
   flex-direction: column;
+}
+
+@media (min-width: 1200px) {
+  .recordedSessionContainer {
+    flex-direction: row;
+    overflow-y: hidden;
+  }
+
+  .videoSection {
+    flex: 3;
+    height: 100%;
+    min-height: 600px;
+  }
+
+  .belowVideoContent {
+    flex: 1;
+    padding: 20px;
+    margin-top: 0;
+    min-height: 300px;
+  }
+
+  /* Optional layout for very wide screens */
+  @media (min-width: 1600px) {
+    .sidePanel {
+      flex: 1;
+      min-width: 300px;
+      max-width: 380px;
+      border-left: 1px solid #e0e0e0;
+    }
+  }
 }
 
 .tabButtons {
@@ -83,15 +150,14 @@
 }
 
 .activeTab {
-  color: #3498db;
-  border-bottom: 2px solid #3498db;
+  color: #4c51bf;
+  border-bottom: 2px solid #4c51bf;
 }
 
 .videoContainer {
   flex: 1;
   background-color: #000;
   position: relative;
-  overflow: hidden;
 }
 
 .recordedVideo {
@@ -117,16 +183,114 @@
   margin-bottom: 15px;
 }
 
+/* Certificate Section Styles - Below video player */
+.certificateSection {
+  width: calc(100% - 40px);
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  margin: 20px;
+}
+
+.certificateSectionInner {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.certificateHeading {
+  font-size: 18px;
+  color: #2c3e50;
+  margin: 0 0 15px 0;
+  font-weight: 600;
+  text-align: center;
+}
+
+.certificateProgressIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.progressCircle {
+  flex: 0 0 100px;
+}
+
+.certificateMessage {
+  flex: 1;
+}
+
+.certificateStatus {
+  font-size: 16px;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.remainingPercentage {
+  color: #e74c3c;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.certificateInstruction {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin: 0;
+}
+
+.certificateComplete {
+  color: #27ae60;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+/* SVG Circle Progress */
+.circularChart {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.circleBg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 3.8;
+}
+
+.circle {
+  fill: none;
+  stroke-width: 3.8;
+  stroke: #4c51bf;
+  stroke-linecap: round;
+  animation: progress 1s ease-out forwards;
+}
+
+.percentageText {
+  fill: #2c3e50;
+  font-family: sans-serif;
+  font-size: 0.5em;
+  font-weight: bold;
+  text-anchor: middle;
+}
+
+@keyframes progress {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+}
+
 .videoControls {
   background-color: #f1f1f1;
   padding: 15px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow-x: hidden;
 }
 
 .playPauseButton {
-  background-color: #3498db;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 20px;
@@ -159,6 +323,7 @@
   justify-content: space-between;
   font-size: 12px;
   color: #666;
+  overflow: hidden;
 }
 
 /* Workshop Details Styles */
@@ -167,11 +332,10 @@
   flex-direction: column;
   height: 100%;
   padding: 15px;
-  overflow-y: auto;
 }
 
 .detailsHeader {
-  margin-bottom: 15px;
+  margin: 15px 0;
 }
 
 .detailsHeader h2 {
@@ -246,7 +410,7 @@
 }
 
 .resourcesList a {
-  color: #3498db;
+  color: #4c51bf;
   text-decoration: none;
   font-size: 14px;
 }
@@ -278,8 +442,8 @@
 
 .downloadButton {
   background-color: transparent;
-  color: #3498db;
-  border: 1px solid #3498db;
+  color: #4c51bf;
+  border: 1px solid #4c51bf;
   border-radius: 4px;
   padding: 5px 10px;
   font-size: 12px;
@@ -289,7 +453,7 @@
 .notesContent {
   flex: 1;
   padding: 15px;
-  overflow-y: auto;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -310,7 +474,7 @@
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 12px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .noteTimestamp {
@@ -332,7 +496,7 @@
 }
 
 .noteInput textarea {
-  width: 100%;
+  width: 90%;
   padding: 10px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -344,7 +508,7 @@
 
 .saveNoteButton {
   width: 100%;
-  background-color: #3498db;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 8px;
@@ -431,7 +595,7 @@
 }
 
 .submitRatingButton {
-  background-color: #3498db;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 6px;
@@ -481,11 +645,11 @@
 
 .certificateContent h3 {
   font-size: 24px;
-  color: #2ecc71;
+  color: #4c51bf;
   margin-bottom: 15px;
 }
 
-.certificateContent > p {
+.certificateContent>p {
   margin-bottom: 10px;
   color: #333;
 }
@@ -521,7 +685,7 @@
 .userName {
   font-size: 22px;
   font-weight: bold;
-  color: #3498db;
+  color: #4c51bf;
   margin: 15px 0;
 }
 
@@ -540,7 +704,7 @@
 }
 
 .downloadCertButton {
-  background-color: #2ecc71;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 6px;
@@ -549,7 +713,7 @@
   cursor: pointer;
 }
 
-.closeButton {
+.certificateContent .closeButton {
   background-color: #f1f1f1;
   color: #666;
   border: none;
@@ -557,6 +721,15 @@
   padding: 12px 20px;
   font-weight: 500;
   cursor: pointer;
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 15px;
+  right: 15px;
 }
 
 @media (min-width: 768px) {
@@ -564,13 +737,60 @@
     flex-direction: row;
     gap: 20px;
   }
-  
+
   .videoSection {
     flex: 3;
   }
-  
+
   .workshopDetails {
     flex: 2;
     padding-top: 0;
+  }
+}
+
+/* Download Progress Styles */
+.downloadProgress {
+  padding: 20px;
+  text-align: center;
+}
+
+.progressText {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #333;
+  font-weight: 500;
+}
+
+.downloadRemainingText {
+  color: #777;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.downloadProgress .progressBarContainer {
+  height: 12px;
+  background-color: #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.downloadProgress .progressBar {
+  height: 100%;
+  background-color: #4c51bf;
+  border-radius: 6px;
+  transition: width 0.3s ease-in-out;
+}
+
+@media (max-width: 900px) {
+
+  .modalContent,
+  .leftColumn {
+    height: 100vh;
+    min-height: 0;
+  }
+
+  .certificateSection {
+    margin: 40px 10px 0 10px;
   }
 }

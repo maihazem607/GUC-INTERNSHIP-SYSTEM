@@ -4,6 +4,7 @@
   overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
 }
 
 .card:hover {
@@ -122,7 +123,7 @@
 
 .detailsButton {
   padding: 8px 16px;
-  background-color: #3498db;
+  background-color: #4c51bf;
   color: white;
   border: none;
   border-radius: 8px;
@@ -132,5 +133,4 @@
 }
 
 .detailsButton:hover {
-  background-color: #2980b9;
-}
+  background-color: #34399b}

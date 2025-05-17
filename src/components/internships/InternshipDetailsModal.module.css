@@ -1,4 +1,4 @@
-/* Modal Styles */
+/* Modal Styles - reusing structure from WorkshopDetailsModal.module.css */
 .modalBackdrop {
   position: fixed;
   top: 0;
@@ -12,16 +12,25 @@
   z-index: 1000;
 }
 
+/* Notification container for fixed positioning */
+.notificationContainer {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999; /* Higher than modal backdrop */
+  pointer-events: none; /* Allow clicks to pass through */
+}
+
 .modalContent {
   background-color: white;
   border-radius: 16px;
-  padding: 30px;
+  padding: 36px;
   width: 90%;
   max-width: 700px;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 .closeButton {
@@ -41,44 +50,58 @@
 }
 
 .modalHeader {
-  margin-bottom: 25px;
+  margin-bottom: 28px;
+  margin-top: 20px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
 .modalTitle {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
-  margin-bottom: 10px;
-  color: #333;
+  margin-bottom: 12px;
+  color: #222;
+  flex: 1;
 }
 
-.modalCompany {
+.modalHost {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  margin-top: 15px;
+  margin-right: 10px;
 }
 
-.modalCompanyLogo {
+.modalHostLogo {
   border-radius: 8px;
   object-fit: contain;
+  width: 48px;
+  height: 48px;
+  margin-left: 5px;
 }
 
-.modalCompanyName {
-  font-size: 16px;
-  color: #666;
+.modalHostName {
+  font-size: 18px;
+  color: #555;
   font-weight: 500;
 }
 
 .modalInfo {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  margin-bottom: 25px;
-  padding-bottom: 20px;
+  gap: 24px;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 12px;
   border-bottom: 1px solid #eee;
 }
 
 .modalInfoItem {
-  min-width: 110px;
+  min-width: 100px;
+  flex: 1;
 }
 
 .modalInfoLabel {
@@ -92,47 +115,294 @@
   font-weight: 500;
 }
 
+/* New sections for internship details */
+.modalSection {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #eee;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  margin-bottom: 16px;
+  color: #222;
+  font-weight: 600;
+  position: relative;
+  padding-left: 12px;
+}
+
+.sectionTitle::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #4c51bf;
+  border-radius: 4px;
+}
+
 .modalDescription {
-  margin-bottom: 25px;
-}
-
-.modalDescription h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
-  color: #333;
-}
-
-.modalDescription p {
-  line-height: 1.6;
+  line-height: 1.7;
   color: #444;
+  margin-bottom: 0;
+  margin-top: 15px;
 }
 
-.modalTags {
-  margin-bottom: 25px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.modalTagTitle {
-  font-size: 14px;
-  color: #666;
-  width: 100%;
-  margin-bottom: 5px;
-}
-
-.tagList {
+.skillsContainer {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-.tag {
-  background-color: rgba(0, 0, 0, 0.05);
-  padding: 6px 12px;
+.skillBadge {
+  background-color: #e3f2fd;
+  color: #4c51bf;
+  padding: 8px 16px;
   border-radius: 20px;
   font-size: 14px;
   font-weight: 500;
+  box-shadow: 0 2px 4px rgba(25, 118, 210, 0.1);
+  transition: all 0.2s;
+}
+
+.skillBadge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(25, 118, 210, 0.15);
+}
+
+.paidBadge {
+  color: #2e7d32;
+  background-color: #e8f5e9;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.unpaidBadge {
+  color: #d32f2f;
+  background-color: #ffebee;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+/* Document upload section */
+.uploadDescription {
+  margin-bottom: 15px;
+  color: #555;
+}
+
+.uploadArea {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 12px;
+  border: 2px dashed #ddd;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.uploadAreaError {
+  border-color: #d32f2f;
+  background-color: rgba(255, 235, 238, 0.4);
+}
+
+.errorTooltip {
+  position: absolute;
+  top: -45px;
+  background-color: #d32f2f;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  margin-bottom: 10px;
+  width: max-content;
+  max-width: 250px;
+  animation: fadeIn 0.3s;
+}
+
+.errorTooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 8px 8px 0;
+  border-style: solid;
+  border-color: #d32f2f transparent transparent transparent;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fileInput {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.uploadButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background-color: white;
+  color: #4c51bf;
+  border: 2px solid #4c51bf;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  margin: 0 auto;
+}
+
+.uploadButton:hover {
+  background-color: #f0f7ff;
+  color: #1565c0;
+  border-color: #1565c0;
+}
+
+.documentItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1), 0 0 2px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s;
+  border-left: 3px solid #1976d2;
+  animation: slideIn 0.3s ease-out;
+  transform-origin: top;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.documentInfo {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #333;
+}
+
+.removeButton {
+  background: none;
+  border: none;
+  color: #d32f2f;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.removeButton:hover {
+  text-decoration: underline;
+}
+
+.documentList {
+  list-style: none;
+  padding-left: 0;
+  margin-left: 15px;
+  width: 95%;
+  margin-bottom: 0;
+}
+
+.uploadPrompt {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  color: #555;
+}
+
+.secondaryButton {
+  background-color: transparent;
+  border: 1px solid #4c51bf;
+  color: #4c51bf;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.secondaryButton:hover {
+  background-color: #e3f2fd;
+}
+
+.modalActions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 32px;
+}
+
+.applyButton {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: #4c51bf;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.applyButton:hover {
+  background-color: #34399b;
+}
+
+.applyButton:disabled {
+  background-color: #90caf9;
+  cursor: not-allowed;
+}
+
+.editButton {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: #5B5BD6;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.editButton:hover {
+  background-color: rgb(88, 24, 169);
+}
+
+.editButton:disabled {
+  background-color: rgb(177, 132, 233);
+  cursor: not-allowed;
 }
 
 .errorMessage {
@@ -144,23 +414,61 @@
   font-weight: 500;
 }
 
-.modalActions {
-  display: flex;
-  justify-content: flex-end;
+/* Additional notes textarea */
+.notesTextarea {
+  width: 95%;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 15px;
+  background-color: #f5f5f5;
+  min-height: 100px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-.applyButton {
+.notesTextarea:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+}
+
+/* Cancel button styling */
+.cancelBtn {
   padding: 12px 24px;
-  background-color: #3498db;
-  color: white;
   border: none;
   border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
+  background-color: #f44336;
+  color: white;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
-.applyButton:hover {
-  background-color: #2980b9;
+.cancelBtn:hover {
+  background-color: #d32f2f;
 }
+
+.cancelBtn:disabled {
+  background-color: #ffcdd2;
+  cursor: not-allowed;
+}
+
+/* Notification styling moved to global/NotificationSystem.module.css */
+
+.error {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 12px 16px;
+  margin-top: 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  border-left: 4px solid #d32f2f;
+}
+
+/* Animation moved to global/NotificationSystem.module.css */

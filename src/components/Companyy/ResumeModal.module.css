@@ -1,0 +1,199 @@
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 20px 10px;
+  background-color: white;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.downloadButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #5B5BD6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.downloadButton:hover {
+  background-color: #4A4AC1;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.resumeContainer {
+  background-color: white;
+  padding: 20px;
+  max-height: 70vh;
+  overflow-y: auto;
+  font-family: 'Arial', 'Helvetica', sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+.header {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.name {
+  font-size: 28px;
+  margin: 0 0 16px 0;
+  color: #5B5BD6;
+  font-weight: 700;
+}
+
+.contactInfo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: #444;
+}
+
+.section {
+  margin-bottom: 28px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.summary {
+  line-height: 1.6;
+  margin-top: 0;
+  color: #444;
+}
+
+.educationItem, .experienceItem {
+  margin-bottom: 20px;
+}
+
+.educationHeader, .experienceHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.degree, .position {
+  font-size: 18px;
+  margin: 0;
+  color: #222;
+  font-weight: 600;
+}
+
+.date {
+  font-size: 14px;
+  color: #666;
+}
+
+.university, .company {
+  font-size: 16px;
+  color: #444;
+  margin-bottom: 4px;
+}
+
+.gpa {
+  font-size: 14px;
+  color: #666;
+}
+
+.description {
+  margin: 8px 0 0;
+  line-height: 1.5;
+}
+
+.projectItem {
+  margin-bottom: 20px;
+  padding: 16px;  background-color: #f9f9f9;
+  border-radius: 8px;
+  border-left: 4px solid #5B5BD6;
+}
+
+.projectName {
+  font-size: 18px;
+  margin: 0 0 8px;
+  color: #5B5BD6;
+}
+
+.projectDescription {
+  margin: 0 0 8px;
+}
+
+.technologies {
+  font-size: 14px;
+  color: #444;
+}
+
+.skillsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skill {
+  background-color: #EFEFFC;
+  color: #5B5BD6;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+}
+
+.languagesContainer {
+  display: flex;
+  gap: 24px;
+}
+
+.language {
+  display: flex;
+  gap: 6px;
+}
+
+.languageName {
+  font-weight: 600;
+}
+
+.proficiency {
+  color: #666;
+}
+
+/* Add custom scrollbar for the resume container */
+.resumeContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.resumeContainer::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+
+.resumeContainer::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 4px;
+  border: 2px solid #f3f4f6;
+}
+
+.resumeContainer::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+}
