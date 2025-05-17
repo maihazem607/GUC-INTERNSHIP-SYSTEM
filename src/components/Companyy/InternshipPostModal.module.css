@@ -5,27 +5,27 @@
   flex-direction: column;
   min-height: 400px;
   position: relative;
-  max-height: calc(90vh - 100px); /* Increased max height */
-  overflow: hidden; /* Prevent overflow of the container */
+  max-height: calc(90vh - 100px);
+  overflow: hidden; 
 }
 
 .formContent {
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: calc(80vh - 80px); /* Increased max height */
-  padding: 0 30px 30px 30px; /* More horizontal padding */
+  max-height: calc(80vh - 80px);
+  padding: 0 60px 30px 20px; 
   margin-bottom: 0;
   flex: 1;
 }
 
 /* Form field styling */
 .formField {
-  margin-bottom: 28px; /* Increased bottom margin for better spacing */
+  margin-bottom: 28px; 
 }
 
 .formRow {
   display: flex;
-  gap: 30px; /* Increased gap for better spacing */
+  gap: 30px; 
 }
 
 .formRow .formField {
@@ -45,9 +45,9 @@
 /* Form inputs */
 .input, .select {
   width: 100%;
-  padding: 14px 16px; /* Further increased padding */
+  padding: 14px 16px; 
   border: 1px solid #dcdfe6;
-  border-radius: 10px; /* Increased border radius */
+  border-radius: 10px; 
   font-size: 15px;
   background-color: white;
   transition: all 0.3s ease;

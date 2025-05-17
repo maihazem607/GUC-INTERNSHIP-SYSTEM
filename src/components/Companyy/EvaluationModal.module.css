@@ -18,8 +18,8 @@
   background-color: white;
   border-radius: 12px;
   padding: 18px; /* Reduced padding */
-  width: 90%;
-  max-width: 720px; /* Slightly reduced width */
+  width: 100%;
+  max-width: 740px; 
   max-height: 75vh; /* Reduced height for less scrolling */
   position: relative;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -223,14 +223,15 @@
 .evaluationForm {
   width: 100%;
   max-width: 720px;
-  margin: 0 auto;
+  margin: auto;
   position: relative;
-  padding: 22px;
+  padding: 12px;
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
   max-height: 80vh;
   overflow-y: auto;
+  overflow-x: hidden;
   scrollbar-width: thin;
 }
 
@@ -429,7 +430,7 @@
 }
 
 .formGroup textarea {
-  width: 100%;
+  width: 94%;
   padding: 16px 20px; /* Reduced from 20px 24px */
   border: 1px solid #ddd;
   border-radius: 10px; /* Reduced from 12px */

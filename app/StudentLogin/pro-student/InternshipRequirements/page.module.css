@@ -184,7 +184,6 @@
   align-items: center;
   padding: 25px 30px;
   border-bottom: 1px solid #e2e8f0;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
 }
 
 .videoHeaderContent {

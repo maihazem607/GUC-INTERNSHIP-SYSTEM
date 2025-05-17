@@ -95,8 +95,10 @@ const InternshipPostModal: React.FC<InternshipPostModalProps> = ({
       title={isEditing ? 'Edit Internship Post' : 'Create Internship Post'}
       onClose={onClose}
       width="800px"
-    >    <div className={`${styles.postForm} ${styles.fadeInAnimation}`}>
-        <div className={styles.formContent}>          <div className={styles.helperText} style={{ marginBottom: '25px', fontSize: '14px', color: '#666', backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '10px', borderLeft: '4px solid #e74c3c', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+    >    
+    <div className={`${styles.postForm} ${styles.fadeInAnimation}`}>
+        <div className={styles.formContent}>          
+          <div className={styles.helperText} style={{ marginBottom: '25px', fontSize: '14px', color: '#666', backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '10px', borderLeft: '4px solid #e74c3c', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
             Fields marked with <span style={{ color: '#e74c3c', fontWeight: 'bold' }}>*</span> are required
           </div>
 
