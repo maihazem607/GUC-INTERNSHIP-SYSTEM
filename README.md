@@ -16,7 +16,6 @@
   - [✨ Additional Features](#-additional-features)
 - [🧱 Technologies](#-technologies)
 - [⚙️ Setup](#️-setup)
-- [🎬 Demo Video](#-demo-video)
 - [👨‍💻 Contributors](#-contributors)
 
 ---
@@ -136,11 +135,6 @@ cd guc-internship-system
     yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
----
-
-🎬 **Demo Video**  
-A comprehensive demonstration of the GUC Internship System is available here. The video showcases the main features and user flows for all stakeholders (students, companies, faculty, and SCAD office).
-
 ---
 
 👨‍💻 **Contributors**  
