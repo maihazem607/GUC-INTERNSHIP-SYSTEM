@@ -135,14 +135,15 @@ cd guc-internship-system
     yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
+
 ---
 
-👨‍💻 **Contributors**  
+## 👨‍💻 **Contributors**  
 The GUC Internship System was developed by:
 
 - **[Mai Hazem]** - [@maihazem607](https://github.com/maihazem607)
 - **[Esraa Tarek]** - [@EsraaTarek382](https://github.com/EsraaTarek382)
-- **[Yasmeen tarek]** - [@YasmeenTark1](https://github.com/YasmeenTarek1)
+- **[Yasmeen Tarek]** - [@YasmeenTarek1](https://github.com/YasmeenTarek1)
 - **[Hana Ayman]** - [@HanaAyman33](https://github.com/HanaAyman33)
 - **[Malak Elkady]** - [@malakelkady7](https://github.com/malakelkady7)
 
