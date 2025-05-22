@@ -119,8 +119,7 @@
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-team-repo/guc-internship-system.git
-cd guc-internship-system
+git clone https://github.com/maihazem607/GUC-INTERNSHIP-SYSTEM.git
 ```
 ## 2. Install Dependencies
 
