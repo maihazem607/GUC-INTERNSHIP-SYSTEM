@@ -19,20 +19,28 @@
     --transition: all 0.3s ease;
     --scrollbar-width: 10px;
     --scrollbar-track: rgba(0, 0, 0, 0.05);
+    
     /* StudentProfile variables */
-    --primary-color: #803cff;
-    --primary-light: #EAE6FE;
     --primary-dark: #4732C4;
-    --accent-color: #1976D2;
     --accent-dark: #1565C0;
     --text-tertiary: #999;
     --background-white: #ffffff;
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
     --border-radius-sm: 8px;
     --border-radius-md: 12px;
     --border-radius-lg: 20px;
     --border-color: #eee;
     --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* StudentLogin variables */
+    --scrollbar-thumb: rgba(128, 0, 255, 0.2);
+    --scrollbar-thumb-hover: rgba(128, 0, 255, 0.4);
+    
+    /* Pro-student and student page variables */
+    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* FilterSidebar variables */
+    --sidebar-color: #4c51bf;
+    --sidebar-color-light: rgba(76, 81, 191, 0.1);
+    --sidebar-color-medium: rgba(76, 81, 191, 0.15);
 }

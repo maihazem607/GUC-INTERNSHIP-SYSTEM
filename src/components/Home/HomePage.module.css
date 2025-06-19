@@ -1,18 +1,5 @@
 /* Base Styles */
-:root {
-  --primary-color: #8000FF;
-  --secondary-color: #4c51bf;
-  --accent-color: #FFCC33;
-  --text-primary: #333333;
-  --text-secondary: #666666;
-  --background-light: #f0e8ff;
-  --white: #ffffff;
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-  --border-radius: 16px;
-  --transition: all 0.3s ease;
-}
+/* CSS variables moved to app/globals.css */
 
 /* Layout */
 .pageContainer {

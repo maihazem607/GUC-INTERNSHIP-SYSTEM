@@ -1,15 +1,5 @@
 /* StudentLogin.module.css */
-:root {
-    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.15);
-    --border-radius: 16px;
-    --transition: all 0.3s ease;
-    --scrollbar-width: 10px;
-    --scrollbar-track: rgba(0, 0, 0, 0.05);
-    --scrollbar-thumb: rgba(128, 0, 255, 0.2);
-    --scrollbar-thumb-hover: rgba(128, 0, 255, 0.4);
-}
+/* CSS variables moved to app/globals.css */
 
 /* Layout */
 .pageContainer {
