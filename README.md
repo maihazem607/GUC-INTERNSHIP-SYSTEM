@@ -28,7 +28,7 @@
 ## 🎥 Demo Video  
 Watch a quick walkthrough of the GUC Internship System to explore its features and interface:
 
-https://github.com/user-attachments/assets/dd77dbb9-e784-472a-a0e5-2210d454eb7d
+https://github.com/user-attachments/assets/bb61f7a4-bc18-4210-a763-dcaf7de84a6c
 
 ---
 
