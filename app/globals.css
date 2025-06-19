@@ -1,0 +1,38 @@
+/* Global CSS Variables for the Internship System */
+:root {
+    /* Company/Faculty/Registration/SCADLogin variables */
+    --primary-color: #8000FF;
+    --primary-light: #9b4dff;
+    --primary-lighter: #efe5ff;
+    --secondary-color: #4c51bf;
+    --accent-color: #FFCC33;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --background-dark: #292d3e;
+    --background-light: #f0e8ff;
+    --white: #ffffff;
+    --error-color: #ef4444;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.15);
+    --border-radius: 16px;
+    --transition: all 0.3s ease;
+    --scrollbar-width: 10px;
+    --scrollbar-track: rgba(0, 0, 0, 0.05);
+    /* StudentProfile variables */
+    --primary-color: #803cff;
+    --primary-light: #EAE6FE;
+    --primary-dark: #4732C4;
+    --accent-color: #1976D2;
+    --accent-dark: #1565C0;
+    --text-tertiary: #999;
+    --background-white: #ffffff;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --border-radius-sm: 8px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 20px;
+    --border-color: #eee;
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}

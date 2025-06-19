@@ -263,7 +263,7 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
       
       // Create certificate data object for PDF generation
       const certificateData: WorkshopCertificateData = {
-        studentName: "Ahmad Mohammed", // In a real app, this would be the logged-in user's name
+        studentName: "Salma Hassan", // In a real app, this would be the logged-in user's name
         workshopTitle: workshop.title,
         workshopHost: workshop.host,
         workshopDate: workshop.date,
@@ -586,7 +586,7 @@ const RecordedSessionModal: React.FC<RecordedSessionModalProps> = ({
                 <div className={styles.certificateInner}>
                   <h2>Certificate of Completion</h2>
                   <p>This certifies that</p>
-                  <p className={styles.userName}>Ahmad Mohammed</p>
+                  <p className={styles.userName}>Salma Hassan</p>
                   <p>has successfully completed</p>
                   <p className={styles.workshopTitle}>{workshop.title}</p>
                   <p>presented by {workshop.host}</p>
